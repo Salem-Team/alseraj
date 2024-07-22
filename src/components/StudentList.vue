@@ -600,7 +600,6 @@
                                                 </v-menu>
                                             </div>
                                         </div>
-
                                         <div v-if="e1 === 2" ref="slide2">
                                             <div style="padding: 20px">
                                                 <div
@@ -623,118 +622,37 @@
                                                         ولي الامر
                                                     </h2>
                                                 </div>
+
+                                                <!-- حقل اسم الأب -->
                                                 <v-text-field
                                                     v-model="
-                                                        Guardian[0]
-                                                            .Guardian_name
+                                                        selectedParent.name
                                                     "
-                                                    :error-messages="
-                                                        errors.Guardian_name
-                                                    "
-                                                    label="الاسم"
+                                                    label="اسم الأب"
                                                     required
+                                                    style="margin-bottom: 20px"
                                                 ></v-text-field>
-                                                <v-text-field
-                                                    v-model="
-                                                        Guardian[1]
-                                                            .Guardian_phone
-                                                    "
-                                                    :error-messages="
-                                                        errors.Guardian_phone
-                                                    "
-                                                    label="رقم التليفون"
-                                                    required
-                                                ></v-text-field>
-                                                <v-text-field
-                                                    v-model="
-                                                        Guardian[2]
-                                                            .Guardian_email
-                                                    "
-                                                    :error-messages="
-                                                        errors.Guardian_email
-                                                    "
-                                                    label="الايميل"
-                                                    required
-                                                ></v-text-field>
-                                                <v-text-field
-                                                    v-model="randomPassword"
-                                                    :error-messages="
-                                                        errors.Guardian_password
-                                                    "
-                                                    label="باسورد"
-                                                    placeholder="باسورد"
-                                                    :append-inner-icon="
-                                                        visible
-                                                            ? 'mdi-eye-off'
-                                                            : 'mdi-eye'
-                                                    "
-                                                    :type="
-                                                        visible
-                                                            ? 'text'
-                                                            : 'password'
-                                                    "
-                                                    density="compact"
-                                                    prepend-inner-icon="mdi-content-copy"
-                                                    variant="outlined"
-                                                    @click:prepend-inner="
-                                                        copyPassword
-                                                    "
-                                                    @click:append-inner="
-                                                        toggleVisibility
-                                                    "
-                                                ></v-text-field>
-                                                <v-select
-                                                    v-model="
-                                                        Guardian[4]
-                                                            .Brothers_in_school
-                                                    "
-                                                    :error-messages="
-                                                        errors.Brothers_in_school
-                                                    "
-                                                    label="هل يوجد اخوه في المدرسه"
-                                                    required
-                                                    :items="['لا', 'نعم']"
-                                                    variant="outlined"
-                                                ></v-select>
-                                                <div
-                                                    v-if="
-                                                        Guardian[4]
-                                                            .Brothers_in_school ===
-                                                        'نعم'
-                                                    "
-                                                >
-                                                    <div
+
+                                                <!-- عرض أسماء الأبناء -->
+                                                <v-list>
+                                                    <v-list-item-group
                                                         v-for="(
-                                                            bor, index
-                                                        ) in Guardian[5]
-                                                            .brother"
+                                                            child, index
+                                                        ) in selectedParent.Child"
                                                         :key="index"
                                                     >
-                                                        <v-text-field
-                                                            v-model="
-                                                                Guardian[5]
-                                                                    .brother[
-                                                                    index
-                                                                ]
-                                                            "
-                                                            :error-messages="
-                                                                errors.brother
-                                                            "
-                                                            label="اسم الاخ"
-                                                            :append-icon="
-                                                                index == 0
-                                                                    ? 'mdi-plus'
-                                                                    : ''
-                                                            "
-                                                            @click:append="
-                                                                addBrother
-                                                            "
-                                                            required
-                                                        ></v-text-field>
-                                                    </div>
-                                                </div>
+                                                        <v-list-item>
+                                                            <v-list-item-content>
+                                                                <v-list-item-title>
+                                                                    {{ child }}
+                                                                </v-list-item-title>
+                                                            </v-list-item-content>
+                                                        </v-list-item>
+                                                    </v-list-item-group>
+                                                </v-list>
                                             </div>
                                         </div>
+
                                         <div v-if="e1 === 3" ref="slide3">
                                             <div style="padding: 20px">
                                                 <div
@@ -2270,7 +2188,7 @@
                                 width: 100% !important;
                             "
                         >
-                            <v-toolbar title="معلومات الطالب">
+                            <v-toolbar title=" معلومات الطالب وولى امره">
                                 <v-btn
                                     icon
                                     @click="
@@ -2280,144 +2198,211 @@
                                     <v-icon>mdi-close</v-icon>
                                 </v-btn>
                             </v-toolbar>
-                            <form @submit.prevent="submit">
-                                <div style="padding: 20px">
-                                    <div
-                                        style="
-                                            width: 100%;
-                                            display: flex;
-                                            gap: 20px;
-                                        "
-                                    >
-                                        <v-text-field
-                                            v-model="form.student_name"
-                                            style="width: 50%"
-                                            :error-messages="
-                                                errors.student_name
-                                            "
-                                            required
-                                            label="اسم الطالب"
-                                        ></v-text-field>
 
-                                        <v-select
-                                            :items="[
-                                                '1/1',
-                                                '1/2',
-                                                '1/3',
-                                                '1/4',
-                                                '1/5',
-                                                '1/6',
-                                                '2/1',
-                                                '2/2',
-                                                '2/3',
-                                                '2/4',
-                                                '2/5',
-                                                '2/6',
-                                                '3/1',
-                                                '3/2',
-                                                '3/3',
-                                                '3/4',
-                                                '3/5',
-                                                '3/6',
-                                            ]"
-                                            variant="outlined"
-                                            style="width: 50%"
-                                            v-model="form.class"
-                                            :error-messages="errors.class"
-                                            label="الفصل"
-                                            required
-                                        ></v-select>
-                                    </div>
-                                    <div
-                                        style="
-                                            width: 100%;
-                                            display: flex;
-                                            gap: 20px;
-                                        "
-                                    >
-                                        <v-select
-                                            v-model="form.gender"
-                                            style="width: 100%"
-                                            :error-messages="errors.gender"
-                                            label="الجنس"
-                                            required
-                                            :items="['انثي', 'ذكر']"
-                                            variant="outlined"
-                                        ></v-select>
-                                    </div>
+                            <v-tabs v-model="tab" bg-color="primary">
+                                <v-tab value="student">بيانات الطالب</v-tab>
+                                <v-tab value="parent">ولي الأمر</v-tab>
+                            </v-tabs>
 
-                                    <v-select
-                                        v-model="form.section"
-                                        :error-messages="errors.section"
-                                        label="القسم"
-                                        required
-                                        :items="['عربي', 'لغات']"
-                                        variant="outlined"
-                                    ></v-select>
-
-                                    <v-menu
-                                        ref="menu"
-                                        v-model="menu"
-                                        :close-on-content-click="false"
-                                        transition="scale-transition"
-                                        offset-y
-                                        min-width="290px"
-                                        @open="initializeTempDate"
-                                    >
-                                        <template
-                                            v-slot:activator="{ on, attrs }"
-                                        >
-                                            <v-text-field
-                                                v-model="formattedDate"
-                                                label="تاريخ الميلاد"
-                                                prepend-icon="mdi-calendar"
-                                                readonly
-                                                @click="menu = true"
-                                                :error-messages="
-                                                    errors.birthday
-                                                "
-                                                required
-                                                v-bind="attrs"
-                                                v-on="on"
-                                            ></v-text-field>
-                                        </template>
-                                        <v-card>
-                                            <v-date-picker
-                                                v-model="tempDate"
-                                                locale="ar"
-                                                scrollable
-                                                :first-day-of-week="1"
-                                            ></v-date-picker>
-                                            <v-card-actions>
-                                                <v-spacer></v-spacer>
-                                                <v-btn
-                                                    text
-                                                    @click="menu = false"
-                                                    >إلغاء</v-btn
+                            <v-card-text>
+                                <v-tabs-window v-model="tab">
+                                    <v-tabs-window-item value="student">
+                                        <form @submit.prevent="submit">
+                                            <div style="padding: 20px">
+                                                <div
+                                                    style="
+                                                        width: 100%;
+                                                        display: flex;
+                                                        gap: 20px;
+                                                    "
                                                 >
-                                                <v-btn text @click="confirmDate"
-                                                    >تأكيد</v-btn
+                                                    <v-text-field
+                                                        v-model="
+                                                            form.student_name
+                                                        "
+                                                        style="width: 50%"
+                                                        :error-messages="
+                                                            errors.student_name
+                                                        "
+                                                        required
+                                                        label="اسم الطالب"
+                                                    ></v-text-field>
+
+                                                    <v-select
+                                                        :items="[
+                                                            '1/1',
+                                                            '1/2',
+                                                            '1/3',
+                                                            '1/4',
+                                                            '1/5',
+                                                            '1/6',
+                                                            '2/1',
+                                                            '2/2',
+                                                            '2/3',
+                                                            '2/4',
+                                                            '2/5',
+                                                            '2/6',
+                                                            '3/1',
+                                                            '3/2',
+                                                            '3/3',
+                                                            '3/4',
+                                                            '3/5',
+                                                            '3/6',
+                                                        ]"
+                                                        variant="outlined"
+                                                        style="width: 50%"
+                                                        v-model="form.class"
+                                                        :error-messages="
+                                                            errors.class
+                                                        "
+                                                        label="الفصل"
+                                                        required
+                                                    ></v-select>
+                                                </div>
+                                                <div
+                                                    style="
+                                                        width: 100%;
+                                                        display: flex;
+                                                        gap: 20px;
+                                                    "
                                                 >
-                                            </v-card-actions>
-                                        </v-card>
-                                    </v-menu>
-                                    <div class="text-center">
-                                        <v-btn
-                                            append-icon="mdi-account-circle"
-                                            type="submit"
-                                            style="
-                                                background: rgb(70, 122, 164);
-                                                color: white;
-                                                font-size: 24px;
-                                                padding: 3px;
-                                                width: 42%;
-                                            "
-                                        >
-                                            اضافه طالب
-                                        </v-btn>
-                                    </div>
-                                </div>
-                            </form>
+                                                    <v-select
+                                                        v-model="form.gender"
+                                                        style="width: 100%"
+                                                        :error-messages="
+                                                            errors.gender
+                                                        "
+                                                        label="الجنس"
+                                                        required
+                                                        :items="['انثي', 'ذكر']"
+                                                        variant="outlined"
+                                                    ></v-select>
+                                                </div>
+
+                                                <v-select
+                                                    v-model="form.section"
+                                                    :error-messages="
+                                                        errors.section
+                                                    "
+                                                    label="القسم"
+                                                    required
+                                                    :items="['عربي', 'لغات']"
+                                                    variant="outlined"
+                                                ></v-select>
+
+                                                <v-menu
+                                                    ref="menu"
+                                                    v-model="menu"
+                                                    :close-on-content-click="
+                                                        false
+                                                    "
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    min-width="290px"
+                                                    @open="initializeTempDate"
+                                                >
+                                                    <template
+                                                        v-slot:activator="{
+                                                            on,
+                                                            attrs,
+                                                        }"
+                                                    >
+                                                        <v-text-field
+                                                            v-model="
+                                                                formattedDate
+                                                            "
+                                                            label="تاريخ الميلاد"
+                                                            prepend-icon="mdi-calendar"
+                                                            readonly
+                                                            @click="menu = true"
+                                                            :error-messages="
+                                                                errors.birthday
+                                                            "
+                                                            required
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-card>
+                                                        <v-date-picker
+                                                            v-model="tempDate"
+                                                            locale="ar"
+                                                            scrollable
+                                                            :first-day-of-week="
+                                                                1
+                                                            "
+                                                        ></v-date-picker>
+                                                        <v-card-actions>
+                                                            <v-spacer></v-spacer>
+                                                            <v-btn
+                                                                text
+                                                                @click="
+                                                                    menu = false
+                                                                "
+                                                                >إلغاء</v-btn
+                                                            >
+                                                            <v-btn
+                                                                text
+                                                                @click="
+                                                                    confirmDate
+                                                                "
+                                                                >تأكيد</v-btn
+                                                            >
+                                                        </v-card-actions>
+                                                    </v-card>
+                                                </v-menu>
+                                                <div class="text-center">
+                                                    <v-btn
+                                                        append-icon="mdi-account-circle"
+                                                        type="submit"
+                                                        style="
+                                                            background: rgb(
+                                                                70,
+                                                                122,
+                                                                164
+                                                            );
+                                                            color: white;
+                                                            font-size: 24px;
+                                                            padding: 3px;
+                                                            width: 42%;
+                                                        "
+                                                    >
+                                                        اضافه طالب
+                                                    </v-btn>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </v-tabs-window-item>
+
+                                    <v-tabs-window-item value="parent">
+                                        <form @submit.prevent="submitParent">
+                                            <div style="padding: 20px">
+                                                <v-text-field
+                                                    v-model="form.parent_name"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.parent_name
+                                                    "
+                                                    required
+                                                    label="اسم ولي الأمر"
+                                                ></v-text-field>
+
+                                                <v-text-field
+                                                    v-model="
+                                                        form.parent_national_id
+                                                    "
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.parent_national_id
+                                                    "
+                                                    required
+                                                    label="الرقم القومي"
+                                                ></v-text-field>
+                                            </div>
+                                        </form>
+                                    </v-tabs-window-item>
+                                </v-tabs-window>
+                            </v-card-text>
                         </v-card>
                     </template>
                 </v-dialog>
@@ -2439,8 +2424,10 @@ import {
     getFirestore,
     getDoc,
     updateDoc,
+    setDoc,
     query,
     where,
+    arrayUnion,
 } from "firebase/firestore";
 const firebaseConfig = {
     apiKey: "AIzaSyBdk3sqIHjXvB2C-O-lvkRgMFpg8pemkno",
@@ -2454,6 +2441,7 @@ import { getStorage } from "firebase/storage";
 import { useToast } from "vue-toastification";
 import "vue-toastification/dist/index.css"; // Import the CSS file
 import { initializeApp } from "@firebase/app";
+
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
@@ -2509,6 +2497,10 @@ export default {
                 "الاشعارات",
                 "الصور",
             ],
+            selectedParent: {
+                name: "",
+                Child: [], // مصفوفة تحتوي على أسماء الأبناء
+            },
             tempDatez: null,
             editNotificationsDialog: false,
             editPhotosDialog: false,
@@ -2550,6 +2542,8 @@ export default {
                 gender: "",
                 section: "",
                 birthday: null,
+                parent_name: "",
+                national_id: "",
 
                 Guardian: [
                     { Guardian_name: "" },
@@ -2559,6 +2553,7 @@ export default {
                     { Brothers_in_school: "" },
                     { brother: [""] },
                 ],
+                errors: {},
                 Results: [
                     {
                         weekly: [
@@ -2747,6 +2742,8 @@ export default {
             },
             loading1: true, // خاصية لتحميل البيانات
             errors: {
+                parent_name: [],
+                parent_national_id: [],
                 student_name: [],
                 class: [],
                 educational_level: [],
@@ -3070,11 +3067,12 @@ export default {
         async submit() {
             if (this.validateForm()) {
                 try {
-                    // Ensure the birthday is stored as a formatted string
+                    // التأكد من أن تاريخ الميلاد يتم تخزينه كسلسلة منسقة
                     const formattedBirthday = this.formatDate(
                         new Date(this.form.birthday)
                     );
 
+                    // إضافة الطالب إلى مجموعة "students"
                     const docRef = await addDoc(collection(db, "students"), {
                         student_name: this.form.student_name,
                         class: this.form.class,
@@ -3107,6 +3105,38 @@ export default {
 
                     this.students.push(newStudent);
 
+                    // تحقق من وجود مستند "Parents" بالرقم القومي
+                    const parentDocRef = doc(
+                        db,
+                        "parents",
+                        this.form.parent_national_id
+                    );
+                    const parentDoc = await getDoc(parentDocRef);
+
+                    if (parentDoc.exists()) {
+                        // إذا كان المستند موجوداً، فقط قم بإضافة اسم الطالب إلى قائمة Child
+                        await setDoc(
+                            parentDocRef,
+                            {
+                                Child: arrayUnion(this.form.student_name),
+                            },
+                            { merge: true }
+                        );
+
+                        console.log(
+                            "Updated existing parent document successfully"
+                        );
+                    } else {
+                        // إذا لم يكن المستند موجوداً، قم بإنشاء مستند جديد
+                        await setDoc(parentDocRef, {
+                            name: this.form.parent_name,
+                            National_id: this.form.parent_national_id,
+                            Child: [this.form.student_name], // أو يمكنك استخدام arrayUnion إذا كنت تريد التأكد من عدم التكرار
+                        });
+
+                        console.log("Created new parent document successfully");
+                    }
+
                     this.dialog_addstudent = false;
                     this.formattedDate = "";
                     this.handleReset();
@@ -3122,6 +3152,25 @@ export default {
                 }
             }
         },
+
+        // async submitParent() {
+        //     try {
+        //         await setDoc(
+        //             doc(db, "parents", this.form.parent_national_id),
+        //             {
+        //                 name: this.form.parent_name,
+        //                 National_id: this.form.parent_national_id,
+        //                 Child: arrayUnion(this.form.student_name),
+        //             },
+        //             { merge: true }
+        //         );
+
+        //         // معالجة النتائج الأخرى بعد الإضافة
+        //         console.log("Parent document updated successfully");
+        //     } catch (error) {
+        //         console.error("Error updating parent document:", error);
+        //     }
+        // },
         formatDate(date) {
             const d = new Date(date);
             let month = "" + (d.getMonth() + 1); // استخدام let بدلاً من const
@@ -3472,8 +3521,34 @@ export default {
                 });
             }
         },
+        async loadParentDetails(National_id) {
+            if (!National_id) {
+                console.error("No National_id provided");
+                return;
+            }
+
+            try {
+                const parentDoc = doc(db, "Parents", National_id);
+                const parentSnapshot = await getDoc(parentDoc);
+                console.log("dxasdsasdsasa:", parentDoc);
+
+                if (parentSnapshot.exists()) {
+                    const parentData = parentSnapshot.data();
+                    this.selectedParent.name = parentData.name || "غير متوفر";
+                    this.selectedParent.children = parentData.Child || []; // تأكد من أن Child ليست undefined
+                } else {
+                    console.error("No such document!");
+                    this.selectedParent.name = "غير متوفر";
+                    this.selectedParent.children = [];
+                }
+            } catch (error) {
+                console.error("Error getting document:", error);
+            }
+        },
+
         openStudentDetails(student) {
             this.selectedStudent = student;
+            this.loadParentDetails(student.National_id);
             this.dialogStudentDetails = true;
         },
         // l;

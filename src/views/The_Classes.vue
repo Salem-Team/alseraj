@@ -32,79 +32,104 @@
                 v-for="classroom in class_rooms"
                 :key="classroom.id"
             >
-                <div class="title">
-                    <div>{{ classroom.grade }}</div>
-                    <!-- تحديث الزرار لاستخدام goToClassroom -->
-                    <div class="button" @click="goToClassroom(classroom.grade)">
-                        الطلاب
-                    </div>
-                </div>
-                <div class="charts">
-                    <div class="box">
-                        <div>
-                            <canvas :id="'myChart_' + classroom.id"></canvas>
+                <div v-if="user.roles.includes(classroom.grade)">
+                    <div class="feat2">
+                        <div class="title">
+                            <div>{{ classroom.grade }}</div>
+                            <!-- تحديث الزرار لاستخدام goToClassroom -->
+                            <div
+                                class="button"
+                                @click="goToClassroom(classroom.grade)"
+                            >
+                                الطلاب
+                            </div>
                         </div>
-                        <ul>
-                            <li class="li">
-                                <font-awesome-icon
-                                    :icon="['fas', 'graduation-cap']"
-                                />
-                                <div>الطلاب</div>
+                        <div class="charts">
+                            <div class="box">
                                 <div>
-                                    <span>{{
-                                        classroom.students.total_students
-                                    }}</span>
-                                    طالب
+                                    <canvas
+                                        :id="'myChart_' + classroom.id"
+                                    ></canvas>
                                 </div>
-                            </li>
-                            <li>
-                                <div>ذكر</div>
+                                <ul>
+                                    <li class="li">
+                                        <font-awesome-icon
+                                            :icon="['fas', 'graduation-cap']"
+                                        />
+                                        <div>الطلاب</div>
+                                        <div>
+                                            <span>{{
+                                                classroom.students
+                                                    .total_students
+                                            }}</span>
+                                            طالب
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>ذكر</div>
+                                        <div>
+                                            <span>{{
+                                                classroom.students.male
+                                            }}</span>
+                                            طالب
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>أنثى</div>
+                                        <div>
+                                            <span>{{
+                                                classroom.students.female
+                                            }}</span>
+                                            طالبة
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div
+                                class="box"
+                                v-if="
+                                    user.roles.includes('الاطلاع على الحسابات')
+                                "
+                            >
                                 <div>
-                                    <span>{{ classroom.students.male }}</span>
-                                    طالب
+                                    <canvas
+                                        :id="'myChart_1_' + classroom.id"
+                                    ></canvas>
                                 </div>
-                            </li>
-                            <li>
-                                <div>أنثى</div>
-                                <div>
-                                    <span>{{ classroom.students.female }}</span>
-                                    طالبة
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="box">
-                        <div>
-                            <canvas :id="'myChart_1_' + classroom.id"></canvas>
+                                <ul>
+                                    <li class="li">
+                                        <font-awesome-icon
+                                            :icon="['fas', 'money-bills']"
+                                        />
+                                        <div>المصروفات المستحقة</div>
+                                        <div>
+                                            <span>{{
+                                                classroom.fees.due_fees
+                                            }}</span>
+                                            جنية
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>المصروفات المدفوعة</div>
+                                        <div>
+                                            <span>{{
+                                                classroom.fees.paid_fees
+                                            }}</span>
+                                            جنية
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>المصروفات المتبقية</div>
+                                        <div>
+                                            <span>{{
+                                                classroom.fees.remaining_fees
+                                            }}</span>
+                                            جنية
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                        <ul>
-                            <li class="li">
-                                <font-awesome-icon
-                                    :icon="['fas', 'money-bills']"
-                                />
-                                <div>المصروفات المستحقة</div>
-                                <div>
-                                    <span>{{ classroom.fees.due_fees }}</span>
-                                    جنية
-                                </div>
-                            </li>
-                            <li>
-                                <div>المصروفات المدفوعة</div>
-                                <div>
-                                    <span>{{ classroom.fees.paid_fees }}</span>
-                                    جنية
-                                </div>
-                            </li>
-                            <li>
-                                <div>المصروفات المتبقية</div>
-                                <div>
-                                    <span>{{
-                                        classroom.fees.remaining_fees
-                                    }}</span>
-                                    جنية
-                                </div>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -132,10 +157,13 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
+import { mapState } from "pinia";
+import { useAuthStore } from "../store/userStore";
 export default {
     name: "The_Classes",
-
+    computed: {
+        ...mapState(useAuthStore, ["user"]),
+    },
     setup() {
         const route = useRoute();
         const router = useRouter(); // استخدام useRouter هنا
@@ -359,10 +387,11 @@ img.pluse {
 }
 .feat {
     width: 100%;
-    padding: 20px;
-    box-shadow: 0 0 10px #ddd;
-    border-radius: 5px;
-
+    .feat2 {
+        padding: 20px;
+        box-shadow: 0 0 10px #ddd;
+        border-radius: 5px;
+    }
     .title {
         position: relative;
         font-size: 20px;
@@ -407,7 +436,9 @@ img.pluse {
         margin-top: 40px;
         .box {
             width: 48%;
+            max-width: 100%;
             display: flex;
+            flex-grow: 1;
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 10px #ddd;
@@ -513,8 +544,5 @@ img.pluse {
         flex-direction: row;
         align-items: stretch !important;
     }
-}
-.v-overlay__scrim {
-    background: rgb(0 0 0 / 36%) !important;
 }
 </style>

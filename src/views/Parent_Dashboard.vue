@@ -90,7 +90,10 @@
             <div class="right">
                 <div>
                     <v-breadcrumbs>
-                        <v-breadcrumbs-item>
+                        <v-breadcrumbs-item
+                            @click="$router.push('/admin')"
+                            link
+                        >
                             <img
                                 src="../assets/profile/user.png"
                                 alt=""
@@ -115,7 +118,7 @@
             </div>
             <v-container class="box d-flex align-center justify-space-around">
                 <div class="hello_text">
-                    مرحبًا [اسم ولي الأمر]، نشكرك على ثقتك في معهد السراج المنير
+                    مرحبًا {{ user.name }}، نشكرك على ثقتك في معهد السراج المنير
                     الأزهري، نتطلع سويًا لتحقيق مستقبل مشرق لأبنائنا.
                 </div>
                 <!-- <div class="form">
@@ -143,7 +146,7 @@
                             alt=""
                             class="pluse"
                         />
-                        <div>الأبناء</div>
+                        <div>أبنائنا</div>
                     </div>
                     <div class="body">
                         <div
@@ -644,16 +647,10 @@ export default {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                background: var(--secound-color);
-                padding: 10px;
-                border-radius: 5px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-                margin-top: 10px;
                 img {
-                    width: 35px;
+                    position: absolute;
+                    top: 10px;
+                    left: 10px;
                 }
                 .name {
                     font-size: 18px;
@@ -665,14 +662,6 @@ export default {
                 color: var(--therd-color);
                 font-weight: bold;
                 font-size: 15px;
-                background: var(--secound-color);
-                padding: 10px;
-                border-radius: 5px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-                margin-top: 10px;
             }
             .class {
                 display: flex;
@@ -680,14 +669,6 @@ export default {
                 gap: 5px;
                 color: var(--pink-color);
                 font-weight: bold;
-                background: var(--secound-color);
-                padding: 10px;
-                border-radius: 5px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-                margin-top: 10px;
             }
         }
     }

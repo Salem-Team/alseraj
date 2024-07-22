@@ -42,19 +42,24 @@ export const useadmin = defineStore("admin", {
         role: [
             // List of roles
             "حذف واضافة مشرفين",
-            "مشرف الروضة",
-            "مشرف الصف الاول",
-            "مشرف الصف الثاني",
-            "مشرف الصف الثالث",
-            "مشرف الصف الرابع",
-            "مشرف الصف الخامس",
-            "مشرف الصف السادس",
-            "مشرف الصف الاول الاعدادي",
-            "مشرف الصف الثاني الاعدادي",
-            "مشرف الصف الثالث الاعدادي",
-            "مشرف الصف الاول الثانوي",
-            "مشرف الصف الثاني الثانوي",
-            "مشرف الصف الثالث الثانوي",
+            " الاطلاع على تقديم الوظائف",
+            "تعديل ونشر الصور",
+            "تعديل ونشر الأخبار",
+            "الاطلاع على الحسابات",
+            "مرحلة رياض الأطفال الأولى",
+            "مرحلة رياض الأطفال الثانية",
+            "الصف الأول الابتدائي",
+            "الصف الثاني الابتدائي",
+            "الصف الثالث الابتدائي",
+            "الصف الرابع الابتدائي",
+            "الصف الخامس الابتدائي",
+            "الصف السادس الابتدائي",
+            "الصف الأول الإعدادي",
+            "الصف الثاني الإعدادي",
+            "الصف الثالث الإعدادي",
+            "الصف الأول الثانوي",
+            "الصف الثاني الثانوي",
+            "الصف الثالث الثانوي",
         ],
         users: [], // Array to hold user data
         loading: false, // Loading state
@@ -62,6 +67,8 @@ export const useadmin = defineStore("admin", {
         loading1: false, // Another loading state
         snackbar: false,
         snackbar2: false,
+        snackbar3: false,
+        text12: " تم التعديل بنجاح",
         text10: " تم الاضافة بنجاح",
         text11: " تم الحذف بنجاح",
     }),
@@ -141,7 +148,7 @@ export const useadmin = defineStore("admin", {
                                 doc.data().name,
                                 "12345a"
                             ),
-                            userType: doc.data().expectedUserType,
+                            userType: doc.data().userType,
 
                             password: doc.data().password,
 
@@ -209,6 +216,7 @@ export const useadmin = defineStore("admin", {
                 });
                 this.Get_data(); // Refresh user data
                 this.loading = false;
+                this.snackbar3 = true;
                 this.dialog_1 = false; // Close dialog
             } catch (error) {
                 console.error("Error updating user:", error);

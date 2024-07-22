@@ -1627,6 +1627,9 @@
                                                                     true
                                                                 )
                                                             "
+                                                            @change="
+                                                                CreateChart = true
+                                                            "
                                                         ></v-text-field>
                                                     </v-row>
 
@@ -1647,6 +1650,7 @@
                                                                 margin: 10px
                                                                     15px 10px
                                                                     15px;
+                                                                overflow: hidden;
                                                             "
                                                         >
                                                             <div
@@ -1793,7 +1797,7 @@
                                                         </v-row>
                                                         <div
                                                             class="Title"
-                                                            v-show="CreateChart"
+                                                            v-if="CreateChart"
                                                             style="
                                                                 margin-top: 55px;
                                                             "
@@ -1808,7 +1812,7 @@
                                                         </div>
                                                         <div
                                                             class="details"
-                                                            v-show="CreateChart"
+                                                            v-if="CreateChart"
                                                         >
                                                             <div
                                                                 class="myChart"
@@ -2498,6 +2502,8 @@ export default {
     data() {
         return {
             dialog_stu: false,
+            CreateChart: false,
+            myChart: null,
             searchId: "", // متغير لتخزين معرف الطالب الذي تريد البحث عنه
             menuz: false,
             steps: [
@@ -2832,7 +2838,6 @@ export default {
             changesMade: false,
             changesMade2: true,
             changesMade3: false,
-            CreateChart: null,
             interval: null,
             value: 0,
             tab_1: 0,
@@ -3058,6 +3063,7 @@ export default {
                             new Date(studentData.birthday * 1000)
                         ), // Convert birthday to string if it's a Timestamp
                     };
+                    // تحديث Residual بناءً على البيانات الجديدة
                     return student;
                 });
                 this.loading1 = false; // بدء تحميل البيانات
@@ -3943,33 +3949,7 @@ export default {
         //     );
         //     this.changesMade3 = false;
         // },
-        createChart(data) {
-            const ctx = document.getElementById("myChart");
-            if (ctx) {
-                // تحقق مما إذا كان هناك مخطط موجود وقم بتدميره
-                if (this.myChart) {
-                    this.myChart.destroy();
-                }
 
-                console.log("start createChart");
-                this.CreateChart = true;
-                this.myChart = new Chart(ctx, {
-                    type: "doughnut",
-                    data: {
-                        datasets: [
-                            {
-                                label: "المصروفات",
-                                data: data,
-                                backgroundColor: ["#336699", "#d8588c"],
-                                hoverOffset: 4,
-                            },
-                        ],
-                    },
-                });
-            } else {
-                console.log("error");
-            }
-        },
         updatePaymentOptions() {
             if (this.paymentMethod === "نظام التقسيط") {
                 this.selectedPlan = null;
@@ -4088,6 +4068,34 @@ export default {
             const expenses = this.form.payments.Expenses || 0;
             const paidUp = this.form.payments.paid_Up || 0;
             this.form.payments.Residual = expenses - paidUp;
+            this.createChart([paidUp, this.form.payments.Residual]);
+        },
+        createChart(data) {
+            const ctx = document.getElementById("myChart");
+            if (ctx) {
+                // تحقق مما إذا كان هناك مخطط موجود وقم بتدميره
+                if (this.myChart) {
+                    this.myChart.destroy();
+                }
+
+                console.log("start createChart");
+                this.CreateChart = true;
+                this.myChart = new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        datasets: [
+                            {
+                                label: "المصروفات",
+                                data: data,
+                                backgroundColor: ["#336699", "#d8588c"],
+                                hoverOffset: 4,
+                            },
+                        ],
+                    },
+                });
+            } else {
+                console.log("error");
+            }
         },
     },
     watch: {

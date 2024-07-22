@@ -21,11 +21,11 @@
                                 style="cursor: pointer"
                                 @click="dialogFilter = true"
                             />
-
                             <font-awesome-icon
                                 :icon="['fas', 'plus']"
                                 @click="dialog = true"
                                 style="cursor: pointer"
+                                v-tooltip="add"
                             />
                         </div>
                     </div>
@@ -48,6 +48,25 @@
                                 ></v-btn>
                             </v-card-title>
                             <div class="cards d-flex justify-space-evenly mb-4">
+                                <v-card
+                                    style="
+                                        background-color: var(
+                                            --secound-color
+                                        ) !important;
+                                        width: 20% !important;
+                                    "
+                                    class="card text-center mt-3"
+                                    prepend-icon="mdi-book-open-variant"
+                                    link
+                                    @click="subject = true"
+                                >
+                                    <v-card-title>إضافة مواد</v-card-title>
+                                </v-card>
+                                <add-subject
+                                    @closeDialog="closeDialog"
+                                    :localSubject="subject"
+                                />
+
                                 <v-card
                                     style="
                                         background-color: var(
@@ -315,6 +334,7 @@
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
+
                     <v-dialog v-model="dialog_2" max-width="90%">
                         <div style="background: white; padding: 53px">
                             <div
@@ -428,64 +448,35 @@
                     </v-dialog>
                 </v-col>
             </v-row>
-
-            <v-row>
-                <v-col>
-                    <h3
-                        v-if="isSortedAscending"
-                        style="color: rgba(33, 150, 243, 0.768627451)"
-                    >
-                        نوع الفلتر :
-                        {{ isSortedAscending ? " ابجدي" : "" }}
-                    </h3>
-                    <h3
-                        v-if="paymentSortActive"
-                        style="color: rgba(33, 150, 243, 0.768627451)"
-                    >
-                        نوع الفلتر :
-                        {{ paymentSortActive ? "حسب المدفوعات" : "" }}
-                    </h3>
-                </v-col>
-            </v-row>
             <v-row>
                 <v-col cols="12" md="4" sm="6">
                     <v-btn
-                        :class="{ active: activeButton === 'الكل' }"
-                        :style="buttonStyle('الكل')"
+                        style="background: #54aef5; color: white"
                         rounded="xl"
                         size="x-large"
                         block
-                        @click="updateSection('الكل')"
+                        >الكل</v-btn
                     >
-                        الكل
-                    </v-btn>
                 </v-col>
                 <v-col cols="12" md="4" sm="6">
                     <v-btn
-                        :class="{ active: activeButton === 'عربي' }"
-                        :style="buttonStyle('عربي')"
+                        style="background: #54aef5; color: white"
                         rounded="xl"
                         size="x-large"
                         block
-                        @click="updateSection('عربي')"
+                        >عربي</v-btn
                     >
-                        عربي
-                    </v-btn>
                 </v-col>
                 <v-col cols="12" md="4" sm="6">
                     <v-btn
-                        :class="{ active: activeButton === 'لغات' }"
-                        :style="buttonStyle('لغات')"
+                        style="background: #54aef5; color: white"
                         rounded="xl"
                         size="x-large"
                         block
-                        @click="updateSection('لغات')"
+                        >لغات</v-btn
                     >
-                        لغات
-                    </v-btn>
                 </v-col>
             </v-row>
-
             <v-dialog
                 v-model="dialogFilter"
                 max-width="600px"
@@ -504,12 +495,11 @@
                                     <v-col cols="6">
                                         <v-switch
                                             v-model="isSortedAscending"
-                                            label="ترتيب أبجدي"
-                                            :style="{
-                                                color: isSortedAscending
-                                                    ? 'green'
-                                                    : '',
-                                            }"
+                                            :label="
+                                                isSortedAscending
+                                                    ? 'ترتيب أبجدي'
+                                                    : 'ترتيب عكسي'
+                                            "
                                             class="filter-switch"
                                         />
                                     </v-col>
@@ -524,6 +514,19 @@
                                             "
                                             class="filter-switch"
                                         />
+                                        <!-- <v-btn
+                                            color="blue darken-1"
+                                            text
+                                            v-model="filters.byPayments"
+                                            @click="togglePaymentsSorting"
+                                            class="filter-switch"
+                                        >
+                                            {{
+                                                paymentSortActive
+                                                    ? "إلغاء الترتيب"
+                                                    : "ترتيب حسب المدفوعات"
+                                            }}
+                                        </v-btn> -->
                                     </v-col>
                                 </v-row>
 
@@ -548,9 +551,6 @@
         <StudentList
             :year="year"
             :sortStudents="sortStudentsByYearAndAlphabetically"
-            :selectedSection="selectedSection"
-            :dialog="dialog"
-            @close-dialog="closeDialog"
         />
     </div>
 </template>
@@ -574,6 +574,7 @@ import {
 import { initializeApp } from "@firebase/app";
 import { getStorage } from "firebase/storage";
 import "vue-toastification/dist/index.css"; // Import the CSS file
+import addSubject from "@/components/subject/addSubject.vue";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBdk3sqIHjXvB2C-O-lvkRgMFpg8pemkno",
@@ -593,6 +594,7 @@ export default {
     name: "ClassPage",
     components: {
         StudentList,
+        addSubject,
     },
     props: ["year"],
     setup() {
@@ -613,7 +615,7 @@ export default {
                     link: "",
                 },
             ],
-            selectedSection: "الكل",
+            subject: false,
             paymentSortActive: false,
             isSortedAscending: true,
             sortActive: false, // متغير لتتبع حالة الترتيب
@@ -645,7 +647,7 @@ export default {
                 theDescription: "",
                 NotificationType: "",
             },
-            activeButton: "الكل",
+
             progress: 0,
             selectedClass: [],
             students: [],
@@ -680,6 +682,18 @@ export default {
         },
     },
     methods: {
+        closeDialog(value) {
+            this.subject = value;
+        },
+        async sortStudentsByPayment() {
+            this.students_class.sort((a, b) => {
+                if (a.payment_status === b.payment_status) {
+                    return 0;
+                }
+                return a.payment_status > b.payment_status ? -1 : 1;
+            });
+        },
+
         async sortStudentsByYearAndAlphabetically() {
             try {
                 // جلب الطلاب المنتمين إلى السنة المحددة
@@ -696,8 +710,10 @@ export default {
                         showDetails: false,
                     }))
                     .sort((a, b) => {
-                        const nameA = a.student_name.toLowerCase();
-                        const nameB = b.student_name.toLowerCase();
+                        const nameA =
+                            a.student_information[0].student_name.toLowerCase();
+                        const nameB =
+                            b.student_information[0].student_name.toLowerCase();
 
                         if (this.isSortedAscending) {
                             return nameA.localeCompare(nameB, "ar", {
@@ -728,15 +744,7 @@ export default {
             this.isSortedAscending = !this.isSortedAscending;
             this.sortStudentsByYearAndAlphabetically();
         },
-        updateSection(section) {
-            this.activeButton = section;
-            this.selectedSection = section;
-        },
-        buttonStyle(section) {
-            return this.activeButton === section
-                ? { background: "white", color: "#54aef5" }
-                : { background: "#54aef5", color: "white" };
-        },
+
         toggleAlphabetical() {
             this.alphabetical = !this.alphabetical;
         },
@@ -837,29 +845,15 @@ export default {
                 const classDoc = await getDoc(classRef);
                 if (classDoc.exists()) {
                     const classData = classDoc.data();
-                    if (
-                        Array.isArray(classData.Notifications) &&
-                        classData.Notifications[this.editedIndex]
-                    ) {
-                        // تحديث الإشعار باستخدام Object.assign
-                        Object.assign(
-                            classData.Notifications[this.editedIndex],
-                            this.editedNotification
-                        );
-                        // تحديث المستند في Firestore
-                        await updateDoc(classRef, {
-                            Notifications: classData.Notifications,
-                        });
-                        // إغلاق الحوار واسترجاع الفصول
-                        this.closeNotificationDialogs();
-                        await this.fetchClassRooms();
-                    } else {
-                        console.error(
-                            "Notifications array is missing or the editedIndex is out of bounds"
-                        );
-                    }
-                } else {
-                    console.error("Class document does not exist");
+                    Object.assign(
+                        classData.Notifications[this.editedIndex],
+                        this.editedNotification
+                    );
+                    await updateDoc(classRef, {
+                        Notifications: classData.Notifications,
+                    });
+                    this.closeNotificationDialogs();
+                    await this.fetchClassRooms();
                 }
             } catch (error) {
                 console.error("Error editing notification:", error);
@@ -925,9 +919,6 @@ export default {
             } catch (error) {
                 console.error("Error deleting photo:", error);
             }
-        },
-        closeDialog() {
-            this.dialog = false;
         },
     },
     async mounted() {

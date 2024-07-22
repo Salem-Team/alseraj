@@ -65,7 +65,7 @@ body {
     --pink-color: #d8588c;
 }
 .main_header {
-    padding: 20px;
+    padding: 0px 30px;
     background-color: white;
     -webkit-box-shadow: 0 0 10px #ddd;
     -moz-box-shadow: 0 0 10px #ddd;
@@ -105,10 +105,6 @@ body {
         }
     }
 }
-.v-overlay__scrim {
-    background: rgb(0 0 0 / 36%) !important;
-}
-
 .v-container,
 .container {
     width: 90% !important;

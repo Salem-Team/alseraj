@@ -33,14 +33,6 @@
 
         <v-container>
             <!-- Show loading indicator if data is being fetched -->
-            <v-row v-if="isLoading" class="justify-center align-center">
-                <v-col cols="12" class="text-center">
-                    <v-progress-circular
-                        indeterminate
-                        color="#336699"
-                    ></v-progress-circular>
-                </v-col>
-            </v-row>
 
             <v-row class="d-flex flex-wrap justify-center mb-4">
                 <v-col cols="12" sm="6" md="4" lg="3" class="mb-2">
@@ -76,7 +68,19 @@
                         }}
                     </button>
                 </v-col>
-
+                <v-row v-if="isLoading" class="justify-center align-center">
+                    <v-col
+                        cols="12"
+                        class="mt-5 d-flex justify-center text-center"
+                    >
+                        <v-progress-circular
+                            indeterminate
+                            color="primary"
+                            size="70"
+                            class="loading-spinner"
+                        ></v-progress-circular>
+                    </v-col>
+                </v-row>
                 <!-- Additional filters -->
                 <v-col
                     v-if="showMoreFilters"
@@ -471,18 +475,13 @@ export default {
     margin: auto;
     font-weight: bold;
     font-size: 20px;
-    border-bottom: 5px solid var(--secound-color);
-    padding: 0;
+    color: #336699;
+    padding-top: 20px;
+}
+.loading-spinner {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-}
-.v-breadcrumbs-item:first-child {
-    color: var(--main-color);
-    cursor: pointer;
-    font-size: 24px;
-}
-.v-breadcrumbs {
-    padding: 16px 0;
+    height: 100vh; /* Full viewport height */
 }
 </style>

@@ -57,15 +57,12 @@
                     <v-btn icon="mdi-close" @click="dialog_6 = false"></v-btn>
                 </div>
                 <v-carousel hide-delimiters>
-                    <div>
-                        <v-carousel-item
-                            class="pa-5"
-                            v-if="photos.File_Information == 'صورة'"
-                            :src="photos.Photo_Information"
-                            height="400"
-                            cover
-                        ></v-carousel-item>
-                    </div>
+                    <v-carousel-item
+                        class="pa-5"
+                        :src="photos.Photo_Information"
+                        height="400"
+                        cover
+                    ></v-carousel-item>
                     <div v-for="photo in Photos" :key="photo.id">
                         <v-carousel-item
                             v-if="photo.File_type == 'صورة'"

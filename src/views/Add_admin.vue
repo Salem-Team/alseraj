@@ -441,11 +441,6 @@
         :text="text11"
         :snackbar1="snackbar2"
     />
-    <confirm_message
-        v-if="snackbar3 === true"
-        :text="text12"
-        :snackbar1="snackbar3"
-    />
 </template>
 
 <script scoped>
@@ -474,8 +469,6 @@ export default {
             dialog_3,
             text10,
             text11,
-            text12,
-            snackbar3,
             snackbar,
             snackbar2,
             empty,
@@ -502,8 +495,6 @@ export default {
             empty,
             text10,
             text11,
-            text12,
-            snackbar3,
             snackbar,
             snackbar2,
             dialog_3,

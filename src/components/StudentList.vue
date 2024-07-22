@@ -1328,184 +1328,513 @@
                                                 </v-card>
                                             </div>
                                         </div>
-                                        <div v-if="e1 === 5" ref="slide5">
-                                            <div
-                                                style="
-                                                    display: flex;
-                                                    justify-content: space-between;
-                                                    align-items: center;
-                                                "
-                                            >
+                                        <div
+                                            v-if="
+                                                user.roles.includes(
+                                                    'الاطلاع على الحسابات'
+                                                )
+                                            "
+                                        >
+                                            <div v-if="e1 === 5" ref="slide5">
                                                 <div
                                                     style="
                                                         display: flex;
+                                                        justify-content: space-between;
                                                         align-items: center;
                                                     "
                                                 >
-                                                    <v-avatar
-                                                        color="info"
+                                                    <div
                                                         style="
-                                                            margin-left: 20px;
+                                                            display: flex;
+                                                            align-items: center;
                                                         "
-                                                        >{{
-                                                            index + 5
-                                                        }}</v-avatar
                                                     >
-                                                    <h2 style="color: #2196f3">
-                                                        المدفوعات
-                                                    </h2>
+                                                        <v-avatar
+                                                            color="info"
+                                                            style="
+                                                                margin-left: 20px;
+                                                            "
+                                                            >{{
+                                                                index + 5
+                                                            }}</v-avatar
+                                                        >
+                                                        <h2
+                                                            style="
+                                                                color: #2196f3;
+                                                            "
+                                                        >
+                                                            المدفوعات
+                                                        </h2>
+                                                    </div>
+                                                    <v-btn
+                                                        rounded="xs"
+                                                        size="large"
+                                                        :disabled="
+                                                            !changesMade3
+                                                        "
+                                                        @click="saveChanges3"
+                                                        color="primary"
+                                                        :class="{
+                                                            'grey--text':
+                                                                !changesMade,
+                                                        }"
+                                                        >حفظ التعديلات</v-btn
+                                                    >
                                                 </div>
-                                                <v-btn
-                                                    rounded="xs"
-                                                    size="large"
-                                                    :disabled="!changesMade3"
-                                                    @click="saveChanges3"
-                                                    color="primary"
-                                                    :class="{
-                                                        'grey--text':
-                                                            !changesMade,
-                                                    }"
-                                                    >حفظ التعديلات</v-btn
+                                                <v-card
+                                                    flat
+                                                    class="mx-auto my-4"
+                                                    max-width="90%"
                                                 >
+                                                    <v-container fluid>
+                                                        <div class="title">
+                                                            المصروفات
+                                                        </div>
+                                                        <div class="table">
+                                                            <div
+                                                                class="invoice Title"
+                                                            >
+                                                                <font-awesome-icon
+                                                                    :icon="[
+                                                                        'fas',
+                                                                        'file-invoice-dollar',
+                                                                    ]"
+                                                                />
+                                                                <div>
+                                                                    فاتورة
+                                                                </div>
+                                                            </div>
+                                                            <div class="Row">
+                                                                <div>
+                                                                    المصروفات
+                                                                </div>
+                                                                <div>
+                                                                    {{
+                                                                        selectedStudent
+                                                                            .payments
+                                                                            .Expenses ||
+                                                                        0
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="Row">
+                                                                <div>
+                                                                    نظام الدفع
+                                                                </div>
+                                                                <div>
+                                                                    {{
+                                                                        selectedStudent
+                                                                            .payments
+                                                                            .payment_System ||
+                                                                        "الدفع المباشر"
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="Row">
+                                                                <div>
+                                                                    نظام التقسيط
+                                                                </div>
+                                                                <div>
+                                                                    {{
+                                                                        selectedStudent
+                                                                            .payments
+                                                                            .Installment_System ||
+                                                                        "لا يوجد"
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="Row">
+                                                                <div>
+                                                                    المدفوع
+                                                                </div>
+                                                                <div>
+                                                                    {{
+                                                                        selectedStudent
+                                                                            .payments
+                                                                            .paid_Up ||
+                                                                        0
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="Row">
+                                                                <div>
+                                                                    المتبقي
+                                                                </div>
+                                                                <div>
+                                                                    {{
+                                                                        selectedStudent
+                                                                            .payments
+                                                                            .Expenses -
+                                                                            selectedStudent
+                                                                                .payments
+                                                                                .paid_Up ||
+                                                                        0
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="deidline">
+                                                            <div class="Title">
+                                                                <font-awesome-icon
+                                                                    :icon="[
+                                                                        'fas',
+                                                                        'circle-info',
+                                                                    ]"
+                                                                />
+                                                                <div>
+                                                                    تفاصيل
+                                                                    المدفوعات
+                                                                    والأقساط
+                                                                    المستحقة
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <v-row
+                                                            class="details_row"
+                                                        >
+                                                            <v-text-field
+                                                                v-model="
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .Expenses
+                                                                "
+                                                                label="ادخل المبلغ"
+                                                                outlined
+                                                                dense
+                                                                required
+                                                                @input="
+                                                                    setChangesMade(
+                                                                        true
+                                                                    )
+                                                                "
+                                                            ></v-text-field>
+
+                                                            <v-select
+                                                                v-model="
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .payment_System
+                                                                "
+                                                                :items="
+                                                                    paymentMethods
+                                                                "
+                                                                label="اختر نظام الدفع"
+                                                                @blur="
+                                                                    setChangesMade(
+                                                                        true
+                                                                    )
+                                                                "
+                                                                outlined
+                                                                dense
+                                                            ></v-select>
+                                                        </v-row>
+                                                        <v-row
+                                                            v-if="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .payment_System ===
+                                                                'نظام التقسيط'
+                                                            "
+                                                            class="details_row"
+                                                        >
+                                                            <v-select
+                                                                v-model="
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .Installment_System
+                                                                "
+                                                                :items="
+                                                                    selectPaid
+                                                                "
+                                                                label="اختر نظام التقسيط"
+                                                                @blur="
+                                                                    setChangesMade(
+                                                                        true
+                                                                    )
+                                                                "
+                                                                outlined
+                                                                dense
+                                                            ></v-select>
+
+                                                            <v-text-field
+                                                                v-model="
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .paid_Up
+                                                                "
+                                                                label="ادخل المبلغ للدفع"
+                                                                outlined
+                                                                dense
+                                                                @input="
+                                                                    setChangesMade(
+                                                                        true
+                                                                    )
+                                                                "
+                                                                @change="
+                                                                    CreateChart = true
+                                                                "
+                                                            ></v-text-field>
+                                                        </v-row>
+
+                                                        <div
+                                                            v-if="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .payment_System ===
+                                                                    'نظام التقسيط' &&
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .Installment_System
+                                                            "
+                                                            class="payment-section"
+                                                        >
+                                                            <v-row
+                                                                style="
+                                                                    margin: 10px
+                                                                        15px
+                                                                        10px
+                                                                        15px;
+                                                                    overflow: hidden;
+                                                                "
+                                                            >
+                                                                <div
+                                                                    class="timeline-container"
+                                                                >
+                                                                    <div
+                                                                        class="timeline"
+                                                                    >
+                                                                        <div
+                                                                            class="timeline-line"
+                                                                        ></div>
+                                                                        <div
+                                                                            class="progress_container"
+                                                                        >
+                                                                            <div
+                                                                                class="progress"
+                                                                                :style="{
+                                                                                    height:
+                                                                                        (selectedStudent
+                                                                                            .payments
+                                                                                            .paid_Up /
+                                                                                            selectedStudent
+                                                                                                .payments
+                                                                                                .Expenses) *
+                                                                                            100 +
+                                                                                        '%',
+                                                                                    backgroundColor:
+                                                                                        'var(--main-color)',
+                                                                                }"
+                                                                            ></div>
+                                                                            <span
+                                                                                class="progress-label mb-3"
+                                                                            >
+                                                                                {{
+                                                                                    selectedStudent
+                                                                                        .payments
+                                                                                        .paid_Up
+                                                                                }}
+                                                                                مدفوعاتك
+                                                                            </span>
+                                                                        </div>
+                                                                        <div
+                                                                            v-for="month in numberOfMonths(
+                                                                                selectedStudent
+                                                                                    .payments
+                                                                                    .Installment_System
+                                                                            )"
+                                                                            :key="
+                                                                                month
+                                                                            "
+                                                                            class="timeline-item"
+                                                                        >
+                                                                            <div
+                                                                                class="timeline-item-content"
+                                                                                :style="{
+                                                                                    backgroundColor:
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .paid_Up >=
+                                                                                        installmentAmount(
+                                                                                            selectedStudent
+                                                                                                .payments
+                                                                                                .Expenses,
+                                                                                            selectedStudent
+                                                                                                .payments
+                                                                                                .Installment_System
+                                                                                        ) *
+                                                                                            month
+                                                                                            ? '#d8588c'
+                                                                                            : '#fff',
+                                                                                    color:
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .paid_Up >=
+                                                                                        installmentAmount(
+                                                                                            selectedStudent
+                                                                                                .payments
+                                                                                                .Expenses,
+                                                                                            selectedStudent
+                                                                                                .payments
+                                                                                                .Installment_System
+                                                                                        ) *
+                                                                                            month
+                                                                                            ? '#fff'
+                                                                                            : '#333',
+                                                                                }"
+                                                                            >
+                                                                                <div
+                                                                                    class="timeline-item-header"
+                                                                                >
+                                                                                    <span
+                                                                                        class="month-name"
+                                                                                        :style="{
+                                                                                            color:
+                                                                                                selectedStudent
+                                                                                                    .payments
+                                                                                                    .paid_Up >=
+                                                                                                installmentAmount(
+                                                                                                    selectedStudent
+                                                                                                        .payments
+                                                                                                        .Expenses,
+                                                                                                    selectedStudent
+                                                                                                        .payments
+                                                                                                        .Installment_System
+                                                                                                ) *
+                                                                                                    month
+                                                                                                    ? '#fff'
+                                                                                                    : '#333',
+                                                                                        }"
+                                                                                    >
+                                                                                        {{
+                                                                                            getMonthName(
+                                                                                                month
+                                                                                            )
+                                                                                        }}
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div
+                                                                                    class="timeline-item-body"
+                                                                                >
+                                                                                    <p>
+                                                                                        القسط
+                                                                                        الشهري
+                                                                                        :
+                                                                                        {{
+                                                                                            Math.floor(
+                                                                                                installmentAmount(
+                                                                                                    selectedStudent
+                                                                                                        .payments
+                                                                                                        .Expenses,
+                                                                                                    selectedStudent
+                                                                                                        .payments
+                                                                                                        .Installment_System
+                                                                                                )
+                                                                                            )
+                                                                                        }}
+                                                                                        جنيه
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </v-row>
+                                                            <div
+                                                                class="Title"
+                                                                v-if="
+                                                                    CreateChart
+                                                                "
+                                                                style="
+                                                                    margin-top: 55px;
+                                                                "
+                                                            >
+                                                                <font-awesome-icon
+                                                                    :icon="[
+                                                                        'fas',
+                                                                        'chart-pie',
+                                                                    ]"
+                                                                />
+                                                                <div>
+                                                                    إحصائيات
+                                                                </div>
+                                                            </div>
+                                                            <div
+                                                                class="details"
+                                                                v-if="
+                                                                    CreateChart
+                                                                "
+                                                            >
+                                                                <div
+                                                                    class="myChart"
+                                                                >
+                                                                    <canvas
+                                                                        id="myChart"
+                                                                    ></canvas>
+                                                                </div>
+                                                                <ul>
+                                                                    <li
+                                                                        class="li"
+                                                                    >
+                                                                        <font-awesome-icon
+                                                                            :icon="[
+                                                                                'fas',
+                                                                                'money-bills',
+                                                                            ]"
+                                                                        />
+                                                                        <div>
+                                                                            المصروفات
+                                                                            المستحقة
+                                                                        </div>
+                                                                        <div>
+                                                                            <span
+                                                                                >{{
+                                                                                    selectedStudent
+                                                                                        .payments
+                                                                                        .Expenses
+                                                                                }}</span
+                                                                            >
+                                                                            جنية
+                                                                        </div>
+                                                                    </li>
+                                                                    <li>
+                                                                        <div>
+                                                                            المصروفات
+                                                                            المدفوعة
+                                                                        </div>
+                                                                        <div>
+                                                                            <span
+                                                                                >{{
+                                                                                    selectedStudent
+                                                                                        .payments
+                                                                                        .paid_Up
+                                                                                }}</span
+                                                                            >
+                                                                            جنية
+                                                                        </div>
+                                                                    </li>
+                                                                    <li>
+                                                                        <div>
+                                                                            المصروفات
+                                                                            المتبقية
+                                                                        </div>
+                                                                        <div>
+                                                                            <span
+                                                                                >{{
+                                                                                    selectedStudent
+                                                                                        .payments
+                                                                                        .Residual
+                                                                                }}</span
+                                                                            >
+                                                                            جنية
+                                                                        </div>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </v-container>
+                                                </v-card>
                                             </div>
-                                            <v-card
-                                                flat
-                                                class="mx-auto my-4"
-                                                max-width="90%"
-                                            >
-                                                <v-container fluid>
-                                                    <v-row class="ma-10">
-                                                        <v-col
-                                                            cols="12"
-                                                            sm="4"
-                                                            class="d-flex justify-center"
-                                                        >
-                                                            <v-card
-                                                                class="pa-3 fixed-card mb-3"
-                                                                outlined
-                                                            >
-                                                                <v-card-title
-                                                                    class="custom-title custom-font text-center"
-                                                                    style="
-                                                                        font-size: 20px;
-                                                                    "
-                                                                    >المستحق</v-card-title
-                                                                >
-                                                                <v-card-subtitle
-                                                                    class="custom-font centered-subtitle"
-                                                                    style="
-                                                                        font-size: 16px;
-                                                                    "
-                                                                >
-                                                                    <v-text-field
-                                                                        v-model="
-                                                                            selectedStudent
-                                                                                .payments
-                                                                                .Requird
-                                                                        "
-                                                                        style="
-                                                                            text-align: center;
-                                                                        "
-                                                                        class="payments_input"
-                                                                        required
-                                                                        @input="
-                                                                            handleInput
-                                                                        "
-                                                                    ></v-text-field>
-                                                                </v-card-subtitle>
-                                                            </v-card>
-                                                        </v-col>
-                                                        <v-col
-                                                            cols="12"
-                                                            sm="4"
-                                                            class="d-flex justify-center"
-                                                        >
-                                                            <v-card
-                                                                class="pa-3 fixed-card mb-3"
-                                                                outlined
-                                                            >
-                                                                <v-card-title
-                                                                    class="custom-title custom-font text-center"
-                                                                    style="
-                                                                        font-size: 20px;
-                                                                    "
-                                                                    >المدفوع</v-card-title
-                                                                >
-                                                                <v-card-subtitle
-                                                                    class="custom-font centered-subtitle"
-                                                                    style="
-                                                                        font-size: 16px;
-                                                                    "
-                                                                >
-                                                                    <v-text-field
-                                                                        v-model="
-                                                                            selectedStudent
-                                                                                .payments
-                                                                                .paid_up
-                                                                        "
-                                                                        style="
-                                                                            text-align: center;
-                                                                        "
-                                                                        class="payments_input"
-                                                                        required
-                                                                        @input="
-                                                                            handleInput
-                                                                        "
-                                                                    ></v-text-field>
-                                                                </v-card-subtitle>
-                                                            </v-card>
-                                                        </v-col>
-                                                        <v-col
-                                                            cols="12"
-                                                            sm="4"
-                                                            class="d-flex justify-center"
-                                                        >
-                                                            <v-card
-                                                                class="pa-3 fixed-card mb-3"
-                                                                outlined
-                                                            >
-                                                                <v-card-title
-                                                                    class="custom-title custom-font text-center"
-                                                                    style="
-                                                                        font-size: 20px;
-                                                                    "
-                                                                    >نظام
-                                                                    التقسيط</v-card-title
-                                                                >
-                                                                <v-card-subtitle
-                                                                    class="custom-font centered-subtitle"
-                                                                    style="
-                                                                        font-size: 16px;
-                                                                    "
-                                                                >
-                                                                    <v-select
-                                                                        v-model="
-                                                                            selectedStudent
-                                                                                .payments
-                                                                                .installment_system
-                                                                        "
-                                                                        :items="[
-                                                                            'مره واحده',
-                                                                            'مرتين',
-                                                                            'ثلاث مرات',
-                                                                            'اربع مرات',
-                                                                            'خمس مرات',
-                                                                        ]"
-                                                                        style="
-                                                                            text-align: center;
-                                                                        "
-                                                                        class="payments_input"
-                                                                        required
-                                                                        @blur="
-                                                                            handleInput
-                                                                        "
-                                                                    ></v-select>
-                                                                </v-card-subtitle>
-                                                            </v-card>
-                                                        </v-col>
-                                                    </v-row>
-                                                </v-container>
-                                            </v-card>
                                         </div>
                                         <div v-if="e1 === 6" ref="slide6">
                                             <div
@@ -2104,6 +2433,8 @@ const storage = getStorage(app);
 
 export { db, storage };
 import { useDialogStore } from "@/store/useDialogStore";
+import { mapState } from "pinia";
+import { useAuthStore } from "../store/userStore";
 export default {
     name: "StudentList",
     props: {
@@ -3591,6 +3922,7 @@ export default {
         },
     },
     computed: {
+        ...mapState(useAuthStore, ["user"]),
         filteredStudents() {
             return this.students_class.filter(
                 (student) => student.year === this.year

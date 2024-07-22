@@ -28,6 +28,8 @@ export const useadmin = defineStore("admin", {
         dialog: false,
         dialog_1: false,
         dialog_3: false,
+        empty: false,
+        text0: "لا يوجد مشرفين",
         user: {
             // Initial user object
             name: "",
@@ -40,24 +42,35 @@ export const useadmin = defineStore("admin", {
         role: [
             // List of roles
             "حذف واضافة مشرفين",
-            "مشرف الروضة",
-            "مشرف الصف الاول",
-            "مشرف الصف الثاني",
-            "مشرف الصف الثالث",
-            "مشرف الصف الرابع",
-            "مشرف الصف الخامس",
-            "مشرف الصف السادس",
-            "مشرف الصف الاول الاعدادي",
-            "مشرف الصف الثاني الاعدادي",
-            "مشرف الصف الثالث الاعدادي",
-            "مشرف الصف الاول الثانوي",
-            "مشرف الصف الثاني الثانوي",
-            "مشرف الصف الثالث الثانوي",
+            " الاطلاع على تقديم الوظائف",
+            "تعديل ونشر الصور",
+            "تعديل ونشر الأخبار",
+            "الاطلاع على الحسابات",
+            "مرحلة رياض الأطفال الأولى",
+            "مرحلة رياض الأطفال الثانية",
+            "الصف الأول الابتدائي",
+            "الصف الثاني الابتدائي",
+            "الصف الثالث الابتدائي",
+            "الصف الرابع الابتدائي",
+            "الصف الخامس الابتدائي",
+            "الصف السادس الابتدائي",
+            "الصف الأول الإعدادي",
+            "الصف الثاني الإعدادي",
+            "الصف الثالث الإعدادي",
+            "الصف الأول الثانوي",
+            "الصف الثاني الثانوي",
+            "الصف الثالث الثانوي",
         ],
         users: [], // Array to hold user data
         loading: false, // Loading state
         show_Password: false, // State for showing password
         loading1: false, // Another loading state
+        snackbar: false,
+        snackbar2: false,
+        snackbar3: false,
+        text12: " تم التعديل بنجاح",
+        text10: " تم الاضافة بنجاح",
+        text11: " تم الحذف بنجاح",
     }),
     actions: {
         // Actions section (methods)
@@ -105,6 +118,7 @@ export const useadmin = defineStore("admin", {
                 });
                 console.log("Document written with ID: ", docRef.id);
                 this.Get_data(); // Refresh user data
+                this.snackbar = true;
                 this.dialog = false; // Close dialog
                 this.loading = false; // Stop loading indicator
             } catch (error) {
@@ -134,7 +148,7 @@ export const useadmin = defineStore("admin", {
                                 doc.data().name,
                                 "12345a"
                             ),
-                            userType: doc.data().expectedUserType,
+                            userType: doc.data().userType,
 
                             password: doc.data().password,
 
@@ -143,6 +157,11 @@ export const useadmin = defineStore("admin", {
                         this.users.push(userData); // Add admin users to array
                     }
                 });
+                if (this.users.length === 0) {
+                    this.empty = true;
+                } else {
+                    this.empty = false;
+                }
                 this.loading1 = false;
             } catch (error) {
                 console.error("Error retrieving data: ", error);
@@ -163,6 +182,7 @@ export const useadmin = defineStore("admin", {
                     console.log("User not found in users array");
                 }
                 this.Get_data(); // Refresh user data
+                this.snackbar2 = true;
                 this.dialog_3 = false; // Close dialog
             } catch (error) {
                 console.error("Error deleting user:", error);
@@ -196,6 +216,7 @@ export const useadmin = defineStore("admin", {
                 });
                 this.Get_data(); // Refresh user data
                 this.loading = false;
+                this.snackbar3 = true;
                 this.dialog_1 = false; // Close dialog
             } catch (error) {
                 console.error("Error updating user:", error);

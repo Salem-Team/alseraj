@@ -118,7 +118,7 @@
             </div>
             <v-container class="box d-flex align-center justify-space-around">
                 <div class="hello_text">
-                    مرحبًا [اسم ولي الأمر]، نشكرك على ثقتك في معهد السراج المنير
+                    مرحبًا {{ user.name }}، نشكرك على ثقتك في معهد السراج المنير
                     الأزهري، نتطلع سويًا لتحقيق مستقبل مشرق لأبنائنا.
                 </div>
                 <!-- <div class="form">

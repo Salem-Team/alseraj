@@ -5,17 +5,25 @@
                 <router-link class="a" to="/">الرئيسية</router-link>
             </div>
             <div>
-                <router-link class="a" to="/admin">لوحة الاشراف</router-link>
+                <router-link
+                    class="a"
+                    to="/admin"
+                    v-if="user.userType === 'admin'"
+                    >لوحة الاشراف</router-link
+                >
             </div>
-            <div v-if="user">
-                <router-link class="a" to="/Parent_Dashboard"
+            <div>
+                <router-link
+                    class="a"
+                    to="/Parent_Dashboard"
+                    v-if="user.userType === 'parent'"
                     >الملف الشخصي</router-link
                 >
             </div>
             <div>
                 <router-link
                     class="a"
-                    v-if="user"
+                    v-if="user.email !== ''"
                     @click="logout"
                     to="/UserLogin"
                     >تسجيل خروج</router-link
@@ -73,7 +81,7 @@ body {
     nav {
         display: flex;
         align-items: center;
-        gap: 30px;
+        gap: 20px;
         flex-flow: wrap;
         .container {
             display: flex;
@@ -92,16 +100,6 @@ body {
         }
         .a {
             text-decoration: none;
-        }
-        .container::before {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 4px;
-            background-color: var(--main-color);
-            top: 0;
-            left: -100%;
-            transition: 0.3s;
         }
     }
 }

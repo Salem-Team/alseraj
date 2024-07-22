@@ -24,7 +24,7 @@
                     </h1>
                 </v-col>
                 <v-col cols="12">
-                    <h2 class="subtitle-1" style="color: #336699">
+                    <h2 class="subtitle-1 mb-1" style="color: #336699">
                         {{ currentMonth }}
                     </h2>
                 </v-col>

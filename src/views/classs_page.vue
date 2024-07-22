@@ -837,15 +837,29 @@ export default {
                 const classDoc = await getDoc(classRef);
                 if (classDoc.exists()) {
                     const classData = classDoc.data();
-                    Object.assign(
-                        classData.Notifications[this.editedIndex],
-                        this.editedNotification
-                    );
-                    await updateDoc(classRef, {
-                        Notifications: classData.Notifications,
-                    });
-                    this.closeNotificationDialogs();
-                    await this.fetchClassRooms();
+                    if (
+                        Array.isArray(classData.Notifications) &&
+                        classData.Notifications[this.editedIndex]
+                    ) {
+                        // تحديث الإشعار باستخدام Object.assign
+                        Object.assign(
+                            classData.Notifications[this.editedIndex],
+                            this.editedNotification
+                        );
+                        // تحديث المستند في Firestore
+                        await updateDoc(classRef, {
+                            Notifications: classData.Notifications,
+                        });
+                        // إغلاق الحوار واسترجاع الفصول
+                        this.closeNotificationDialogs();
+                        await this.fetchClassRooms();
+                    } else {
+                        console.error(
+                            "Notifications array is missing or the editedIndex is out of bounds"
+                        );
+                    }
+                } else {
+                    console.error("Class document does not exist");
                 }
             } catch (error) {
                 console.error("Error editing notification:", error);

@@ -428,6 +428,25 @@
                     </v-dialog>
                 </v-col>
             </v-row>
+
+            <v-row>
+                <v-col>
+                    <h3
+                        v-if="isSortedAscending"
+                        style="color: rgba(33, 150, 243, 0.768627451)"
+                    >
+                        نوع الفلتر :
+                        {{ isSortedAscending ? " ابجدي" : "" }}
+                    </h3>
+                    <h3
+                        v-if="paymentSortActive"
+                        style="color: rgba(33, 150, 243, 0.768627451)"
+                    >
+                        نوع الفلتر :
+                        {{ paymentSortActive ? "حسب المدفوعات" : "" }}
+                    </h3>
+                </v-col>
+            </v-row>
             <v-row>
                 <v-col cols="12" md="4" sm="6">
                     <v-btn
@@ -530,6 +549,8 @@
             :year="year"
             :sortStudents="sortStudentsByYearAndAlphabetically"
             :selectedSection="selectedSection"
+            :dialog="dialog"
+            @close-dialog="closeDialog"
         />
     </div>
 </template>
@@ -675,10 +696,8 @@ export default {
                         showDetails: false,
                     }))
                     .sort((a, b) => {
-                        const nameA =
-                            a.student_information[0].student_name.toLowerCase();
-                        const nameB =
-                            b.student_information[0].student_name.toLowerCase();
+                        const nameA = a.student_name.toLowerCase();
+                        const nameB = b.student_name.toLowerCase();
 
                         if (this.isSortedAscending) {
                             return nameA.localeCompare(nameB, "ar", {
@@ -892,6 +911,9 @@ export default {
             } catch (error) {
                 console.error("Error deleting photo:", error);
             }
+        },
+        closeDialog() {
+            this.dialog = false;
         },
     },
     async mounted() {

@@ -7,7 +7,87 @@
         ></v-text-field>
 
         <v-row>
-            <v-col cols="12">
+            <svg
+                style="
+                    position: fixed;
+                    top: 60%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 245px;
+                "
+                v-if="loading1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 200 200"
+            >
+                <radialGradient
+                    id="a12"
+                    cx=".66"
+                    fx=".66"
+                    cy=".3125"
+                    fy=".3125"
+                    gradientTransform="scale(1.5)"
+                >
+                    <stop offset="0" stop-color="#336699"></stop>
+                    <stop
+                        offset=".3"
+                        stop-color="#336699"
+                        stop-opacity=".9"
+                    ></stop>
+                    <stop
+                        offset=".6"
+                        stop-color="#336699"
+                        stop-opacity=".6"
+                    ></stop>
+                    <stop
+                        offset=".8"
+                        stop-color="#336699"
+                        stop-opacity=".3"
+                    ></stop>
+                    <stop
+                        offset="1"
+                        stop-color="#336699"
+                        stop-opacity="0"
+                    ></stop>
+                </radialGradient>
+                <circle
+                    transform-origin="center"
+                    fill="none"
+                    stroke="url(#a12)"
+                    stroke-width="15"
+                    stroke-linecap="round"
+                    stroke-dasharray="200 1000"
+                    stroke-dashoffset="0"
+                    cx="100"
+                    cy="100"
+                    r="70"
+                >
+                    <animateTransform
+                        type="rotate"
+                        attributeName="transform"
+                        calcMode="spline"
+                        dur="2"
+                        values="360;0"
+                        keyTimes="0;1"
+                        keySplines="0 0 1 1"
+                        repeatCount="indefinite"
+                    ></animateTransform>
+                </circle>
+                <circle
+                    transform-origin="center"
+                    fill="none"
+                    opacity=".2"
+                    stroke="#336699"
+                    stroke-width="15"
+                    stroke-linecap="round"
+                    cx="100"
+                    cy="100"
+                    r="70"
+                ></circle>
+            </svg>
+            <v-container v-if="!loading1 && students.length === 0">
+                <Empty_error text="لا يوجد طلاب مسجلين." />
+            </v-container>
+            <v-col cols="12" v-else>
                 <v-list>
                     <v-list-item
                         v-for="(student, index) in sortedStudents"
@@ -31,10 +111,7 @@
                                             >
                                                 {{ index + 1 }}
                                             </v-avatar>
-                                            {{
-                                                student.student_information[0]
-                                                    .student_name
-                                            }}
+                                            {{ student.student_name }}
                                         </h2>
                                         <div>
                                             <v-avatar color="info">
@@ -62,20 +139,16 @@
                                     >
                                         <h3 style="color: #2196f3">
                                             فصل
-                                            {{
-                                                student.student_information[1]
-                                                    .class
-                                            }}
+                                            {{ student.class }}
                                         </h3>
                                         <h3 style="color: #2196f3">
                                             قسم
-                                            {{
-                                                student.student_information[4]
-                                                    .section
-                                            }}
+                                            {{ student.section }}
                                         </h3>
                                     </div>
                                 </v-col>
+                            </v-row>
+                            <v-row style="gap: 0px">
                                 <v-col cols="2">
                                     <v-card
                                         style="
@@ -385,9 +458,7 @@
                                                 >
                                                     <v-text-field
                                                         v-model="
-                                                            selectedStudent
-                                                                .student_information[0]
-                                                                .student_name
+                                                            selectedStudent.student_name
                                                         "
                                                         style="width: 50%"
                                                         :error-messages="
@@ -421,9 +492,7 @@
                                                         variant="outlined"
                                                         style="width: 50%"
                                                         v-model="
-                                                            selectedStudent
-                                                                .student_information[1]
-                                                                .class
+                                                            selectedStudent.class
                                                         "
                                                         :error-messages="
                                                             errors.class
@@ -442,9 +511,7 @@
                                                 >
                                                     <v-select
                                                         v-model="
-                                                            selectedStudent
-                                                                .student_information[3]
-                                                                .gender
+                                                            selectedStudent.gender
                                                         "
                                                         style="width: 100%"
                                                         :error-messages="
@@ -459,9 +526,7 @@
                                                 </div>
                                                 <v-select
                                                     v-model="
-                                                        selectedStudent
-                                                            .student_information[4]
-                                                            .section
+                                                        selectedStudent.section
                                                     "
                                                     :error-messages="
                                                         errors.section
@@ -491,9 +556,7 @@
                                                     >
                                                         <v-text-field
                                                             v-model="
-                                                                selectedStudent
-                                                                    .student_information[5]
-                                                                    .birthday
+                                                                selectedStudent.birthday
                                                             "
                                                             label="تاريخ الميلاد"
                                                             append-icon="mdi-calendar"
@@ -1208,9 +1271,7 @@
                                                                     >الاسم:</v-text-title
                                                                 >
                                                                 <v-text-title>{{
-                                                                    selectedStudent
-                                                                        .student_information[0]
-                                                                        .student_name
+                                                                    selectedStudent.student_name
                                                                 }}</v-text-title>
                                                             </v-col>
                                                             <v-col>
@@ -1395,136 +1456,419 @@
                                                 max-width="90%"
                                             >
                                                 <v-container fluid>
-                                                    <v-row class="ma-10">
-                                                        <v-col
-                                                            cols="12"
-                                                            sm="4"
-                                                            class="d-flex justify-center"
+                                                    <div class="title">
+                                                        المصروفات
+                                                    </div>
+                                                    <div class="table">
+                                                        <div
+                                                            class="invoice Title"
                                                         >
-                                                            <v-card
-                                                                class="pa-3 fixed-card mb-3"
-                                                                outlined
-                                                            >
-                                                                <v-card-title
-                                                                    class="custom-title custom-font text-center"
-                                                                    style="
-                                                                        font-size: 20px;
-                                                                    "
-                                                                    >المستحق</v-card-title
-                                                                >
-                                                                <v-card-subtitle
-                                                                    class="custom-font centered-subtitle"
-                                                                    style="
-                                                                        font-size: 16px;
-                                                                    "
-                                                                >
-                                                                    <v-text-field
-                                                                        v-model="
-                                                                            selectedStudent
-                                                                                .payments
-                                                                                .Requird
-                                                                        "
-                                                                        style="
-                                                                            text-align: center;
-                                                                        "
-                                                                        class="payments_input"
-                                                                        required
-                                                                        @input="
-                                                                            handleInput
-                                                                        "
-                                                                    ></v-text-field>
-                                                                </v-card-subtitle>
-                                                            </v-card>
-                                                        </v-col>
-                                                        <v-col
-                                                            cols="12"
-                                                            sm="4"
-                                                            class="d-flex justify-center"
-                                                        >
-                                                            <v-card
-                                                                class="pa-3 fixed-card mb-3"
-                                                                outlined
-                                                            >
-                                                                <v-card-title
-                                                                    class="custom-title custom-font text-center"
-                                                                    style="
-                                                                        font-size: 20px;
-                                                                    "
-                                                                    >المدفوع</v-card-title
-                                                                >
-                                                                <v-card-subtitle
-                                                                    class="custom-font centered-subtitle"
-                                                                    style="
-                                                                        font-size: 16px;
-                                                                    "
-                                                                >
-                                                                    <v-text-field
-                                                                        v-model="
-                                                                            selectedStudent
-                                                                                .payments
-                                                                                .paid_up
-                                                                        "
-                                                                        style="
-                                                                            text-align: center;
-                                                                        "
-                                                                        class="payments_input"
-                                                                        required
-                                                                        @input="
-                                                                            handleInput
-                                                                        "
-                                                                    ></v-text-field>
-                                                                </v-card-subtitle>
-                                                            </v-card>
-                                                        </v-col>
-                                                        <v-col
-                                                            cols="12"
-                                                            sm="4"
-                                                            class="d-flex justify-center"
-                                                        >
-                                                            <v-card
-                                                                class="pa-3 fixed-card mb-3"
-                                                                outlined
-                                                            >
-                                                                <v-card-title
-                                                                    class="custom-title custom-font text-center"
-                                                                    style="
-                                                                        font-size: 20px;
-                                                                    "
-                                                                    >نظام
-                                                                    التقسيط</v-card-title
-                                                                >
-                                                                <v-card-subtitle
-                                                                    class="custom-font centered-subtitle"
-                                                                    style="
-                                                                        font-size: 16px;
-                                                                    "
-                                                                >
-                                                                    <v-select
-                                                                        v-model="
-                                                                            selectedStudent
-                                                                                .payments
-                                                                                .installment_system
-                                                                        "
-                                                                        :items="[
-                                                                            'مره واحده',
-                                                                            'مرتين',
-                                                                            'ثلاث مرات',
-                                                                            'اربع مرات',
-                                                                            'خمس مرات',
-                                                                        ]"
-                                                                        style="
-                                                                            text-align: center;
-                                                                        "
-                                                                        class="payments_input"
-                                                                        required
-                                                                        @blur="
-                                                                            handleInput
-                                                                        "
-                                                                    ></v-select>
-                                                                </v-card-subtitle>
-                                                            </v-card>
-                                                        </v-col>
+                                                            <font-awesome-icon
+                                                                :icon="[
+                                                                    'fas',
+                                                                    'file-invoice-dollar',
+                                                                ]"
+                                                            />
+                                                            <div>فاتورة</div>
+                                                        </div>
+                                                        <div class="Row">
+                                                            <div>المصروفات</div>
+                                                            <div>
+                                                                {{
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .Expenses ||
+                                                                    0
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="Row">
+                                                            <div>
+                                                                نظام الدفع
+                                                            </div>
+                                                            <div>
+                                                                {{
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .payment_System ||
+                                                                    "الدفع المباشر"
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="Row">
+                                                            <div>
+                                                                نظام التقسيط
+                                                            </div>
+                                                            <div>
+                                                                {{
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .Installment_System ||
+                                                                    "لا يوجد"
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="Row">
+                                                            <div>المدفوع</div>
+                                                            <div>
+                                                                {{
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .paid_Up ||
+                                                                    0
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="Row">
+                                                            <div>المتبقي</div>
+                                                            <div>
+                                                                {{
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .Expenses -
+                                                                        selectedStudent
+                                                                            .payments
+                                                                            .paid_Up ||
+                                                                    0
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="deidline">
+                                                        <div class="Title">
+                                                            <font-awesome-icon
+                                                                :icon="[
+                                                                    'fas',
+                                                                    'circle-info',
+                                                                ]"
+                                                            />
+                                                            <div>
+                                                                تفاصيل المدفوعات
+                                                                والأقساط
+                                                                المستحقة
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <v-row class="details_row">
+                                                        <v-text-field
+                                                            v-model="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .Expenses
+                                                            "
+                                                            label="ادخل المبلغ"
+                                                            outlined
+                                                            dense
+                                                            required
+                                                            @input="
+                                                                setChangesMade(
+                                                                    true
+                                                                )
+                                                            "
+                                                        ></v-text-field>
+
+                                                        <v-select
+                                                            v-model="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .payment_System
+                                                            "
+                                                            :items="
+                                                                paymentMethods
+                                                            "
+                                                            label="اختر نظام الدفع"
+                                                            @blur="
+                                                                setChangesMade(
+                                                                    true
+                                                                )
+                                                            "
+                                                            outlined
+                                                            dense
+                                                        ></v-select>
                                                     </v-row>
+                                                    <v-row
+                                                        v-if="
+                                                            selectedStudent
+                                                                .payments
+                                                                .payment_System ===
+                                                            'نظام التقسيط'
+                                                        "
+                                                        class="details_row"
+                                                    >
+                                                        <v-select
+                                                            v-model="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .Installment_System
+                                                            "
+                                                            :items="selectPaid"
+                                                            label="اختر نظام التقسيط"
+                                                            @blur="
+                                                                setChangesMade(
+                                                                    true
+                                                                )
+                                                            "
+                                                            outlined
+                                                            dense
+                                                        ></v-select>
+
+                                                        <v-text-field
+                                                            v-model="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .paid_Up
+                                                            "
+                                                            label="ادخل المبلغ للدفع"
+                                                            outlined
+                                                            dense
+                                                            @input="
+                                                                setChangesMade(
+                                                                    true
+                                                                )
+                                                            "
+                                                        ></v-text-field>
+                                                    </v-row>
+
+                                                    <div
+                                                        v-if="
+                                                            selectedStudent
+                                                                .payments
+                                                                .payment_System ===
+                                                                'نظام التقسيط' &&
+                                                            selectedStudent
+                                                                .payments
+                                                                .Installment_System
+                                                        "
+                                                        class="payment-section"
+                                                    >
+                                                        <v-row
+                                                            style="
+                                                                margin: 10px
+                                                                    15px 10px
+                                                                    15px;
+                                                            "
+                                                        >
+                                                            <div
+                                                                class="timeline-container"
+                                                            >
+                                                                <div
+                                                                    class="timeline"
+                                                                >
+                                                                    <div
+                                                                        class="timeline-line"
+                                                                    ></div>
+                                                                    <div
+                                                                        class="progress_container"
+                                                                    >
+                                                                        <div
+                                                                            class="progress"
+                                                                            :style="{
+                                                                                height:
+                                                                                    (selectedStudent
+                                                                                        .payments
+                                                                                        .paid_Up /
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .Expenses) *
+                                                                                        100 +
+                                                                                    '%',
+                                                                                backgroundColor:
+                                                                                    'var(--main-color)',
+                                                                            }"
+                                                                        ></div>
+                                                                        <span
+                                                                            class="progress-label mb-3"
+                                                                        >
+                                                                            {{
+                                                                                selectedStudent
+                                                                                    .payments
+                                                                                    .paid_Up
+                                                                            }}
+                                                                            مدفوعاتك
+                                                                        </span>
+                                                                    </div>
+                                                                    <div
+                                                                        v-for="month in numberOfMonths(
+                                                                            selectedStudent
+                                                                                .payments
+                                                                                .Installment_System
+                                                                        )"
+                                                                        :key="
+                                                                            month
+                                                                        "
+                                                                        class="timeline-item"
+                                                                    >
+                                                                        <div
+                                                                            class="timeline-item-content"
+                                                                            :style="{
+                                                                                backgroundColor:
+                                                                                    selectedStudent
+                                                                                        .payments
+                                                                                        .paid_Up >=
+                                                                                    installmentAmount(
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .Expenses,
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .Installment_System
+                                                                                    ) *
+                                                                                        month
+                                                                                        ? '#d8588c'
+                                                                                        : '#fff',
+                                                                                color:
+                                                                                    selectedStudent
+                                                                                        .payments
+                                                                                        .paid_Up >=
+                                                                                    installmentAmount(
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .Expenses,
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .Installment_System
+                                                                                    ) *
+                                                                                        month
+                                                                                        ? '#fff'
+                                                                                        : '#333',
+                                                                            }"
+                                                                        >
+                                                                            <div
+                                                                                class="timeline-item-header"
+                                                                            >
+                                                                                <span
+                                                                                    class="month-name"
+                                                                                    :style="{
+                                                                                        color:
+                                                                                            selectedStudent
+                                                                                                .payments
+                                                                                                .paid_Up >=
+                                                                                            installmentAmount(
+                                                                                                selectedStudent
+                                                                                                    .payments
+                                                                                                    .Expenses,
+                                                                                                selectedStudent
+                                                                                                    .payments
+                                                                                                    .Installment_System
+                                                                                            ) *
+                                                                                                month
+                                                                                                ? '#fff'
+                                                                                                : '#333',
+                                                                                    }"
+                                                                                >
+                                                                                    {{
+                                                                                        getMonthName(
+                                                                                            month
+                                                                                        )
+                                                                                    }}
+                                                                                </span>
+                                                                            </div>
+                                                                            <div
+                                                                                class="timeline-item-body"
+                                                                            >
+                                                                                <p>
+                                                                                    القسط
+                                                                                    الشهري
+                                                                                    :
+                                                                                    {{
+                                                                                        Math.floor(
+                                                                                            installmentAmount(
+                                                                                                selectedStudent
+                                                                                                    .payments
+                                                                                                    .Expenses,
+                                                                                                selectedStudent
+                                                                                                    .payments
+                                                                                                    .Installment_System
+                                                                                            )
+                                                                                        )
+                                                                                    }}
+                                                                                    جنيه
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </v-row>
+                                                        <div
+                                                            class="Title"
+                                                            v-show="CreateChart"
+                                                            style="
+                                                                margin-top: 55px;
+                                                            "
+                                                        >
+                                                            <font-awesome-icon
+                                                                :icon="[
+                                                                    'fas',
+                                                                    'chart-pie',
+                                                                ]"
+                                                            />
+                                                            <div>إحصائيات</div>
+                                                        </div>
+                                                        <div
+                                                            class="details"
+                                                            v-show="CreateChart"
+                                                        >
+                                                            <div
+                                                                class="myChart"
+                                                            >
+                                                                <canvas
+                                                                    id="myChart"
+                                                                ></canvas>
+                                                            </div>
+                                                            <ul>
+                                                                <li class="li">
+                                                                    <font-awesome-icon
+                                                                        :icon="[
+                                                                            'fas',
+                                                                            'money-bills',
+                                                                        ]"
+                                                                    />
+                                                                    <div>
+                                                                        المصروفات
+                                                                        المستحقة
+                                                                    </div>
+                                                                    <div>
+                                                                        <span>{{
+                                                                            selectedStudent
+                                                                                .payments
+                                                                                .Expenses
+                                                                        }}</span>
+                                                                        جنية
+                                                                    </div>
+                                                                </li>
+                                                                <li>
+                                                                    <div>
+                                                                        المصروفات
+                                                                        المدفوعة
+                                                                    </div>
+                                                                    <div>
+                                                                        <span>{{
+                                                                            selectedStudent
+                                                                                .payments
+                                                                                .paid_Up
+                                                                        }}</span>
+                                                                        جنية
+                                                                    </div>
+                                                                </li>
+                                                                <li>
+                                                                    <div>
+                                                                        المصروفات
+                                                                        المتبقية
+                                                                    </div>
+                                                                    <div>
+                                                                        <span>{{
+                                                                            selectedStudent
+                                                                                .payments
+                                                                                .Residual
+                                                                        }}</span>
+                                                                        جنية
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
                                                 </v-container>
                                             </v-card>
                                         </div>
@@ -1797,7 +2141,7 @@
                                                     >اضافه صوره</v-btn
                                                 >
                                             </div>
-                                            <v-row>
+                                            <v-row style="gap: 0px">
                                                 <v-col
                                                     v-for="(
                                                         photo, index
@@ -1946,10 +2290,7 @@
                                         "
                                     >
                                         <v-text-field
-                                            v-model="
-                                                form.student_information[0]
-                                                    .student_name
-                                            "
+                                            v-model="form.student_name"
                                             style="width: 50%"
                                             :error-messages="
                                                 errors.student_name
@@ -1981,10 +2322,7 @@
                                             ]"
                                             variant="outlined"
                                             style="width: 50%"
-                                            v-model="
-                                                form.student_information[1]
-                                                    .class
-                                            "
+                                            v-model="form.class"
                                             :error-messages="errors.class"
                                             label="الفصل"
                                             required
@@ -1998,10 +2336,7 @@
                                         "
                                     >
                                         <v-select
-                                            v-model="
-                                                form.student_information[3]
-                                                    .gender
-                                            "
+                                            v-model="form.gender"
                                             style="width: 100%"
                                             :error-messages="errors.gender"
                                             label="الجنس"
@@ -2012,9 +2347,7 @@
                                     </div>
 
                                     <v-select
-                                        v-model="
-                                            form.student_information[4].section
-                                        "
+                                        v-model="form.section"
                                         :error-messages="errors.section"
                                         label="القسم"
                                         required
@@ -2090,11 +2423,13 @@
                 </v-dialog>
             </v-col>
         </v-row>
+        <confirm_message :text="confirmationText" v-model="showSnackbar" />
     </v-container>
 </template>
 
 <script>
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Empty_error from "@/components/Empty_error.vue";
 import {
     collection,
     addDoc,
@@ -2104,6 +2439,8 @@ import {
     getFirestore,
     getDoc,
     updateDoc,
+    query,
+    where,
 } from "firebase/firestore";
 const firebaseConfig = {
     apiKey: "AIzaSyBdk3sqIHjXvB2C-O-lvkRgMFpg8pemkno",
@@ -2114,7 +2451,6 @@ const firebaseConfig = {
     appId: "1:462211256149:web:a03ace3c70b306620169dc",
 };
 import { getStorage } from "firebase/storage";
-import { gsap } from "gsap";
 import { useToast } from "vue-toastification";
 import "vue-toastification/dist/index.css"; // Import the CSS file
 import { initializeApp } from "@firebase/app";
@@ -2122,11 +2458,19 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 const storage = getStorage(app);
+import confirm_message from "@/components/confirm_message.vue";
 
 export { db, storage };
+import "jspdf-autotable";
+// import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
+import Chart from "chart.js/auto";
 import { useDialogStore } from "@/store/useDialogStore";
 export default {
     name: "StudentList",
+    components: {
+        confirm_message,
+        Empty_error,
+    },
     props: {
         year: {
             type: Number,
@@ -2136,6 +2480,10 @@ export default {
         selectedSection: {
             type: String,
             default: "الكل",
+        },
+        dialog: {
+            type: Boolean,
+            required: true,
         },
     },
     setup() {
@@ -2150,6 +2498,7 @@ export default {
     data() {
         return {
             dialog_stu: false,
+            searchId: "", // متغير لتخزين معرف الطالب الذي تريد البحث عنه
             menuz: false,
             steps: [
                 "معلومات الطالب",
@@ -2195,14 +2544,13 @@ export default {
             searchQuery: "",
             students: [],
             form: {
-                student_information: [
-                    { student_name: "" },
-                    { class: "" },
-                    { educational_level: this.year },
-                    { gender: "" },
-                    { section: "" },
-                    { birthday: null },
-                ],
+                educational_level: this.year,
+                student_name: "",
+                class: "",
+                gender: "",
+                section: "",
+                birthday: null,
+
                 Guardian: [
                     { Guardian_name: "" },
                     { Guardian_phone: "" },
@@ -2376,9 +2724,11 @@ export default {
                     },
                 ],
                 payments: {
-                    Requird: 0,
-                    paid_up: 0,
-                    installment_system: "",
+                    Expenses: 0,
+                    payment_System: "",
+                    Installment_System: "",
+                    paid_Up: 0,
+                    Residual: 0,
                 },
                 Notifications: [
                     {
@@ -2395,7 +2745,7 @@ export default {
                     },
                 ],
             },
-
+            loading1: true, // خاصية لتحميل البيانات
             errors: {
                 student_name: [],
                 class: [],
@@ -2425,6 +2775,7 @@ export default {
                 Notifications_Title: [],
                 Notifications_Details: [],
             },
+            selectedClassId: "",
             currentStep: "Step 1",
             progress: 75,
             classes: [
@@ -2481,6 +2832,34 @@ export default {
             changesMade: false,
             changesMade2: true,
             changesMade3: false,
+            CreateChart: null,
+            interval: null,
+            value: 0,
+            tab_1: 0,
+            paymentMethod: null,
+            paymentMethods: ["الدفع المباشر", "نظام التقسيط"],
+            dialogSuccess: false,
+            transitionTimeline: false, // متغير للتحكم في الانتقال للـ timeline-item-content
+            transitionProgress: false, // متغير للتحكم في الانتقال للبروجريس بار
+            alertMessage: false,
+            reachedProgress: false,
+            currentActive: 0,
+            // circles: [],
+            totalAmount: null,
+            paidAmount: 0,
+            tab_5: null,
+            tab_4: null,
+            tab_2: null,
+            tab: "option-1", // تحديد التاب الافتراضي
+            selectedGrade: null,
+            gradeLevels: ["الصف الأول", "الصف الثاني", "الصف الثالث"],
+            selectedPlan: null,
+            selectPaid: ["شهر", "شهرين", "3 شهور", "4 شهور", "5 شهور"],
+            amount: 0,
+            selectedPaymentPlan: null,
+            paymentPlans: ["شهر", "شهرين", "3 شهور", "4 شهور", "5 شهور"],
+            showSnackbar: false,
+            confirmationText: "",
         };
     },
     async created() {
@@ -2563,8 +2942,11 @@ export default {
 
                 // Update only the necessary fields in Firestore
                 await updateDoc(studentDoc, {
-                    student_information:
-                        this.selectedStudent.student_information,
+                    student_name: this.selectedStudent.student_name,
+                    class: this.selectedStudent.class,
+                    gender: this.selectedStudent.gender,
+                    section: this.selectedStudent.section,
+                    birthday: this.selectedStudent.birthday,
                 });
 
                 console.log("Document updated successfully");
@@ -2589,8 +2971,11 @@ export default {
 
                 if (this.changesMade) {
                     await updateDoc(studentDoc, {
-                        student_information:
-                            this.selectedStudent.student_information,
+                        student_name: this.selectedStudent.student_name,
+                        class: this.selectedStudent.class,
+                        gender: this.selectedStudent.gender,
+                        section: this.selectedStudent.section,
+                        birthday: this.selectedStudent.birthday,
                     });
                     console.log("Document updated successfully");
                 }
@@ -2610,86 +2995,73 @@ export default {
             this.changesMade2 = false;
         },
 
-        getAlertType(notificationType) {
-            if (notificationType === "سي") {
-                return "error";
-            }
-            switch (notificationType) {
-                case "success":
-                    return "success";
-                case "error":
-                    return "error";
-                case "warning":
-                    return "warning";
-                case "info":
-                    return "info";
-                default:
-                    return "info";
-            }
-        },
-        getIcon(notificationType) {
-            switch (notificationType) {
-                case "success":
-                    return "mdi-check-circle";
-                case "error":
-                case "سي":
-                    return "mdi-alert-circle";
-                case "warning":
-                    return "mdi-alert";
-                case "info":
-                    return "mdi-information";
-                default:
-                    return "mdi-information";
-            }
-        },
-        getIconClass(notificationType) {
-            switch (notificationType) {
-                case "success":
-                    return "green";
-                case "error":
-                case "سي":
-                    return "red";
-                case "warning":
-                    return "orange";
-                case "info":
-                    return "blue";
-                default:
-                    return "blue";
-            }
-        },
+        // getAlertType(notificationType) {
+        //     // if (notificationType === "سي") {
+        //     //     return "error";
+        //     // }
+        //     // switch (notificationType) {
+        //     //     case "success":
+        //     //         return "success";
+        //     //     case "error":
+        //     //         return "error";
+        //     //     case "warning":
+        //     //         return "warning";
+        //     //     case "info":
+        //     //         return "info";
+        //     //     default:
+        //     //         return "info";
+        //     // }
+        // },
+        // getIcon(notificationType) {
+        //     switch (notificationType) {
+        //         case "success":
+        //             return "mdi-check-circle";
+        //         case "error":
+        //         case "سي":
+        //             return "mdi-alert-circle";
+        //         case "warning":
+        //             return "mdi-alert";
+        //         case "info":
+        //             return "mdi-information";
+        //         default:
+        //             return "mdi-information";
+        //     }
+        // getIconClass(notificationType) {
+        //     switch (notificationType) {
+        //         case "success":
+        //             return "green";
+        //         case "error":
+        //         case "سي":
+        //             return "red";
+        //         case "warning":
+        //             return "orange";
+        //         case "info":
+        //             return "blue";
+        //         default:
+        //             return "blue";
+        //     }
+        // },
         async fetchStudents() {
             try {
-                const querySnapshot = await getDocs(collection(db, "students"));
+                const q = query(
+                    collection(db, "students"),
+                    where("educational_level", "==", this.year)
+                );
+                this.loading1 = true; // بدء تحميل البيانات
+                const querySnapshot = await getDocs(q);
                 this.students = querySnapshot.docs.map((doc) => {
                     const studentData = doc.data();
                     const student = {
                         id: doc.id,
                         ...studentData,
-                        student_information:
-                            studentData.student_information.map(
-                                (info, index) => {
-                                    if (
-                                        index === 5 &&
-                                        info.birthday &&
-                                        info.birthday.seconds
-                                    ) {
-                                        const date = new Date(
-                                            info.birthday.seconds * 1000
-                                        );
-                                        return {
-                                            ...info,
-                                            birthday: this.formatDate(date),
-                                        };
-                                    }
-                                    return info;
-                                }
-                            ),
+                        birthday: this.formatDate(
+                            new Date(studentData.birthday * 1000)
+                        ), // Convert birthday to string if it's a Timestamp
                     };
-
                     return student;
                 });
-
-                console.log("Fetched students:", this.students_class);
+                this.loading1 = false; // بدء تحميل البيانات
+                console.log("Fetched students:", this.students);
             } catch (error) {
                 console.error("Error fetching students:", error);
             }
@@ -2698,45 +3070,85 @@ export default {
         async submit() {
             if (this.validateForm()) {
                 try {
-                    // Add student data to Firestore
+                    // Ensure the birthday is stored as a formatted string
+                    const formattedBirthday = this.formatDate(
+                        new Date(this.form.birthday)
+                    );
+
                     const docRef = await addDoc(collection(db, "students"), {
-                        student_information: this.form.student_information,
+                        student_name: this.form.student_name,
+                        class: this.form.class,
+                        gender: this.form.gender,
+                        section: this.form.section,
+                        birthday: formattedBirthday,
+                        Results: this.form.Results,
+                        payments: this.form.payments,
+                        Notifications: this.form.Notifications,
+                        photos: this.form.photos,
+                        educational_level: this.year,
+                        year: new Date().getFullYear(),
+                    });
+
+                    const newStudentId = docRef.id;
+
+                    const newStudent = {
+                        id: newStudentId,
+                        student_name: this.form.student_name,
+                        class: this.form.class,
+                        gender: this.form.gender,
+                        section: this.form.section,
+                        birthday: formattedBirthday,
                         Results: this.form.Results,
                         payments: this.form.payments,
                         Notifications: this.form.Notifications,
                         photos: this.form.photos,
                         year: new Date().getFullYear(),
-                    });
-
-                    // Get the ID of the newly added document
-                    const newStudentId = docRef.id;
-
-                    // Construct the student object to add to the local array
-                    const newStudent = {
-                        id: newStudentId,
-                        student_information: this.form.student_information,
-                        Results: this.form.Results,
-                        payments: this.form.payments,
-                        Notifications: this.form.Notifications,
-                        photos: this.form.photos,
-                        year: this.years,
                     };
 
-                    // Push the new student to the local array
                     this.students.push(newStudent);
 
-                    // Reset form fields and close dialog
                     this.dialog_addstudent = false;
+                    this.formattedDate = "";
                     this.handleReset();
-                    await this.fetchStudents();
                     this.dialogStore.hideAddStudentDialog();
-
+                    this.$emit("close-dialog");
                     console.log("Added new student:", newStudent);
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم إضافة الطالب بنجاح";
+                    this.showSnackbar = true;
+                    await this.fetchStudents();
                 } catch (error) {
                     console.error("Error adding document:", error);
                 }
             }
         },
+        formatDate(date) {
+            const d = new Date(date);
+            let month = "" + (d.getMonth() + 1); // استخدام let بدلاً من const
+            let day = "" + d.getDate(); // استخدام let بدلاً من const
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = "0" + month;
+            if (day.length < 2) day = "0" + day;
+
+            return [year, month, day].join("-");
+        },
+        // formatDateh(birthday) {
+        //     if (birthday.seconds) {
+        //         const date = new Date(birthday.seconds * 1000);
+        //         const day = date.getDate();
+        //         const month = date.getMonth() + 1; // Months are zero-based
+        //         const year = date.getFullYear();
+        //         return `${day}/${month}/${year}`;
+        //     } else {
+        //         return birthday; // If it's already formatted
+        //     }
+        // },
+        // Example function to generate a unique ID
+        generateUniqueId() {
+            return "id-" + Math.random().toString(36).substr(2, 9);
+        },
+
         openDeleteDialog(studentId) {
             this.dialog_stu = studentId;
         },
@@ -2760,6 +3172,9 @@ export default {
                 this.students = this.students.filter(
                     (student) => student.id !== id
                 );
+                // إعداد نص الرسالة وتفعيل Snackbar
+                this.confirmationText = "تم مسح الطالب بنجاح";
+                this.showSnackbar = true;
                 console.log("Deleted student with id:", id);
             } catch (error) {
                 console.error("Error deleting document:", error);
@@ -2767,14 +3182,12 @@ export default {
         },
         handleReset() {
             this.form = {
-                student_information: [
-                    { student_name: "" },
-                    { class: "" },
-                    { educational_level: "" },
-                    { gender: "" },
-                    { section: "" },
-                    { birthday: null },
-                ],
+                educational_level: this.year,
+                student_name: "",
+                class: "",
+                gender: "",
+                section: "",
+                birthday: "",
                 Guardian: [
                     { Guardian_name: "" },
                     { Guardian_phone: "" },
@@ -2971,25 +3384,25 @@ export default {
             let isValid = true;
             // Clear previous error messages
             // Validation rules
-            if (!this.form.student_information[0].student_name) {
-                this.errors.student_name.push("اسم الطالب مطلوب.");
-                isValid = false;
-            }
-            if (!this.form.student_information[1].class) {
-                this.errors.class.push("الفصل مطلوب.");
-            }
-            if (!this.form.student_information[2].educational_level) {
-                this.errors.educational_level.push("المستوى التعليمي مطلوب.");
-            }
-            if (!this.form.student_information[3].gender) {
-                this.errors.gender.push("الجنس مطلوب.");
-            }
-            if (!this.form.student_information[4].section) {
-                this.errors.section.push("القسم مطلوب.");
-            }
-            if (!this.form.student_information[5].birthday) {
-                this.errors.birthday.push("تاريخ الميلاد مطلوب.");
-            }
+            // if (!this.form.student_information[0].student_name) {
+            //     this.errors.student_name.push("اسم الطالب مطلوب.");
+            //     isValid = false;
+            // }
+            // if (!this.form.student_information[1].class) {
+            //     this.errors.class.push("الفصل مطلوب.");
+            // }
+            // if (!this.form.student_information[2].educational_level) {
+            //     this.errors.educational_level.push("المستوى التعليمي مطلوب.");
+            // }
+            // if (!this.form.student_information[3].gender) {
+            //     this.errors.gender.push("الجنس مطلوب.");
+            // }
+            // if (!this.form.student_information[4].section) {
+            //     this.errors.section.push("القسم مطلوب.");
+            // }
+            // if (!this.form.student_information[5].birthday) {
+            //     this.errors.birthday.push("تاريخ الميلاد مطلوب.");
+            // }
 
             return isValid;
         },
@@ -3018,7 +3431,7 @@ export default {
                             showDetails: false,
                         }))
                         .filter((student) =>
-                            student.student_information[0].student_name
+                            student.student_name
                                 .toLowerCase()
                                 .includes(trimmedQuery)
                         );
@@ -3065,22 +3478,16 @@ export default {
         },
         // l;
         initializeTempDate() {
-            // this.tempDate = this.form.student_information[5].birthday;
-            this.tempDate = this.form.student_information[5].birthday;
+            // this.tempDate = this.form.birthday;
+            this.tempDate = this.form.birthday;
             new Date().toISOString().substr(0, 10);
         },
         confirmDate() {
-            this.form.student_information[5].birthday = this.tempDate;
+            this.form.birthday = this.tempDate;
             this.formattedDate = this.formatDate(this.tempDate);
             this.menu = false;
         },
-        formatDate(date) {
-            const d = new Date(date);
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, "0");
-            const day = String(d.getDate()).padStart(2, "0");
-            return `${year}/${month}/${day}`;
-        },
+
         // ik
         async addSubject(studentId) {
             try {
@@ -3115,7 +3522,9 @@ export default {
                         Student_degree: null,
                         Date: null,
                     };
-
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  اضافه الماده بنجاح";
+                    this.showSnackbar = true;
                     // Fetch students again to update the UI
                     await this.fetchStudents();
                 }
@@ -3158,6 +3567,9 @@ export default {
 
                     await updateDoc(studentRef, studentData);
                     this.closeDialog();
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  تعديل الماده بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchStudents();
                 }
             } catch (error) {
@@ -3211,6 +3623,9 @@ export default {
                 studentData.Results[0].weekly.splice(subjectIndex, 1);
 
                 await updateDoc(studentRef, studentData);
+                // إعداد نص الرسالة وتفعيل Snackbar
+                this.confirmationText = "تم  حذف الماده بنجاح";
+                this.showSnackbar = true;
                 await this.fetchStudents();
 
                 console.log(
@@ -3265,6 +3680,9 @@ export default {
                     );
                     await updateDoc(studentRef, studentData);
                     this.closeNotificationsDialogs();
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  تعديل الاشعار بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchStudents();
                 }
             } catch (error) {
@@ -3277,7 +3695,6 @@ export default {
             const selectedStudent = this.students.find(
                 (selectedStudent) => selectedStudent.id === studentId
             );
-
             if (selectedStudent) {
                 this.editedNotifications = {
                     ...selectedStudent.Notifications[index],
@@ -3304,14 +3721,20 @@ export default {
                     );
                     await updateDoc(studentRef, studentData);
                     this.dialogAddNotice = false;
-
+                    this.AddNotice = {
+                        NoticeTitle: this.AddNotice.NoticeTitle,
+                        theDescription: this.AddNotice.theDescription,
+                        NotificationType: this.AddNotice.NotificationType,
+                    };
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  اضافه الاشعار بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchStudents();
                 }
             } catch (error) {
                 console.error("Error adding subject:", error);
             }
         },
-
         async deleteNotification(studentId, NotificatIndex) {
             try {
                 const studentRef = doc(db, "students", studentId);
@@ -3326,6 +3749,9 @@ export default {
                         studentData
                     );
                     await updateDoc(studentRef, studentData);
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  حذف الاشعار بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchStudents();
                     // this.dilog_ss = true;
                 }
@@ -3344,61 +3770,6 @@ export default {
         },
 
         // ul
-        editPhotos(studentId, index) {
-            this.editedStudentId = studentId;
-            this.editedIndex = index;
-            const selectedStudent = this.students_class.find(
-                (student) => student.id === studentId
-            );
-            if (selectedStudent) {
-                this.editedPhotos = { ...selectedStudent.photos[index] };
-                this.editPhotosDialog = true;
-            }
-        },
-        async savePhotosEdit() {
-            try {
-                let downloadURL = this.editedPhotos.linkphoto;
-                if (this.editedPhotos.file) {
-                    const storageRef = ref(
-                        storage,
-                        `photos/${this.editedPhotos.file.name}`
-                    );
-                    await uploadBytes(storageRef, this.editedPhotos.file);
-                    downloadURL = await getDownloadURL(storageRef);
-                }
-
-                const studentRef = doc(db, "students", this.editedStudentId);
-                const studentDoc = await getDoc(studentRef);
-                if (studentDoc.exists()) {
-                    const studentData = studentDoc.data();
-                    studentData.photos[this.editedIndex] = {
-                        linkphoto: downloadURL,
-                        grade: this.editedPhotos.grade || "",
-                    };
-                    // عند تحديث selectedStudent باستخدام بيانات محدثة
-                    this.selectedStudent = Object.assign(
-                        {},
-                        this.selectedStudent,
-                        studentData
-                    );
-                    // Log the data before updating
-                    console.log("Updating student data:", studentData);
-
-                    // Ensure no undefined values
-                    Object.keys(studentData).forEach((key) => {
-                        if (studentData[key] === undefined) {
-                            delete studentData[key];
-                        }
-                    });
-
-                    await updateDoc(studentRef, { photos: studentData.photos });
-                    this.closePhotoDialogs();
-                    await this.fetchStudents();
-                }
-            } catch (error) {
-                console.error("Error editing subject:", error);
-            }
-        },
         async addPhoto(studentId) {
             try {
                 if (this.AddPhoto.file) {
@@ -3435,6 +3806,9 @@ export default {
                             Date: "",
                             link: null,
                         };
+                        // إعداد نص الرسالة وتفعيل Snackbar
+                        this.confirmationText = "تم  اضافه الصوره بنجاح";
+                        this.showSnackbar = true;
                         await this.fetchStudents();
                     }
                 }
@@ -3456,6 +3830,9 @@ export default {
                         studentData
                     );
                     await updateDoc(studentRef, studentData);
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  حذف الصوره بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchStudents();
                     // this.dilog_ss = true;
                 }
@@ -3510,34 +3887,6 @@ export default {
                 }
             }
         },
-        animateSlideChange() {
-            const slides = [
-                this.$refs.slide1,
-                this.$refs.slide2,
-                this.$refs.slide3,
-                this.$refs.slide4,
-                this.$refs.slide5,
-                this.$refs.slide6,
-                this.$refs.slide7,
-            ];
-
-            slides.forEach((slide, index) => {
-                gsap.fromTo(
-                    slide,
-                    {
-                        opacity: 0.5, // البداية من opacity 0.5
-                        x: 100 * (index + 1), // الوضع الأولي للإحداثي y (من الأعلى)
-                    },
-                    {
-                        duration: 0.7,
-                        opacity: 1,
-                        x: 0,
-                        ease: "power2.out", // نوع الانتقال
-                    }
-                );
-            });
-        },
-
         async updateMonthlyDegrees(degrees) {
             if (!this.selectedStudent) {
                 this.console.error("Error: selectedStudent is null");
@@ -3586,28 +3935,166 @@ export default {
                 console.error("Error updating document:", error);
             }
         },
-        saveChanges3() {
-            // استدعاء updateFirebase فقط عند النقر على زر الحفظ
-            this.updateFirebase(
-                this.selectedStudent.id,
-                this.selectedStudent.payments
+        // saveChanges3() {
+        //     // استدعاء updateFirebase فقط عند النقر على زر الحفظ
+        //     this.updateFirebase(
+        //         this.selectedStudent.id,
+        //         this.selectedStudent.payments
+        //     );
+        //     this.changesMade3 = false;
+        // },
+        createChart(data) {
+            const ctx = document.getElementById("myChart");
+            if (ctx) {
+                // تحقق مما إذا كان هناك مخطط موجود وقم بتدميره
+                if (this.myChart) {
+                    this.myChart.destroy();
+                }
+
+                console.log("start createChart");
+                this.CreateChart = true;
+                this.myChart = new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        datasets: [
+                            {
+                                label: "المصروفات",
+                                data: data,
+                                backgroundColor: ["#336699", "#d8588c"],
+                                hoverOffset: 4,
+                            },
+                        ],
+                    },
+                });
+            } else {
+                console.log("error");
+            }
+        },
+        updatePaymentOptions() {
+            if (this.paymentMethod === "نظام التقسيط") {
+                this.selectedPlan = null;
+                this.paidAmount = 0;
+                this.amount = 0;
+            }
+        },
+        payAmount() {
+            const amountToPay = parseInt(this.amount);
+
+            if (isNaN(amountToPay) || amountToPay <= 0) {
+                this.showAlert("الرجاء إدخال المبلغ صحيحا");
+                return;
+            }
+
+            this.paidAmount += amountToPay;
+            // this.amount = 0;
+            this.dialogSuccess = true;
+        },
+        validateTotalAmount() {
+            if (this.totalAmount !== null) {
+                if (isNaN(this.totalAmount) || this.totalAmount < 0) {
+                    this.showAlert("لابد ان يكون رقما وليس سالبا");
+                    this.totalAmount = null;
+                }
+            }
+        },
+        showAlert(message) {
+            this.alertMessage = message;
+            setTimeout(() => {
+                this.alertMessage = "";
+            }, 3000);
+        },
+        resetPayment() {
+            this.paidAmount = 0;
+        },
+        updateStudentPayments(studentId, field, value) {
+            const studentRef = doc(db, "students", studentId);
+            const updateData = { [`payments.${field}`]: value };
+            if (field === "paid_Up" || field === "Expenses") {
+                updateData["payments.Residual"] = this.getResidual(studentId);
+            }
+
+            updateDoc(studentRef, updateData)
+                .then(() => {
+                    console.log("Document successfully updated!");
+                })
+                .catch((error) => {
+                    console.error("Error updating document: ", error);
+                });
+        },
+        getResidual(studentId) {
+            const student = this.students.find((s) => s.id === studentId);
+            return student.payments.Expenses - student.payments.paid_Up;
+        },
+        numberOfMonths(installmentPlan) {
+            const monthsMap = {
+                شهر: 1,
+                شهرين: 2,
+                "3 شهور": 3,
+                "4 شهور": 4,
+                "5 شهور": 5,
+            };
+            return Array.from(
+                { length: monthsMap[installmentPlan] },
+                (_, i) => i + 1
             );
-            this.changesMade3 = false;
+        },
+        installmentAmount(totalAmount, installmentPlan) {
+            const monthsMap = {
+                شهر: 1,
+                شهرين: 2,
+                "3 شهور": 3,
+                "4 شهور": 4,
+                "5 شهور": 5,
+            };
+            return Math.floor(totalAmount / monthsMap[installmentPlan]);
+        },
+        getMonthName(month) {
+            const monthNames = [
+                "شهر نوفمبر",
+                "شهر ديسمبر",
+                "الترم الأول",
+                "شهر فبراير",
+                "شهر مارس",
+            ];
+            return monthNames[month - 1] || month;
+        },
+        setChangesMade(status) {
+            this.changesMade3 = status;
+        },
+        saveChanges3() {
+            this.sortedStudents.forEach((student) => {
+                const studentRef = doc(db, "students", student.id);
+                const updateData = {
+                    "payments.Expenses": student.payments.Expenses ?? 0,
+                    "payments.payment_System":
+                        student.payments.payment_System ?? "",
+                    "payments.Installment_System":
+                        student.payments.Installment_System ?? "",
+                    "payments.paid_Up": student.payments.paid_Up ?? 0,
+                    "payments.Residual": this.getResidual(student.id),
+                };
+
+                updateDoc(studentRef, updateData)
+                    .then(() => {
+                        console.log("Document successfully updated!");
+                        this.changesMade3 = false; // Reset the flag after saving
+                    })
+                    .catch((error) => {
+                        console.error("Error updating document: ", error);
+                    });
+            });
+        },
+        updateResidual() {
+            const expenses = this.form.payments.Expenses || 0;
+            const paidUp = this.form.payments.paid_Up || 0;
+            this.form.payments.Residual = expenses - paidUp;
         },
     },
     watch: {
-        "form.student_information[5].birthday"(newVal) {
+        "form.birthday"(newVal) {
             this.formattedDate = this.formatDate(newVal);
         },
-        "Guardian[0].Guardian_name": "updateGuardian",
-        "Guardian[1].Guardian_phone": "updateGuardian",
-        "Guardian[2].Guardian_email": "updateGuardian",
-        "Guardian[3].Guardian_password": "updateGuardian",
-        "Guardian[4].Brothers_in_school": "updateGuardian",
-        "Guardian[5].brother": {
-            handler: "updateGuardian",
-            deep: true, // To detect changes in nested array elements
-        },
+
         selectedMonthlyDegrees: {
             handler() {
                 // Save changes to Firebase
@@ -3615,31 +4102,31 @@ export default {
             },
             deep: true,
         },
+        "form.payments.Expenses"() {
+            this.updateResidual();
+        },
+        "form.payments.paid_Up"() {
+            this.updateResidual();
+        },
     },
     computed: {
         filteredStudents() {
             if (this.selectedSection === "الكل") {
                 return this.students.filter(
-                    (student) =>
-                        student.student_information[2].educational_level ===
-                        this.year
+                    (student) => student.educational_level === this.year
                 );
             }
             return this.students.filter(
                 (student) =>
-                    student.student_information[2].educational_level ===
-                        this.year &&
-                    student.student_information[4].section ===
-                        this.selectedSection
+                    student.educational_level === this.year &&
+                    student.section === this.selectedSection
             );
         },
         sortedStudents() {
             const studentsToSort = this.filteredStudents;
             const sorted = [...studentsToSort].sort((a, b) => {
-                const nameA =
-                    a.student_information[0].student_name.toUpperCase();
-                const nameB =
-                    b.student_information[0].student_name.toUpperCase();
+                const nameA = a.student_name.toUpperCase();
+                const nameB = b.student_name.toUpperCase();
 
                 if (this.$parent.isSortedAscending) {
                     // الترتيب من الألف إلى الياء
@@ -3664,18 +4151,30 @@ export default {
                 )?.Degrees || []
             );
         },
+        remainingAmount() {
+            return Math.max(this.totalAmount - this.paidAmount, 0);
+        },
     },
     mounted() {
         this.searchStudent(); // Fetch all students initially
         this.generateRandomPassword();
         this.fetchStudents();
-
+        this.interval = setInterval(() => {
+            if (this.value === 100) {
+                clearInterval(this.interval);
+                return;
+            }
+            this.value += 10;
+        }, 100);
         this.students = this.$parent.students_class; // Assuming students_class is passed down from parent
+    },
+    beforeUnmount() {
+        clearInterval(this.interval);
     },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .student-item {
     padding: 10px;
     direction: rtl;
@@ -3692,8 +4191,9 @@ export default {
     font-size: 14px;
     margin-top: -10px;
     margin-bottom: 10px;
-} /*
-.v-progress-linear {
+}
+
+/* .v-progress-linear {
     position: static;
     overflow: visible;
 } */
@@ -3797,7 +4297,597 @@ export default {
 .notification-card .v-icon:hover {
     color: #1e88e5;
 }
+
 .v-overlay__scrim {
-    display: none;
+    background: rgb(0 0 0 / 26%) !important;
+}
+.v-dialog > .v-overlay__content > .v-card,
+.v-dialog > .v-overlay__content > .v-sheet,
+.v-dialog > .v-overlay__content > form > .v-card,
+.v-dialog > .v-overlay__content > form > .v-sheet {
+    box-shadow: none !important;
+}
+.sui {
+    color: white;
+    background: white;
+}
+.timeline-container {
+    width: calc(100% - 110px) !important;
+    margin: 20px !important;
+}
+
+.timeline {
+    position: relative;
+    margin-left: 20px;
+}
+
+.timeline-line {
+    position: absolute;
+    width: 2px;
+    background-color: #ccc;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+.progress_container {
+    position: absolute;
+    width: 5px;
+    background-color: #eee;
+    left: 8px;
+    bottom: 0;
+    margin: auto;
+    height: calc(100% + 35px);
+    top: 35px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-item-content {
+    position: relative;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    position: relative;
+    margin-left: 20px;
+}
+.timeline-item-content::before {
+    content: "";
+    position: absolute;
+    bottom: -35px;
+    left: -26.7px;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    /* border-radius: 50%; */
+    transform: rotate(45deg);
+    background-color: var(--main-color);
+}
+.timeline-item-content::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -24px;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-right: 20px solid #d8588c;
+}
+.timeline-item-header {
+    padding-bottom: 10px;
+}
+
+.timeline-item-body {
+    font-size: 14px;
+}
+
+.month-name {
+    font-weight: bold;
+    color: var(--main-color);
+}
+
+.payment-section {
+    margin-top: 20px;
+}
+.progress-label {
+    font-size: 14px;
+    font-weight: bold;
+    position: absolute;
+    right: 21px;
+    width: 106px;
+    background: var(--main-color);
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+}
+.timeline-item-content {
+    margin-left: 30px;
+    transition: 0.5s;
+    transition: margin-left 0.5s;
+}
+.success-message {
+    color: #4caf50; /* لون أخضر لرسائل النجاح */
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 20px;
+    transition: 0.5s;
+}
+
+.timeline-item-content.transition {
+    margin-left: 60px; /* أو أي قيمة انتقال تفضلها */
+}
+
+.progress {
+    transition: height 0.5s;
+}
+
+.progress.transition {
+    height: 100%;
+}
+.custom-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 120px;
+    font-size: 20px;
+    z-index: 9999;
+    border-radius: 20px;
+    transition: all 0.5s ease-in-out;
+    /* text-align: center; */
+}
+.v-card-text {
+    padding: 0;
+    margin-top: 15px;
+}
+.v-window__container {
+    .title {
+        font-size: 22px;
+        font-weight: bold;
+        color: var(--main-color);
+        position: relative;
+        margin: 0 10px 30px;
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            height: 4px;
+            width: 100%;
+            background: var(--secound-color);
+        }
+    }
+
+    .box {
+        box-shadow: 0 0 10px #ddd;
+        padding: 10px;
+        margin: 0 10px 10px;
+        border-radius: 5px;
+        & > div {
+            width: 100%;
+            background: var(--secound-color);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .feat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+            .name {
+                font-size: 19px;
+                font-weight: bold;
+                color: var(--therd-color);
+            }
+            .gender {
+                color: var(--therd-color);
+                font-weight: bold;
+                font-size: 16px;
+            }
+            .educational_level {
+                font-size: 17px;
+                color: var(--main-color);
+                font-weight: bold;
+            }
+            .Class {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                font-weight: bold;
+                color: var(--pink-color);
+                font-size: 16px;
+            }
+            .section {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                font-weight: bold;
+                color: var(--pink-color);
+                font-size: 16px;
+            }
+        }
+    }
+}
+.weekly {
+    .contain {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        row-gap: 20px;
+        flex-wrap: wrap;
+    }
+    .feat {
+        box-shadow: 0 0 10px #ddd;
+        margin: 0 10px 10px;
+        border-radius: 5px;
+        padding: 10px;
+        width: 48%;
+        flex-grow: 1;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            position: relative;
+            margin: 0 auto 30px;
+            background: var(--secound-color);
+            &::before {
+                content: "";
+                position: absolute;
+                bottom: -20px;
+                height: 5px;
+                width: 100%;
+                background: var(--secound-color);
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            & > div:first-child {
+                display: flex;
+                align-items: center;
+                font-size: 21px;
+                font-weight: bold;
+                color: var(--main-color);
+            }
+        }
+        .table {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+
+            & > div {
+                display: flex;
+                align-items: center;
+                width: 100%;
+                & > div {
+                    display: flex;
+                    align-items: center;
+                    border: 1px solid var(--secound-color);
+                    width: 50%;
+                    justify-content: center;
+                    padding: 10px;
+                    font-size: 16px;
+                    color: var(--therd-color);
+                    font-weight: bold;
+                    text-align: center;
+                }
+            }
+        }
+    }
+}
+.monthly {
+    .header {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        flex-direction: column;
+
+        & > div {
+            width: auto;
+            margin: 0 10px;
+        }
+        .download {
+            height: 56px !important;
+            color: var(--main-color);
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 10px #ddd;
+            gap: 10px;
+            font-weight: bold;
+            text-align: center;
+            img {
+                width: 30px;
+            }
+        }
+    }
+    .Certificate {
+        margin: 20px 10px;
+        border: 2px outset var(--therd-color);
+        padding: 20px;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        .head {
+            justify-content: space-between;
+            display: flex;
+            align-items: center;
+            position: relative;
+            flex-direction: column;
+            gap: 20px;
+            & > div {
+                width: 100%;
+            }
+            &::before {
+                content: "";
+                position: absolute;
+                bottom: -20px;
+                height: 5px;
+                width: 100%;
+                background: var(--secound-color);
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            .right {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                font-size: 18px;
+                font-weight: bold;
+                color: var(--therd-color);
+            }
+            .left {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                color: var(--main-color);
+                font-weight: bold;
+                img {
+                    border-bottom-left-radius: 50%;
+                    border-bottom-right-radius: 50%;
+                    height: 97px;
+                }
+            }
+        }
+        .body {
+            overflow: auto;
+        }
+    }
+}
+.v-card--variant-elevated {
+    box-shadow: none;
+}
+.v-slide-group__content {
+    justify-content: center !important;
+    justify-content: center;
+}
+.v-progress-circular {
+    margin: 1rem;
+}
+.v-progress-circular {
+    margin: 0 !important;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 35px;
+}
+th,
+td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+    color: var(--therd-color);
+    font-weight: bold;
+}
+th {
+    background-color: var(--secound-color);
+    color: var(--main-color);
+}
+.table {
+    margin: 0 10px;
+
+    .Row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        & > div {
+            width: 50%;
+            padding: 10px;
+            border: 1px solid var(--secound-color);
+            display: flex;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--therd-color);
+        }
+    }
+}
+.Title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+    color: var(--main-color);
+    font-weight: bold;
+    background: var(--secound-color);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 20px 10px;
+    &.invoice {
+        margin: 20px 0;
+    }
+}
+.v-row {
+    margin: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    & > div {
+        width: 48%;
+    }
+}
+.details {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+    margin: 0 10px;
+    .myChart {
+        width: 100px;
+    }
+    ul {
+        width: 100%;
+        list-style: none;
+        position: relative;
+        &::before {
+            content: "";
+            position: absolute;
+            right: -20px;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: var(--secound-color);
+            transform: translateX(-50%);
+        }
+        li {
+            position: relative;
+            margin-right: 20px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            gap: 10px;
+            & > div {
+                font-weight: bold;
+            }
+            & > div:last-child {
+                color: var(--therd-color);
+                font-size: 12px;
+                text-align: center;
+                span {
+                    font-size: 16px;
+                }
+            }
+            span {
+                font-weight: bold;
+                color: var(--therd-color);
+                font-size: 16px;
+            }
+            svg {
+                position: absolute;
+                width: 15px;
+                height: 15px;
+                right: -20px;
+                top: 50%;
+                transform: translateY(-50%);
+                border-radius: 2px;
+                color: var(--main-color);
+            }
+
+            &:not(.li)::before {
+                content: "";
+                position: absolute;
+                width: 15px;
+                height: 15px;
+                right: -20px;
+                top: 50%;
+                transform: translateY(-50%);
+                border-radius: 2px;
+                background: var(--main-color);
+            }
+
+            &:last-of-type:not(.li) {
+                &::before {
+                    background: var(--pink-color);
+                }
+            }
+        }
+    }
+}
+.container_img {
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(100% - 20px);
+    margin: 10px auto;
+    gap: 10px;
+    .img {
+        width: 32%;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: var(--secound-color);
+        border-radius: 5px;
+        img {
+            width: 100%;
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
+        }
+        .date {
+            padding: 10px;
+            border-radius: 5px;
+            color: var(--main-color);
+            font-weight: bold;
+        }
+    }
+}
+@media (max-width: 599px) {
+    .details_row {
+        flex-direction: column;
+        & > div {
+            width: 100%;
+        }
+    }
+    .container_img {
+        flex-direction: column;
+        .img {
+            width: 100%;
+            img {
+                width: 100%;
+            }
+        }
+    }
+}
+@media (min-width: 600px) and (max-width: 768px) {
+}
+@media (min-width: 769px) {
+    .weekly {
+        .contain {
+            row-gap: 10px;
+        }
+    }
+    .monthly {
+        .header {
+            width: 100%;
+            flex-direction: row;
+            gap: 10px;
+            & > div {
+                width: 48%;
+            }
+        }
+        .Certificate {
+            .head {
+                flex-direction: row;
+                & > div {
+                    width: auto;
+                }
+            }
+        }
+    }
 }
 </style>

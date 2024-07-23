@@ -73,7 +73,7 @@ body {
     --pink-color: #d8588c;
 }
 .main_header {
-    padding: 0px 30px;
+    padding: 20px;
     background-color: white;
     -webkit-box-shadow: 0 0 10px #ddd;
     -moz-box-shadow: 0 0 10px #ddd;
@@ -101,8 +101,22 @@ body {
         .a {
             text-decoration: none;
         }
+        .container::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background-color: var(--main-color);
+            top: 0;
+            left: -100%;
+            transition: 0.3s;
+        }
     }
 }
+.v-overlay__scrim {
+    background: rgb(0 0 0 / 36%) !important;
+}
+
 .v-container,
 .container {
     width: 90% !important;

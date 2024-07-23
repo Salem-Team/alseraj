@@ -7,7 +7,87 @@
         ></v-text-field>
 
         <v-row>
-            <v-col cols="12">
+            <svg
+                style="
+                    position: fixed;
+                    top: 60%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 245px;
+                "
+                v-if="loading1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 200 200"
+            >
+                <radialGradient
+                    id="a12"
+                    cx=".66"
+                    fx=".66"
+                    cy=".3125"
+                    fy=".3125"
+                    gradientTransform="scale(1.5)"
+                >
+                    <stop offset="0" stop-color="#336699"></stop>
+                    <stop
+                        offset=".3"
+                        stop-color="#336699"
+                        stop-opacity=".9"
+                    ></stop>
+                    <stop
+                        offset=".6"
+                        stop-color="#336699"
+                        stop-opacity=".6"
+                    ></stop>
+                    <stop
+                        offset=".8"
+                        stop-color="#336699"
+                        stop-opacity=".3"
+                    ></stop>
+                    <stop
+                        offset="1"
+                        stop-color="#336699"
+                        stop-opacity="0"
+                    ></stop>
+                </radialGradient>
+                <circle
+                    transform-origin="center"
+                    fill="none"
+                    stroke="url(#a12)"
+                    stroke-width="15"
+                    stroke-linecap="round"
+                    stroke-dasharray="200 1000"
+                    stroke-dashoffset="0"
+                    cx="100"
+                    cy="100"
+                    r="70"
+                >
+                    <animateTransform
+                        type="rotate"
+                        attributeName="transform"
+                        calcMode="spline"
+                        dur="2"
+                        values="360;0"
+                        keyTimes="0;1"
+                        keySplines="0 0 1 1"
+                        repeatCount="indefinite"
+                    ></animateTransform>
+                </circle>
+                <circle
+                    transform-origin="center"
+                    fill="none"
+                    opacity=".2"
+                    stroke="#336699"
+                    stroke-width="15"
+                    stroke-linecap="round"
+                    cx="100"
+                    cy="100"
+                    r="70"
+                ></circle>
+            </svg>
+            <v-container v-if="!loading1 && students.length === 0">
+                <Empty_error text="لا يوجد طلاب مسجلين." />
+            </v-container>
+            <v-col cols="12" v-else>
                 <v-list>
                     <v-list-item
                         v-for="(student, index) in sortedStudents"
@@ -31,10 +111,7 @@
                                             >
                                                 {{ index + 1 }}
                                             </v-avatar>
-                                            {{
-                                                student.student_information[0]
-                                                    .student_name
-                                            }}
+                                            {{ student.student_name }}
                                         </h2>
                                         <div>
                                             <v-avatar color="info">
@@ -53,16 +130,25 @@
                             </v-row>
                             <v-row style="margin-right: 70px; margin-top: 0px">
                                 <v-col cols="12">
-                                    <div>
+                                    <div
+                                        style="
+                                            display: flex;
+                                            justify-content: space-between;
+                                            align-items: center;
+                                        "
+                                    >
                                         <h3 style="color: #2196f3">
                                             فصل
-                                            {{
-                                                student.student_information[1]
-                                                    .class
-                                            }}
+                                            {{ student.class }}
+                                        </h3>
+                                        <h3 style="color: #2196f3">
+                                            قسم
+                                            {{ student.section }}
                                         </h3>
                                     </div>
                                 </v-col>
+                            </v-row>
+                            <v-row style="gap: 0px">
                                 <v-col cols="2">
                                     <v-card
                                         style="
@@ -77,9 +163,11 @@
                                     >
                                         <h3>
                                             {{
-                                                percentageTotalDegrees(
-                                                    student
-                                                ).toFixed(2)
+                                                parseFloat(
+                                                    percentageTotalDegrees(
+                                                        student
+                                                    ).toFixed(1)
+                                                )
                                             }}%
                                         </h3>
                                         <p>الشهر الاول</p>
@@ -98,9 +186,11 @@
                                     >
                                         <h3>
                                             {{
-                                                percentageTotalDegrees2(
-                                                    student
-                                                ).toFixed(2)
+                                                parseFloat(
+                                                    percentageTotalDegrees2(
+                                                        student
+                                                    ).toFixed(1)
+                                                )
                                             }}%
                                         </h3>
                                         <p>الشهر الثاني</p>
@@ -134,9 +224,11 @@
                                     >
                                         <h3>
                                             {{
-                                                percentageTotalDegrees3(
-                                                    student
-                                                ).toFixed(2)
+                                                parseFloat(
+                                                    percentageTotalDegrees3(
+                                                        student
+                                                    ).toFixed(1)
+                                                )
                                             }}%
                                         </h3>
                                         <p>الشهر الاول</p>
@@ -155,9 +247,11 @@
                                     >
                                         <h3>
                                             {{
-                                                percentageTotalDegrees4(
-                                                    student
-                                                ).toFixed(2)
+                                                parseFloat(
+                                                    percentageTotalDegrees4(
+                                                        student
+                                                    ).toFixed(1)
+                                                )
                                             }}%
                                         </h3>
                                         <p>الشهر الثاني</p>
@@ -364,9 +458,7 @@
                                                 >
                                                     <v-text-field
                                                         v-model="
-                                                            selectedStudent
-                                                                .student_information[0]
-                                                                .student_name
+                                                            selectedStudent.student_name
                                                         "
                                                         style="width: 50%"
                                                         :error-messages="
@@ -400,9 +492,7 @@
                                                         variant="outlined"
                                                         style="width: 50%"
                                                         v-model="
-                                                            selectedStudent
-                                                                .student_information[1]
-                                                                .class
+                                                            selectedStudent.class
                                                         "
                                                         :error-messages="
                                                             errors.class
@@ -421,9 +511,7 @@
                                                 >
                                                     <v-select
                                                         v-model="
-                                                            selectedStudent
-                                                                .student_information[3]
-                                                                .gender
+                                                            selectedStudent.gender
                                                         "
                                                         style="width: 100%"
                                                         :error-messages="
@@ -438,9 +526,7 @@
                                                 </div>
                                                 <v-select
                                                     v-model="
-                                                        selectedStudent
-                                                            .student_information[4]
-                                                            .section
+                                                        selectedStudent.section
                                                     "
                                                     :error-messages="
                                                         errors.section
@@ -470,9 +556,7 @@
                                                     >
                                                         <v-text-field
                                                             v-model="
-                                                                selectedStudent
-                                                                    .student_information[5]
-                                                                    .birthday
+                                                                selectedStudent.birthday
                                                             "
                                                             label="تاريخ الميلاد"
                                                             append-icon="mdi-calendar"
@@ -516,7 +600,6 @@
                                                 </v-menu>
                                             </div>
                                         </div>
-
                                         <div v-if="e1 === 2" ref="slide2">
                                             <div style="padding: 20px">
                                                 <div
@@ -539,118 +622,37 @@
                                                         ولي الامر
                                                     </h2>
                                                 </div>
+
+                                                <!-- حقل اسم الأب -->
                                                 <v-text-field
                                                     v-model="
-                                                        Guardian[0]
-                                                            .Guardian_name
+                                                        selectedParent.name
                                                     "
-                                                    :error-messages="
-                                                        errors.Guardian_name
-                                                    "
-                                                    label="الاسم"
+                                                    label="اسم الأب"
                                                     required
+                                                    style="margin-bottom: 20px"
                                                 ></v-text-field>
-                                                <v-text-field
-                                                    v-model="
-                                                        Guardian[1]
-                                                            .Guardian_phone
-                                                    "
-                                                    :error-messages="
-                                                        errors.Guardian_phone
-                                                    "
-                                                    label="رقم التليفون"
-                                                    required
-                                                ></v-text-field>
-                                                <v-text-field
-                                                    v-model="
-                                                        Guardian[2]
-                                                            .Guardian_email
-                                                    "
-                                                    :error-messages="
-                                                        errors.Guardian_email
-                                                    "
-                                                    label="الايميل"
-                                                    required
-                                                ></v-text-field>
-                                                <v-text-field
-                                                    v-model="randomPassword"
-                                                    :error-messages="
-                                                        errors.Guardian_password
-                                                    "
-                                                    label="باسورد"
-                                                    placeholder="باسورد"
-                                                    :append-inner-icon="
-                                                        visible
-                                                            ? 'mdi-eye-off'
-                                                            : 'mdi-eye'
-                                                    "
-                                                    :type="
-                                                        visible
-                                                            ? 'text'
-                                                            : 'password'
-                                                    "
-                                                    density="compact"
-                                                    prepend-inner-icon="mdi-content-copy"
-                                                    variant="outlined"
-                                                    @click:prepend-inner="
-                                                        copyPassword
-                                                    "
-                                                    @click:append-inner="
-                                                        toggleVisibility
-                                                    "
-                                                ></v-text-field>
-                                                <v-select
-                                                    v-model="
-                                                        Guardian[4]
-                                                            .Brothers_in_school
-                                                    "
-                                                    :error-messages="
-                                                        errors.Brothers_in_school
-                                                    "
-                                                    label="هل يوجد اخوه في المدرسه"
-                                                    required
-                                                    :items="['لا', 'نعم']"
-                                                    variant="outlined"
-                                                ></v-select>
-                                                <div
-                                                    v-if="
-                                                        Guardian[4]
-                                                            .Brothers_in_school ===
-                                                        'نعم'
-                                                    "
-                                                >
-                                                    <div
+
+                                                <!-- عرض أسماء الأبناء -->
+                                                <v-list>
+                                                    <v-list-item-group
                                                         v-for="(
-                                                            bor, index
-                                                        ) in Guardian[5]
-                                                            .brother"
+                                                            child, index
+                                                        ) in selectedParent.Child"
                                                         :key="index"
                                                     >
-                                                        <v-text-field
-                                                            v-model="
-                                                                Guardian[5]
-                                                                    .brother[
-                                                                    index
-                                                                ]
-                                                            "
-                                                            :error-messages="
-                                                                errors.brother
-                                                            "
-                                                            label="اسم الاخ"
-                                                            :append-icon="
-                                                                index == 0
-                                                                    ? 'mdi-plus'
-                                                                    : ''
-                                                            "
-                                                            @click:append="
-                                                                addBrother
-                                                            "
-                                                            required
-                                                        ></v-text-field>
-                                                    </div>
-                                                </div>
+                                                        <v-list-item>
+                                                            <v-list-item-content>
+                                                                <v-list-item-title>
+                                                                    {{ child }}
+                                                                </v-list-item-title>
+                                                            </v-list-item-content>
+                                                        </v-list-item>
+                                                    </v-list-item-group>
+                                                </v-list>
                                             </div>
                                         </div>
+
                                         <div v-if="e1 === 3" ref="slide3">
                                             <div style="padding: 20px">
                                                 <div
@@ -1187,9 +1189,7 @@
                                                                     >الاسم:</v-text-title
                                                                 >
                                                                 <v-text-title>{{
-                                                                    selectedStudent
-                                                                        .student_information[0]
-                                                                        .student_name
+                                                                    selectedStudent.student_name
                                                                 }}</v-text-title>
                                                             </v-col>
                                                             <v-col>
@@ -1571,9 +1571,6 @@
                                                                         true
                                                                     )
                                                                 "
-                                                                @change="
-                                                                    CreateChart = true
-                                                                "
                                                             ></v-text-field>
                                                         </v-row>
 
@@ -1595,7 +1592,6 @@
                                                                         15px
                                                                         10px
                                                                         15px;
-                                                                    overflow: hidden;
                                                                 "
                                                             >
                                                                 <div
@@ -1742,7 +1738,7 @@
                                                             </v-row>
                                                             <div
                                                                 class="Title"
-                                                                v-if="
+                                                                v-show="
                                                                     CreateChart
                                                                 "
                                                                 style="
@@ -1761,7 +1757,7 @@
                                                             </div>
                                                             <div
                                                                 class="details"
-                                                                v-if="
+                                                                v-show="
                                                                     CreateChart
                                                                 "
                                                             >
@@ -2105,7 +2101,7 @@
                                                     >اضافه صوره</v-btn
                                                 >
                                             </div>
-                                            <v-row>
+                                            <v-row style="gap: 0px">
                                                 <v-col
                                                     v-for="(
                                                         photo, index
@@ -2234,7 +2230,7 @@
                                 width: 100% !important;
                             "
                         >
-                            <v-toolbar title="معلومات الطالب">
+                            <v-toolbar title=" معلومات الطالب وولى امره">
                                 <v-btn
                                     icon
                                     @click="
@@ -2244,165 +2240,223 @@
                                     <v-icon>mdi-close</v-icon>
                                 </v-btn>
                             </v-toolbar>
-                            <form @submit.prevent="submit">
-                                <div style="padding: 20px">
-                                    <div
-                                        style="
-                                            width: 100%;
-                                            display: flex;
-                                            gap: 20px;
-                                        "
-                                    >
-                                        <v-text-field
-                                            v-model="
-                                                form.student_information[0]
-                                                    .student_name
-                                            "
-                                            style="width: 50%"
-                                            :error-messages="
-                                                errors.student_name
-                                            "
-                                            required
-                                            label="اسم الطالب"
-                                        ></v-text-field>
 
-                                        <v-select
-                                            :items="[
-                                                '1/1',
-                                                '1/2',
-                                                '1/3',
-                                                '1/4',
-                                                '1/5',
-                                                '1/6',
-                                                '2/1',
-                                                '2/2',
-                                                '2/3',
-                                                '2/4',
-                                                '2/5',
-                                                '2/6',
-                                                '3/1',
-                                                '3/2',
-                                                '3/3',
-                                                '3/4',
-                                                '3/5',
-                                                '3/6',
-                                            ]"
-                                            variant="outlined"
-                                            style="width: 50%"
-                                            v-model="
-                                                form.student_information[1]
-                                                    .class
-                                            "
-                                            :error-messages="errors.class"
-                                            label="الفصل"
-                                            required
-                                        ></v-select>
-                                    </div>
-                                    <div
-                                        style="
-                                            width: 100%;
-                                            display: flex;
-                                            gap: 20px;
-                                        "
-                                    >
-                                        <v-select
-                                            v-model="
-                                                form.student_information[3]
-                                                    .gender
-                                            "
-                                            style="width: 100%"
-                                            :error-messages="errors.gender"
-                                            label="الجنس"
-                                            required
-                                            :items="['انثي', 'ذكر']"
-                                            variant="outlined"
-                                        ></v-select>
-                                    </div>
+                            <v-tabs v-model="tab" bg-color="primary">
+                                <v-tab value="student">بيانات الطالب</v-tab>
+                                <v-tab value="parent">ولي الأمر</v-tab>
+                            </v-tabs>
 
-                                    <v-select
-                                        v-model="
-                                            form.student_information[4].section
-                                        "
-                                        :error-messages="errors.section"
-                                        label="القسم"
-                                        required
-                                        :items="['عربي', 'لغات']"
-                                        variant="outlined"
-                                    ></v-select>
-
-                                    <v-menu
-                                        ref="menu"
-                                        v-model="menu"
-                                        :close-on-content-click="false"
-                                        transition="scale-transition"
-                                        offset-y
-                                        min-width="290px"
-                                        @open="initializeTempDate"
-                                    >
-                                        <template
-                                            v-slot:activator="{ on, attrs }"
-                                        >
-                                            <v-text-field
-                                                v-model="formattedDate"
-                                                label="تاريخ الميلاد"
-                                                prepend-icon="mdi-calendar"
-                                                readonly
-                                                @click="menu = true"
-                                                :error-messages="
-                                                    errors.birthday
-                                                "
-                                                required
-                                                v-bind="attrs"
-                                                v-on="on"
-                                            ></v-text-field>
-                                        </template>
-                                        <v-card>
-                                            <v-date-picker
-                                                v-model="tempDate"
-                                                locale="ar"
-                                                scrollable
-                                                :first-day-of-week="1"
-                                            ></v-date-picker>
-                                            <v-card-actions>
-                                                <v-spacer></v-spacer>
-                                                <v-btn
-                                                    text
-                                                    @click="menu = false"
-                                                    >إلغاء</v-btn
+                            <v-card-text>
+                                <v-tabs-window v-model="tab">
+                                    <v-tabs-window-item value="student">
+                                        <form @submit.prevent="submit">
+                                            <div style="padding: 20px">
+                                                <div
+                                                    style="
+                                                        width: 100%;
+                                                        display: flex;
+                                                        gap: 20px;
+                                                    "
                                                 >
-                                                <v-btn text @click="confirmDate"
-                                                    >تأكيد</v-btn
+                                                    <v-text-field
+                                                        v-model="
+                                                            form.student_name
+                                                        "
+                                                        style="width: 50%"
+                                                        :error-messages="
+                                                            errors.student_name
+                                                        "
+                                                        required
+                                                        label="اسم الطالب"
+                                                    ></v-text-field>
+
+                                                    <v-select
+                                                        :items="[
+                                                            '1/1',
+                                                            '1/2',
+                                                            '1/3',
+                                                            '1/4',
+                                                            '1/5',
+                                                            '1/6',
+                                                            '2/1',
+                                                            '2/2',
+                                                            '2/3',
+                                                            '2/4',
+                                                            '2/5',
+                                                            '2/6',
+                                                            '3/1',
+                                                            '3/2',
+                                                            '3/3',
+                                                            '3/4',
+                                                            '3/5',
+                                                            '3/6',
+                                                        ]"
+                                                        variant="outlined"
+                                                        style="width: 50%"
+                                                        v-model="form.class"
+                                                        :error-messages="
+                                                            errors.class
+                                                        "
+                                                        label="الفصل"
+                                                        required
+                                                    ></v-select>
+                                                </div>
+                                                <div
+                                                    style="
+                                                        width: 100%;
+                                                        display: flex;
+                                                        gap: 20px;
+                                                    "
                                                 >
-                                            </v-card-actions>
-                                        </v-card>
-                                    </v-menu>
-                                    <div class="text-center">
-                                        <v-btn
-                                            append-icon="mdi-account-circle"
-                                            type="submit"
-                                            style="
-                                                background: rgb(70, 122, 164);
-                                                color: white;
-                                                font-size: 24px;
-                                                padding: 3px;
-                                                width: 42%;
-                                            "
-                                        >
-                                            اضافه طالب
-                                        </v-btn>
-                                    </div>
-                                </div>
-                            </form>
+                                                    <v-select
+                                                        v-model="form.gender"
+                                                        style="width: 100%"
+                                                        :error-messages="
+                                                            errors.gender
+                                                        "
+                                                        label="الجنس"
+                                                        required
+                                                        :items="['انثي', 'ذكر']"
+                                                        variant="outlined"
+                                                    ></v-select>
+                                                </div>
+
+                                                <v-select
+                                                    v-model="form.section"
+                                                    :error-messages="
+                                                        errors.section
+                                                    "
+                                                    label="القسم"
+                                                    required
+                                                    :items="['عربي', 'لغات']"
+                                                    variant="outlined"
+                                                ></v-select>
+
+                                                <v-menu
+                                                    ref="menu"
+                                                    v-model="menu"
+                                                    :close-on-content-click="
+                                                        false
+                                                    "
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    min-width="290px"
+                                                    @open="initializeTempDate"
+                                                >
+                                                    <template
+                                                        v-slot:activator="{
+                                                            on,
+                                                            attrs,
+                                                        }"
+                                                    >
+                                                        <v-text-field
+                                                            v-model="
+                                                                formattedDate
+                                                            "
+                                                            label="تاريخ الميلاد"
+                                                            prepend-icon="mdi-calendar"
+                                                            readonly
+                                                            @click="menu = true"
+                                                            :error-messages="
+                                                                errors.birthday
+                                                            "
+                                                            required
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-card>
+                                                        <v-date-picker
+                                                            v-model="tempDate"
+                                                            locale="ar"
+                                                            scrollable
+                                                            :first-day-of-week="
+                                                                1
+                                                            "
+                                                        ></v-date-picker>
+                                                        <v-card-actions>
+                                                            <v-spacer></v-spacer>
+                                                            <v-btn
+                                                                text
+                                                                @click="
+                                                                    menu = false
+                                                                "
+                                                                >إلغاء</v-btn
+                                                            >
+                                                            <v-btn
+                                                                text
+                                                                @click="
+                                                                    confirmDate
+                                                                "
+                                                                >تأكيد</v-btn
+                                                            >
+                                                        </v-card-actions>
+                                                    </v-card>
+                                                </v-menu>
+                                                <div class="text-center">
+                                                    <v-btn
+                                                        append-icon="mdi-account-circle"
+                                                        type="submit"
+                                                        style="
+                                                            background: rgb(
+                                                                70,
+                                                                122,
+                                                                164
+                                                            );
+                                                            color: white;
+                                                            font-size: 24px;
+                                                            padding: 3px;
+                                                            width: 42%;
+                                                        "
+                                                    >
+                                                        اضافه طالب
+                                                    </v-btn>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </v-tabs-window-item>
+
+                                    <v-tabs-window-item value="parent">
+                                        <form @submit.prevent="submitParent">
+                                            <div style="padding: 20px">
+                                                <v-text-field
+                                                    v-model="form.parent_name"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.parent_name
+                                                    "
+                                                    required
+                                                    label="اسم ولي الأمر"
+                                                ></v-text-field>
+
+                                                <v-text-field
+                                                    v-model="
+                                                        form.parent_national_id
+                                                    "
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.parent_national_id
+                                                    "
+                                                    required
+                                                    label="الرقم القومي"
+                                                ></v-text-field>
+                                            </div>
+                                        </form>
+                                    </v-tabs-window-item>
+                                </v-tabs-window>
+                            </v-card-text>
                         </v-card>
                     </template>
                 </v-dialog>
             </v-col>
         </v-row>
+        <confirm_message :text="confirmationText" v-model="showSnackbar" />
     </v-container>
 </template>
 
 <script>
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Empty_error from "@/components/Empty_error.vue";
 import {
     collection,
     addDoc,
@@ -2412,6 +2466,10 @@ import {
     getFirestore,
     getDoc,
     updateDoc,
+    setDoc,
+    query,
+    where,
+    arrayUnion,
 } from "firebase/firestore";
 const firebaseConfig = {
     apiKey: "AIzaSyBdk3sqIHjXvB2C-O-lvkRgMFpg8pemkno",
@@ -2422,27 +2480,43 @@ const firebaseConfig = {
     appId: "1:462211256149:web:a03ace3c70b306620169dc",
 };
 import { getStorage } from "firebase/storage";
-import { gsap } from "gsap";
 import { useToast } from "vue-toastification";
 import "vue-toastification/dist/index.css"; // Import the CSS file
 import { initializeApp } from "@firebase/app";
+
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 const storage = getStorage(app);
+import confirm_message from "@/components/confirm_message.vue";
 
 export { db, storage };
+import "jspdf-autotable";
+// import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
+import Chart from "chart.js/auto";
 import { useDialogStore } from "@/store/useDialogStore";
 import { mapState } from "pinia";
 import { useAuthStore } from "../store/userStore";
 export default {
     name: "StudentList",
+    components: {
+        confirm_message,
+        Empty_error,
+    },
     props: {
         year: {
             type: Number,
             required: true,
         },
         sortStudents: Function,
+        selectedSection: {
+            type: String,
+            default: "الكل",
+        },
+        dialog: {
+            type: Boolean,
+            required: true,
+        },
     },
     setup() {
         const toast = useToast();
@@ -2456,6 +2530,7 @@ export default {
     data() {
         return {
             dialog_stu: false,
+            searchId: "", // متغير لتخزين معرف الطالب الذي تريد البحث عنه
             menuz: false,
             steps: [
                 "معلومات الطالب",
@@ -2466,6 +2541,10 @@ export default {
                 "الاشعارات",
                 "الصور",
             ],
+            selectedParent: {
+                name: "",
+                Child: [], // مصفوفة تحتوي على أسماء الأبناء
+            },
             tempDatez: null,
             editNotificationsDialog: false,
             editPhotosDialog: false,
@@ -2501,14 +2580,15 @@ export default {
             searchQuery: "",
             students: [],
             form: {
-                student_information: [
-                    { student_name: "" },
-                    { class: "" },
-                    { educational_level: this.year },
-                    { gender: "" },
-                    { section: "" },
-                    { birthday: null },
-                ],
+                educational_level: this.year,
+                student_name: "",
+                class: "",
+                gender: "",
+                section: "",
+                birthday: null,
+                parent_name: "",
+                national_id: "",
+
                 Guardian: [
                     { Guardian_name: "" },
                     { Guardian_phone: "" },
@@ -2517,6 +2597,7 @@ export default {
                     { Brothers_in_school: "" },
                     { brother: [""] },
                 ],
+                errors: {},
                 Results: [
                     {
                         weekly: [
@@ -2682,9 +2763,11 @@ export default {
                     },
                 ],
                 payments: {
-                    Requird: 0,
-                    paid_up: 0,
-                    installment_system: "",
+                    Expenses: 0,
+                    payment_System: "",
+                    Installment_System: "",
+                    paid_Up: 0,
+                    Residual: 0,
                 },
                 Notifications: [
                     {
@@ -2701,8 +2784,10 @@ export default {
                     },
                 ],
             },
-
+            loading1: true, // خاصية لتحميل البيانات
             errors: {
+                parent_name: [],
+                parent_national_id: [],
                 student_name: [],
                 class: [],
                 educational_level: [],
@@ -2731,6 +2816,7 @@ export default {
                 Notifications_Title: [],
                 Notifications_Details: [],
             },
+            selectedClassId: "",
             currentStep: "Step 1",
             progress: 75,
             classes: [
@@ -2785,8 +2871,36 @@ export default {
             selectedStudent: "",
             dialogStudentDetails: false,
             changesMade: false,
-            changesMade2: false,
+            changesMade2: true,
             changesMade3: false,
+            CreateChart: null,
+            interval: null,
+            value: 0,
+            tab_1: 0,
+            paymentMethod: null,
+            paymentMethods: ["الدفع المباشر", "نظام التقسيط"],
+            dialogSuccess: false,
+            transitionTimeline: false, // متغير للتحكم في الانتقال للـ timeline-item-content
+            transitionProgress: false, // متغير للتحكم في الانتقال للبروجريس بار
+            alertMessage: false,
+            reachedProgress: false,
+            currentActive: 0,
+            // circles: [],
+            totalAmount: null,
+            paidAmount: 0,
+            tab_5: null,
+            tab_4: null,
+            tab_2: null,
+            tab: "option-1", // تحديد التاب الافتراضي
+            selectedGrade: null,
+            gradeLevels: ["الصف الأول", "الصف الثاني", "الصف الثالث"],
+            selectedPlan: null,
+            selectPaid: ["شهر", "شهرين", "3 شهور", "4 شهور", "5 شهور"],
+            amount: 0,
+            selectedPaymentPlan: null,
+            paymentPlans: ["شهر", "شهرين", "3 شهور", "4 شهور", "5 شهور"],
+            showSnackbar: false,
+            confirmationText: "",
         };
     },
     async created() {
@@ -2869,8 +2983,11 @@ export default {
 
                 // Update only the necessary fields in Firestore
                 await updateDoc(studentDoc, {
-                    student_information:
-                        this.selectedStudent.student_information,
+                    student_name: this.selectedStudent.student_name,
+                    class: this.selectedStudent.class,
+                    gender: this.selectedStudent.gender,
+                    section: this.selectedStudent.section,
+                    birthday: this.selectedStudent.birthday,
                 });
 
                 console.log("Document updated successfully");
@@ -2892,10 +3009,14 @@ export default {
             try {
                 const studentDoc = doc(db, "students", this.selectedStudent.id);
                 // Update only if changes were marked
+
                 if (this.changesMade) {
                     await updateDoc(studentDoc, {
-                        student_information:
-                            this.selectedStudent.student_information,
+                        student_name: this.selectedStudent.student_name,
+                        class: this.selectedStudent.class,
+                        gender: this.selectedStudent.gender,
+                        section: this.selectedStudent.section,
+                        birthday: this.selectedStudent.birthday,
                     });
                     console.log("Document updated successfully");
                 }
@@ -2915,86 +3036,73 @@ export default {
             this.changesMade2 = false;
         },
 
-        getAlertType(notificationType) {
-            if (notificationType === "سي") {
-                return "error";
-            }
-            switch (notificationType) {
-                case "success":
-                    return "success";
-                case "error":
-                    return "error";
-                case "warning":
-                    return "warning";
-                case "info":
-                    return "info";
-                default:
-                    return "info";
-            }
-        },
-        getIcon(notificationType) {
-            switch (notificationType) {
-                case "success":
-                    return "mdi-check-circle";
-                case "error":
-                case "سي":
-                    return "mdi-alert-circle";
-                case "warning":
-                    return "mdi-alert";
-                case "info":
-                    return "mdi-information";
-                default:
-                    return "mdi-information";
-            }
-        },
-        getIconClass(notificationType) {
-            switch (notificationType) {
-                case "success":
-                    return "green";
-                case "error":
-                case "سي":
-                    return "red";
-                case "warning":
-                    return "orange";
-                case "info":
-                    return "blue";
-                default:
-                    return "blue";
-            }
-        },
+        // getAlertType(notificationType) {
+        //     // if (notificationType === "سي") {
+        //     //     return "error";
+        //     // }
+        //     // switch (notificationType) {
+        //     //     case "success":
+        //     //         return "success";
+        //     //     case "error":
+        //     //         return "error";
+        //     //     case "warning":
+        //     //         return "warning";
+        //     //     case "info":
+        //     //         return "info";
+        //     //     default:
+        //     //         return "info";
+        //     // }
+        // },
+        // getIcon(notificationType) {
+        //     switch (notificationType) {
+        //         case "success":
+        //             return "mdi-check-circle";
+        //         case "error":
+        //         case "سي":
+        //             return "mdi-alert-circle";
+        //         case "warning":
+        //             return "mdi-alert";
+        //         case "info":
+        //             return "mdi-information";
+        //         default:
+        //             return "mdi-information";
+        //     }
+        // getIconClass(notificationType) {
+        //     switch (notificationType) {
+        //         case "success":
+        //             return "green";
+        //         case "error":
+        //         case "سي":
+        //             return "red";
+        //         case "warning":
+        //             return "orange";
+        //         case "info":
+        //             return "blue";
+        //         default:
+        //             return "blue";
+        //     }
+        // },
         async fetchStudents() {
             try {
-                const querySnapshot = await getDocs(collection(db, "students"));
+                const q = query(
+                    collection(db, "students"),
+                    where("educational_level", "==", this.year)
+                );
+                this.loading1 = true; // بدء تحميل البيانات
+                const querySnapshot = await getDocs(q);
                 this.students = querySnapshot.docs.map((doc) => {
                     const studentData = doc.data();
                     const student = {
                         id: doc.id,
                         ...studentData,
-                        student_information:
-                            studentData.student_information.map(
-                                (info, index) => {
-                                    if (
-                                        index === 5 &&
-                                        info.birthday &&
-                                        info.birthday.seconds
-                                    ) {
-                                        const date = new Date(
-                                            info.birthday.seconds * 1000
-                                        );
-                                        return {
-                                            ...info,
-                                            birthday: this.formatDate(date),
-                                        };
-                                    }
-                                    return info;
-                                }
-                            ),
+                        birthday: this.formatDate(
+                            new Date(studentData.birthday * 1000)
+                        ), // Convert birthday to string if it's a Timestamp
                     };
-
                     return student;
                 });
-
-                console.log("Fetched students:", this.students_class);
+                this.loading1 = false; // بدء تحميل البيانات
+                console.log("Fetched students:", this.students);
             } catch (error) {
                 console.error("Error fetching students:", error);
             }
@@ -3003,45 +3111,137 @@ export default {
         async submit() {
             if (this.validateForm()) {
                 try {
-                    // Add student data to Firestore
+                    // التأكد من أن تاريخ الميلاد يتم تخزينه كسلسلة منسقة
+                    const formattedBirthday = this.formatDate(
+                        new Date(this.form.birthday)
+                    );
+
+                    // إضافة الطالب إلى مجموعة "students"
                     const docRef = await addDoc(collection(db, "students"), {
-                        student_information: this.form.student_information,
+                        student_name: this.form.student_name,
+                        class: this.form.class,
+                        gender: this.form.gender,
+                        section: this.form.section,
+                        birthday: formattedBirthday,
+                        Results: this.form.Results,
+                        payments: this.form.payments,
+                        Notifications: this.form.Notifications,
+                        photos: this.form.photos,
+                        educational_level: this.year,
+                        year: new Date().getFullYear(),
+                    });
+
+                    const newStudentId = docRef.id;
+
+                    const newStudent = {
+                        id: newStudentId,
+                        student_name: this.form.student_name,
+                        class: this.form.class,
+                        gender: this.form.gender,
+                        section: this.form.section,
+                        birthday: formattedBirthday,
                         Results: this.form.Results,
                         payments: this.form.payments,
                         Notifications: this.form.Notifications,
                         photos: this.form.photos,
                         year: new Date().getFullYear(),
-                    });
-
-                    // Get the ID of the newly added document
-                    const newStudentId = docRef.id;
-
-                    // Construct the student object to add to the local array
-                    const newStudent = {
-                        id: newStudentId,
-                        student_information: this.form.student_information,
-                        Results: this.form.Results,
-                        payments: this.form.payments,
-                        Notifications: this.form.Notifications,
-                        photos: this.form.photos,
-                        year: this.years,
                     };
 
-                    // Push the new student to the local array
                     this.students.push(newStudent);
 
-                    // Reset form fields and close dialog
-                    this.dialog_addstudent = false;
-                    this.handleReset();
-                    await this.fetchStudents();
-                    this.dialogStore.hideAddStudentDialog();
+                    // تحقق من وجود مستند "Parents" بالرقم القومي
+                    const parentDocRef = doc(
+                        db,
+                        "parents",
+                        this.form.parent_national_id
+                    );
+                    const parentDoc = await getDoc(parentDocRef);
 
+                    if (parentDoc.exists()) {
+                        // إذا كان المستند موجوداً، فقط قم بإضافة اسم الطالب إلى قائمة Child
+                        await setDoc(
+                            parentDocRef,
+                            {
+                                Child: arrayUnion(this.form.student_name),
+                            },
+                            { merge: true }
+                        );
+
+                        console.log(
+                            "Updated existing parent document successfully"
+                        );
+                    } else {
+                        // إذا لم يكن المستند موجوداً، قم بإنشاء مستند جديد
+                        await setDoc(parentDocRef, {
+                            name: this.form.parent_name,
+                            National_id: this.form.parent_national_id,
+                            Child: [this.form.student_name], // أو يمكنك استخدام arrayUnion إذا كنت تريد التأكد من عدم التكرار
+                        });
+
+                        console.log("Created new parent document successfully");
+                    }
+
+                    this.dialog_addstudent = false;
+                    this.formattedDate = "";
+                    this.handleReset();
+                    this.dialogStore.hideAddStudentDialog();
+                    this.$emit("close-dialog");
                     console.log("Added new student:", newStudent);
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم إضافة الطالب بنجاح";
+                    this.showSnackbar = true;
+                    await this.fetchStudents();
                 } catch (error) {
                     console.error("Error adding document:", error);
                 }
             }
         },
+
+        // async submitParent() {
+        //     try {
+        //         await setDoc(
+        //             doc(db, "parents", this.form.parent_national_id),
+        //             {
+        //                 name: this.form.parent_name,
+        //                 National_id: this.form.parent_national_id,
+        //                 Child: arrayUnion(this.form.student_name),
+        //             },
+        //             { merge: true }
+        //         );
+
+        //         // معالجة النتائج الأخرى بعد الإضافة
+        //         console.log("Parent document updated successfully");
+        //     } catch (error) {
+        //         console.error("Error updating parent document:", error);
+        //     }
+        // },
+        formatDate(date) {
+            const d = new Date(date);
+            let month = "" + (d.getMonth() + 1); // استخدام let بدلاً من const
+            let day = "" + d.getDate(); // استخدام let بدلاً من const
+            const year = d.getFullYear();
+
+            if (month.length < 2) month = "0" + month;
+            if (day.length < 2) day = "0" + day;
+
+            return [year, month, day].join("-");
+        },
+        // formatDateh(birthday) {
+        //     if (birthday.seconds) {
+        //         const date = new Date(birthday.seconds * 1000);
+        //         const day = date.getDate();
+        //         const month = date.getMonth() + 1; // Months are zero-based
+        //         const year = date.getFullYear();
+        //         return `${day}/${month}/${year}`;
+        //     } else {
+        //         return birthday; // If it's already formatted
+        //     }
+        // },
+        // Example function to generate a unique ID
+        generateUniqueId() {
+            return "id-" + Math.random().toString(36).substr(2, 9);
+        },
+
         openDeleteDialog(studentId) {
             this.dialog_stu = studentId;
         },
@@ -3065,6 +3265,9 @@ export default {
                 this.students = this.students.filter(
                     (student) => student.id !== id
                 );
+                // إعداد نص الرسالة وتفعيل Snackbar
+                this.confirmationText = "تم مسح الطالب بنجاح";
+                this.showSnackbar = true;
                 console.log("Deleted student with id:", id);
             } catch (error) {
                 console.error("Error deleting document:", error);
@@ -3072,14 +3275,12 @@ export default {
         },
         handleReset() {
             this.form = {
-                student_information: [
-                    { student_name: "" },
-                    { class: "" },
-                    { educational_level: "" },
-                    { gender: "" },
-                    { section: "" },
-                    { birthday: null },
-                ],
+                educational_level: this.year,
+                student_name: "",
+                class: "",
+                gender: "",
+                section: "",
+                birthday: "",
                 Guardian: [
                     { Guardian_name: "" },
                     { Guardian_phone: "" },
@@ -3276,25 +3477,25 @@ export default {
             let isValid = true;
             // Clear previous error messages
             // Validation rules
-            if (!this.form.student_information[0].student_name) {
-                this.errors.student_name.push("اسم الطالب مطلوب.");
-                isValid = false;
-            }
-            if (!this.form.student_information[1].class) {
-                this.errors.class.push("الفصل مطلوب.");
-            }
-            if (!this.form.student_information[2].educational_level) {
-                this.errors.educational_level.push("المستوى التعليمي مطلوب.");
-            }
-            if (!this.form.student_information[3].gender) {
-                this.errors.gender.push("الجنس مطلوب.");
-            }
-            if (!this.form.student_information[4].section) {
-                this.errors.section.push("القسم مطلوب.");
-            }
-            if (!this.form.student_information[5].birthday) {
-                this.errors.birthday.push("تاريخ الميلاد مطلوب.");
-            }
+            // if (!this.form.student_information[0].student_name) {
+            //     this.errors.student_name.push("اسم الطالب مطلوب.");
+            //     isValid = false;
+            // }
+            // if (!this.form.student_information[1].class) {
+            //     this.errors.class.push("الفصل مطلوب.");
+            // }
+            // if (!this.form.student_information[2].educational_level) {
+            //     this.errors.educational_level.push("المستوى التعليمي مطلوب.");
+            // }
+            // if (!this.form.student_information[3].gender) {
+            //     this.errors.gender.push("الجنس مطلوب.");
+            // }
+            // if (!this.form.student_information[4].section) {
+            //     this.errors.section.push("القسم مطلوب.");
+            // }
+            // if (!this.form.student_information[5].birthday) {
+            //     this.errors.birthday.push("تاريخ الميلاد مطلوب.");
+            // }
 
             return isValid;
         },
@@ -3323,7 +3524,7 @@ export default {
                             showDetails: false,
                         }))
                         .filter((student) =>
-                            student.student_information[0].student_name
+                            student.student_name
                                 .toLowerCase()
                                 .includes(trimmedQuery)
                         );
@@ -3364,28 +3565,48 @@ export default {
                 });
             }
         },
+        async loadParentDetails(National_id) {
+            if (!National_id) {
+                console.error("No National_id provided");
+                return;
+            }
+
+            try {
+                const parentDoc = doc(db, "Parents", National_id);
+                const parentSnapshot = await getDoc(parentDoc);
+                console.log("dxasdsasdsasa:", parentDoc);
+
+                if (parentSnapshot.exists()) {
+                    const parentData = parentSnapshot.data();
+                    this.selectedParent.name = parentData.name || "غير متوفر";
+                    this.selectedParent.children = parentData.Child || []; // تأكد من أن Child ليست undefined
+                } else {
+                    console.error("No such document!");
+                    this.selectedParent.name = "غير متوفر";
+                    this.selectedParent.children = [];
+                }
+            } catch (error) {
+                console.error("Error getting document:", error);
+            }
+        },
+
         openStudentDetails(student) {
             this.selectedStudent = student;
+            this.loadParentDetails(student.National_id);
             this.dialogStudentDetails = true;
         },
         // l;
         initializeTempDate() {
-            // this.tempDate = this.form.student_information[5].birthday;
-            this.tempDate = this.form.student_information[5].birthday;
+            // this.tempDate = this.form.birthday;
+            this.tempDate = this.form.birthday;
             new Date().toISOString().substr(0, 10);
         },
         confirmDate() {
-            this.form.student_information[5].birthday = this.tempDate;
+            this.form.birthday = this.tempDate;
             this.formattedDate = this.formatDate(this.tempDate);
             this.menu = false;
         },
-        formatDate(date) {
-            const d = new Date(date);
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, "0");
-            const day = String(d.getDate()).padStart(2, "0");
-            return `${year}/${month}/${day}`;
-        },
+
         // ik
         async addSubject(studentId) {
             try {
@@ -3420,7 +3641,9 @@ export default {
                         Student_degree: null,
                         Date: null,
                     };
-
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  اضافه الماده بنجاح";
+                    this.showSnackbar = true;
                     // Fetch students again to update the UI
                     await this.fetchStudents();
                 }
@@ -3432,9 +3655,10 @@ export default {
         editSubject(studentId, index) {
             this.editedStudentId = studentId;
             this.editedIndex = index;
-            const student = this.students_class.find(
+            const student = this.students.find(
                 (student) => student.id === studentId
             );
+
             if (student) {
                 this.editedSubject = {
                     ...student.Results[0].weekly[index],
@@ -3462,6 +3686,9 @@ export default {
 
                     await updateDoc(studentRef, studentData);
                     this.closeDialog();
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  تعديل الماده بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchStudents();
                 }
             } catch (error) {
@@ -3515,6 +3742,9 @@ export default {
                 studentData.Results[0].weekly.splice(subjectIndex, 1);
 
                 await updateDoc(studentRef, studentData);
+                // إعداد نص الرسالة وتفعيل Snackbar
+                this.confirmationText = "تم  حذف الماده بنجاح";
+                this.showSnackbar = true;
                 await this.fetchStudents();
 
                 console.log(
@@ -3569,6 +3799,9 @@ export default {
                     );
                     await updateDoc(studentRef, studentData);
                     this.closeNotificationsDialogs();
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  تعديل الاشعار بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchStudents();
                 }
             } catch (error) {
@@ -3578,11 +3811,13 @@ export default {
         editNotifications(studentId, index) {
             this.editedStudentId = studentId;
             this.editedIndex = index;
-            const selectedStudent = this.students_class.find(
+            const selectedStudent = this.students.find(
                 (selectedStudent) => selectedStudent.id === studentId
             );
             if (selectedStudent) {
-                this.editedNotifications = { ...selectedStudent.Notifications };
+                this.editedNotifications = {
+                    ...selectedStudent.Notifications[index],
+                };
                 this.editNotificationsDialog = true;
             }
         },
@@ -3610,13 +3845,15 @@ export default {
                         theDescription: this.AddNotice.theDescription,
                         NotificationType: this.AddNotice.NotificationType,
                     };
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  اضافه الاشعار بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchStudents();
                 }
             } catch (error) {
                 console.error("Error adding subject:", error);
             }
         },
-
         async deleteNotification(studentId, NotificatIndex) {
             try {
                 const studentRef = doc(db, "students", studentId);
@@ -3631,6 +3868,9 @@ export default {
                         studentData
                     );
                     await updateDoc(studentRef, studentData);
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  حذف الاشعار بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchStudents();
                     // this.dilog_ss = true;
                 }
@@ -3649,61 +3889,6 @@ export default {
         },
 
         // ul
-        editPhotos(studentId, index) {
-            this.editedStudentId = studentId;
-            this.editedIndex = index;
-            const selectedStudent = this.students_class.find(
-                (student) => student.id === studentId
-            );
-            if (selectedStudent) {
-                this.editedPhotos = { ...selectedStudent.photos[index] };
-                this.editPhotosDialog = true;
-            }
-        },
-        async savePhotosEdit() {
-            try {
-                let downloadURL = this.editedPhotos.linkphoto;
-                if (this.editedPhotos.file) {
-                    const storageRef = ref(
-                        storage,
-                        `photos/${this.editedPhotos.file.name}`
-                    );
-                    await uploadBytes(storageRef, this.editedPhotos.file);
-                    downloadURL = await getDownloadURL(storageRef);
-                }
-
-                const studentRef = doc(db, "students", this.editedStudentId);
-                const studentDoc = await getDoc(studentRef);
-                if (studentDoc.exists()) {
-                    const studentData = studentDoc.data();
-                    studentData.photos[this.editedIndex] = {
-                        linkphoto: downloadURL,
-                        grade: this.editedPhotos.grade || "",
-                    };
-                    // عند تحديث selectedStudent باستخدام بيانات محدثة
-                    this.selectedStudent = Object.assign(
-                        {},
-                        this.selectedStudent,
-                        studentData
-                    );
-                    // Log the data before updating
-                    console.log("Updating student data:", studentData);
-
-                    // Ensure no undefined values
-                    Object.keys(studentData).forEach((key) => {
-                        if (studentData[key] === undefined) {
-                            delete studentData[key];
-                        }
-                    });
-
-                    await updateDoc(studentRef, { photos: studentData.photos });
-                    this.closePhotoDialogs();
-                    await this.fetchStudents();
-                }
-            } catch (error) {
-                console.error("Error editing subject:", error);
-            }
-        },
         async addPhoto(studentId) {
             try {
                 if (this.AddPhoto.file) {
@@ -3740,6 +3925,9 @@ export default {
                             Date: "",
                             link: null,
                         };
+                        // إعداد نص الرسالة وتفعيل Snackbar
+                        this.confirmationText = "تم  اضافه الصوره بنجاح";
+                        this.showSnackbar = true;
                         await this.fetchStudents();
                     }
                 }
@@ -3761,6 +3949,9 @@ export default {
                         studentData
                     );
                     await updateDoc(studentRef, studentData);
+                    // إعداد نص الرسالة وتفعيل Snackbar
+                    this.confirmationText = "تم  حذف الصوره بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchStudents();
                     // this.dilog_ss = true;
                 }
@@ -3815,37 +4006,9 @@ export default {
                 }
             }
         },
-        animateSlideChange() {
-            const slides = [
-                this.$refs.slide1,
-                this.$refs.slide2,
-                this.$refs.slide3,
-                this.$refs.slide4,
-                this.$refs.slide5,
-                this.$refs.slide6,
-                this.$refs.slide7,
-            ];
-
-            slides.forEach((slide, index) => {
-                gsap.fromTo(
-                    slide,
-                    {
-                        opacity: 0.5, // البداية من opacity 0.5
-                        x: 100 * (index + 1), // الوضع الأولي للإحداثي y (من الأعلى)
-                    },
-                    {
-                        duration: 0.7,
-                        opacity: 1,
-                        x: 0,
-                        ease: "power2.out", // نوع الانتقال
-                    }
-                );
-            });
-        },
-
         async updateMonthlyDegrees(degrees) {
             if (!this.selectedStudent) {
-                console.error("Error: selectedStudent is null");
+                this.console.error("Error: selectedStudent is null");
                 return;
             }
 
@@ -3891,28 +4054,166 @@ export default {
                 console.error("Error updating document:", error);
             }
         },
-        saveChanges3() {
-            // استدعاء updateFirebase فقط عند النقر على زر الحفظ
-            this.updateFirebase(
-                this.selectedStudent.id,
-                this.selectedStudent.payments
+        // saveChanges3() {
+        //     // استدعاء updateFirebase فقط عند النقر على زر الحفظ
+        //     this.updateFirebase(
+        //         this.selectedStudent.id,
+        //         this.selectedStudent.payments
+        //     );
+        //     this.changesMade3 = false;
+        // },
+        createChart(data) {
+            const ctx = document.getElementById("myChart");
+            if (ctx) {
+                // تحقق مما إذا كان هناك مخطط موجود وقم بتدميره
+                if (this.myChart) {
+                    this.myChart.destroy();
+                }
+
+                console.log("start createChart");
+                this.CreateChart = true;
+                this.myChart = new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        datasets: [
+                            {
+                                label: "المصروفات",
+                                data: data,
+                                backgroundColor: ["#336699", "#d8588c"],
+                                hoverOffset: 4,
+                            },
+                        ],
+                    },
+                });
+            } else {
+                console.log("error");
+            }
+        },
+        updatePaymentOptions() {
+            if (this.paymentMethod === "نظام التقسيط") {
+                this.selectedPlan = null;
+                this.paidAmount = 0;
+                this.amount = 0;
+            }
+        },
+        payAmount() {
+            const amountToPay = parseInt(this.amount);
+
+            if (isNaN(amountToPay) || amountToPay <= 0) {
+                this.showAlert("الرجاء إدخال المبلغ صحيحا");
+                return;
+            }
+
+            this.paidAmount += amountToPay;
+            // this.amount = 0;
+            this.dialogSuccess = true;
+        },
+        validateTotalAmount() {
+            if (this.totalAmount !== null) {
+                if (isNaN(this.totalAmount) || this.totalAmount < 0) {
+                    this.showAlert("لابد ان يكون رقما وليس سالبا");
+                    this.totalAmount = null;
+                }
+            }
+        },
+        showAlert(message) {
+            this.alertMessage = message;
+            setTimeout(() => {
+                this.alertMessage = "";
+            }, 3000);
+        },
+        resetPayment() {
+            this.paidAmount = 0;
+        },
+        updateStudentPayments(studentId, field, value) {
+            const studentRef = doc(db, "students", studentId);
+            const updateData = { [`payments.${field}`]: value };
+            if (field === "paid_Up" || field === "Expenses") {
+                updateData["payments.Residual"] = this.getResidual(studentId);
+            }
+
+            updateDoc(studentRef, updateData)
+                .then(() => {
+                    console.log("Document successfully updated!");
+                })
+                .catch((error) => {
+                    console.error("Error updating document: ", error);
+                });
+        },
+        getResidual(studentId) {
+            const student = this.students.find((s) => s.id === studentId);
+            return student.payments.Expenses - student.payments.paid_Up;
+        },
+        numberOfMonths(installmentPlan) {
+            const monthsMap = {
+                شهر: 1,
+                شهرين: 2,
+                "3 شهور": 3,
+                "4 شهور": 4,
+                "5 شهور": 5,
+            };
+            return Array.from(
+                { length: monthsMap[installmentPlan] },
+                (_, i) => i + 1
             );
-            this.changesMade3 = false;
+        },
+        installmentAmount(totalAmount, installmentPlan) {
+            const monthsMap = {
+                شهر: 1,
+                شهرين: 2,
+                "3 شهور": 3,
+                "4 شهور": 4,
+                "5 شهور": 5,
+            };
+            return Math.floor(totalAmount / monthsMap[installmentPlan]);
+        },
+        getMonthName(month) {
+            const monthNames = [
+                "شهر نوفمبر",
+                "شهر ديسمبر",
+                "الترم الأول",
+                "شهر فبراير",
+                "شهر مارس",
+            ];
+            return monthNames[month - 1] || month;
+        },
+        setChangesMade(status) {
+            this.changesMade3 = status;
+        },
+        saveChanges3() {
+            this.sortedStudents.forEach((student) => {
+                const studentRef = doc(db, "students", student.id);
+                const updateData = {
+                    "payments.Expenses": student.payments.Expenses ?? 0,
+                    "payments.payment_System":
+                        student.payments.payment_System ?? "",
+                    "payments.Installment_System":
+                        student.payments.Installment_System ?? "",
+                    "payments.paid_Up": student.payments.paid_Up ?? 0,
+                    "payments.Residual": this.getResidual(student.id),
+                };
+
+                updateDoc(studentRef, updateData)
+                    .then(() => {
+                        console.log("Document successfully updated!");
+                        this.changesMade3 = false; // Reset the flag after saving
+                    })
+                    .catch((error) => {
+                        console.error("Error updating document: ", error);
+                    });
+            });
+        },
+        updateResidual() {
+            const expenses = this.form.payments.Expenses || 0;
+            const paidUp = this.form.payments.paid_Up || 0;
+            this.form.payments.Residual = expenses - paidUp;
         },
     },
     watch: {
-        "form.student_information[5].birthday"(newVal) {
+        "form.birthday"(newVal) {
             this.formattedDate = this.formatDate(newVal);
         },
-        "Guardian[0].Guardian_name": "updateGuardian",
-        "Guardian[1].Guardian_phone": "updateGuardian",
-        "Guardian[2].Guardian_email": "updateGuardian",
-        "Guardian[3].Guardian_password": "updateGuardian",
-        "Guardian[4].Brothers_in_school": "updateGuardian",
-        "Guardian[5].brother": {
-            handler: "updateGuardian",
-            deep: true, // To detect changes in nested array elements
-        },
+
         selectedMonthlyDegrees: {
             handler() {
                 // Save changes to Firebase
@@ -3920,45 +4221,45 @@ export default {
             },
             deep: true,
         },
+        "form.payments.Expenses"() {
+            this.updateResidual();
+        },
+        "form.payments.paid_Up"() {
+            this.updateResidual();
+        },
     },
     computed: {
         ...mapState(useAuthStore, ["user"]),
         filteredStudents() {
-            return this.students_class.filter(
-                (student) => student.year === this.year
+            if (this.selectedSection === "الكل") {
+                return this.students.filter(
+                    (student) => student.educational_level === this.year
+                );
+            }
+            return this.students.filter(
+                (student) =>
+                    student.educational_level === this.year &&
+                    student.section === this.selectedSection
             );
         },
         sortedStudents() {
-            // Ensure students_class is defined and is an array
-            if (!Array.isArray(this.students_class)) {
-                return [];
-            }
+            const studentsToSort = this.filteredStudents;
+            const sorted = [...studentsToSort].sort((a, b) => {
+                const nameA = a.student_name.toUpperCase();
+                const nameB = b.student_name.toUpperCase();
 
-            return this.students_class
-                .filter(
-                    (student) =>
-                        student.student_information &&
-                        student.student_information.length > 0
-                )
-                .sort((a, b) => {
-                    // Ensure student_information is defined and has at least one element
-                    const nameA =
-                        a.student_information[0]?.student_name?.toLowerCase() ||
-                        "";
-                    const nameB =
-                        b.student_information[0]?.student_name?.toLowerCase() ||
-                        "";
-
-                    if (this.isSortedAscending) {
-                        return nameA.localeCompare(nameB, "ar", {
-                            sensitivity: "base",
-                        });
-                    } else {
-                        return nameB.localeCompare(nameA, "ar", {
-                            sensitivity: "base",
-                        });
-                    }
-                });
+                if (this.$parent.isSortedAscending) {
+                    // الترتيب من الألف إلى الياء
+                    if (nameA < nameB) return -1;
+                    if (nameA > nameB) return 1;
+                } else {
+                    // الترتيب من الياء إلى الألف
+                    if (nameA < nameB) return 1;
+                    if (nameA > nameB) return -1;
+                }
+                return 0;
+            });
+            return sorted;
         },
         selectedMonthlyDegrees() {
             if (!this.selectedStudent) {
@@ -3970,19 +4271,30 @@ export default {
                 )?.Degrees || []
             );
         },
+        remainingAmount() {
+            return Math.max(this.totalAmount - this.paidAmount, 0);
+        },
     },
-    async mounted() {
+    mounted() {
         this.searchStudent(); // Fetch all students initially
         this.generateRandomPassword();
         this.fetchStudents();
-
+        this.interval = setInterval(() => {
+            if (this.value === 100) {
+                clearInterval(this.interval);
+                return;
+            }
+            this.value += 10;
+        }, 100);
         this.students = this.$parent.students_class; // Assuming students_class is passed down from parent
-        await this.sortStudents(); // If sorting is needed on mount
+    },
+    beforeUnmount() {
+        clearInterval(this.interval);
     },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .student-item {
     padding: 10px;
     direction: rtl;
@@ -3999,8 +4311,9 @@ export default {
     font-size: 14px;
     margin-top: -10px;
     margin-bottom: 10px;
-} /*
-.v-progress-linear {
+}
+
+/* .v-progress-linear {
     position: static;
     overflow: visible;
 } */
@@ -4104,7 +4417,597 @@ export default {
 .notification-card .v-icon:hover {
     color: #1e88e5;
 }
+
 .v-overlay__scrim {
-    display: none;
+    background: rgb(0 0 0 / 26%) !important;
+}
+.v-dialog > .v-overlay__content > .v-card,
+.v-dialog > .v-overlay__content > .v-sheet,
+.v-dialog > .v-overlay__content > form > .v-card,
+.v-dialog > .v-overlay__content > form > .v-sheet {
+    box-shadow: none !important;
+}
+.sui {
+    color: white;
+    background: white;
+}
+.timeline-container {
+    width: calc(100% - 110px) !important;
+    margin: 20px !important;
+}
+
+.timeline {
+    position: relative;
+    margin-left: 20px;
+}
+
+.timeline-line {
+    position: absolute;
+    width: 2px;
+    background-color: #ccc;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+.progress_container {
+    position: absolute;
+    width: 5px;
+    background-color: #eee;
+    left: 8px;
+    bottom: 0;
+    margin: auto;
+    height: calc(100% + 35px);
+    top: 35px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-item-content {
+    position: relative;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    position: relative;
+    margin-left: 20px;
+}
+.timeline-item-content::before {
+    content: "";
+    position: absolute;
+    bottom: -35px;
+    left: -26.7px;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    /* border-radius: 50%; */
+    transform: rotate(45deg);
+    background-color: var(--main-color);
+}
+.timeline-item-content::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -24px;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-right: 20px solid #d8588c;
+}
+.timeline-item-header {
+    padding-bottom: 10px;
+}
+
+.timeline-item-body {
+    font-size: 14px;
+}
+
+.month-name {
+    font-weight: bold;
+    color: var(--main-color);
+}
+
+.payment-section {
+    margin-top: 20px;
+}
+.progress-label {
+    font-size: 14px;
+    font-weight: bold;
+    position: absolute;
+    right: 21px;
+    width: 106px;
+    background: var(--main-color);
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+}
+.timeline-item-content {
+    margin-left: 30px;
+    transition: 0.5s;
+    transition: margin-left 0.5s;
+}
+.success-message {
+    color: #4caf50; /* لون أخضر لرسائل النجاح */
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 20px;
+    transition: 0.5s;
+}
+
+.timeline-item-content.transition {
+    margin-left: 60px; /* أو أي قيمة انتقال تفضلها */
+}
+
+.progress {
+    transition: height 0.5s;
+}
+
+.progress.transition {
+    height: 100%;
+}
+.custom-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 120px;
+    font-size: 20px;
+    z-index: 9999;
+    border-radius: 20px;
+    transition: all 0.5s ease-in-out;
+    /* text-align: center; */
+}
+.v-card-text {
+    padding: 0;
+    margin-top: 15px;
+}
+.v-window__container {
+    .title {
+        font-size: 22px;
+        font-weight: bold;
+        color: var(--main-color);
+        position: relative;
+        margin: 0 10px 30px;
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            height: 4px;
+            width: 100%;
+            background: var(--secound-color);
+        }
+    }
+
+    .box {
+        box-shadow: 0 0 10px #ddd;
+        padding: 10px;
+        margin: 0 10px 10px;
+        border-radius: 5px;
+        & > div {
+            width: 100%;
+            background: var(--secound-color);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .feat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+            .name {
+                font-size: 19px;
+                font-weight: bold;
+                color: var(--therd-color);
+            }
+            .gender {
+                color: var(--therd-color);
+                font-weight: bold;
+                font-size: 16px;
+            }
+            .educational_level {
+                font-size: 17px;
+                color: var(--main-color);
+                font-weight: bold;
+            }
+            .Class {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                font-weight: bold;
+                color: var(--pink-color);
+                font-size: 16px;
+            }
+            .section {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                font-weight: bold;
+                color: var(--pink-color);
+                font-size: 16px;
+            }
+        }
+    }
+}
+.weekly {
+    .contain {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        row-gap: 20px;
+        flex-wrap: wrap;
+    }
+    .feat {
+        box-shadow: 0 0 10px #ddd;
+        margin: 0 10px 10px;
+        border-radius: 5px;
+        padding: 10px;
+        width: 48%;
+        flex-grow: 1;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            position: relative;
+            margin: 0 auto 30px;
+            background: var(--secound-color);
+            &::before {
+                content: "";
+                position: absolute;
+                bottom: -20px;
+                height: 5px;
+                width: 100%;
+                background: var(--secound-color);
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            & > div:first-child {
+                display: flex;
+                align-items: center;
+                font-size: 21px;
+                font-weight: bold;
+                color: var(--main-color);
+            }
+        }
+        .table {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+
+            & > div {
+                display: flex;
+                align-items: center;
+                width: 100%;
+                & > div {
+                    display: flex;
+                    align-items: center;
+                    border: 1px solid var(--secound-color);
+                    width: 50%;
+                    justify-content: center;
+                    padding: 10px;
+                    font-size: 16px;
+                    color: var(--therd-color);
+                    font-weight: bold;
+                    text-align: center;
+                }
+            }
+        }
+    }
+}
+.monthly {
+    .header {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        flex-direction: column;
+
+        & > div {
+            width: auto;
+            margin: 0 10px;
+        }
+        .download {
+            height: 56px !important;
+            color: var(--main-color);
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 10px #ddd;
+            gap: 10px;
+            font-weight: bold;
+            text-align: center;
+            img {
+                width: 30px;
+            }
+        }
+    }
+    .Certificate {
+        margin: 20px 10px;
+        border: 2px outset var(--therd-color);
+        padding: 20px;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        .head {
+            justify-content: space-between;
+            display: flex;
+            align-items: center;
+            position: relative;
+            flex-direction: column;
+            gap: 20px;
+            & > div {
+                width: 100%;
+            }
+            &::before {
+                content: "";
+                position: absolute;
+                bottom: -20px;
+                height: 5px;
+                width: 100%;
+                background: var(--secound-color);
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            .right {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                font-size: 18px;
+                font-weight: bold;
+                color: var(--therd-color);
+            }
+            .left {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                color: var(--main-color);
+                font-weight: bold;
+                img {
+                    border-bottom-left-radius: 50%;
+                    border-bottom-right-radius: 50%;
+                    height: 97px;
+                }
+            }
+        }
+        .body {
+            overflow: auto;
+        }
+    }
+}
+.v-card--variant-elevated {
+    box-shadow: none;
+}
+.v-slide-group__content {
+    justify-content: center !important;
+    justify-content: center;
+}
+.v-progress-circular {
+    margin: 1rem;
+}
+.v-progress-circular {
+    margin: 0 !important;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 35px;
+}
+th,
+td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+    color: var(--therd-color);
+    font-weight: bold;
+}
+th {
+    background-color: var(--secound-color);
+    color: var(--main-color);
+}
+.table {
+    margin: 0 10px;
+
+    .Row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        & > div {
+            width: 50%;
+            padding: 10px;
+            border: 1px solid var(--secound-color);
+            display: flex;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--therd-color);
+        }
+    }
+}
+.Title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+    color: var(--main-color);
+    font-weight: bold;
+    background: var(--secound-color);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 20px 10px;
+    &.invoice {
+        margin: 20px 0;
+    }
+}
+.v-row {
+    margin: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    & > div {
+        width: 48%;
+    }
+}
+.details {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+    margin: 0 10px;
+    .myChart {
+        width: 100px;
+    }
+    ul {
+        width: 100%;
+        list-style: none;
+        position: relative;
+        &::before {
+            content: "";
+            position: absolute;
+            right: -20px;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: var(--secound-color);
+            transform: translateX(-50%);
+        }
+        li {
+            position: relative;
+            margin-right: 20px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            gap: 10px;
+            & > div {
+                font-weight: bold;
+            }
+            & > div:last-child {
+                color: var(--therd-color);
+                font-size: 12px;
+                text-align: center;
+                span {
+                    font-size: 16px;
+                }
+            }
+            span {
+                font-weight: bold;
+                color: var(--therd-color);
+                font-size: 16px;
+            }
+            svg {
+                position: absolute;
+                width: 15px;
+                height: 15px;
+                right: -20px;
+                top: 50%;
+                transform: translateY(-50%);
+                border-radius: 2px;
+                color: var(--main-color);
+            }
+
+            &:not(.li)::before {
+                content: "";
+                position: absolute;
+                width: 15px;
+                height: 15px;
+                right: -20px;
+                top: 50%;
+                transform: translateY(-50%);
+                border-radius: 2px;
+                background: var(--main-color);
+            }
+
+            &:last-of-type:not(.li) {
+                &::before {
+                    background: var(--pink-color);
+                }
+            }
+        }
+    }
+}
+.container_img {
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(100% - 20px);
+    margin: 10px auto;
+    gap: 10px;
+    .img {
+        width: 32%;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: var(--secound-color);
+        border-radius: 5px;
+        img {
+            width: 100%;
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
+        }
+        .date {
+            padding: 10px;
+            border-radius: 5px;
+            color: var(--main-color);
+            font-weight: bold;
+        }
+    }
+}
+@media (max-width: 599px) {
+    .details_row {
+        flex-direction: column;
+        & > div {
+            width: 100%;
+        }
+    }
+    .container_img {
+        flex-direction: column;
+        .img {
+            width: 100%;
+            img {
+                width: 100%;
+            }
+        }
+    }
+}
+@media (min-width: 600px) and (max-width: 768px) {
+}
+@media (min-width: 769px) {
+    .weekly {
+        .contain {
+            row-gap: 10px;
+        }
+    }
+    .monthly {
+        .header {
+            width: 100%;
+            flex-direction: row;
+            gap: 10px;
+            & > div {
+                width: 48%;
+            }
+        }
+        .Certificate {
+            .head {
+                flex-direction: row;
+                & > div {
+                    width: auto;
+                }
+            }
+        }
+    }
 }
 </style>

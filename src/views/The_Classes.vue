@@ -437,8 +437,8 @@ img.pluse {
         .box {
             width: 48%;
             max-width: 100%;
-            display: flex;
             flex-grow: 1;
+            display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 10px #ddd;
@@ -544,5 +544,8 @@ img.pluse {
         flex-direction: row;
         align-items: stretch !important;
     }
+}
+.v-overlay__scrim {
+    background: rgb(0 0 0 / 36%) !important;
 }
 </style>

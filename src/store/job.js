@@ -8,6 +8,7 @@ import {
     orderBy,
     updateDoc,
     deleteDoc,
+    writeBatch,
     arrayUnion,
     doc,
     Timestamp,
@@ -80,6 +81,19 @@ export const useJobs = defineStore("job", {
         counter: [],
         loading: false,
         loading1: false,
+        empty: false,
+        empty0: false,
+        empty1: false,
+        empty2: false,
+        text0: "لا يوجد وظائف",
+        text1: "لا يوجد طلبات توظيف ",
+        text2: "لا يوجد إشعارات",
+        snackbar: false,
+        snackbar2: false,
+        snackbar3: false,
+        text12: " تم التعديل بنجاح",
+        text10: " تم الاضافة بنجاح",
+        text11: " تم الحذف بنجاح",
     }),
     actions: {
         // Action methods
@@ -129,10 +143,8 @@ export const useJobs = defineStore("job", {
                     const currentTime = Timestamp.now();
                     // Step 2: Prepare data to add to the "Apply" collection
                     const applyData = {
-                        title: secrureDataStore.encryptData(
-                            this.Title_Information,
-                            "12343a"
-                        ),
+                        Job_id: this.Id_Information,
+
                         name: secrureDataStore.encryptData(
                             this.Apply.name,
                             "12343a"
@@ -204,7 +216,7 @@ export const useJobs = defineStore("job", {
                     updateDoc(countRef, {
                         counter: this.counter.counter,
                     });
-
+                    this.snackbar = true;
                     this.loading = false;
 
                     // Step 7: Refresh data if needed
@@ -253,12 +265,12 @@ export const useJobs = defineStore("job", {
                     console.log("Jobs document not found.");
                 }
                 // Find the index of the Apply in the Apply array
-                const index = this.Apply.findIndex(
+                const index = this.apply.findIndex(
                     (Apply) => Apply.id === applyId
                 );
                 // If the Apply is found in the Apply array, remove it
                 if (index !== -1) {
-                    this.Apply.splice(index, 1);
+                    this.apply.splice(index, 1);
                     console.log("Apply deleted successfully from Apply array");
                 } else {
                     console.log("Apply not found in Apply array");
@@ -266,6 +278,7 @@ export const useJobs = defineStore("job", {
                 // Step 4: Refresh data if needed
                 this.Get_Apply_data();
                 this.Get_data();
+                this.snackbar2 = true;
                 // Step 5: Perform UI-related operations (if needed)
                 // Close dialog, update UI, etc.
                 this.dialog_9 = false;
@@ -311,6 +324,7 @@ export const useJobs = defineStore("job", {
 
                 console.log("Document written with ID: ", docRef.id);
                 this.Get_data();
+                this.snackbar = true;
                 this.loading = false;
                 this.dialog = false;
             } catch (error) {
@@ -378,6 +392,11 @@ export const useJobs = defineStore("job", {
                     this.notifications.push(Data);
                 });
                 console.log("notifications", this.notifications);
+                if (this.notifications.length === 0) {
+                    this.empty0 = true;
+                } else {
+                    this.empty0 = false;
+                }
                 this.Get_counter_data();
             } catch (error) {
                 console.error("Error retrieving data:", error);
@@ -411,6 +430,7 @@ export const useJobs = defineStore("job", {
         // Retrieve applies for a job
         async Get_applies(job_apply) {
             this.apply = []; // Clear the array before populating with new data
+            this.empty1 = true;
             try {
                 const decryption = useSecureDataStore();
                 for (const index of job_apply) {
@@ -418,12 +438,9 @@ export const useJobs = defineStore("job", {
                     const docSnap = await getDoc(docRef);
 
                     if (docSnap.exists()) {
+                        this.empty1 = false;
                         const Data = {
                             id: docSnap.id,
-                            title: decryption.decryptData(
-                                docSnap.data().title,
-                                "12343a"
-                            ),
                             name: decryption.decryptData(
                                 docSnap.data().name,
                                 "12343a"
@@ -457,7 +474,32 @@ export const useJobs = defineStore("job", {
                 console.error("Error fetching documents:", error);
             }
         },
+        async delete_Job_Applies(Job_Id) {
+            try {
+                // Query the Apply collection for documents related to the deleted Job
+                const querySnapshot = await getDocs(
+                    query(collection(db, "Apply").where("Job_Id", "==", Job_Id))
+                );
 
+                // Delete each document found in the query
+                const batch = writeBatch(db);
+                querySnapshot.forEach((doc) => {
+                    batch.delete(doc.ref);
+                    this.delete_CV(doc.data().CV);
+                });
+
+                // Commit the batch deletion
+                await batch.commit();
+                console.log("Deleted applies for Job ID:", Job_Id);
+            } catch (error) {
+                console.error(
+                    "Error deleting applies for Job ID:",
+                    Job_Id,
+                    error
+                );
+                throw error; // Optionally rethrow the error for higher-level error handling
+            }
+        },
         // Retrieve all job data
         async Get_data() {
             try {
@@ -487,6 +529,11 @@ export const useJobs = defineStore("job", {
                 });
                 console.log("this.Jobs", this.Jobs);
                 this.loading1 = false;
+                if (this.Jobs.length === 0) {
+                    this.empty2 = true;
+                } else {
+                    this.empty2 = false;
+                }
             } catch (error) {
                 console.error("Error adding document: ", error);
             }
@@ -518,6 +565,11 @@ export const useJobs = defineStore("job", {
                 });
                 this.Jobs = this.Jobs.slice(0, 3);
                 console.log("this.Jobs", this.Jobs);
+                if (this.Jobs.length === 0) {
+                    this.empty = true;
+                } else {
+                    this.empty = false;
+                }
                 this.loading1 = false;
             } catch (error) {
                 console.error("Error adding document: ", error);
@@ -590,9 +642,11 @@ export const useJobs = defineStore("job", {
                 } else {
                     console.log("Job not found in Jobs array");
                 }
-
+                // Delete associated data from the Apply collection
+                await this.delete_Job_Applies(Job_Id);
                 // Refresh jobs data
                 this.Get_data();
+                this.snackbar2 = true;
                 this.dialog_3 = false;
             } catch (error) {
                 console.error("Error deleting Job:", error);
@@ -642,6 +696,7 @@ export const useJobs = defineStore("job", {
                     time: currentTime,
                 });
                 this.Get_data();
+                this.snackbar3 = true;
                 this.loading = false;
                 this.dialog_1 = false;
             } catch (error) {

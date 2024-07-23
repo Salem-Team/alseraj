@@ -68,7 +68,7 @@ export default {
             userType: "",
             id: "",
             roles: [],
-            userTypes: ["parent", "admin"],
+            userTypes: ["parent", "admin", "student"],
             user: [],
         };
     },
@@ -81,40 +81,95 @@ export default {
                 this.email = "parent@gmail.com";
                 this.password = "123456";
             } else if (newValue === "admin") {
-                this.email = "nada@gmail.com";
-                this.password = "0WtCdL5e";
+                this.email = "admin@gmail.com";
+                this.password = "123456";
+            } else {
+                this.email = "student@gmail.com";
+                this.password = "123456";
             }
         },
     },
     methods: {
         ...mapActions(useAuthStore, ["login"]),
-        async handleLogin() {
-            const querySnapshot = await getDocs(collection(db, "users"));
+        async Check_User() {
             const decryption = useSecureDataStore();
-
             let authenticatedUser = null;
+            try {
+                if (this.userType === "parent") {
+                    const querySnapshot = await getDocs(
+                        collection(db, "parents")
+                    );
+                    querySnapshot.forEach((doc) => {
+                        if (
+                            doc.data().email === this.email &&
+                            doc.data().password === this.password
+                        ) {
+                            authenticatedUser = {
+                                id: doc.id,
+                                email: doc.data().email,
+                                name: doc.data().name,
+                                userType: "parent",
+                                password: doc.data().password,
+                                roles: "",
+                            };
+                        }
+                    });
+                    return authenticatedUser;
+                } else if (this.userType === "admin") {
+                    const querySnapshot = await getDocs(
+                        collection(db, "users")
+                    );
+                    querySnapshot.forEach((doc) => {
+                        const decryptedEmail = decryption.decryptData(
+                            doc.data().email,
+                            "12345a"
+                        );
 
-            querySnapshot.forEach((doc) => {
-                const decryptedEmail = decryption.decryptData(
-                    doc.data().email,
-                    "12345a"
-                );
-
-                if (
-                    decryptedEmail === this.email &&
-                    doc.data().password === this.password
-                ) {
-                    authenticatedUser = {
-                        id: doc.id,
-                        email: decryptedEmail,
-                        name: decryption.decryptData(doc.data().name, "12345a"),
-                        userType: doc.data().userType,
-                        password: doc.data().password,
-                        roles: doc.data().roles,
-                    };
+                        if (
+                            decryptedEmail === this.email &&
+                            doc.data().password === this.password
+                        ) {
+                            authenticatedUser = {
+                                id: doc.id,
+                                email: decryptedEmail,
+                                name: decryption.decryptData(
+                                    doc.data().name,
+                                    "12345a"
+                                ),
+                                userType: doc.data().userType,
+                                password: doc.data().password,
+                                roles: doc.data().roles,
+                            };
+                        }
+                    });
+                    return authenticatedUser;
+                } else {
+                    const querySnapshot = await getDocs(
+                        collection(db, "students")
+                    );
+                    querySnapshot.forEach((doc) => {
+                        if (
+                            doc.data().email === this.email &&
+                            doc.data().password === this.password
+                        ) {
+                            authenticatedUser = {
+                                email: doc.data().email,
+                                name: doc.data().student_name,
+                                userType: "student",
+                                password: doc.data().password,
+                                roles: "",
+                            };
+                        }
+                    });
+                    return authenticatedUser;
                 }
-            });
-
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                throw error; // Optionally rethrow the error for higher-level error handling
+            }
+        },
+        async handleLogin() {
+            let authenticatedUser = await this.Check_User();
             if (authenticatedUser) {
                 // Call your login method or perform necessary actions
                 await this.login(
@@ -129,6 +184,8 @@ export default {
                         this.$router.push({ name: "Parent_Dashboard" });
                     } else if (authenticatedUser.userType === "admin") {
                         this.$router.push({ name: "admin_Dashboard" });
+                    } else {
+                        this.$router.push({ name: "Student_Dashboard" });
                     }
                 }
             } else {

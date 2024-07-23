@@ -18,6 +18,9 @@ export const useAuthStore = defineStore("auth", {
                         password === "123456") ||
                     (userType === "admin" &&
                         email === "admin@gmail.com" &&
+                        password === "123456") ||
+                    (userType === "student" &&
+                        email === "student@gmail.com" &&
                         password === "123456")
                 ) {
                     this.user = { email, userType };

@@ -235,7 +235,7 @@
                                             "
                                             :loading="loading"
                                             :disabled="loading"
-                                            @click="photos.Add_Photos"
+                                            @click="subMutPhoto"
                                         >
                                             إضافة صورة
                                         </v-btn>
@@ -611,6 +611,8 @@
 import { storeToRefs } from "pinia";
 import { defineComponent } from "vue";
 import { usePhoto_Gallery } from "@/store/Photo_Gallery.js";
+import axios from "axios";
+
 export default defineComponent({
     setup() {
         const photos = usePhoto_Gallery();
@@ -693,6 +695,33 @@ export default defineComponent({
         prev() {
             this.onboarding =
                 this.onboarding - 1 <= 0 ? this.length : this.onboarding - 1;
+        },
+        async subMutPhoto() {
+            const file = this.photos.Photo.image;
+
+            if (!file) {
+                console.error("No file selected");
+                return;
+            }
+
+            // Create a FormData object to hold the file data
+            const formData = new FormData();
+            formData.append("file", file); // Append the file with the key 'file'
+
+            try {
+                const response = await axios.post(
+                    "http://localhost:3000/upload",
+                    formData,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+                console.log("File uploaded successfully:", response.data);
+            } catch (error) {
+                console.error("Error uploading file:", error);
+            }
         },
     },
 });

@@ -1,8 +1,8 @@
 <template>
-    <div class="text-black">
+    <div>
         <!-- Main Dialog -->
         <v-dialog
-            v-model="subject"
+            v-model="subjectDialogVisible"
             max-width="90%"
             @click:outside="closeSubjectDialog"
         >
@@ -11,7 +11,7 @@
                     <v-card-title>
                         <span class="headline">إضافة ماده</span>
                     </v-card-title>
-                    <v-btn color="blue" @click="openAddSUbDialog">
+                    <v-btn color="blue" @click="openAddSubjectDialog">
                         إضافة ماده
                     </v-btn>
                 </div>
@@ -29,7 +29,7 @@
                                 class="pa-3 mb-3 notification-card"
                                 border="left"
                                 colored-border
-                                @click.stop="handleAlertClick(sub.id)"
+                                @click.stop="toggleAlertVisibility(sub.id)"
                             >
                                 <div
                                     class="d-flex justify-space-between align-center"
@@ -41,7 +41,7 @@
                                             color="white"
                                             class="mr-2"
                                             @click.stop="
-                                                openEditNotificationDialog(
+                                                openEditSubjectDialog(
                                                     sub.id,
                                                     index
                                                 )
@@ -53,12 +53,7 @@
                                             small
                                             color="white"
                                             class="mr-2"
-                                            @click.stop="
-                                                deleteNotification(
-                                                    sub.id,
-                                                    index
-                                                )
-                                            "
+                                            @click.stop="deleteSubject(sub.id)"
                                         >
                                             mdi-delete
                                         </v-icon>
@@ -75,55 +70,39 @@
                     </v-row>
                 </v-card-text>
                 <v-card-actions>
-                    <v-btn color="red" @click="closeSubjectDialog">
-                        إلغاء
-                    </v-btn>
+                    <v-btn color="red" @click="closeSubjectDialog">إلغاء</v-btn>
                 </v-card-actions>
+
                 <!-- Add Subject Dialog -->
                 <v-dialog
-                    v-model="dialogAddSUb"
+                    v-model="addSubjectDialogVisible"
                     max-width="500px"
-                    @click:outside="closeAddSUbDialog"
+                    @click:outside="closeAddSubjectDialog"
                 >
                     <v-card>
                         <v-card-title>
                             <span class="headline">إضافة ماده جديدة</span>
                         </v-card-title>
                         <v-card-text>
-                            <v-form ref="addForm">
+                            <v-form ref="addForm" v-model="addSubjectForm">
                                 <v-text-field
-                                    v-model="title"
+                                    v-model="newSubject.title"
                                     label="عنوان الماده"
                                     required
-                                    :error-messages="
-                                        v$.title.$error
-                                            ? v$.title.$errors[0].$message
-                                            : ''
-                                    "
                                 ></v-text-field>
                                 <v-text-field
-                                    v-model="maxNumber"
+                                    v-model="newSubject.maxNumber"
                                     label="الدرجه العظمه"
                                     type="number"
                                     min="0"
                                     required
-                                    :error-messages="
-                                        v$.maxNumber.$error
-                                            ? v$.maxNumber.$errors[0].$message
-                                            : ''
-                                    "
                                 ></v-text-field>
                                 <v-text-field
-                                    v-model="minNumber"
+                                    v-model="newSubject.minNumber"
                                     label="الدرجه الصغره"
                                     type="number"
                                     min="0"
                                     required
-                                    :error-messages="
-                                        v$.minNumber.$error
-                                            ? v$.minNumber.$errors[0].$message
-                                            : ''
-                                    "
                                 ></v-text-field>
                             </v-form>
                         </v-card-text>
@@ -132,7 +111,7 @@
                             <v-btn
                                 color="blue darken-1"
                                 text
-                                @click="closeAddSUbDialog"
+                                @click="closeAddSubjectDialog"
                                 >إلغاء</v-btn
                             >
                             <v-btn
@@ -145,53 +124,36 @@
                     </v-card>
                 </v-dialog>
 
-                <!-- Edit Notification Dialog -->
+                <!-- Edit Subject Dialog -->
                 <v-dialog
-                    v-model="editNotificationDialog"
+                    v-model="editSubjectDialogVisible"
                     max-width="500px"
-                    @click:outside="closeEditNotificationDialog"
+                    @click:outside="closeEditSubjectDialog"
                 >
                     <v-card>
                         <v-card-title>
                             <span class="headline">تعديل الماده</span>
                         </v-card-title>
                         <v-card-text>
-                            <v-form ref="editForm">
+                            <v-form ref="editForm" v-model="editSubjectForm">
                                 <v-text-field
-                                    v-model="editedNotification.title"
+                                    v-model="editedSubject.title"
                                     label="عنوان الماده"
                                     required
-                                    :error-messages="
-                                        v$.title.$error
-                                            ? v$.title.$errors[0].$message
-                                            : ''
-                                    "
                                 ></v-text-field>
                                 <v-text-field
                                     type="number"
                                     min="0"
-                                    v-model="editedNotification.maxNumber"
+                                    v-model="editedSubject.maxNumber"
                                     label="القيمه العظمه"
                                     required
-                                    :error-messages="
-                                        v$.editedNotification.maxNumber.$error
-                                            ? v$.editedNotification.maxNumber
-                                                  .$errors[0].$message
-                                            : ''
-                                    "
                                 ></v-text-field>
                                 <v-text-field
                                     type="number"
                                     min="0"
-                                    v-model="editedNotification.minNumber"
+                                    v-model="editedSubject.minNumber"
                                     label="القيمه الصغره"
                                     required
-                                    :error-messages="
-                                        v$.editedNotification.minNumber.$error
-                                            ? v$.editedNotification.minNumber
-                                                  .$errors[0].$message
-                                            : ''
-                                    "
                                 ></v-text-field>
                             </v-form>
                         </v-card-text>
@@ -200,13 +162,13 @@
                             <v-btn
                                 color="blue darken-1"
                                 text
-                                @click="closeEditNotificationDialog"
+                                @click="closeEditSubjectDialog"
                                 >إلغاء</v-btn
                             >
                             <v-btn
                                 color="blue darken-1"
                                 text
-                                @click="saveNotificationEdit"
+                                @click="saveSubjectEdit"
                                 >حفظ</v-btn
                             >
                         </v-card-actions>
@@ -229,51 +191,72 @@ import {
     writeBatch,
 } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+
 export default {
     props: ["localSubject"],
     data() {
         return {
             v$: useVuelidate(),
             gradeId: this.$route.params.year,
-            subject: this.localSubject,
-            dialogAddSUb: false,
-            editNotificationDialog: false,
-            minNumber: 0,
-            maxNumber: 100,
-            title: "",
+            subjectDialogVisible: false,
+            addSubjectDialogVisible: false,
+            editSubjectDialogVisible: false,
+            newSubject: { title: "", maxNumber: 100, minNumber: 0 },
+            editedSubject: {},
             subjects: [],
-            editedNotification: {},
+            addSubjectForm: {},
+            editSubjectForm: {},
         };
     },
     validations() {
-        return {
-            title: { required },
-            maxNumber: { required, minValue: minValue(0) },
-            minNumber: { required, minValue: minValue(0) },
-        };
+        return this.currentValidation;
+    },
+    computed: {
+        currentValidation() {
+            if (this.editSubjectDialogVisible) {
+                return {
+                    editedSubject: {
+                        title: { required },
+                        maxNumber: { required, minValue: minValue(0) },
+                        minNumber: { required, minValue: minValue(0) },
+                    },
+                };
+            } else {
+                return {
+                    newSubject: {
+                        title: { required },
+                        maxNumber: { required, minValue: minValue(0) },
+                        minNumber: { required, minValue: minValue(0) },
+                    },
+                };
+            }
+        },
     },
     watch: {
         localSubject(newVal) {
-            this.subject = newVal;
+            this.subjectDialogVisible = newVal;
         },
     },
     methods: {
-        openAddSUbDialog() {
-            this.dialogAddSUb = true;
+        openAddSubjectDialog() {
+            this.addSubjectDialogVisible = true;
         },
-        closeAddSUbDialog() {
-            this.dialogAddSUb = false;
+        closeAddSubjectDialog() {
+            this.addSubjectDialogVisible = false;
+        },
+        openEditSubjectDialog(subjectId, index) {
+            this.editedSubject = { ...this.subjects[index] };
+            this.editSubjectDialogVisible = true;
+        },
+        closeEditSubjectDialog() {
+            this.editSubjectDialogVisible = false;
         },
         async addSubject() {
             this.v$.$validate();
             if (this.v$.$error) return;
-            const newSubject = {
-                title: this.title,
-                maxNumber: this.maxNumber,
-                minNumber: this.minNumber,
-                id: uuidv4(),
-                show: true,
-            };
+
+            const newSubject = { ...this.newSubject, id: uuidv4(), show: true };
+
             try {
                 const classRoomsRef = collection(db, "class_rooms");
                 const q = query(
@@ -282,30 +265,24 @@ export default {
                 );
                 const querySnapshot = await getDocs(q);
                 const batch = writeBatch(db);
+
                 querySnapshot.forEach((doc) => {
                     const subjects = doc.data().subjects || [];
                     subjects.push(newSubject);
                     batch.update(doc.ref, { subjects });
                 });
+
                 await batch.commit();
-                this.closeAddSUbDialog();
-                this.fetchGradeData(); // Refresh the data after adding
+                await this.fetchGradeData(); // Refresh the data after adding
+                this.closeAddSubjectDialog();
             } catch (error) {
                 console.error("Error updating documents: ", error);
             }
         },
-        openEditNotificationDialog(subjectId, index) {
-            this.editedNotification = { ...this.subjects[index] };
-            this.editNotificationDialog = true;
-        },
-        closeSubjectDialog() {
-            this.subject = false;
-            this.$emit("closeDialog", false);
-        },
-        closeEditNotificationDialog() {
-            this.editNotificationDialog = false;
-        },
-        async saveNotificationEdit() {
+        async saveSubjectEdit() {
+            this.v$.$validate();
+            if (this.v$.$error) return;
+
             try {
                 const classRoomsRef = collection(db, "class_rooms");
                 const q = query(
@@ -314,24 +291,26 @@ export default {
                 );
                 const querySnapshot = await getDocs(q);
                 const batch = writeBatch(db);
+
                 querySnapshot.forEach((doc) => {
                     const subjects = doc.data().subjects || [];
                     const index = subjects.findIndex(
-                        (subject) => subject.id === this.editedNotification.id
+                        (subject) => subject.id === this.editedSubject.id
                     );
                     if (index !== -1) {
-                        subjects[index] = this.editedNotification;
+                        subjects[index] = this.editedSubject;
                         batch.update(doc.ref, { subjects });
                     }
                 });
+
                 await batch.commit();
-                this.closeEditNotificationDialog();
-                this.fetchGradeData(); // Refresh the data after editing
+                await this.fetchGradeData(); // Refresh the data after editing
+                this.closeEditSubjectDialog();
             } catch (error) {
                 console.error("Error updating documents: ", error);
             }
         },
-        async deleteNotification(subjectId, index) {
+        async deleteSubject(subjectId) {
             try {
                 const classRoomsRef = collection(db, "class_rooms");
                 const q = query(
@@ -340,6 +319,7 @@ export default {
                 );
                 const querySnapshot = await getDocs(q);
                 const batch = writeBatch(db);
+
                 querySnapshot.forEach((doc) => {
                     let subjects = doc.data().subjects || [];
                     subjects = subjects.filter(
@@ -347,8 +327,9 @@ export default {
                     );
                     batch.update(doc.ref, { subjects });
                 });
+
                 await batch.commit();
-                this.subjects.splice(index, 1);
+                await this.fetchGradeData(); // Refresh the data after deletion
             } catch (error) {
                 console.error("Error deleting document: ", error);
             }
@@ -362,18 +343,18 @@ export default {
                 );
                 const querySnapshot = await getDocs(q);
                 const data = [];
+
                 querySnapshot.forEach((doc) => {
                     const subjects = doc.data().subjects || [];
-                    subjects.forEach((subject) => {
-                        data.push({ ...subject, id: uuidv4(), show: true });
-                    });
+                    subjects.forEach((subject) => data.push(subject));
                 });
+
                 this.subjects = data;
             } catch (error) {
                 console.error("Error fetching grade data: ", error);
             }
         },
-        handleAlertClick(subjectId) {
+        toggleAlertVisibility(subjectId) {
             const subject = this.subjects.find((sub) => sub.id === subjectId);
             if (subject) {
                 subject.show = !subject.show; // Toggle visibility

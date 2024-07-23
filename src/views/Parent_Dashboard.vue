@@ -1,7 +1,7 @@
 <template>
     <div class="profile-container">
         <!-- <div class="header" v-if="user">
-            <h2 class="welcome-text">مرحبا {{ user.email }}</h2>
+            <h2 class="welcome-text">مرحبا {{ user.name }}</h2>
             <div class="action-buttons">
                 <v-btn color="primary ml-2" small @click="Edit"
                     >تعديل البيانات</v-btn
@@ -115,7 +115,7 @@
             </div>
             <v-container class="box d-flex align-center justify-space-around">
                 <div class="hello_text">
-                    مرحبًا [اسم ولي الأمر]، نشكرك على ثقتك في معهد السراج المنير
+                    مرحبًا {{ user.name }}، نشكرك على ثقتك في معهد السراج المنير
                     الأزهري، نتطلع سويًا لتحقيق مستقبل مشرق لأبنائنا.
                 </div>
                 <!-- <div class="form">

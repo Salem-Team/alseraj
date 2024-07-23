@@ -50,7 +50,7 @@ export default {
             email: "",
             password: "",
             userType: "",
-            userTypes: ["parent", "admin"],
+            userTypes: ["parent", "admin", "student"],
         };
     },
     computed: {
@@ -64,6 +64,9 @@ export default {
             } else if (newValue === "admin") {
                 this.email = "admin@gmail.com";
                 this.password = "123456";
+            } else if (newValue === "student") {
+                this.email = "student@gmail.com";
+                this.password = "123456";
             }
         },
     },
@@ -76,6 +79,8 @@ export default {
                     this.$router.push({ name: "Parent_Dashboard" });
                 } else if (this.userType === "admin") {
                     this.$router.push({ name: "admin_Dashboard" });
+                } else if (this.userType === "student") {
+                    this.$router.push({ name: "Student_Dashboard" });
                 }
             }
         },

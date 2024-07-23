@@ -116,9 +116,7 @@ export const useNews = defineStore("News", {
                     const imageUrl = await this.upload_Image(this.New.image);
                     // Get current local time
                     const currentTime = Timestamp.now();
-                    this.New.description = document.querySelector(
-                        ".Description div:nth-child(3) .ck.ck-editor__editable_inline"
-                    ).innerHTML;
+
                     // Step 2: Add a document to the "News" collection in Firestore
                     const docRef = await addDoc(collection(db, "News"), {
                         title: secrureDataStore.encryptData(
@@ -142,7 +140,7 @@ export const useNews = defineStore("News", {
 
                     // Step 4: Refresh news data
                     this.Get_data();
-
+                    this.snackbar = true;
                     this.loading = false;
                     this.dialog = false;
                 } else {
@@ -183,10 +181,23 @@ export const useNews = defineStore("News", {
                     this.News.push(Data);
                 });
                 console.log("this.News", this.News);
+                this.set_description();
+                if (this.News.length === 0) {
+                    this.empty = true;
+                } else {
+                    this.empty = false;
+                }
                 this.loading1 = false;
             } catch (error) {
                 console.error("Error retrieving data:", error);
             }
+        },
+        async set_description() {
+            this.News.forEach((New) => {
+                console.log("working");
+                document.querySelectorAll(".description").innerHTML =
+                    New.description;
+            });
         },
         // Action method to get limited news data (first 3 items)
         async Get_splice() {
@@ -197,6 +208,7 @@ export const useNews = defineStore("News", {
 
                 const querySnapshot = await getDocs(collection(db, "News"));
                 querySnapshot.forEach((doc) => {
+                    this.set_description(this.Description_Information);
                     const Data = {
                         id: doc.id,
                         title: decryption.decryptData(
@@ -217,6 +229,12 @@ export const useNews = defineStore("News", {
                 });
                 this.News = this.News.slice(0, 3);
                 console.log("this.News", this.News);
+                this.set_description();
+                if (this.News.length === 0) {
+                    this.empty = true;
+                } else {
+                    this.empty = false;
+                }
                 this.loading1 = false;
             } catch (error) {
                 console.error("Error retrieving data:", error);
@@ -248,7 +266,7 @@ export const useNews = defineStore("News", {
                 } else {
                     console.log("New not found in News array");
                 }
-
+                this.snackbar2 = true;
                 // Step 4: Refresh news data
                 this.Get_data();
 
@@ -286,9 +304,6 @@ export const useNews = defineStore("News", {
                 this.loading = true;
                 const currentTime = Timestamp.now();
                 const secrureDataStore = useSecureDataStore();
-                this.Description_Information = document.querySelector(
-                    ".Description .ck.ck-editor__editable_inline"
-                ).innerHTML;
                 const docRef = doc(db, "News", NewId);
                 // Update the document in Firestore
                 await updateDoc(docRef, {

@@ -3,12 +3,12 @@
         <div class="d-flex justify-space-between" v-if="user">
             <h5 class="text-right ma-4">أهلا {{ user.name }}</h5>
             <div>
-                <v-btn class="ma-2" size="small" @click="Edit()"
-                    >تعديل البيانات</v-btn
-                >
-                <v-btn class="ma-2" size="small" @click="My_Logout()"
-                    >تسجيل خروج</v-btn
-                >
+                <v-btn class="ma-2" size="small" @click="Edit()">
+                    تعديل البيانات
+                </v-btn>
+                <v-btn class="ma-2" size="small" @click="My_Logout()">
+                    تسجيل خروج
+                </v-btn>
             </div>
         </div>
 
@@ -16,19 +16,26 @@
 
         <div class="d-flex flex-row">
             <v-tabs v-model="tab" color="primary" direction="vertical">
-                <v-tab prepend-icon="mdi-account" value="first-tab"
-                    >تعديل بياناتك</v-tab
-                >
-                <v-tab prepend-icon="mdi-lock" value="second-tab">نتائج</v-tab>
-                <v-tab prepend-icon="mdi-access-point" value="third-tab"
-                    >إحصائيات</v-tab
-                >
+                <v-tab prepend-icon="mdi-account" value="first-tab">
+                    تعديل بياناتك
+                </v-tab>
+                <v-tab prepend-icon="mdi-lock" value="second-tab">
+                    نتائج
+                </v-tab>
+                <v-tab prepend-icon="mdi-access-point" value="third-tab">
+                    إحصائيات
+                </v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
                 <v-tab-item value="first-tab">
                     <v-card flat>
-                        <v-card-text></v-card-text>
+                        <v-card-text>
+                            <!-- زر لتغيير حالة جميع الطلاب -->
+                            <v-btn @click="toggleAllStudentsVisibility"
+                                >تغيير حالة الطلاب</v-btn
+                            >
+                        </v-card-text>
                     </v-card>
                 </v-tab-item>
 
@@ -51,6 +58,16 @@
 <script>
 import { mapState, mapActions } from "pinia";
 import { useAuthStore } from "../store/userStore";
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    updateDoc,
+    doc,
+} from "firebase/firestore";
+import { firebaseConfig } from "../Firebase"; // تأكد من تعديل المسار حسب موقع ملف Firebase.js
+
+const db = getFirestore(firebaseConfig);
 
 export default {
     data: () => ({
@@ -71,6 +88,21 @@ export default {
             } catch (error) {
                 console.error("حدث خطأ أثناء تسجيل الخروج:", error.message);
             }
+        },
+        async toggleAllStudentsVisibility() {
+            const studentsCollection = collection(db, "students");
+            const studentsSnapshot = await getDocs(studentsCollection);
+            const studentsData = studentsSnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+
+            const updatePromises = studentsData.map((student) =>
+                updateDoc(doc(db, "students", student.id), {
+                    state: !student.state,
+                })
+            );
+            await Promise.all(updatePromises);
         },
     },
 };

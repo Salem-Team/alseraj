@@ -601,7 +601,110 @@
                                                 </v-menu>
                                             </div>
                                         </div>
+                                        <!-- 22222222222222222222222222222222222222222222222222222222222 -->
                                         <div v-if="e1 === 2" ref="slide2">
+                                            <div style="padding: 20px">
+                                                <div
+                                                    style="
+                                                        display: flex;
+                                                        margin-bottom: 20px;
+                                                        align-items: center;
+                                                    "
+                                                >
+                                                    <v-avatar
+                                                        color="info"
+                                                        style="
+                                                            margin-left: 20px;
+                                                        "
+                                                        >{{
+                                                            index + 2
+                                                        }}</v-avatar
+                                                    >
+                                                    <h2
+                                                        style="
+                                                            color: #2196f3;
+                                                            font-weight: bold;
+                                                        "
+                                                    >
+                                                        ولي الامر
+                                                    </h2>
+                                                </div>
+
+                                                <!-- حقل اسم الأب -->
+                                                <v-text-field
+                                                    v-model="
+                                                        selectedParent.name
+                                                    "
+                                                    label="اسم الأب"
+                                                    disabled
+                                                    required
+                                                    style="margin-bottom: 20px"
+                                                    outlined
+                                                    color="primary"
+                                                ></v-text-field>
+
+                                                <!-- عرض عدد الأبناء -->
+                                                <h4
+                                                    style="
+                                                        margin-bottom: 20px;
+                                                        margin-right: 10px;
+                                                        color: #2196f3;
+                                                        font-size: 18px;
+                                                    "
+                                                >
+                                                    عدد الأبناء :
+                                                    <strong class="mr-2">{{
+                                                        selectedParent.Child
+                                                            .length
+                                                    }}</strong>
+                                                </h4>
+
+                                                <!-- عرض أسماء الأبناء والمرحلة الدراسية -->
+                                                <v-list>
+                                                    <v-list-item-group
+                                                        v-for="(
+                                                            child, index
+                                                        ) in selectedParent.Child"
+                                                        :key="index"
+                                                    >
+                                                        <v-list-item
+                                                            style="
+                                                                background-color: #f1f1f1;
+                                                                margin-bottom: 10px;
+                                                                border-radius: 8px;
+                                                            "
+                                                        >
+                                                            <v-list-item-content>
+                                                                <v-list-item-title
+                                                                    style="
+                                                                        font-size: 18px;
+                                                                        font-weight: bold;
+                                                                    "
+                                                                >
+                                                                    {{
+                                                                        child.student_name
+                                                                    }}
+                                                                </v-list-item-title>
+                                                                <v-list-item-subtitle
+                                                                    style="
+                                                                        font-size: 14px;
+                                                                        color: #757575;
+                                                                    "
+                                                                >
+                                                                    المرحلة
+                                                                    الدراسية:
+                                                                    {{
+                                                                        child.educational_level
+                                                                    }}
+                                                                </v-list-item-subtitle>
+                                                            </v-list-item-content>
+                                                        </v-list-item>
+                                                    </v-list-item-group>
+                                                </v-list>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="e1 === 3" ref="slide3">
                                             <div style="padding: 20px">
                                                 <div
                                                     style="
@@ -634,6 +737,22 @@
                                                     style="margin-bottom: 20px"
                                                 ></v-text-field>
 
+                                                <!-- عرض عدد الأبناء -->
+                                                <div
+                                                    style="
+                                                        margin-bottom: 20px;
+                                                        color: #2196f3;
+                                                    "
+                                                >
+                                                    عدد الأبناء:
+                                                    {{
+                                                        selectedParent.Child
+                                                            ? selectedParent
+                                                                  .Child.length
+                                                            : 0
+                                                    }}
+                                                </div>
+
                                                 <!-- عرض أسماء الأبناء -->
                                                 <v-list>
                                                     <v-list-item-group
@@ -644,9 +763,11 @@
                                                     >
                                                         <v-list-item>
                                                             <v-list-item-content>
-                                                                <v-list-item-title>
-                                                                    {{ child }}
-                                                                </v-list-item-title>
+                                                                <v-list-item-title
+                                                                    >{{
+                                                                        child.student_name
+                                                                    }}</v-list-item-title
+                                                                >
                                                             </v-list-item-content>
                                                         </v-list-item>
                                                     </v-list-item-group>
@@ -2254,12 +2375,23 @@
                                 <v-tab value="student">بيانات الطالب</v-tab>
                                 <v-tab value="parent">ولي الأمر</v-tab>
                             </v-tabs>
-
+                            <!-- 111111111111111111111111111111111111111111111111111111111111111111111111111111 -->
                             <v-card-text>
                                 <v-tabs-window v-model="tab">
                                     <v-tabs-window-item value="student">
                                         <form @submit.prevent="submit">
                                             <div style="padding: 20px">
+                                                <!-- حقل معرف الطالب -->
+                                                <v-text-field
+                                                    v-model="form.student_id"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.student_id
+                                                    "
+                                                    required
+                                                    label="الرقم القومى"
+                                                ></v-text-field>
+
                                                 <div
                                                     style="
                                                         width: 100%;
@@ -2310,6 +2442,7 @@
                                                         required
                                                     ></v-select>
                                                 </div>
+
                                                 <div
                                                     style="
                                                         width: 100%;
@@ -2325,7 +2458,7 @@
                                                         "
                                                         label="الجنس"
                                                         required
-                                                        :items="['انثي', 'ذكر']"
+                                                        :items="['أنثى', 'ذكر']"
                                                         variant="outlined"
                                                     ></v-select>
                                                 </div>
@@ -2402,6 +2535,7 @@
                                                         </v-card-actions>
                                                     </v-card>
                                                 </v-menu>
+
                                                 <div class="text-center">
                                                     <v-btn
                                                         append-icon="mdi-account-circle"
@@ -2417,9 +2551,8 @@
                                                             padding: 3px;
                                                             width: 42%;
                                                         "
+                                                        >إضافة طالب</v-btn
                                                     >
-                                                        اضافه طالب
-                                                    </v-btn>
                                                 </div>
                                             </div>
                                         </form>
@@ -2474,7 +2607,7 @@ import Empty_error from "@/components/Empty_error.vue";
 // import Chart from "chart.js/auto";
 import {
     collection,
-    addDoc,
+    // addDoc,
     deleteDoc,
     getDocs,
     doc,
@@ -2559,6 +2692,7 @@ export default {
                 "الصور",
             ],
             selectedParent: {
+                National_id: "",
                 name: "",
                 Child: [], // مصفوفة تحتوي على أسماء الأبناء
             },
@@ -3077,7 +3211,7 @@ export default {
                 console.error("Error fetching students:", error);
             }
         },
-
+        // 3333333333333333333333333333333333333333333333333333333333333
         async submit() {
             if (this.validateForm()) {
                 try {
@@ -3086,8 +3220,8 @@ export default {
                     //     new Date(this.form.birthday)
                     // );
 
-                    // إضافة الطالب إلى مجموعة "students"
-                    const docRef = await addDoc(collection(db, "students"), {
+                    // إضافة الطالب إلى مجموعة "students" باستخدام `student_id` المخصص
+                    await setDoc(doc(db, "students", this.form.student_id), {
                         student_name: this.form.student_name,
                         class: this.form.class,
                         gender: this.form.gender,
@@ -3099,12 +3233,12 @@ export default {
                         photos: this.form.photos,
                         educational_level: this.year,
                         year: new Date().getFullYear(),
+                        National_id: this.form.parent_national_id, // إضافة National_id هنا
+                        state: true,
                     });
 
-                    const newStudentId = docRef.id;
-
                     const newStudent = {
-                        id: newStudentId,
+                        id: this.form.student_id,
                         student_name: this.form.student_name,
                         class: this.form.class,
                         gender: this.form.gender,
@@ -3115,6 +3249,8 @@ export default {
                         Notifications: this.form.Notifications,
                         photos: this.form.photos,
                         year: new Date().getFullYear(),
+                        National_id: this.form.parent_national_id, // إضافة National_id هنا
+                        state: true,
                     };
                     this.students.push(newStudent);
 
@@ -3131,7 +3267,11 @@ export default {
                         await setDoc(
                             parentDocRef,
                             {
-                                Child: arrayUnion(this.form.student_name),
+                                Child: arrayUnion({
+                                    student_name: this.form.student_name,
+                                    educational_level: this.year,
+                                    class: this.form.class,
+                                }),
                             },
                             { merge: true }
                         );
@@ -3144,7 +3284,13 @@ export default {
                         await setDoc(parentDocRef, {
                             name: this.form.parent_name,
                             National_id: this.form.parent_national_id,
-                            Child: [this.form.student_name], // أو يمكنك استخدام arrayUnion إذا كنت تريد التأكد من عدم التكرار
+                            Child: [
+                                {
+                                    student_name: this.form.student_name,
+                                    educational_level: this.year,
+                                    class: this.form.class,
+                                },
+                            ],
                         });
 
                         console.log("Created new parent document successfully");
@@ -3166,25 +3312,6 @@ export default {
                 }
             }
         },
-
-        // async submitParent() {
-        //     try {
-        //         await setDoc(
-        //             doc(db, "parents", this.form.parent_national_id),
-        //             {
-        //                 name: this.form.parent_name,
-        //                 National_id: this.form.parent_national_id,
-        //                 Child: arrayUnion(this.form.student_name),
-        //             },
-        //             { merge: true }
-        //         );
-
-        //         // معالجة النتائج الأخرى بعد الإضافة
-        //         console.log("Parent document updated successfully");
-        //     } catch (error) {
-        //         console.error("Error updating parent document:", error);
-        //     }
-        // },
         formatDate(date) {
             const d = new Date(date);
             const year = d.getFullYear();
@@ -3533,7 +3660,59 @@ export default {
                 });
             }
         },
+        // 44444444444444444444444444444444444444444
+        async loadParentDetails(National_id) {
+            if (!National_id) {
+                console.error("No National_id provided");
+                return;
+            }
 
+            console.log("Loading parent details for National_id:", National_id);
+
+            try {
+                // جلب بيانات الأب من كوليكشن Parents
+                const parentDoc = doc(db, "parents", National_id);
+                const parentSnapshot = await getDoc(parentDoc);
+
+                if (parentSnapshot.exists()) {
+                    const parentData = parentSnapshot.data();
+                    this.selectedParent = {
+                        name: parentData.name || "غير متوفر",
+                        Child: [],
+                    };
+
+                    // جلب الأطفال من كوليكشن students
+                    const studentsQuery = query(
+                        collection(db, "students"),
+                        where("National_id", "==", National_id)
+                    );
+                    const studentsSnapshot = await getDocs(studentsQuery);
+
+                    const children = [];
+                    studentsSnapshot.forEach((doc) => {
+                        children.push({
+                            student_name: doc.data().student_name,
+                            educational_level: doc.data().educational_level,
+                            class: doc.data().class,
+                        });
+                    });
+
+                    this.selectedParent.Child = children;
+                } else {
+                    console.error("No such document!");
+                    this.selectedParent = {
+                        name: "غير متوفر",
+                        Child: [],
+                    };
+                }
+            } catch (error) {
+                console.error("Error getting document:", error);
+                this.selectedParent = {
+                    name: "خطأ في جلب البيانات",
+                    Child: [],
+                };
+            }
+        },
         openStudentDetails(student) {
             this.selectedStudent = student;
             this.dialogStudentDetails = true;
@@ -4253,14 +4432,18 @@ export default {
         this.searchStudent(); // Fetch all students initially
         this.generateRandomPassword();
         this.fetchStudents();
-        // this.interval = setInterval(() => {
-        //     if (this.value === 100) {
-        //         clearInterval(this.interval);
-        //         return;
-        //     }
-        //     this.value += 10;
-        // }, 100);
-        this.students = this.$parent.students_class; // Assuming students_class is passed down from parent
+        this.interval = setInterval(() => {
+            if (this.value === 100) {
+                clearInterval(this.interval);
+                return;
+            }
+            this.value += 10;
+        }, 100);
+        this.students = this.$parent.students_class;
+        // مثال لاستدعاء الدالة
+        this.loadParentDetails(this.form.parent_national_id);
+
+        // Assuming students_class is passed down from parent
     },
     // beforeUnmount() {
     //     clearInterval(this.interval);

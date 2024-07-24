@@ -8,7 +8,6 @@ import {
     orderBy,
     updateDoc,
     deleteDoc,
-    writeBatch,
     arrayUnion,
     doc,
     Timestamp,
@@ -81,6 +80,7 @@ export const useJobs = defineStore("job", {
         counter: [],
         loading: false,
         loading1: false,
+        loading3: false,
         empty: false,
         empty0: false,
         empty1: false,
@@ -342,10 +342,7 @@ export const useJobs = defineStore("job", {
                 querySnapshot.forEach((doc) => {
                     const Data = {
                         id: doc.id,
-                        title: decryption.decryptData(
-                            doc.data().title,
-                            "12343a"
-                        ),
+                        Job_id: doc.data().Job_id,
                         name: decryption.decryptData(doc.data().name, "12343a"),
                         email: decryption.decryptData(
                             doc.data().email,
@@ -430,7 +427,7 @@ export const useJobs = defineStore("job", {
         // Retrieve applies for a job
         async Get_applies(job_apply) {
             this.apply = []; // Clear the array before populating with new data
-            this.empty1 = true;
+            this.loading3 = true;
             try {
                 const decryption = useSecureDataStore();
                 for (const index of job_apply) {
@@ -438,7 +435,6 @@ export const useJobs = defineStore("job", {
                     const docSnap = await getDoc(docRef);
 
                     if (docSnap.exists()) {
-                        this.empty1 = false;
                         const Data = {
                             id: docSnap.id,
                             name: decryption.decryptData(
@@ -470,27 +466,31 @@ export const useJobs = defineStore("job", {
                     }
                 }
                 console.log("All apply data:", this.apply);
+                if (this.apply.length === 0) {
+                    this.empty1 = true;
+                } else {
+                    this.empty1 = false;
+                }
+                this.loading3 = false;
             } catch (error) {
                 console.error("Error fetching documents:", error);
             }
         },
         async delete_Job_Applies(Job_Id) {
             try {
-                // Query the Apply collection for documents related to the deleted Job
-                const querySnapshot = await getDocs(
-                    query(collection(db, "Apply").where("Job_Id", "==", Job_Id))
-                );
+                const decryption = useSecureDataStore();
+                const querySnapshot = await getDocs(collection(db, "Apply"));
+                querySnapshot.forEach((docs) => {
+                    if (docs.data().Job_id === Job_Id) {
+                        // Delete each document found in the query
+                        deleteDoc(doc(db, "Apply", docs.id));
+                        this.delete_CV(
+                            decryption.decryptData(docs.data().CV, "12343a")
+                        );
 
-                // Delete each document found in the query
-                const batch = writeBatch(db);
-                querySnapshot.forEach((doc) => {
-                    batch.delete(doc.ref);
-                    this.delete_CV(doc.data().CV);
+                        console.log("Deleted applies for Job ID:", Job_Id);
+                    }
                 });
-
-                // Commit the batch deletion
-                await batch.commit();
-                console.log("Deleted applies for Job ID:", Job_Id);
             } catch (error) {
                 console.error(
                     "Error deleting applies for Job ID:",
@@ -623,6 +623,8 @@ export const useJobs = defineStore("job", {
         // Delete job document
         async delete_Job(Job_Id) {
             try {
+                // Delete associated data from the Apply collection
+                await this.delete_Job_Applies(Job_Id);
                 // Log before attempting to delete
                 console.log("Deleting Job from Firestore:", Job_Id);
 
@@ -642,8 +644,6 @@ export const useJobs = defineStore("job", {
                 } else {
                     console.log("Job not found in Jobs array");
                 }
-                // Delete associated data from the Apply collection
-                await this.delete_Job_Applies(Job_Id);
                 // Refresh jobs data
                 this.Get_data();
                 this.snackbar2 = true;

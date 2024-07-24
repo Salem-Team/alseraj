@@ -5,7 +5,8 @@
             <v-btn
                 color="var(--main-color)"
                 variant="text"
-                @click="closeSnackbar"
+                @click.="closeSnackbar"
+                @click="snackbar = false"
             >
                 إغلاق
             </v-btn>

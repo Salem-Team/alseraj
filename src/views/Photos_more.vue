@@ -127,6 +127,33 @@
                                             cover
                                         ></v-carousel-item>
                                     </div>
+                                    <div>
+                                        <v-carousel-item
+                                            class="pa-5"
+                                            v-if="
+                                                photos.File_Information ==
+                                                'فيديو'
+                                            "
+                                            height="400"
+                                            cover
+                                        >
+                                            <video
+                                                width="400"
+                                                height="400"
+                                                controls
+                                            >
+                                                <source
+                                                    :src="
+                                                        photos.Video_Information
+                                                    "
+                                                    type="video/mp4"
+                                                />
+
+                                                Your browser does not support
+                                                the video tag.
+                                            </video></v-carousel-item
+                                        >
+                                    </div>
                                     <div
                                         v-for="photo in Photos"
                                         :key="photo.id"
@@ -138,8 +165,25 @@
                                             height="400"
                                             cover
                                         ></v-carousel-item>
-                                    </div> </v-carousel></v-card
-                        ></v-dialog>
+                                        <v-carousel-item
+                                            v-if="photo.File_type == 'فيديو'"
+                                            class="pa-5 text-center"
+                                            cover
+                                        >
+                                            <video controls height="400">
+                                                <source
+                                                    :src="photo.video"
+                                                    type="video/mp4"
+                                                />
+
+                                                Your browser does not support
+                                                the video tag.
+                                            </video></v-carousel-item
+                                        >
+                                    </div>
+                                </v-carousel></v-card
+                            ></v-dialog
+                        >
                     </v-card>
                 </div>
             </template>

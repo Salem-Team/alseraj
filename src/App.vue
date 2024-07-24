@@ -23,7 +23,7 @@
             <div>
                 <router-link
                     class="a"
-                    v-if="user.email !== ''"
+                    v-if="user.National_id !== ''"
                     @click="logout"
                     to="/UserLogin"
                     >تسجيل خروج</router-link

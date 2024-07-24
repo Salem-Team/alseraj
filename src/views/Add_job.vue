@@ -347,12 +347,98 @@
                                     ></v-btn>
                                 </div>
                                 <!-- Loop through Job Applications -->
+                                <div
+                                    v-if="loading3"
+                                    style="height: 200px !important"
+                                >
+                                    <svg
+                                        style="
+                                            position: absolute;
+                                            top: 50%;
+                                            left: 50%;
+                                            transform: translate(-50%, -50%);
+                                            width: 150px;
+                                        "
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 200 200"
+                                    >
+                                        <radialGradient
+                                            id="a12"
+                                            cx=".66"
+                                            fx=".66"
+                                            cy=".3125"
+                                            fy=".3125"
+                                            gradientTransform="scale(1.5)"
+                                        >
+                                            <stop
+                                                offset="0"
+                                                stop-color="#336699"
+                                            ></stop>
+                                            <stop
+                                                offset=".3"
+                                                stop-color="#336699"
+                                                stop-opacity=".9"
+                                            ></stop>
+                                            <stop
+                                                offset=".6"
+                                                stop-color="#336699"
+                                                stop-opacity=".6"
+                                            ></stop>
+                                            <stop
+                                                offset=".8"
+                                                stop-color="#336699"
+                                                stop-opacity=".3"
+                                            ></stop>
+                                            <stop
+                                                offset="1"
+                                                stop-color="#336699"
+                                                stop-opacity="0"
+                                            ></stop>
+                                        </radialGradient>
+                                        <circle
+                                            transform-origin="center"
+                                            fill="none"
+                                            stroke="url(#a12)"
+                                            stroke-width="15"
+                                            stroke-linecap="round"
+                                            stroke-dasharray="200 1000"
+                                            stroke-dashoffset="0"
+                                            cx="100"
+                                            cy="100"
+                                            r="70"
+                                        >
+                                            <animateTransform
+                                                type="rotate"
+                                                attributeName="transform"
+                                                calcMode="spline"
+                                                dur="2"
+                                                values="360;0"
+                                                keyTimes="0;1"
+                                                keySplines="0 0 1 1"
+                                                repeatCount="indefinite"
+                                            ></animateTransform>
+                                        </circle>
+                                        <circle
+                                            transform-origin="center"
+                                            fill="none"
+                                            opacity=".2"
+                                            stroke="#336699"
+                                            stroke-width="15"
+                                            stroke-linecap="round"
+                                            cx="100"
+                                            cy="100"
+                                            r="70"
+                                        ></circle>
+                                    </svg>
+                                </div>
                                 <Empty_error
-                                    v-if="empty1 === true"
+                                    v-if="(loading3 === false, empty1 === true)"
                                     :text="text1"
                                 />
                                 <v-container
-                                    v-if="empty1 === false"
+                                    v-if="
+                                        (empty1 === false, loading3 === false)
+                                    "
                                     style="
                                         direction: ltr !important;
                                         width: 96% !important;
@@ -579,6 +665,7 @@ export default defineComponent({
             Job,
             Jobs,
             dialog_3,
+            loading3,
             dialog_9,
             text10,
             text11,
@@ -625,6 +712,7 @@ export default defineComponent({
         return {
             Job,
             dialog_3,
+            loading3,
             loading1,
             text10,
             text11,

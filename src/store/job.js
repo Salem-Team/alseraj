@@ -80,6 +80,7 @@ export const useJobs = defineStore("job", {
         counter: [],
         loading: false,
         loading1: false,
+        loading3: false,
         empty: false,
         empty0: false,
         empty1: false,
@@ -89,6 +90,8 @@ export const useJobs = defineStore("job", {
         text2: "لا يوجد إشعارات",
         snackbar: false,
         snackbar2: false,
+        snackbar3: false,
+        text12: " تم التعديل بنجاح",
         text10: " تم الاضافة بنجاح",
         text11: " تم الحذف بنجاح",
     }),
@@ -140,10 +143,8 @@ export const useJobs = defineStore("job", {
                     const currentTime = Timestamp.now();
                     // Step 2: Prepare data to add to the "Apply" collection
                     const applyData = {
-                        title: secrureDataStore.encryptData(
-                            this.Title_Information,
-                            "12343a"
-                        ),
+                        Job_id: this.Id_Information,
+
                         name: secrureDataStore.encryptData(
                             this.Apply.name,
                             "12343a"
@@ -264,12 +265,12 @@ export const useJobs = defineStore("job", {
                     console.log("Jobs document not found.");
                 }
                 // Find the index of the Apply in the Apply array
-                const index = this.Apply.findIndex(
+                const index = this.apply.findIndex(
                     (Apply) => Apply.id === applyId
                 );
                 // If the Apply is found in the Apply array, remove it
                 if (index !== -1) {
-                    this.Apply.splice(index, 1);
+                    this.apply.splice(index, 1);
                     console.log("Apply deleted successfully from Apply array");
                 } else {
                     console.log("Apply not found in Apply array");
@@ -341,10 +342,7 @@ export const useJobs = defineStore("job", {
                 querySnapshot.forEach((doc) => {
                     const Data = {
                         id: doc.id,
-                        title: decryption.decryptData(
-                            doc.data().title,
-                            "12343a"
-                        ),
+                        Job_id: doc.data().Job_id,
                         name: decryption.decryptData(doc.data().name, "12343a"),
                         email: decryption.decryptData(
                             doc.data().email,
@@ -429,6 +427,7 @@ export const useJobs = defineStore("job", {
         // Retrieve applies for a job
         async Get_applies(job_apply) {
             this.apply = []; // Clear the array before populating with new data
+            this.loading3 = true;
             try {
                 const decryption = useSecureDataStore();
                 for (const index of job_apply) {
@@ -438,10 +437,6 @@ export const useJobs = defineStore("job", {
                     if (docSnap.exists()) {
                         const Data = {
                             id: docSnap.id,
-                            title: decryption.decryptData(
-                                docSnap.data().title,
-                                "12343a"
-                            ),
                             name: decryption.decryptData(
                                 docSnap.data().name,
                                 "12343a"
@@ -466,21 +461,45 @@ export const useJobs = defineStore("job", {
                         };
                         // Document exists, push data to apply array
                         this.apply.push(Data);
-                        if (this.apply.length === 0) {
-                            this.empty1 = true;
-                        } else {
-                            this.empty1 = false;
-                        }
                     } else {
                         console.error("No such document!");
                     }
                 }
                 console.log("All apply data:", this.apply);
+                if (this.apply.length === 0) {
+                    this.empty1 = true;
+                } else {
+                    this.empty1 = false;
+                }
+                this.loading3 = false;
             } catch (error) {
                 console.error("Error fetching documents:", error);
             }
         },
+        async delete_Job_Applies(Job_Id) {
+            try {
+                const decryption = useSecureDataStore();
+                const querySnapshot = await getDocs(collection(db, "Apply"));
+                querySnapshot.forEach((docs) => {
+                    if (docs.data().Job_id === Job_Id) {
+                        // Delete each document found in the query
+                        deleteDoc(doc(db, "Apply", docs.id));
+                        this.delete_CV(
+                            decryption.decryptData(docs.data().CV, "12343a")
+                        );
 
+                        console.log("Deleted applies for Job ID:", Job_Id);
+                    }
+                });
+            } catch (error) {
+                console.error(
+                    "Error deleting applies for Job ID:",
+                    Job_Id,
+                    error
+                );
+                throw error; // Optionally rethrow the error for higher-level error handling
+            }
+        },
         // Retrieve all job data
         async Get_data() {
             try {
@@ -604,6 +623,8 @@ export const useJobs = defineStore("job", {
         // Delete job document
         async delete_Job(Job_Id) {
             try {
+                // Delete associated data from the Apply collection
+                await this.delete_Job_Applies(Job_Id);
                 // Log before attempting to delete
                 console.log("Deleting Job from Firestore:", Job_Id);
 
@@ -623,7 +644,6 @@ export const useJobs = defineStore("job", {
                 } else {
                     console.log("Job not found in Jobs array");
                 }
-
                 // Refresh jobs data
                 this.Get_data();
                 this.snackbar2 = true;
@@ -676,6 +696,7 @@ export const useJobs = defineStore("job", {
                     time: currentTime,
                 });
                 this.Get_data();
+                this.snackbar3 = true;
                 this.loading = false;
                 this.dialog_1 = false;
             } catch (error) {

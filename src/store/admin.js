@@ -38,23 +38,29 @@ export const useadmin = defineStore("admin", {
             expectedUserType: "admin",
             id: "",
             roles: [],
+            National_id: "",
         },
         role: [
             // List of roles
             "حذف واضافة مشرفين",
-            "مشرف الروضة",
-            "مشرف الصف الاول",
-            "مشرف الصف الثاني",
-            "مشرف الصف الثالث",
-            "مشرف الصف الرابع",
-            "مشرف الصف الخامس",
-            "مشرف الصف السادس",
-            "مشرف الصف الاول الاعدادي",
-            "مشرف الصف الثاني الاعدادي",
-            "مشرف الصف الثالث الاعدادي",
-            "مشرف الصف الاول الثانوي",
-            "مشرف الصف الثاني الثانوي",
-            "مشرف الصف الثالث الثانوي",
+            " الاطلاع على تقديم الوظائف",
+            "تعديل ونشر الصور",
+            "تعديل ونشر الأخبار",
+            "الاطلاع على الحسابات",
+            "مرحلة رياض الأطفال الأولى",
+            "مرحلة رياض الأطفال الثانية",
+            "الصف الأول الابتدائي",
+            "الصف الثاني الابتدائي",
+            "الصف الثالث الابتدائي",
+            "الصف الرابع الابتدائي",
+            "الصف الخامس الابتدائي",
+            "الصف السادس الابتدائي",
+            "الصف الأول الإعدادي",
+            "الصف الثاني الإعدادي",
+            "الصف الثالث الإعدادي",
+            "الصف الأول الثانوي",
+            "الصف الثاني الثانوي",
+            "الصف الثالث الثانوي",
         ],
         users: [], // Array to hold user data
         loading: false, // Loading state
@@ -62,6 +68,8 @@ export const useadmin = defineStore("admin", {
         loading1: false, // Another loading state
         snackbar: false,
         snackbar2: false,
+        snackbar3: false,
+        text12: " تم التعديل بنجاح",
         text10: " تم الاضافة بنجاح",
         text11: " تم الحذف بنجاح",
     }),
@@ -100,6 +108,10 @@ export const useadmin = defineStore("admin", {
                         this.user.email,
                         "12345a"
                     ),
+                    National_id: secrureDataStore.encryptData(
+                        this.user.National_id,
+                        "12345a"
+                    ),
                     userType: this.user.expectedUserType,
 
                     password: this.user.password,
@@ -136,12 +148,15 @@ export const useadmin = defineStore("admin", {
                                 doc.data().email,
                                 "12345a"
                             ),
-
+                            National_id: decryption.decryptData(
+                                doc.data().National_id,
+                                "12345a"
+                            ),
                             name: decryption.decryptData(
                                 doc.data().name,
                                 "12345a"
                             ),
-                            userType: doc.data().expectedUserType,
+                            userType: doc.data().userType,
 
                             password: doc.data().password,
 
@@ -186,6 +201,7 @@ export const useadmin = defineStore("admin", {
             this.name_Information = user.name;
             this.Id_Information = user.id;
             console.log(user.id);
+            this.National_id_Information = user.National_id;
             this.email_Information = user.email;
             this.roles_Information = user.roles;
         },
@@ -205,10 +221,16 @@ export const useadmin = defineStore("admin", {
                         this.email_Information,
                         "12345a"
                     ),
+                    National_id: secrureDataStore.encryptData(
+                        this.National_id_Information,
+                        "12345a"
+                    ),
+
                     roles: this.roles_Information,
                 });
                 this.Get_data(); // Refresh user data
                 this.loading = false;
+                this.snackbar3 = true;
                 this.dialog_1 = false; // Close dialog
             } catch (error) {
                 console.error("Error updating user:", error);

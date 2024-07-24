@@ -47,90 +47,149 @@
                                     @click="dialog = false"
                                 ></v-btn>
                             </v-card-title>
-                            <div class="cards d-flex justify-space-evenly mb-4">
-                                <v-card
+                            <div class="cards mb-4" style="padding: 10px">
+                                <v-row
                                     style="
-                                        background-color: var(
-                                            --secound-color
-                                        ) !important;
-                                        width: 20% !important;
+                                        display: flex;
+                                        justify-content: space-around;
+                                        align-items: center;
                                     "
-                                    class="card text-center mt-3"
-                                    prepend-icon="mdi-book-open-variant"
-                                    link
-                                    @click="subject = true"
+                                    class="mb-4"
                                 >
-                                    <v-card-title>إضافة مواد</v-card-title>
-                                </v-card>
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                            width: 30% !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-book-open-variant"
+                                        link
+                                        @click="subject = true"
+                                    >
+                                        <v-card-title>إضافة مواد</v-card-title>
+                                    </v-card>
+
+                                    <!-- v-card to open dialog -->
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                            width: 30% !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-account"
+                                        link
+                                        @click="openDialog"
+                                    >
+                                        <v-card-title
+                                            >إضافة جدول دراسي</v-card-title
+                                        >
+                                    </v-card>
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                            width: 30% !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-account"
+                                        link
+                                        @click="dialog_1 = true"
+                                    >
+                                        <v-card-title @click="dialog = false"
+                                            >إضافة إشعارات</v-card-title
+                                        >
+                                    </v-card>
+                                </v-row>
                                 <add-subject
                                     @closeDialog="closeDialog"
                                     :localSubject="subject"
                                 />
-
-                                <v-card
+                                <add-study-schedule v-model="showDialog" />
+                                <v-row
                                     style="
-                                        background-color: var(
-                                            --secound-color
-                                        ) !important;
-                                        width: 20% !important;
+                                        display: flex;
+                                        justify-content: space-around;
+                                        align-items: center;
                                     "
-                                    class="card text-center mt-3"
-                                    prepend-icon="mdi-account"
-                                    link
-                                    @click="dialog_1 = true"
                                 >
-                                    <v-card-title @click="dialog = false"
-                                        >إضافة إشعارات</v-card-title
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-newspaper-variant-multiple-outline"
+                                        @click="showAddStudentDialog"
+                                        width="30%"
                                     >
-                                </v-card>
-                                <v-card
+                                        <v-card-title @click="dialog = false"
+                                            >إضافة بيانات الطالب</v-card-title
+                                        >
+                                    </v-card>
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-image"
+                                        link
+                                        @click="dialog_2 = true"
+                                        width="30%"
+                                    >
+                                        <v-card-title @click="dialog = false"
+                                            >إضافة الصور</v-card-title
+                                        >
+                                    </v-card>
+                                    <!--Bubble sheet -->
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                            width: 30% !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-help-circle-outline"
+                                        link
+                                        @click="dialog_bubble = true"
+                                    >
+                                        <v-card-title @click="dialog = false"
+                                            >إضافة أختبارات</v-card-title
+                                        >
+                                    </v-card>
+                                </v-row>
+                                <v-row
                                     style="
-                                        background-color: var(
-                                            --secound-color
-                                        ) !important;
+                                        display: flex;
+                                        justify-content: space-around;
+                                        align-items: center;
                                     "
-                                    class="card text-center mt-3"
-                                    prepend-icon="mdi-newspaper-variant-multiple-outline"
-                                    @click="showAddStudentDialog"
-                                    width="20%"
                                 >
-                                    <v-card-title @click="dialog = false"
-                                        >إضافة بيانات الطالب</v-card-title
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-newspaper-variant-multiple-outline"
+                                        width="30%"
+                                        @click="openDialog2"
                                     >
-                                </v-card>
-                                <v-card
-                                    style="
-                                        background-color: var(
-                                            --secound-color
-                                        ) !important;
-                                    "
-                                    class="card text-center mt-3"
-                                    prepend-icon="mdi-image"
-                                    link
-                                    @click="dialog_2 = true"
-                                    width="20%"
-                                >
-                                    <v-card-title @click="dialog = false"
-                                        >إضافة الصور</v-card-title
-                                    >
-                                </v-card>
-                                <!--Bubble sheet -->
-                                <v-card
-                                    style="
-                                        background-color: var(
-                                            --secound-color
-                                        ) !important;
-                                        width: 20% !important;
-                                    "
-                                    class="card text-center mt-3"
-                                    prepend-icon="mdi-help-circle-outline"
-                                    link
-                                    @click="dialog_bubble = true"
-                                >
-                                    <v-card-title @click="dialog = false"
-                                        >إضافة أختبارات</v-card-title
-                                    >
-                                </v-card>
+                                        <v-card-title
+                                            >إضافة الخطه الاسبوعيه</v-card-title
+                                        >
+                                    </v-card>
+                                </v-row>
+                                <weeklyPlan v-model="showDialog2" />
                             </div>
                         </v-card>
                     </v-dialog>
@@ -285,21 +344,6 @@
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
-                            <!-- <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                    color="blue darken-1"
-                                    text
-                                    @click="dialogAddNotice = false"
-                                    >إلغاء</v-btn
-                                >
-                                <v-btn
-                                    color="blue darken-1"
-                                    text
-                                    @click="saveNotification"
-                                    >حفظ</v-btn
-                                >
-                            </v-card-actions> -->
                         </v-card>
                     </v-dialog>
                     <v-dialog
@@ -634,32 +678,42 @@
             <v-row>
                 <v-col cols="12" md="4" sm="6">
                     <v-btn
-                        style="background: #54aef5; color: white"
+                        :class="{ active: activeButton === 'الكل' }"
+                        :style="buttonStyle('الكل')"
                         rounded="xl"
                         size="x-large"
                         block
-                        >الكل</v-btn
+                        @click="updateSection('الكل')"
                     >
+                        الكل
+                    </v-btn>
                 </v-col>
                 <v-col cols="12" md="4" sm="6">
                     <v-btn
-                        style="background: #54aef5; color: white"
+                        :class="{ active: activeButton === 'عربي' }"
+                        :style="buttonStyle('عربي')"
                         rounded="xl"
                         size="x-large"
                         block
-                        >عربي</v-btn
+                        @click="updateSection('عربي')"
                     >
+                        عربي
+                    </v-btn>
                 </v-col>
                 <v-col cols="12" md="4" sm="6">
                     <v-btn
-                        style="background: #54aef5; color: white"
+                        :class="{ active: activeButton === 'لغات' }"
+                        :style="buttonStyle('لغات')"
                         rounded="xl"
                         size="x-large"
                         block
-                        >لغات</v-btn
+                        @click="updateSection('لغات')"
                     >
+                        لغات
+                    </v-btn>
                 </v-col>
             </v-row>
+
             <v-dialog
                 v-model="dialogFilter"
                 max-width="600px"
@@ -721,6 +775,7 @@
         <StudentList
             :year="year"
             :sortStudents="sortStudentsByYearAndAlphabetically"
+            :selectedSection="selectedSection"
         />
     </div>
 </template>
@@ -748,7 +803,9 @@ import { getStorage } from "firebase/storage";
 import "vue-toastification/dist/index.css"; // Import the CSS file
 // import { decodeURIComponent } from "vue-router";
 import addSubject from "@/components/subject/addSubject.vue";
-
+// import addStudySchedule from "@/components/add_study_schedule.vue";
+import AddStudySchedule from "@/components/add_study_schedule.vue";
+import weeklyPlan from "@/components/weeklyPlan.vue";
 const firebaseConfig = {
     apiKey: "AIzaSyBdk3sqIHjXvB2C-O-lvkRgMFpg8pemkno",
     authDomain: "alseraj--almoner.firebaseapp.com",
@@ -768,6 +825,8 @@ export default {
     components: {
         StudentList,
         addSubject,
+        AddStudySchedule,
+        weeklyPlan,
     },
     props: ["year"],
     setup() {
@@ -782,8 +841,16 @@ export default {
     },
     data() {
         return {
+            activeButton: "الكل",
             all_classes: ["1/1", "1/2"],
             section: ["عربي", "لغات"],
+            selectedSection: "الكل",
+            dialog_6: false,
+            showDialog: false,
+            showDialog2: false,
+            StudySchedule: {
+                // البيانات التي ترغب في تمريرها إلى المكون
+            },
             newTest: {
                 className: "",
                 section: "",
@@ -879,6 +946,21 @@ export default {
         },
     },
     methods: {
+        updateSection(section) {
+            this.activeButton = section;
+            this.selectedSection = section;
+        },
+        buttonStyle(section) {
+            return this.activeButton === section
+                ? { background: "white", color: "#54aef5" }
+                : { background: "#54aef5", color: "white" };
+        },
+        openDialog() {
+            this.showDialog = true;
+        },
+        openDialog2() {
+            this.showDialog2 = true;
+        },
         addQuestion() {
             const firstQuestion = this.newTest.questions[0];
             if (

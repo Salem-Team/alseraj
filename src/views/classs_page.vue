@@ -697,19 +697,6 @@
                                             "
                                             class="filter-switch"
                                         />
-                                        <!-- <v-btn
-                                            color="blue darken-1"
-                                            text
-                                            v-model="filters.byPayments"
-                                            @click="togglePaymentsSorting"
-                                            class="filter-switch"
-                                        >
-                                            {{
-                                                paymentSortActive
-                                                    ? "إلغاء الترتيب"
-                                                    : "ترتيب حسب المدفوعات"
-                                            }}
-                                        </v-btn> -->
                                     </v-col>
                                 </v-row>
 
@@ -751,9 +738,10 @@ import {
     getDocs,
     updateDoc,
     getFirestore,
-    arrayUnion,
+    addDoc,
     query,
     where,
+    serverTimestamp,
 } from "firebase/firestore";
 import { initializeApp } from "@firebase/app";
 import { getStorage } from "firebase/storage";
@@ -892,7 +880,6 @@ export default {
     },
     methods: {
         addQuestion() {
-            // التحقق من أن جميع الحقول في الأسئلة الأولى مملوءة
             const firstQuestion = this.newTest.questions[0];
             if (
                 firstQuestion.question &&
@@ -900,7 +887,6 @@ export default {
                 firstQuestion.wrongAnswer1 &&
                 firstQuestion.wrongAnswer2
             ) {
-                // إضافة سؤال جديد فقط إذا كانت الحقول الأولى مملوءة
                 this.newTest.questions.push({
                     question: "",
                     correctAnswer: "",
@@ -926,32 +912,22 @@ export default {
             }
 
             const testData = {
-                Questions: [
+                info: {
+                    class: className,
+                    section: section,
+                },
+                students: [
                     {
-                        question: this.newTest.question,
-                        correctAnswer: this.newTest.correctAnswer,
-                        wrongAnswer1: this.newTest.wrongAnswer1,
-                        wrongAnswer2: this.newTest.wrongAnswer2,
+                        student_id: "",
+                        degree: "",
                     },
                 ],
+                Questions: this.newTest.questions,
+                createdAt: serverTimestamp(),
             };
 
             try {
-                const q = query(
-                    collection(db, "students"),
-                    where("educational_level", "==", educationalLevel),
-                    where("class", "==", className),
-                    where("section", "==", section)
-                );
-
-                const querySnapshot = await getDocs(q);
-
-                querySnapshot.forEach(async (docSnap) => {
-                    const docRef = doc(db, "students", docSnap.id);
-                    await updateDoc(docRef, {
-                        tests: arrayUnion(testData),
-                    });
-                });
+                await addDoc(collection(db, "exam"), testData);
 
                 this.snackbar.message = "تم إضافة الاختبار بنجاح";
                 this.snackbar.color = "success";

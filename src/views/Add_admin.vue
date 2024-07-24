@@ -556,7 +556,7 @@ export default {
                 .writeText(password)
                 .then(() => {
                     console.log("تم نسخ كلمة المرور بنجاح!");
-                    this.snackbar = true;
+                    this.snackbar1 = true;
                 })
                 .catch((err) => {
                     console.error("فشل في نسخ كلمة المرور: ", err);

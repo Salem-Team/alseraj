@@ -84,7 +84,7 @@ export default {
                 this.National_id = "1210987654321";
                 this.password = "123456";
             } else {
-                this.National_id = "1234567891011";
+                this.National_id = "12345665412";
                 this.password = "123456";
             }
         },
@@ -101,7 +101,7 @@ export default {
                     );
                     querySnapshot.forEach((doc) => {
                         if (
-                            doc.data().National_id === this.National_id &&
+                            doc.id === this.National_id &&
                             doc.data().password === this.password
                         ) {
                             authenticatedUser = {
@@ -153,7 +153,7 @@ export default {
                     );
                     querySnapshot.forEach((doc) => {
                         if (
-                            doc.data().National_id === this.National_id &&
+                            doc.id === this.National_id &&
                             doc.data().password === this.password
                         ) {
                             authenticatedUser = {
@@ -178,6 +178,7 @@ export default {
             if (authenticatedUser) {
                 // Call your login method or perform necessary actions
                 await this.login(
+                    authenticatedUser.id,
                     authenticatedUser.email,
                     authenticatedUser.userType,
                     authenticatedUser.roles,

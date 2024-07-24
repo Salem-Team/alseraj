@@ -6,7 +6,7 @@
             <v-btn
                 color="var(--main-color)"
                 variant="text"
-                @click="snackbar = false"
+                @click="closeSnackbar"
             >
                 إغلاق
             </v-btn>
@@ -20,6 +20,12 @@ export default {
         return {
             snackbar: this.snackbar1,
         };
+    },
+    methods: {
+        closeSnackbar() {
+            this.closeSnackbar = false;
+            this.$emit("close-snackbar");
+        },
     },
 };
 </script>

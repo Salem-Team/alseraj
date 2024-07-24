@@ -559,7 +559,7 @@
                                                                 selectedStudent.birthday
                                                             "
                                                             label="تاريخ الميلاد"
-                                                            append-icon="mdi-calendar"
+                                                            prepend-icon="mdi-calendar"
                                                             readonly
                                                             @click="menu = true"
                                                             :error-messages="
@@ -652,7 +652,6 @@
                                                 </v-list>
                                             </div>
                                         </div>
-
                                         <div v-if="e1 === 3" ref="slide3">
                                             <div style="padding: 20px">
                                                 <div
@@ -1286,6 +1285,9 @@
                                                                             style="
                                                                                 text-align: center;
                                                                             "
+                                                                            @input="
+                                                                                changesMade2 = true
+                                                                            "
                                                                             required
                                                                         ></v-text-field>
                                                                     </td>
@@ -1296,6 +1298,9 @@
                                                                             "
                                                                             style="
                                                                                 text-align: center;
+                                                                            "
+                                                                            @input="
+                                                                                changesMade2 = true
                                                                             "
                                                                             required
                                                                         ></v-text-field>
@@ -1317,6 +1322,9 @@
                                                                             "
                                                                             style="
                                                                                 text-align: center;
+                                                                            "
+                                                                            @input="
+                                                                                changesMade2 = true
                                                                             "
                                                                             required
                                                                         ></v-text-field>
@@ -1546,11 +1554,10 @@
                                                                 )
                                                             "
                                                             @change="
-                                                                CreateChart = true
+                                                                createChart
                                                             "
                                                         ></v-text-field>
                                                     </v-row>
-
                                                     <div
                                                         v-if="
                                                             selectedStudent
@@ -1715,7 +1722,7 @@
                                                         </v-row>
                                                         <div
                                                             class="Title"
-                                                            v-if="CreateChart"
+                                                            v-show="CreateChart"
                                                             style="
                                                                 margin-top: 55px;
                                                             "
@@ -1730,7 +1737,7 @@
                                                         </div>
                                                         <div
                                                             class="details"
-                                                            v-if="CreateChart"
+                                                            v-show="CreateChart"
                                                         >
                                                             <div
                                                                 class="myChart"
@@ -2412,13 +2419,19 @@
                 </v-dialog>
             </v-col>
         </v-row>
-        <confirm_message :text="confirmationText" v-model="showSnackbar" />
+        <confirm_message2
+            v-model="showSnackbar"
+            :text="confirmationText"
+            :snackbar="showSnackbar"
+            @close-snackbar="showSnackbar = false"
+        />
     </v-container>
 </template>
 
 <script>
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Empty_error from "@/components/Empty_error.vue";
+// import Chart from "chart.js/auto";
 import {
     collection,
     addDoc,
@@ -2450,7 +2463,7 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 const storage = getStorage(app);
-import confirm_message from "@/components/confirm_message.vue";
+import confirm_message2 from "@/components/confirm_message2.vue";
 
 export { db, storage };
 import "jspdf-autotable";
@@ -2460,7 +2473,7 @@ import { useDialogStore } from "@/store/useDialogStore";
 export default {
     name: "StudentList",
     components: {
-        confirm_message,
+        confirm_message2,
         Empty_error,
     },
     props: {
@@ -2490,7 +2503,7 @@ export default {
     data() {
         return {
             dialog_stu: false,
-            CreateChart: false,
+            CreateChart: null,
             myChart: null,
             searchId: "", // متغير لتخزين معرف الطالب الذي تريد البحث عنه
             menuz: false,
@@ -2547,7 +2560,7 @@ export default {
                 class: "",
                 gender: "",
                 section: "",
-                birthday: null,
+                birthday: "2024/07/19",
                 parent_name: "",
                 national_id: "",
 
@@ -2833,7 +2846,7 @@ export default {
             selectedStudent: "",
             dialogStudentDetails: false,
             changesMade: false,
-            changesMade2: true,
+            changesMade2: false,
             changesMade3: false,
             interval: null,
             value: 0,
@@ -2997,52 +3010,6 @@ export default {
             this.changesMade2 = false;
         },
 
-        // getAlertType(notificationType) {
-        //     // if (notificationType === "سي") {
-        //     //     return "error";
-        //     // }
-        //     // switch (notificationType) {
-        //     //     case "success":
-        //     //         return "success";
-        //     //     case "error":
-        //     //         return "error";
-        //     //     case "warning":
-        //     //         return "warning";
-        //     //     case "info":
-        //     //         return "info";
-        //     //     default:
-        //     //         return "info";
-        //     // }
-        // },
-        // getIcon(notificationType) {
-        //     switch (notificationType) {
-        //         case "success":
-        //             return "mdi-check-circle";
-        //         case "error":
-        //         case "سي":
-        //             return "mdi-alert-circle";
-        //         case "warning":
-        //             return "mdi-alert";
-        //         case "info":
-        //             return "mdi-information";
-        //         default:
-        //             return "mdi-information";
-        //     }
-        // getIconClass(notificationType) {
-        //     switch (notificationType) {
-        //         case "success":
-        //             return "green";
-        //         case "error":
-        //         case "سي":
-        //             return "red";
-        //         case "warning":
-        //             return "orange";
-        //         case "info":
-        //             return "blue";
-        //         default:
-        //             return "blue";
-        //     }
-        // },
         async fetchStudents() {
             try {
                 const q = query(
@@ -3074,9 +3041,9 @@ export default {
             if (this.validateForm()) {
                 try {
                     // التأكد من أن تاريخ الميلاد يتم تخزينه كسلسلة منسقة
-                    const formattedBirthday = this.formatDate(
-                        new Date(this.form.birthday)
-                    );
+                    // this.formattedDate = this.formatDate(
+                    //     new Date(this.form.birthday)
+                    // );
 
                     // إضافة الطالب إلى مجموعة "students"
                     const docRef = await addDoc(collection(db, "students"), {
@@ -3084,7 +3051,7 @@ export default {
                         class: this.form.class,
                         gender: this.form.gender,
                         section: this.form.section,
-                        birthday: formattedBirthday,
+                        birthday: this.formattedDate,
                         Results: this.form.Results,
                         payments: this.form.payments,
                         Notifications: this.form.Notifications,
@@ -3101,14 +3068,13 @@ export default {
                         class: this.form.class,
                         gender: this.form.gender,
                         section: this.form.section,
-                        birthday: formattedBirthday,
+                        birthday: this.formattedDate,
                         Results: this.form.Results,
                         payments: this.form.payments,
                         Notifications: this.form.Notifications,
                         photos: this.form.photos,
                         year: new Date().getFullYear(),
                     };
-
                     this.students.push(newStudent);
 
                     // تحقق من وجود مستند "Parents" بالرقم القومي
@@ -3144,7 +3110,7 @@ export default {
                     }
 
                     this.dialog_addstudent = false;
-                    this.formattedDate = "";
+                    // this.formattedDate = "";
                     this.handleReset();
                     this.dialogStore.hideAddStudentDialog();
                     this.$emit("close-dialog");
@@ -3152,6 +3118,7 @@ export default {
                     // إعداد نص الرسالة وتفعيل Snackbar
                     this.confirmationText = "تم إضافة الطالب بنجاح";
                     this.showSnackbar = true;
+                    this.form.birthday = this.formattedDate;
                     await this.fetchStudents();
                 } catch (error) {
                     console.error("Error adding document:", error);
@@ -3179,14 +3146,10 @@ export default {
         // },
         formatDate(date) {
             const d = new Date(date);
-            let month = "" + (d.getMonth() + 1); // استخدام let بدلاً من const
-            let day = "" + d.getDate(); // استخدام let بدلاً من const
             const year = d.getFullYear();
-
-            if (month.length < 2) month = "0" + month;
-            if (day.length < 2) day = "0" + day;
-
-            return [year, month, day].join("-");
+            const month = String(d.getMonth() + 1).padStart(2, "0");
+            const day = String(d.getDate()).padStart(2, "0");
+            return `${year}/${month}/${day}`;
         },
         // formatDateh(birthday) {
         //     if (birthday.seconds) {
@@ -3527,45 +3490,20 @@ export default {
                 });
             }
         },
-        async loadParentDetails(National_id) {
-            if (!National_id) {
-                console.error("No National_id provided");
-                return;
-            }
-
-            try {
-                const parentDoc = doc(db, "Parents", National_id);
-                const parentSnapshot = await getDoc(parentDoc);
-                console.log("dxasdsasdsasa:", parentDoc);
-
-                if (parentSnapshot.exists()) {
-                    const parentData = parentSnapshot.data();
-                    this.selectedParent.name = parentData.name || "غير متوفر";
-                    this.selectedParent.children = parentData.Child || []; // تأكد من أن Child ليست undefined
-                } else {
-                    console.error("No such document!");
-                    this.selectedParent.name = "غير متوفر";
-                    this.selectedParent.children = [];
-                }
-            } catch (error) {
-                console.error("Error getting document:", error);
-            }
-        },
 
         openStudentDetails(student) {
             this.selectedStudent = student;
-            this.loadParentDetails(student.National_id);
             this.dialogStudentDetails = true;
         },
         // l;
         initializeTempDate() {
             // this.tempDate = this.form.birthday;
-            this.tempDate = this.form.birthday;
+            this.tempDate = new Date(this.form.birthday);
             new Date().toISOString().substr(0, 10);
         },
         confirmDate() {
             this.form.birthday = this.tempDate;
-            this.formattedDate = this.formatDate(this.tempDate);
+            this.formattedDate = this.formatDate(new Date(this.tempDate));
             this.menu = false;
         },
 
@@ -3955,19 +3893,19 @@ export default {
             };
         },
         // aos
-        async saveStudentDetails() {
-            if (this.selectedStudent) {
-                try {
-                    const studentRef = doc(db, "students", this.student.id);
-                    await updateDoc(studentRef, this.student);
-                    await this.fetchStudents(); // Optionally refetch students to update the list
-                    this.dialogStudentDetails = false;
-                    console.log("Student details updated successfully");
-                } catch (error) {
-                    console.error("Error updating student details:", error);
-                }
-            }
-        },
+        // async saveStudentDetails() {
+        //     if (this.selectedStudent) {
+        //         try {
+        //             const studentRef = doc(db, "students", this.student.id);
+        //             await updateDoc(studentRef, this.student);
+        //             await this.fetchStudents(); // Optionally refetch students to update the list
+        //             this.dialogStudentDetails = false;
+        //             console.log("Student details updated successfully");
+        //         } catch (error) {
+        //             console.error("Error updating student details:", error);
+        //         }
+        //     }
+        // },
         async updateMonthlyDegrees(degrees) {
             if (!this.selectedStudent) {
                 this.console.error("Error: selectedStudent is null");
@@ -3986,6 +3924,7 @@ export default {
                         if (month.Certificate_title === this.selectedMonth) {
                             return { ...month, Degrees: degrees };
                         }
+                        // this.changesMade2 = true;
                         return month;
                     }
                 );
@@ -4143,9 +4082,9 @@ export default {
             const expenses = this.form.payments.Expenses || 0;
             const paidUp = this.form.payments.paid_Up || 0;
             this.form.payments.Residual = expenses - paidUp;
-            this.createChart([paidUp, this.form.payments.Residual]);
+            // this.createChart([paidUp, this.form.payments.Residual]);
         },
-        createChart(data) {
+        createChart() {
             const ctx = document.getElementById("myChart");
             if (ctx) {
                 // تحقق مما إذا كان هناك مخطط موجود وقم بتدميره
@@ -4155,18 +4094,20 @@ export default {
 
                 console.log("start createChart");
                 this.CreateChart = true;
-                this.myChart = new Chart(ctx, {
-                    type: "doughnut",
-                    data: {
-                        datasets: [
-                            {
-                                label: "المصروفات",
-                                data: data,
-                                backgroundColor: ["#336699", "#d8588c"],
-                                hoverOffset: 4,
-                            },
-                        ],
-                    },
+                this.$nextTick(() => {
+                    this.myChart = new Chart(ctx, {
+                        type: "doughnut",
+                        data: {
+                            datasets: [
+                                {
+                                    label: "المصروفات",
+                                    data: [20, 50],
+                                    backgroundColor: ["#336699", "#d8588c"],
+                                    hoverOffset: 4,
+                                },
+                            ],
+                        },
+                    });
                 });
             } else {
                 console.log("error");
@@ -4178,13 +4119,13 @@ export default {
             this.formattedDate = this.formatDate(newVal);
         },
 
-        selectedMonthlyDegrees: {
-            handler() {
-                // Save changes to Firebase
-                this.changesMade2 = true;
-            },
-            deep: true,
-        },
+        // selectedMonthlyDegrees: {
+        //     handler() {
+        //         // Save changes to Firebase
+        //         this.changesMade2 = false;
+        //     },
+        //     deep: true,
+        // },
         "form.payments.Expenses"() {
             this.updateResidual();
         },
@@ -4242,18 +4183,18 @@ export default {
         this.searchStudent(); // Fetch all students initially
         this.generateRandomPassword();
         this.fetchStudents();
-        this.interval = setInterval(() => {
-            if (this.value === 100) {
-                clearInterval(this.interval);
-                return;
-            }
-            this.value += 10;
-        }, 100);
+        // this.interval = setInterval(() => {
+        //     if (this.value === 100) {
+        //         clearInterval(this.interval);
+        //         return;
+        //     }
+        //     this.value += 10;
+        // }, 100);
         this.students = this.$parent.students_class; // Assuming students_class is passed down from parent
     },
-    beforeUnmount() {
-        clearInterval(this.interval);
-    },
+    // beforeUnmount() {
+    //     clearInterval(this.interval);
+    // },
 };
 </script>
 

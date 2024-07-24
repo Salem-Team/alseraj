@@ -115,7 +115,8 @@ export default {
                         }
                     });
                     return authenticatedUser;
-                } else if (this.userType === "admin") {
+                }
+                if (this.userType === "admin") {
                     const querySnapshot = await getDocs(
                         collection(db, "users")
                     );
@@ -145,7 +146,8 @@ export default {
                         }
                     });
                     return authenticatedUser;
-                } else {
+                }
+                if (this.userType === "student") {
                     const querySnapshot = await getDocs(
                         collection(db, "students")
                     );

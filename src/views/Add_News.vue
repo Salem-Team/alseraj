@@ -370,6 +370,7 @@
                             />
                             <font-awesome-icon
                                 :icon="['fas', 'trash']"
+                                @click.="news.New_Information(New)"
                                 @click="news.dialog_3 = true"
                             />
                             <v-img
@@ -468,7 +469,12 @@
                         color="var(--pink-color)"
                         :loading="loading"
                         :disabled="loading"
-                        @click="news.delete_New(New.id, New.image)"
+                        @click="
+                            news.delete_New(
+                                news.Id_Information,
+                                news.Id_Information
+                            )
+                        "
                         style="
                             color: #fff;
                             font-weight: bold;

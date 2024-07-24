@@ -12,6 +12,7 @@ import Edit_profile from "../views/Edit_profile.vue";
 import Modifications from "../views/Modifications_admin.vue";
 import Add_News from "../views/Add_News.vue";
 import Add_job from "../views/Add_job.vue";
+import notification_test from "../views/notification_test.vue";
 import jobs_more from "../views/jobs_more.vue";
 import News_more from "../views/News_more.vue";
 import Photos_more from "../views/Photos_more.vue";
@@ -124,6 +125,11 @@ const routes = [
         path: "/Photos_more",
         name: "Photos_more",
         component: Photos_more,
+    },
+    {
+        path: "/notification_test",
+        name: "notification_test",
+        component: notification_test,
     },
 ];
 

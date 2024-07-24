@@ -38,6 +38,7 @@ export const useadmin = defineStore("admin", {
             expectedUserType: "admin",
             id: "",
             roles: [],
+            National_id: "",
         },
         role: [
             // List of roles
@@ -107,6 +108,10 @@ export const useadmin = defineStore("admin", {
                         this.user.email,
                         "12345a"
                     ),
+                    National_id: secrureDataStore.encryptData(
+                        this.user.National_id,
+                        "12345a"
+                    ),
                     userType: this.user.expectedUserType,
 
                     password: this.user.password,
@@ -143,7 +148,10 @@ export const useadmin = defineStore("admin", {
                                 doc.data().email,
                                 "12345a"
                             ),
-
+                            National_id: decryption.decryptData(
+                                doc.data().National_id,
+                                "12345a"
+                            ),
                             name: decryption.decryptData(
                                 doc.data().name,
                                 "12345a"
@@ -193,6 +201,7 @@ export const useadmin = defineStore("admin", {
             this.name_Information = user.name;
             this.Id_Information = user.id;
             console.log(user.id);
+            this.National_id_Information = user.National_id;
             this.email_Information = user.email;
             this.roles_Information = user.roles;
         },
@@ -212,6 +221,11 @@ export const useadmin = defineStore("admin", {
                         this.email_Information,
                         "12345a"
                     ),
+                    National_id: secrureDataStore.encryptData(
+                        this.National_id_Information,
+                        "12345a"
+                    ),
+
                     roles: this.roles_Information,
                 });
                 this.Get_data(); // Refresh user data

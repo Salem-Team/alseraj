@@ -305,9 +305,9 @@
                                             @click.="
                                                 photos.photo_Information(photo)
                                             "
-                                            @click="dialog_6 = true"
                                         >
                                             <v-fab
+                                                v-if="photo.File_type == 'صورة'"
                                                 icon="mdi-delete"
                                                 location="top right"
                                                 size="40"
@@ -316,13 +316,27 @@
                                                 offset
                                                 @click="photos.dialog_3 = true"
                                             ></v-fab>
+                                            <v-fab
+                                                v-if="
+                                                    photo.File_type == 'فيديو'
+                                                "
+                                                icon="mdi-delete"
+                                                location="top right"
+                                                size="40"
+                                                absolute
+                                                style="bottom: -15px; left: 5px"
+                                                offset
+                                                @click="photos.dialog_4 = true"
+                                            ></v-fab>
                                             <v-img
+                                                @click="dialog_6 = true"
                                                 v-if="photo.File_type == 'صورة'"
                                                 :src="photo.image"
                                                 height="200"
                                                 cover
                                             ></v-img>
                                             <video
+                                                @click="dialog_6 = true"
                                                 v-if="
                                                     photo.File_type == 'فيديو'
                                                 "
@@ -355,9 +369,9 @@
                                             @click.="
                                                 photos.photo_Information(photo)
                                             "
-                                            @click="dialog_6 = true"
                                         >
                                             <v-fab
+                                                v-if="photo.File_type == 'صورة'"
                                                 icon="mdi-delete"
                                                 location="top right"
                                                 size="40"
@@ -366,13 +380,27 @@
                                                 offset
                                                 @click="photos.dialog_3 = true"
                                             ></v-fab>
+                                            <v-fab
+                                                v-if="
+                                                    photo.File_type == 'فيديو'
+                                                "
+                                                icon="mdi-delete"
+                                                location="top right"
+                                                size="40"
+                                                absolute
+                                                style="bottom: -15px; left: 5px"
+                                                offset
+                                                @click="photos.dialog_4 = true"
+                                            ></v-fab>
                                             <v-img
+                                                @click="dialog_6 = true"
                                                 v-if="photo.File_type == 'صورة'"
                                                 :src="photo.image"
                                                 height="200"
                                                 cover
                                             ></v-img>
                                             <video
+                                                @click="dialog_6 = true"
                                                 v-if="
                                                     photo.File_type == 'فيديو'
                                                 "
@@ -404,9 +432,9 @@
                                             @click.="
                                                 photos.photo_Information(photo)
                                             "
-                                            @click="dialog_6 = true"
                                         >
                                             <v-fab
+                                                v-if="photo.File_type == 'صورة'"
                                                 icon="mdi-delete"
                                                 location="top right"
                                                 size="40"
@@ -415,13 +443,27 @@
                                                 offset
                                                 @click="photos.dialog_3 = true"
                                             ></v-fab>
+                                            <v-fab
+                                                v-if="
+                                                    photo.File_type == 'فيديو'
+                                                "
+                                                icon="mdi-delete"
+                                                location="top right"
+                                                size="40"
+                                                absolute
+                                                style="bottom: -15px; left: 5px"
+                                                offset
+                                                @click="photos.dialog_4 = true"
+                                            ></v-fab>
                                             <v-img
+                                                @click="dialog_6 = true"
                                                 v-if="photo.File_type == 'صورة'"
                                                 :src="photo.image"
                                                 height="200"
                                                 cover
                                             ></v-img>
                                             <video
+                                                @click="dialog_6 = true"
                                                 v-if="
                                                     photo.File_type == 'فيديو'
                                                 "
@@ -454,9 +496,9 @@
                                             @click.="
                                                 photos.photo_Information(photo)
                                             "
-                                            @click="dialog_6 = true"
                                         >
                                             <v-fab
+                                                v-if="photo.File_type == 'صورة'"
                                                 icon="mdi-delete"
                                                 location="top right"
                                                 size="40"
@@ -465,13 +507,27 @@
                                                 offset
                                                 @click="photos.dialog_3 = true"
                                             ></v-fab>
+                                            <v-fab
+                                                v-if="
+                                                    photo.File_type == 'فيديو'
+                                                "
+                                                icon="mdi-delete"
+                                                location="top right"
+                                                size="40"
+                                                absolute
+                                                style="bottom: -15px; left: 5px"
+                                                offset
+                                                @click="photos.dialog_4 = true"
+                                            ></v-fab>
                                             <v-img
+                                                @click="dialog_6 = true"
                                                 v-if="photo.File_type == 'صورة'"
                                                 :src="photo.image"
                                                 height="200"
                                                 cover
                                             ></v-img>
                                             <video
+                                                @click="dialog_6 = true"
                                                 v-if="
                                                     photo.File_type == 'فيديو'
                                                 "
@@ -507,22 +563,86 @@
                                             ></v-btn>
                                         </div>
                                         <v-carousel hide-delimiters>
-                                            <v-carousel-item
-                                                class="pa-5"
-                                                :src="photos.Photo_Information"
-                                                height="400"
-                                                cover
-                                            ></v-carousel-item>
-                                            <v-carousel-item
-                                                class="pa-5"
+                                            <div>
+                                                <v-carousel-item
+                                                    class="pa-5"
+                                                    v-if="
+                                                        photos.File_Information ==
+                                                        'صورة'
+                                                    "
+                                                    :src="
+                                                        photos.Photo_Information
+                                                    "
+                                                    height="400"
+                                                    cover
+                                                ></v-carousel-item>
+                                            </div>
+                                            <div>
+                                                <v-carousel-item
+                                                    class="pa-5"
+                                                    v-if="
+                                                        photos.File_Information ==
+                                                        'فيديو'
+                                                    "
+                                                    height="400"
+                                                    cover
+                                                >
+                                                    <video
+                                                        width="400"
+                                                        height="400"
+                                                        controls
+                                                    >
+                                                        <source
+                                                            :src="
+                                                                photos.Video_Information
+                                                            "
+                                                            type="video/mp4"
+                                                        />
+
+                                                        Your browser does not
+                                                        support the video tag.
+                                                    </video></v-carousel-item
+                                                >
+                                            </div>
+                                            <div
                                                 v-for="photo in Photos"
                                                 :key="photo.id"
-                                                :src="photo.image"
-                                                height="400"
-                                                cover
-                                            ></v-carousel-item>
-                                        </v-carousel> </v-card
-                                ></v-dialog>
+                                            >
+                                                <v-carousel-item
+                                                    v-if="
+                                                        photo.File_type ==
+                                                        'صورة'
+                                                    "
+                                                    class="pa-5"
+                                                    :src="photo.image"
+                                                    height="400"
+                                                    cover
+                                                ></v-carousel-item>
+                                                <v-carousel-item
+                                                    v-if="
+                                                        photo.File_type ==
+                                                        'فيديو'
+                                                    "
+                                                    class="pa-5 text-center"
+                                                    cover
+                                                >
+                                                    <video
+                                                        controls
+                                                        height="400"
+                                                    >
+                                                        <source
+                                                            :src="photo.video"
+                                                            type="video/mp4"
+                                                        />
+
+                                                        Your browser does not
+                                                        support the video tag.
+                                                    </video></v-carousel-item
+                                                >
+                                            </div>
+                                        </v-carousel></v-card
+                                    ></v-dialog
+                                >
                             </v-tabs-window>
                         </v-card-text>
                     </v-card>
@@ -552,6 +672,64 @@
             </v-card-actions>
         </v-card>
     </div>
+    <v-dialog v-model="dialog_4" width="90%">
+        <v-card width="100%" class="popup">
+            <div class="d-flex justify-space-between align-center title">
+                <div style="color: var(--main-color)">تأكيد الحذف!</div>
+                <v-btn icon="mdi-close" @click="dialog_4 = false"></v-btn>
+            </div>
+
+            <p
+                style="
+                    padding: 20px;
+                    color: var(--therd-color);
+                    font-weight: bold;
+                "
+            >
+                هل أنت متأكد من حذفك لهذا الفيديو؟
+            </p>
+            <v-card-text>
+                <div class="d-flex align-center">
+                    <v-btn
+                        type="submit"
+                        color="var(--main-color)"
+                        :loading="loading"
+                        :disabled="loading"
+                        @click="dialog_4 = false"
+                        style="
+                            color: #fff;
+                            font-weight: bold;
+                            width: 48%;
+                            height: 45px;
+                        "
+                    >
+                        إلغاء
+                    </v-btn>
+                    <v-spacer />
+                    <v-btn
+                        type="submit"
+                        color="var(--pink-color)"
+                        :loading="loading"
+                        :disabled="loading"
+                        @click="
+                            photos.delete_Photo(
+                                photos.Id_Information,
+                                photos.Video_Information
+                            )
+                        "
+                        style="
+                            color: #fff;
+                            font-weight: bold;
+                            width: 48%;
+                            height: 45px;
+                        "
+                    >
+                        تأكيد
+                    </v-btn>
+                </div>
+            </v-card-text>
+        </v-card></v-dialog
+    >
     <v-dialog v-model="dialog_3" width="90%">
         <v-card width="100%" class="popup">
             <div class="d-flex justify-space-between align-center title">
@@ -591,7 +769,12 @@
                         color="var(--pink-color)"
                         :loading="loading"
                         :disabled="loading"
-                        @click="photos.delete_Photo(photo.id, photo.image)"
+                        @click="
+                            photos.delete_Photo(
+                                photos.Id_Information,
+                                photos.Photo_Information
+                            )
+                        "
                         style="
                             color: #fff;
                             font-weight: bold;
@@ -621,6 +804,7 @@ export default defineComponent({
             types,
             Add_Video,
             dialog_3,
+            dialog_4,
             loading,
             Photos,
             Add_Photos,
@@ -634,6 +818,7 @@ export default defineComponent({
             video,
             dialog_6,
             handletypes,
+            Video_Information,
             Photo_Information,
             photo_Information,
             loading1,
@@ -652,9 +837,11 @@ export default defineComponent({
             Photo,
             types,
             on_Video_Change,
+            Video_Information,
             video,
             Add_Video,
             dialog_3,
+            dialog_4,
             loading,
             dialog_6,
             onFileChange,

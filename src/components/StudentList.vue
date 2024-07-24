@@ -2889,18 +2889,7 @@ export default {
 
             return [year, month, day].join("-");
         },
-        // formatDateh(birthday) {
-        //     if (birthday.seconds) {
-        //         const date = new Date(birthday.seconds * 1000);
-        //         const day = date.getDate();
-        //         const month = date.getMonth() + 1; // Months are zero-based
-        //         const year = date.getFullYear();
-        //         return `${day}/${month}/${year}`;
-        //     } else {
-        //         return birthday; // If it's already formatted
-        //     }
-        // },
-        // Example function to generate a unique ID
+
         generateUniqueId() {
             return "id-" + Math.random().toString(36).substr(2, 9);
         },

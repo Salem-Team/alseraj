@@ -100,18 +100,18 @@
                                 <span
                                     v-if="jobs.counter.counter !== 0"
                                     style="
-                                            width: 15px;
-                                            background-color: #e23636;
-                                            color: white;
-                                            border-radius: 50% 50%;
-                                            text-align: center;
-                                            display: inline-block;
-                                            position: relative;
-                                            top: -12px;
-                                            left: -12px;
-                                            translate(50%,50%);
-                                            font-size: 12px;
-                                        "
+                                        width: 15px;
+                                        background-color: #e23636;
+                                        color: white;
+                                        border-radius: 50% 50%;
+                                        text-align: center;
+                                        display: inline-block;
+                                        position: relative;
+                                        top: -12px;
+                                        left: -12px;
+                                        transform: translate(50%, 50%);
+                                        font-size: 12px;
+                                    "
                                 >
                                     {{ jobs.counter.counter }}
                                 </span>

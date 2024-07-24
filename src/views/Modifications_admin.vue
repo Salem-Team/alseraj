@@ -20,7 +20,7 @@
             <v-row>
                 <v-col cols="12">
                     <h1 class="display-1 mt-5" style="color: #336699">
-                        لوحة الشرف
+                        لوحه الشرف
                     </h1>
                 </v-col>
                 <v-col cols="12">

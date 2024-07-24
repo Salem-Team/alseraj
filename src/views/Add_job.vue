@@ -97,17 +97,32 @@
                     <div class="left">
                         <v-menu>
                             <template v-slot:activator="{ props }">
-                                <v-badge
-                                    color="error"
-                                    :content="jobs.counter.counter"
+                                <span
+                                    v-if="jobs.counter.counter !== 0"
+                                    style="
+                                            width: 15px;
+                                            background-color: #e23636;
+                                            color: white;
+                                            border-radius: 50% 50%;
+                                            text-align: center;
+                                            display: inline-block;
+                                            position: relative;
+                                            top: -12px;
+                                            left: -12px;
+                                            translate(50%,50%);
+                                            font-size: 12px;
+                                        "
                                 >
+                                    {{ jobs.counter.counter }}
+                                </span>
+                                <span>
                                     <v-icon
                                         class="icon"
                                         v-bind="props"
                                         @click="jobs.Update_counter"
                                         >mdi-bell-outline</v-icon
                                     >
-                                </v-badge>
+                                </span>
                             </template>
                             <v-list>
                                 <v-list-item v-if="empty0 === true">
@@ -532,6 +547,11 @@
         :text="text11"
         :snackbar1="snackbar2"
     />
+    <confirm_message
+        v-if="snackbar3 === true"
+        :text="text12"
+        :snackbar1="snackbar3"
+    />
 </template>
 
 <script>
@@ -562,6 +582,8 @@ export default defineComponent({
             dialog_9,
             text10,
             text11,
+            text12,
+            snackbar3,
             snackbar,
             snackbar2,
             text0,
@@ -606,6 +628,8 @@ export default defineComponent({
             loading1,
             text10,
             text11,
+            text12,
+            snackbar3,
             snackbar,
             snackbar2,
             CV_Information,

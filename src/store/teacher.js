@@ -29,6 +29,14 @@ export const useteacher = defineStore("teacher", {
         dialog: false,
         dialog_1: false,
         dialog_3: false,
+        empty: false,
+        text0: "لا يوجد مدرسين",
+        snackbar: false,
+        snackbar2: false,
+        snackbar3: false,
+        text12: " تم التعديل بنجاح",
+        text10: " تم الاضافة بنجاح",
+        text11: " تم الحذف بنجاح",
         user: {
             // Initial user object
             name: "",
@@ -106,6 +114,7 @@ export const useteacher = defineStore("teacher", {
                 });
                 console.log("Document written with ID: ", docRef.id);
                 this.Get_data(); // Refresh user data
+                this.snackbar = true;
                 this.dialog = false; // Close dialog
                 this.loading = false; // Stop loading indicator
             } catch (error) {
@@ -145,6 +154,11 @@ export const useteacher = defineStore("teacher", {
                     }
                 });
                 console.log("this.teachers", this.users);
+                if (this.users.length === 0) {
+                    this.empty = true;
+                } else {
+                    this.empty = false;
+                }
                 this.loading1 = false;
             } catch (error) {
                 console.error("Error retrieving data: ", error);
@@ -165,6 +179,7 @@ export const useteacher = defineStore("teacher", {
                     console.log("User not found in users array");
                 }
                 this.Get_data(); // Refresh user data
+                this.snackbar2 = true;
                 this.dialog_3 = false; // Close dialog
             } catch (error) {
                 console.error("Error deleting user:", error);
@@ -198,6 +213,7 @@ export const useteacher = defineStore("teacher", {
                 });
                 this.Get_data(); // Refresh user data
                 this.loading = false;
+                this.snackbar3 = true;
                 this.dialog_1 = false; // Close dialog
             } catch (error) {
                 console.error("Error updating user:", error);

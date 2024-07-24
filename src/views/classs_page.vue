@@ -21,11 +21,11 @@
                                 style="cursor: pointer"
                                 @click="dialogFilter = true"
                             />
-
                             <font-awesome-icon
                                 :icon="['fas', 'plus']"
                                 @click="dialog = true"
                                 style="cursor: pointer"
+                                v-tooltip="add"
                             />
                         </div>
                     </div>
@@ -47,54 +47,149 @@
                                     @click="dialog = false"
                                 ></v-btn>
                             </v-card-title>
-                            <div class="cards d-flex justify-space-evenly mb-4">
-                                <v-card
+                            <div class="cards mb-4" style="padding: 10px">
+                                <v-row
                                     style="
-                                        background-color: var(
-                                            --secound-color
-                                        ) !important;
-                                        width: 20% !important;
+                                        display: flex;
+                                        justify-content: space-around;
+                                        align-items: center;
                                     "
-                                    class="card text-center mt-3"
-                                    prepend-icon="mdi-account"
-                                    link
-                                    @click="dialog_1 = true"
+                                    class="mb-4"
                                 >
-                                    <v-card-title @click="dialog = false"
-                                        >إضافة إشعارات</v-card-title
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                            width: 30% !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-book-open-variant"
+                                        link
+                                        @click="subject = true"
                                     >
-                                </v-card>
-                                <v-card
+                                        <v-card-title>إضافة مواد</v-card-title>
+                                    </v-card>
+
+                                    <!-- v-card to open dialog -->
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                            width: 30% !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-account"
+                                        link
+                                        @click="openDialog"
+                                    >
+                                        <v-card-title
+                                            >إضافة جدول دراسي</v-card-title
+                                        >
+                                    </v-card>
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                            width: 30% !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-account"
+                                        link
+                                        @click="dialog_1 = true"
+                                    >
+                                        <v-card-title @click="dialog = false"
+                                            >إضافة إشعارات</v-card-title
+                                        >
+                                    </v-card>
+                                </v-row>
+                                <add-subject
+                                    @closeDialog="closeDialog"
+                                    :localSubject="subject"
+                                />
+                                <add-study-schedule v-model="showDialog" />
+                                <v-row
                                     style="
-                                        background-color: var(
-                                            --secound-color
-                                        ) !important;
+                                        display: flex;
+                                        justify-content: space-around;
+                                        align-items: center;
                                     "
-                                    class="card text-center mt-3"
-                                    prepend-icon="mdi-newspaper-variant-multiple-outline"
-                                    @click="showAddStudentDialog"
-                                    width="20%"
                                 >
-                                    <v-card-title @click="dialog = false"
-                                        >إضافة بيانات الطالب</v-card-title
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-newspaper-variant-multiple-outline"
+                                        @click="showAddStudentDialog"
+                                        width="30%"
                                     >
-                                </v-card>
-                                <v-card
+                                        <v-card-title @click="dialog = false"
+                                            >إضافة بيانات الطالب</v-card-title
+                                        >
+                                    </v-card>
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-image"
+                                        link
+                                        @click="dialog_2 = true"
+                                        width="30%"
+                                    >
+                                        <v-card-title @click="dialog = false"
+                                            >إضافة الصور</v-card-title
+                                        >
+                                    </v-card>
+                                    <!--Bubble sheet -->
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                            width: 30% !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-help-circle-outline"
+                                        link
+                                        @click="dialog_bubble = true"
+                                    >
+                                        <v-card-title @click="dialog = false"
+                                            >إضافة أختبارات</v-card-title
+                                        >
+                                    </v-card>
+                                </v-row>
+                                <v-row
                                     style="
-                                        background-color: var(
-                                            --secound-color
-                                        ) !important;
+                                        display: flex;
+                                        justify-content: space-around;
+                                        align-items: center;
                                     "
-                                    class="card text-center mt-3"
-                                    prepend-icon="mdi-image"
-                                    link
-                                    @click="dialog_2 = true"
-                                    width="20%"
                                 >
-                                    <v-card-title @click="dialog = false"
-                                        >إضافة الصور</v-card-title
+                                    <v-card
+                                        style="
+                                            background-color: var(
+                                                --secound-color
+                                            ) !important;
+                                        "
+                                        class="card text-center mt-3"
+                                        prepend-icon="mdi-newspaper-variant-multiple-outline"
+                                        width="30%"
+                                        @click="openDialog2"
                                     >
-                                </v-card>
+                                        <v-card-title
+                                            >إضافة الخطه الاسبوعيه</v-card-title
+                                        >
+                                    </v-card>
+                                </v-row>
+                                <weeklyPlan v-model="showDialog2" />
                             </div>
                         </v-card>
                     </v-dialog>
@@ -249,21 +344,6 @@
                                     </v-card-actions>
                                 </v-card>
                             </v-dialog>
-                            <!-- <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                    color="blue darken-1"
-                                    text
-                                    @click="dialogAddNotice = false"
-                                    >إلغاء</v-btn
-                                >
-                                <v-btn
-                                    color="blue darken-1"
-                                    text
-                                    @click="saveNotification"
-                                    >حفظ</v-btn
-                                >
-                            </v-card-actions> -->
                         </v-card>
                     </v-dialog>
                     <v-dialog
@@ -315,6 +395,7 @@
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
+
                     <v-dialog v-model="dialog_2" max-width="90%">
                         <div style="background: white; padding: 53px">
                             <div
@@ -426,9 +507,156 @@
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
+                    <v-dialog v-model="dialog_bubble" max-width="90%">
+                        <v-card style="padding: 0">
+                            <div>
+                                <div
+                                    style="
+                                        background-color: #2196f3;
+                                        color: #fff;
+                                        font-size: 18px;
+                                        padding: 10px;
+                                    "
+                                >
+                                    إنشاء إختبار
+                                </div>
+                            </div>
+                            <v-card-text style="margin-top: 5px">
+                                <!-- معلومات الاختبار -->
+                                <v-form ref="createTestForm">
+                                    <v-row class="d-flex justify-center">
+                                        <v-col cols="4">
+                                            <v-text-field
+                                                :value="year"
+                                                disabled
+                                            ></v-text-field>
+                                            <v-select
+                                                v-model="newTest.className"
+                                                :items="all_classes"
+                                                label="اسم الفصل"
+                                                required
+                                            ></v-select>
+                                            <v-select
+                                                v-model="newTest.section"
+                                                :items="section"
+                                                label="القسم"
+                                                required
+                                            ></v-select>
+                                        </v-col>
+                                        <v-col cols="8">
+                                            <v-text-field
+                                                v-model="
+                                                    newTest.questions[0]
+                                                        .question
+                                                "
+                                                label="السؤال الأول"
+                                                required
+                                            ></v-text-field>
+                                            <v-text-field
+                                                v-model="
+                                                    newTest.questions[0]
+                                                        .correctAnswer
+                                                "
+                                                label="الإجابة الصحيحة"
+                                                required
+                                            ></v-text-field>
+                                            <v-text-field
+                                                v-model="
+                                                    newTest.questions[0]
+                                                        .wrongAnswer1
+                                                "
+                                                label="الإجابة الخاطئة 1"
+                                                required
+                                            ></v-text-field>
+                                            <v-text-field
+                                                v-model="
+                                                    newTest.questions[0]
+                                                        .wrongAnswer2
+                                                "
+                                                label="الإجابة الخاطئة 2"
+                                                required
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+
+                                    <!-- جزء خاص بالأسئلة -->
+                                    <v-divider></v-divider>
+
+                                    <v-row>
+                                        <v-col cols="12">
+                                            <v-row
+                                                v-for="(
+                                                    question, index
+                                                ) in newTest.questions.slice(1)"
+                                                :key="index"
+                                            >
+                                                <v-col cols="12">
+                                                    <v-text-field
+                                                        v-model="
+                                                            question.question
+                                                        "
+                                                        label="السؤال"
+                                                        required
+                                                    ></v-text-field>
+                                                    <v-text-field
+                                                        v-model="
+                                                            question.correctAnswer
+                                                        "
+                                                        label="الإجابة الصحيحة"
+                                                        required
+                                                    ></v-text-field>
+                                                    <v-text-field
+                                                        v-model="
+                                                            question.wrongAnswer1
+                                                        "
+                                                        label="الإجابة الخاطئة 1"
+                                                        required
+                                                    ></v-text-field>
+                                                    <v-text-field
+                                                        v-model="
+                                                            question.wrongAnswer2
+                                                        "
+                                                        label="الإجابة الخاطئة 2"
+                                                        required
+                                                    ></v-text-field>
+                                                    <v-divider></v-divider>
+                                                </v-col>
+                                            </v-row>
+
+                                            <!-- زر إضافة الأسئلة -->
+                                            <v-btn
+                                                @click="addQuestion"
+                                                color="primary"
+                                                style="
+                                                    margin-right: 34%;
+                                                    margin-top: 20px;
+                                                "
+                                                >+ إضافة سؤال</v-btn
+                                            >
+                                        </v-col>
+                                    </v-row>
+
+                                    <!-- زر إضافة الاختبار -->
+                                    <v-btn
+                                        @click="addTest"
+                                        class="mt-16"
+                                        color="success"
+                                        >إضافة الاختبار</v-btn
+                                    >
+                                </v-form>
+                            </v-card-text>
+                        </v-card>
+                    </v-dialog>
                 </v-col>
             </v-row>
-
+            <v-snackbar
+                v-model="snackbar.visible"
+                :color="snackbar.color"
+                timeout="3000"
+            >
+                {{ snackbar.message }}
+                <v-btn text @click="snackbar.visible = false">Close</v-btn>
+            </v-snackbar>
             <v-row>
                 <v-col>
                     <h3
@@ -504,12 +732,11 @@
                                     <v-col cols="6">
                                         <v-switch
                                             v-model="isSortedAscending"
-                                            label="ترتيب أبجدي"
-                                            :style="{
-                                                color: isSortedAscending
-                                                    ? 'green'
-                                                    : '',
-                                            }"
+                                            :label="
+                                                isSortedAscending
+                                                    ? 'ترتيب أبجدي'
+                                                    : 'ترتيب عكسي'
+                                            "
                                             class="filter-switch"
                                         />
                                     </v-col>
@@ -524,6 +751,19 @@
                                             "
                                             class="filter-switch"
                                         />
+                                        <!-- <v-btn
+                                            color="blue darken-1"
+                                            text
+                                            v-model="filters.byPayments"
+                                            @click="togglePaymentsSorting"
+                                            class="filter-switch"
+                                        >
+                                            {{
+                                                paymentSortActive
+                                                    ? "إلغاء الترتيب"
+                                                    : "ترتيب حسب المدفوعات"
+                                            }}
+                                        </v-btn> -->
                                     </v-col>
                                 </v-row>
 
@@ -549,8 +789,6 @@
             :year="year"
             :sortStudents="sortStudentsByYearAndAlphabetically"
             :selectedSection="selectedSection"
-            :dialog="dialog"
-            @close-dialog="closeDialog"
         />
     </div>
 </template>
@@ -568,13 +806,18 @@ import {
     getDocs,
     updateDoc,
     getFirestore,
+    arrayUnion,
     query,
     where,
 } from "firebase/firestore";
 import { initializeApp } from "@firebase/app";
 import { getStorage } from "firebase/storage";
 import "vue-toastification/dist/index.css"; // Import the CSS file
-
+// import { decodeURIComponent } from "vue-router";
+import addSubject from "@/components/subject/addSubject.vue";
+// import addStudySchedule from "@/components/add_study_schedule.vue";
+import AddStudySchedule from "@/components/add_study_schedule.vue";
+import weeklyPlan from "@/components/weeklyPlan.vue";
 const firebaseConfig = {
     apiKey: "AIzaSyBdk3sqIHjXvB2C-O-lvkRgMFpg8pemkno",
     authDomain: "alseraj--almoner.firebaseapp.com",
@@ -593,6 +836,9 @@ export default {
     name: "ClassPage",
     components: {
         StudentList,
+        addSubject,
+        AddStudySchedule,
+        weeklyPlan,
     },
     props: ["year"],
     setup() {
@@ -607,17 +853,44 @@ export default {
     },
     data() {
         return {
+            activeButton: "الكل",
+            all_classes: ["1/1", "1/2"],
+            section: ["عربي", "لغات"],
+            selectedSection: "الكل",
+            dialog_6: false,
+            showDialog: false,
+            showDialog2: false,
+            StudySchedule: {
+                // البيانات التي ترغب في تمريرها إلى المكون
+            },
+            newTest: {
+                className: "",
+                section: "",
+                questions: [
+                    {
+                        question: "",
+                        correctAnswer: "",
+                        wrongAnswer1: "",
+                        wrongAnswer2: "",
+                    },
+                ],
+            },
+            snackbar: {
+                visible: false,
+                message: "",
+                color: "error",
+            },
+            class_rooms: [],
             photos: [
                 {
                     Date: "",
                     link: "",
                 },
             ],
-            selectedSection: "الكل",
+            subject: false,
             paymentSortActive: false,
             isSortedAscending: true,
             sortActive: false, // متغير لتتبع حالة الترتيب
-            class_rooms: [],
             dialog: false,
             newNotification: {
                 NoticeTitle: "",
@@ -631,6 +904,7 @@ export default {
             searchQuery: "",
             dialogAddPhoto: false,
             dialog_1: false,
+            dialog_bubble: false,
             dialog_2: false,
             dialogAddNotice: false,
             editNotificationDialog: false,
@@ -645,7 +919,7 @@ export default {
                 theDescription: "",
                 NotificationType: "",
             },
-            activeButton: "الكل",
+
             progress: 0,
             selectedClass: [],
             students: [],
@@ -673,6 +947,10 @@ export default {
         };
     },
     computed: {
+        decodedYear() {
+            return decodeURIComponent(this.$route.params.year);
+        },
+
         filteredClasses() {
             return this.class_rooms.filter(
                 (classs) => classs.grade === this.year
@@ -680,6 +958,105 @@ export default {
         },
     },
     methods: {
+        updateSection(section) {
+            this.activeButton = section;
+            this.selectedSection = section;
+        },
+        buttonStyle(section) {
+            return this.activeButton === section
+                ? { background: "white", color: "#54aef5" }
+                : { background: "#54aef5", color: "white" };
+        },
+        openDialog() {
+            this.showDialog = true;
+        },
+        openDialog2() {
+            this.showDialog2 = true;
+        },
+        addQuestion() {
+            // التحقق من أن جميع الحقول في الأسئلة الأولى مملوءة
+            const firstQuestion = this.newTest.questions[0];
+            if (
+                firstQuestion.question &&
+                firstQuestion.correctAnswer &&
+                firstQuestion.wrongAnswer1 &&
+                firstQuestion.wrongAnswer2
+            ) {
+                // إضافة سؤال جديد فقط إذا كانت الحقول الأولى مملوءة
+                this.newTest.questions.push({
+                    question: "",
+                    correctAnswer: "",
+                    wrongAnswer1: "",
+                    wrongAnswer2: "",
+                });
+            } else {
+                alert(
+                    "الرجاء ملء جميع الحقول في السؤال الأول قبل إضافة المزيد."
+                );
+            }
+        },
+        async addTest() {
+            const educationalLevel = this.year;
+            const className = this.newTest.className;
+            const section = this.newTest.section;
+
+            if (!educationalLevel || !className || !section) {
+                this.snackbar.message = "يرجى ملء جميع الحقول";
+                this.snackbar.color = "error";
+                this.snackbar.visible = true;
+                return;
+            }
+
+            const testData = {
+                Questions: [
+                    {
+                        question: this.newTest.question,
+                        correctAnswer: this.newTest.correctAnswer,
+                        wrongAnswer1: this.newTest.wrongAnswer1,
+                        wrongAnswer2: this.newTest.wrongAnswer2,
+                    },
+                ],
+            };
+
+            try {
+                const q = query(
+                    collection(db, "students"),
+                    where("educational_level", "==", educationalLevel),
+                    where("class", "==", className),
+                    where("section", "==", section)
+                );
+
+                const querySnapshot = await getDocs(q);
+
+                querySnapshot.forEach(async (docSnap) => {
+                    const docRef = doc(db, "students", docSnap.id);
+                    await updateDoc(docRef, {
+                        tests: arrayUnion(testData),
+                    });
+                });
+
+                this.snackbar.message = "تم إضافة الاختبار بنجاح";
+                this.snackbar.color = "success";
+                this.snackbar.visible = true;
+                this.dialog_bubble = false;
+            } catch (error) {
+                this.snackbar.message = "خطأ أثناء إضافة الاختبار";
+                this.snackbar.color = "warning";
+                this.snackbar.visible = true;
+            }
+        },
+        closeDialog(value) {
+            this.subject = value;
+        },
+        async sortStudentsByPayment() {
+            this.students_class.sort((a, b) => {
+                if (a.payment_status === b.payment_status) {
+                    return 0;
+                }
+                return a.payment_status > b.payment_status ? -1 : 1;
+            });
+        },
+
         async sortStudentsByYearAndAlphabetically() {
             try {
                 // جلب الطلاب المنتمين إلى السنة المحددة
@@ -696,8 +1073,10 @@ export default {
                         showDetails: false,
                     }))
                     .sort((a, b) => {
-                        const nameA = a.student_name.toLowerCase();
-                        const nameB = b.student_name.toLowerCase();
+                        const nameA =
+                            a.student_information[0].student_name.toLowerCase();
+                        const nameB =
+                            b.student_information[0].student_name.toLowerCase();
 
                         if (this.isSortedAscending) {
                             return nameA.localeCompare(nameB, "ar", {
@@ -728,15 +1107,7 @@ export default {
             this.isSortedAscending = !this.isSortedAscending;
             this.sortStudentsByYearAndAlphabetically();
         },
-        updateSection(section) {
-            this.activeButton = section;
-            this.selectedSection = section;
-        },
-        buttonStyle(section) {
-            return this.activeButton === section
-                ? { background: "white", color: "#54aef5" }
-                : { background: "#54aef5", color: "white" };
-        },
+
         toggleAlphabetical() {
             this.alphabetical = !this.alphabetical;
         },
@@ -837,29 +1208,15 @@ export default {
                 const classDoc = await getDoc(classRef);
                 if (classDoc.exists()) {
                     const classData = classDoc.data();
-                    if (
-                        Array.isArray(classData.Notifications) &&
-                        classData.Notifications[this.editedIndex]
-                    ) {
-                        // تحديث الإشعار باستخدام Object.assign
-                        Object.assign(
-                            classData.Notifications[this.editedIndex],
-                            this.editedNotification
-                        );
-                        // تحديث المستند في Firestore
-                        await updateDoc(classRef, {
-                            Notifications: classData.Notifications,
-                        });
-                        // إغلاق الحوار واسترجاع الفصول
-                        this.closeNotificationDialogs();
-                        await this.fetchClassRooms();
-                    } else {
-                        console.error(
-                            "Notifications array is missing or the editedIndex is out of bounds"
-                        );
-                    }
-                } else {
-                    console.error("Class document does not exist");
+                    Object.assign(
+                        classData.Notifications[this.editedIndex],
+                        this.editedNotification
+                    );
+                    await updateDoc(classRef, {
+                        Notifications: classData.Notifications,
+                    });
+                    this.closeNotificationDialogs();
+                    await this.fetchClassRooms();
                 }
             } catch (error) {
                 console.error("Error editing notification:", error);
@@ -926,13 +1283,11 @@ export default {
                 console.error("Error deleting photo:", error);
             }
         },
-        closeDialog() {
-            this.dialog = false;
-        },
     },
     async mounted() {
         await this.fetchClassRooms();
         console.log(this.filteredClasses);
+        this.fetchClassRooms();
     },
 };
 </script>

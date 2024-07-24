@@ -1,5 +1,5 @@
 <template>
-    <v-snackbar v-model="snackbar" timeout="3000">
+    <v-snackbar v-model="snackbarVisible">
         {{ text }}
 
         <template v-slot:actions>
@@ -13,17 +13,23 @@
         </template>
     </v-snackbar>
 </template>
+
 <script>
 export default {
-    props: ["text", "snackbar1"],
+    props: ["text", "snackbar"],
     data() {
         return {
-            snackbar: this.snackbar1,
+            snackbarVisible: this.snackbar,
         };
+    },
+    watch: {
+        snackbar(newVal) {
+            this.snackbarVisible = newVal;
+        },
     },
     methods: {
         closeSnackbar() {
-            this.closeSnackbar = false;
+            this.snackbarVisible = false;
             this.$emit("close-snackbar");
         },
     },

@@ -5,6 +5,7 @@ export const useDialogStore = defineStore("dialog", {
         dialog_addstudent: false,
         dialog_searchstudent: false,
         dialog: false,
+        showDialog: false,
     }),
     actions: {
         showAddStudentDialog() {
@@ -19,5 +20,11 @@ export const useDialogStore = defineStore("dialog", {
         hideSearchStudentDialog() {
             this.dialog_searchstudent = false;
         },
+        toggleDialog(value) {
+            this.showDialog = value;
+        },
+    },
+    getters: {
+        isDialogVisible: (state) => state.showDialog,
     },
 });

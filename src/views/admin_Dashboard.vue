@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <div class="d-flex justify-space-between" v-if="user">
-            <h5 class="text-right ma-4">أهلا {{ user.email }}</h5>
+            <h5 class="text-right ma-4">أهلا {{ user.name }}</h5>
             <div>
                 <v-btn class="ma-2" size="small" @click="Edit()"
                     >تعديل البيانات</v-btn

@@ -21,25 +21,39 @@
             </v-card-title>
             <v-card-text>
                 <div style="padding: 20px">
+                    <v-select
+                        v-model="selectedClass"
+                        :items="classes"
+                        label="اختر الفصل"
+                        @blur="loadSchedule"
+                        required
+                    ></v-select>
+                    <v-select
+                        v-model="selectedSection"
+                        :items="sections"
+                        label="اختر القسم"
+                        @blur="loadSchedule"
+                        required
+                    ></v-select>
                     <v-card flat>
                         <div class="table">
                             <v-table>
                                 <thead>
                                     <tr>
                                         <th>اليوم الدراسي</th>
-                                        <th>الفتره الاولي</th>
-                                        <th>الفتره الثانيه</th>
-                                        <th>الفتره الثالثه</th>
+                                        <th>الفترة الأولى</th>
+                                        <th>الفترة الثانية</th>
+                                        <th>الفترة الثالثة</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr
-                                        v-for="(degree, index) in Results"
+                                        v-for="(
+                                            degree, index
+                                        ) in Results.schedule"
                                         :key="index"
                                     >
-                                        <td>
-                                            {{ degree.Subject_Name }}
-                                        </td>
+                                        <td>{{ degree.Subject_Name }}</td>
                                         <td>
                                             <v-text-field
                                                 v-model="degree.Minor_degree"
@@ -72,7 +86,6 @@
                 </div>
                 <div style="padding: 20px; text-align: right">
                     <p>آخر تعديل: {{ lastModified }}</p>
-                    <!-- عرض توقيت آخر تعديل -->
                 </div>
             </v-card-text>
         </v-card>
@@ -106,96 +119,245 @@ const storage = getStorage(app);
 export { db, storage };
 
 export default {
+    props: {
+        year: {
+            type: Number,
+            required: true,
+        },
+    },
     data() {
         return {
             showDialog: false,
-            showDialog2: false,
             changesMade: false,
-            Results: [
-                {
-                    Subject_Name: "السبت",
-                    Minor_degree: "عربي",
-                    Major_degree: "رياضه",
-                    Student_degree: "تاريخ",
-                },
-                {
-                    Subject_Name: "الاحد",
-                    Minor_degree: "انجليزي",
-                    Major_degree: "تاريخ",
-                    Student_degree: "جغرفيا",
-                },
-                {
-                    Subject_Name: "الاثنين ",
-                    Minor_degree: "انجليزي",
-                    Major_degree: "تاريخ",
-                    Student_degree: "جغرفيا",
-                },
-                {
-                    Subject_Name: "الثلاثاء",
-                    Minor_degree: "انجليزي",
-                    Major_degree: "تاريخ",
-                    Student_degree: "دين",
-                },
-                {
-                    Subject_Name: "الاربعاء",
-                    Minor_degree: "رياضه",
-                    Major_degree: "تاريخ",
-                    Student_degree: "جغرفيا",
-                },
-                {
-                    Subject_Name: "الخميس",
-                    Minor_degree: "انجليزي",
-                    Major_degree: "عربي",
-                    Student_degree: "جغرفيا",
-                },
-            ],
+            selectedClass: null,
+            selectedSection: null,
+            classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
+            sections: ["عربي", "لغات"],
+            Results: {
+                educational_level: "",
+                classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
+                sections: ["عربي", "لغات"],
+                schedule: [
+                    {
+                        Subject_Name: "السبت",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                    {
+                        Subject_Name: "الاحد",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                    {
+                        Subject_Name: "الاثنين ",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                    {
+                        Subject_Name: "الثلاثاء",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                    {
+                        Subject_Name: "الاربعاء",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                    {
+                        Subject_Name: "الخميس",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                ],
+            },
+            lastModified: "لم يتم التعديل بعد",
         };
-    },
-    async mounted() {
-        await this.loadSchedule();
     },
     methods: {
         async loadSchedule() {
-            try {
-                const docRef = doc(db, "studySchedule", "A2N0C3wVeRnVxOkmunGO");
-                const docSnap = await getDoc(docRef);
+            if (!this.selectedClass || !this.selectedSection) return;
 
+            // إعادة تعيين الجدول قبل تحميل البيانات الجديدة
+            this.Results.schedule = [
+                {
+                    Subject_Name: "السبت",
+                    Minor_degree: "",
+                    Major_degree: "",
+                    Student_degree: "",
+                },
+                {
+                    Subject_Name: "الاحد",
+                    Minor_degree: "",
+                    Major_degree: "",
+                    Student_degree: "",
+                },
+                {
+                    Subject_Name: "الاثنين ",
+                    Minor_degree: "",
+                    Major_degree: "",
+                    Student_degree: "",
+                },
+                {
+                    Subject_Name: "الثلاثاء",
+                    Minor_degree: "",
+                    Major_degree: "",
+                    Student_degree: "",
+                },
+                {
+                    Subject_Name: "الاربعاء",
+                    Minor_degree: "",
+                    Major_degree: "",
+                    Student_degree: "",
+                },
+                {
+                    Subject_Name: "الخميس",
+                    Minor_degree: "",
+                    Major_degree: "",
+                    Student_degree: "",
+                },
+            ];
+
+            this.changesMade = false;
+            this.lastModified = "لم يتم التعديل بعد";
+
+            try {
+                const docRef = doc(
+                    db,
+                    "studySchedule",
+                    `${this.selectedClass.replace("/", "-")}_${
+                        this.selectedSection
+                    }`
+                );
+                const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    this.Results = data.studySchedule || [];
+                    this.Results.schedule = data.schedule || [
+                        {
+                            Subject_Name: "السبت",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                        {
+                            Subject_Name: "الاحد",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                        {
+                            Subject_Name: "الاثنين ",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                        {
+                            Subject_Name: "الثلاثاء",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                        {
+                            Subject_Name: "الاربعاء",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                        {
+                            Subject_Name: "الخميس",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                    ];
                     this.lastModified = data.lastModified
                         ? data.lastModified.toDate().toLocaleString()
                         : "لم يتم التعديل بعد";
                 } else {
-                    console.log("No such document!");
+                    // في حالة عدم وجود بيانات، إعداد جدول دراسي فارغ
+                    this.Results.schedule = [
+                        {
+                            Subject_Name: "السبت",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                        {
+                            Subject_Name: "الاحد",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                        {
+                            Subject_Name: "الاثنين ",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                        {
+                            Subject_Name: "الثلاثاء",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                        {
+                            Subject_Name: "الاربعاء",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                        {
+                            Subject_Name: "الخميس",
+                            Minor_degree: "",
+                            Major_degree: "",
+                            Student_degree: "",
+                        },
+                    ];
                 }
             } catch (error) {
                 console.error("Error getting document: ", error);
             }
         },
         async saveSchedule() {
+            if (!this.selectedClass || !this.selectedSection) return;
             try {
-                const docRef = doc(db, "studySchedule", "A2N0C3wVeRnVxOkmunGO");
+                const docRef = doc(
+                    db,
+                    "studySchedule",
+                    `${this.selectedClass.replace("/", "-")}_${
+                        this.selectedSection
+                    }`
+                );
                 await setDoc(docRef, {
-                    studySchedule: this.Results,
-                    lastModified: Timestamp.now(), // حفظ توقيت آخر تعديل
+                    class: this.selectedClass,
+                    section: this.selectedSection,
+                    educational_level: this.year,
+                    schedule: this.Results.schedule,
+                    lastModified: Timestamp.now(),
                 });
-
-                this.changesMade = false; // Reset changesMade flag after saving
-                this.lastModified = new Date().toLocaleString(); // تحديث توقيت آخر تعديل في الواجهة
+                this.changesMade = false;
+                this.lastModified = new Date().toLocaleString();
                 this.closeDialog();
             } catch (error) {
                 console.error("Error updating document: ", error);
             }
         },
-        async closeDialog() {
+        closeDialog() {
             this.showDialog = false;
         },
-
         handleInputChange() {
             this.changesMade = true;
         },
     },
+    mounted() {
+        console.log(this.year);
+    },
 };
 </script>
+
 <style scoped lang="scss"></style>

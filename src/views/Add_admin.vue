@@ -125,6 +125,19 @@
                                 variant="outlined"
                                 required
                             ></v-text-field>
+                            <v-text-field
+                                v-model="user.National_id"
+                                :rules="[
+                                    (v) => !!v || 'الرقم القومي مطلوب',
+                                    (v) =>
+                                        (/.{14}/.test(v) && v.length <= 14) ||
+                                        'يجب أن يكون الرقم القومي مكون من 14 رقم',
+                                ]"
+                                type="text"
+                                label="الرقم القومي"
+                                variant="outlined"
+                                required
+                            ></v-text-field>
 
                             <v-text-field
                                 v-model="user.email"
@@ -139,7 +152,6 @@
                                 variant="outlined"
                                 required
                             ></v-text-field>
-
                             <v-select
                                 style="width: 100%"
                                 v-model="user.roles"
@@ -220,6 +232,20 @@
                                 variant="outlined"
                                 required
                             ></v-text-field>
+                            <v-text-field
+                                v-model="admin.National_id_Information"
+                                :rules="[
+                                    (v) => !!v || 'الرقم القومي مطلوب',
+                                    (v) =>
+                                        (/.{14}/.test(v) && v.length <= 14) ||
+                                        'يجب أن يكون الرقم القومي مكون من 14 رقم',
+                                ]"
+                                type="text"
+                                label="الرقم القومي"
+                                variant="outlined"
+                                required
+                            ></v-text-field>
+
                             <v-text-field
                                 v-model="admin.email_Information"
                                 type="email"
@@ -530,7 +556,7 @@ export default {
                 .writeText(password)
                 .then(() => {
                     console.log("تم نسخ كلمة المرور بنجاح!");
-                    this.snackbar = true;
+                    this.snackbar1 = true;
                 })
                 .catch((err) => {
                     console.error("فشل في نسخ كلمة المرور: ", err);

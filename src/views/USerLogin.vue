@@ -11,9 +11,9 @@
                         required
                     ></v-select>
                     <v-text-field
-                        v-model="email"
-                        label="Email"
-                        type="email"
+                        v-model="National_id"
+                        label="National_id"
+                        type="text"
                         required
                     ></v-text-field>
                     <v-text-field
@@ -63,7 +63,7 @@ import { useSecureDataStore } from "@/store/secureData.js";
 export default {
     data() {
         return {
-            email: "",
+            National_id: "",
             password: "",
             userType: "",
             id: "",
@@ -78,13 +78,13 @@ export default {
     watch: {
         userType(newValue) {
             if (newValue === "parent") {
-                this.email = "parent@gmail.com";
+                this.National_id = "1234567891011";
                 this.password = "123456";
             } else if (newValue === "admin") {
-                this.email = "admin@gmail.com";
+                this.National_id = "1210987654321";
                 this.password = "123456";
             } else {
-                this.email = "student@gmail.com";
+                this.National_id = "12345665412";
                 this.password = "123456";
             }
         },
@@ -101,62 +101,67 @@ export default {
                     );
                     querySnapshot.forEach((doc) => {
                         if (
-                            doc.data().email === this.email &&
+                            doc.id === this.National_id &&
                             doc.data().password === this.password
                         ) {
                             authenticatedUser = {
                                 id: doc.id,
-                                email: doc.data().email,
+                                National_id: doc.data().National_id,
                                 name: doc.data().name,
                                 userType: "parent",
-                                password: doc.data().password,
+                                email: "",
                                 roles: "",
                             };
                         }
                     });
                     return authenticatedUser;
-                } else if (this.userType === "admin") {
+                }
+                if (this.userType === "admin") {
                     const querySnapshot = await getDocs(
                         collection(db, "users")
                     );
                     querySnapshot.forEach((doc) => {
-                        const decryptedEmail = decryption.decryptData(
-                            doc.data().email,
+                        const decryptedNational_id = decryption.decryptData(
+                            doc.data().National_id,
                             "12345a"
                         );
-
                         if (
-                            decryptedEmail === this.email &&
+                            decryptedNational_id === this.National_id &&
                             doc.data().password === this.password
                         ) {
                             authenticatedUser = {
                                 id: doc.id,
-                                email: decryptedEmail,
+                                email: decryption.decryptData(
+                                    doc.data().email,
+                                    "12345a"
+                                ),
                                 name: decryption.decryptData(
                                     doc.data().name,
                                     "12345a"
                                 ),
                                 userType: doc.data().userType,
-                                password: doc.data().password,
+                                National_id: decryptedNational_id,
                                 roles: doc.data().roles,
                             };
                         }
                     });
                     return authenticatedUser;
-                } else {
+                }
+                if (this.userType === "student") {
                     const querySnapshot = await getDocs(
                         collection(db, "students")
                     );
                     querySnapshot.forEach((doc) => {
                         if (
-                            doc.data().email === this.email &&
+                            doc.id === this.National_id &&
                             doc.data().password === this.password
                         ) {
                             authenticatedUser = {
-                                email: doc.data().email,
+                                id: doc.id,
+                                email: "",
                                 name: doc.data().student_name,
                                 userType: "student",
-                                password: doc.data().password,
+                                National_id: doc.data().National_id,
                                 roles: "",
                             };
                         }
@@ -173,6 +178,7 @@ export default {
             if (authenticatedUser) {
                 // Call your login method or perform necessary actions
                 await this.login(
+                    authenticatedUser.id,
                     authenticatedUser.email,
                     authenticatedUser.userType,
                     authenticatedUser.roles,

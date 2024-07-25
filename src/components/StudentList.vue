@@ -303,8 +303,7 @@
                                                 margin-bottom: 20px;
                                             "
                                         >
-                                            {{ student.payments.Expenses }} /
-                                            {{ student.payments.paid_Up }}
+                                            1000/1500
                                         </h3>
                                     </div>
                                     <div>
@@ -560,7 +559,7 @@
                                                                 selectedStudent.birthday
                                                             "
                                                             label="تاريخ الميلاد"
-                                                            prepend-icon="mdi-calendar"
+                                                            append-icon="mdi-calendar"
                                                             readonly
                                                             @click="menu = true"
                                                             :error-messages="
@@ -601,6 +600,7 @@
                                                 </v-menu>
                                             </div>
                                         </div>
+                                        <!-- 22222222222222222222222222222222222222222222222222222222222 -->
                                         <div v-if="e1 === 2" ref="slide2">
                                             <div style="padding: 20px">
                                                 <div
@@ -619,7 +619,12 @@
                                                             index + 2
                                                         }}</v-avatar
                                                     >
-                                                    <h2 style="color: #2196f3">
+                                                    <h2
+                                                        style="
+                                                            color: #2196f3;
+                                                            font-weight: bold;
+                                                        "
+                                                    >
                                                         ولي الامر
                                                     </h2>
                                                 </div>
@@ -630,11 +635,30 @@
                                                         selectedParent.name
                                                     "
                                                     label="اسم الأب"
+                                                    disabled
                                                     required
                                                     style="margin-bottom: 20px"
+                                                    outlined
+                                                    color="primary"
                                                 ></v-text-field>
 
-                                                <!-- عرض أسماء الأبناء -->
+                                                <!-- عرض عدد الأبناء -->
+                                                <h4
+                                                    style="
+                                                        margin-bottom: 20px;
+                                                        margin-right: 10px;
+                                                        color: #2196f3;
+                                                        font-size: 18px;
+                                                    "
+                                                >
+                                                    عدد الأبناء :
+                                                    <strong class="mr-2">{{
+                                                        selectedParent.Child
+                                                            .length
+                                                    }}</strong>
+                                                </h4>
+
+                                                <!-- عرض أسماء الأبناء والمرحلة الدراسية -->
                                                 <v-list>
                                                     <v-list-item-group
                                                         v-for="(
@@ -642,17 +666,43 @@
                                                         ) in selectedParent.Child"
                                                         :key="index"
                                                     >
-                                                        <v-list-item>
+                                                        <v-list-item
+                                                            style="
+                                                                background-color: #f1f1f1;
+                                                                margin-bottom: 10px;
+                                                                border-radius: 8px;
+                                                            "
+                                                        >
                                                             <v-list-item-content>
-                                                                <v-list-item-title>
-                                                                    {{ child }}
+                                                                <v-list-item-title
+                                                                    style="
+                                                                        font-size: 18px;
+                                                                        font-weight: bold;
+                                                                    "
+                                                                >
+                                                                    {{
+                                                                        child.student_name
+                                                                    }}
                                                                 </v-list-item-title>
+                                                                <v-list-item-subtitle
+                                                                    style="
+                                                                        font-size: 14px;
+                                                                        color: #757575;
+                                                                    "
+                                                                >
+                                                                    المرحلة
+                                                                    الدراسية:
+                                                                    {{
+                                                                        child.educational_level
+                                                                    }}
+                                                                </v-list-item-subtitle>
                                                             </v-list-item-content>
                                                         </v-list-item>
                                                     </v-list-item-group>
                                                 </v-list>
                                             </div>
                                         </div>
+
                                         <div v-if="e1 === 3" ref="slide3">
                                             <div style="padding: 20px">
                                                 <div
@@ -1299,9 +1349,6 @@
                                                                             style="
                                                                                 text-align: center;
                                                                             "
-                                                                            @input="
-                                                                                changesMade2 = true
-                                                                            "
                                                                             required
                                                                         ></v-text-field>
                                                                     </td>
@@ -1312,9 +1359,6 @@
                                                                             "
                                                                             style="
                                                                                 text-align: center;
-                                                                            "
-                                                                            @input="
-                                                                                changesMade2 = true
                                                                             "
                                                                             required
                                                                         ></v-text-field>
@@ -1337,9 +1381,6 @@
                                                                             style="
                                                                                 text-align: center;
                                                                             "
-                                                                            @input="
-                                                                                changesMade2 = true
-                                                                            "
                                                                             required
                                                                         ></v-text-field>
                                                                     </td>
@@ -1350,516 +1391,468 @@
                                                 </v-card>
                                             </div>
                                         </div>
-                                        <div
-                                            v-if="
-                                                user.roles.includes(
-                                                    'الاطلاع على الحسابات'
-                                                )
-                                            "
-                                        >
-                                            <div v-if="e1 === 5" ref="slide5">
+                                        <div v-if="e1 === 5" ref="slide5">
+                                            <div
+                                                style="
+                                                    display: flex;
+                                                    justify-content: space-between;
+                                                    align-items: center;
+                                                "
+                                            >
                                                 <div
                                                     style="
                                                         display: flex;
-                                                        justify-content: space-between;
                                                         align-items: center;
                                                     "
                                                 >
-                                                    <div
+                                                    <v-avatar
+                                                        color="info"
                                                         style="
-                                                            display: flex;
-                                                            align-items: center;
+                                                            margin-left: 20px;
                                                         "
+                                                        >{{
+                                                            index + 5
+                                                        }}</v-avatar
                                                     >
-                                                        <v-avatar
-                                                            color="info"
-                                                            style="
-                                                                margin-left: 20px;
-                                                            "
-                                                            >{{
-                                                                index + 5
-                                                            }}</v-avatar
-                                                        >
-                                                        <h2
-                                                            style="
-                                                                color: #2196f3;
-                                                            "
-                                                        >
-                                                            المدفوعات
-                                                        </h2>
-                                                    </div>
-                                                    <v-btn
-                                                        rounded="xs"
-                                                        size="large"
-                                                        :disabled="
-                                                            !changesMade3
-                                                        "
-                                                        @click="saveChanges3"
-                                                        color="primary"
-                                                        :class="{
-                                                            'grey--text':
-                                                                !changesMade,
-                                                        }"
-                                                        >حفظ التعديلات</v-btn
-                                                    >
+                                                    <h2 style="color: #2196f3">
+                                                        المدفوعات
+                                                    </h2>
                                                 </div>
-                                                <v-card
-                                                    flat
-                                                    class="mx-auto my-4"
-                                                    max-width="90%"
+                                                <v-btn
+                                                    rounded="xs"
+                                                    size="large"
+                                                    :disabled="!changesMade3"
+                                                    @click="saveChanges3"
+                                                    color="primary"
+                                                    :class="{
+                                                        'grey--text':
+                                                            !changesMade,
+                                                    }"
+                                                    >حفظ التعديلات</v-btn
                                                 >
-                                                    <v-container fluid>
-                                                        <div class="title">
-                                                            المصروفات
+                                            </div>
+                                            <v-card
+                                                flat
+                                                class="mx-auto my-4"
+                                                max-width="90%"
+                                            >
+                                                <v-container fluid>
+                                                    <div class="title">
+                                                        المصروفات
+                                                    </div>
+                                                    <div class="table">
+                                                        <div
+                                                            class="invoice Title"
+                                                        >
+                                                            <font-awesome-icon
+                                                                :icon="[
+                                                                    'fas',
+                                                                    'file-invoice-dollar',
+                                                                ]"
+                                                            />
+                                                            <div>فاتورة</div>
                                                         </div>
-                                                        <div class="table">
-                                                            <div
-                                                                class="invoice Title"
-                                                            >
-                                                                <font-awesome-icon
-                                                                    :icon="[
-                                                                        'fas',
-                                                                        'file-invoice-dollar',
-                                                                    ]"
-                                                                />
-                                                                <div>
-                                                                    فاتورة
-                                                                </div>
+                                                        <div class="Row">
+                                                            <div>المصروفات</div>
+                                                            <div>
+                                                                {{
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .Expenses ||
+                                                                    0
+                                                                }}
                                                             </div>
-                                                            <div class="Row">
-                                                                <div>
-                                                                    المصروفات
-                                                                </div>
-                                                                <div>
-                                                                    {{
-                                                                        selectedStudent
-                                                                            .payments
-                                                                            .Expenses ||
-                                                                        0
-                                                                    }}
-                                                                </div>
+                                                        </div>
+                                                        <div class="Row">
+                                                            <div>
+                                                                نظام الدفع
                                                             </div>
-                                                            <div class="Row">
-                                                                <div>
-                                                                    نظام الدفع
-                                                                </div>
-                                                                <div>
-                                                                    {{
-                                                                        selectedStudent
-                                                                            .payments
-                                                                            .payment_System ||
-                                                                        "الدفع المباشر"
-                                                                    }}
-                                                                </div>
+                                                            <div>
+                                                                {{
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .payment_System ||
+                                                                    "الدفع المباشر"
+                                                                }}
                                                             </div>
-                                                            <div class="Row">
-                                                                <div>
-                                                                    نظام التقسيط
-                                                                </div>
-                                                                <div>
-                                                                    {{
-                                                                        selectedStudent
-                                                                            .payments
-                                                                            .Installment_System ||
-                                                                        "لا يوجد"
-                                                                    }}
-                                                                </div>
+                                                        </div>
+                                                        <div class="Row">
+                                                            <div>
+                                                                نظام التقسيط
                                                             </div>
-                                                            <div class="Row">
-                                                                <div>
-                                                                    المدفوع
-                                                                </div>
-                                                                <div>
-                                                                    {{
+                                                            <div>
+                                                                {{
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .Installment_System ||
+                                                                    "لا يوجد"
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="Row">
+                                                            <div>المدفوع</div>
+                                                            <div>
+                                                                {{
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .paid_Up ||
+                                                                    0
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="Row">
+                                                            <div>المتبقي</div>
+                                                            <div>
+                                                                {{
+                                                                    selectedStudent
+                                                                        .payments
+                                                                        .Expenses -
                                                                         selectedStudent
                                                                             .payments
                                                                             .paid_Up ||
-                                                                        0
-                                                                    }}
-                                                                </div>
-                                                            </div>
-                                                            <div class="Row">
-                                                                <div>
-                                                                    المتبقي
-                                                                </div>
-                                                                <div>
-                                                                    {{
-                                                                        selectedStudent
-                                                                            .payments
-                                                                            .Expenses -
-                                                                            selectedStudent
-                                                                                .payments
-                                                                                .paid_Up ||
-                                                                        0
-                                                                    }}
-                                                                </div>
+                                                                    0
+                                                                }}
                                                             </div>
                                                         </div>
-                                                        <div class="deidline">
-                                                            <div class="Title">
-                                                                <font-awesome-icon
-                                                                    :icon="[
-                                                                        'fas',
-                                                                        'circle-info',
-                                                                    ]"
-                                                                />
-                                                                <div>
-                                                                    تفاصيل
-                                                                    المدفوعات
-                                                                    والأقساط
-                                                                    المستحقة
-                                                                </div>
+                                                    </div>
+                                                    <div class="deidline">
+                                                        <div class="Title">
+                                                            <font-awesome-icon
+                                                                :icon="[
+                                                                    'fas',
+                                                                    'circle-info',
+                                                                ]"
+                                                            />
+                                                            <div>
+                                                                تفاصيل المدفوعات
+                                                                والأقساط
+                                                                المستحقة
                                                             </div>
                                                         </div>
+                                                    </div>
 
-                                                        <v-row
-                                                            class="details_row"
-                                                        >
-                                                            <v-text-field
-                                                                v-model="
-                                                                    selectedStudent
-                                                                        .payments
-                                                                        .Expenses
-                                                                "
-                                                                label="ادخل المبلغ"
-                                                                outlined
-                                                                dense
-                                                                required
-                                                                @input="
-                                                                    setChangesMade(
-                                                                        true
-                                                                    )
-                                                                "
-                                                            ></v-text-field>
-
-                                                            <v-select
-                                                                v-model="
-                                                                    selectedStudent
-                                                                        .payments
-                                                                        .payment_System
-                                                                "
-                                                                :items="
-                                                                    paymentMethods
-                                                                "
-                                                                label="اختر نظام الدفع"
-                                                                @blur="
-                                                                    setChangesMade(
-                                                                        true
-                                                                    )
-                                                                "
-                                                                outlined
-                                                                dense
-                                                            ></v-select>
-                                                        </v-row>
-                                                        <v-row
-                                                            v-if="
+                                                    <v-row class="details_row">
+                                                        <v-text-field
+                                                            v-model="
                                                                 selectedStudent
                                                                     .payments
-                                                                    .payment_System ===
-                                                                'نظام التقسيط'
+                                                                    .Expenses
                                                             "
-                                                            class="details_row"
-                                                        >
-                                                            <v-select
-                                                                v-model="
-                                                                    selectedStudent
-                                                                        .payments
-                                                                        .Installment_System
-                                                                "
-                                                                :items="
-                                                                    selectPaid
-                                                                "
-                                                                label="اختر نظام التقسيط"
-                                                                @blur="
-                                                                    setChangesMade(
-                                                                        true
-                                                                    )
-                                                                "
-                                                                outlined
-                                                                dense
-                                                            ></v-select>
+                                                            label="ادخل المبلغ"
+                                                            outlined
+                                                            dense
+                                                            required
+                                                            @input="
+                                                                setChangesMade(
+                                                                    true
+                                                                )
+                                                            "
+                                                        ></v-text-field>
 
-                                                            <v-text-field
-                                                                v-model="
-                                                                    selectedStudent
-                                                                        .payments
-                                                                        .paid_Up
-                                                                "
-                                                                label="ادخل المبلغ للدفع"
-                                                                outlined
-                                                                type="number"
-                                                                dense
-                                                                @input="
-                                                                    setChangesMade(
-                                                                        true
-                                                                    )
-                                                                "
-                                                                :max="
-                                                                    maxExpenses
-                                                                "
-                                                                @change="
-                                                                    validatePaidUp
-                                                                "
-                                                            ></v-text-field>
-                                                        </v-row>
-
-                                                        <div
-                                                            v-if="
+                                                        <v-select
+                                                            v-model="
                                                                 selectedStudent
                                                                     .payments
-                                                                    .payment_System ===
-                                                                    'نظام التقسيط' &&
+                                                                    .payment_System
+                                                            "
+                                                            :items="
+                                                                paymentMethods
+                                                            "
+                                                            label="اختر نظام الدفع"
+                                                            @blur="
+                                                                setChangesMade(
+                                                                    true
+                                                                )
+                                                            "
+                                                            outlined
+                                                            dense
+                                                        ></v-select>
+                                                    </v-row>
+                                                    <v-row
+                                                        v-if="
+                                                            selectedStudent
+                                                                .payments
+                                                                .payment_System ===
+                                                            'نظام التقسيط'
+                                                        "
+                                                        class="details_row"
+                                                    >
+                                                        <v-select
+                                                            v-model="
                                                                 selectedStudent
                                                                     .payments
                                                                     .Installment_System
                                                             "
-                                                            class="payment-section"
+                                                            :items="selectPaid"
+                                                            label="اختر نظام التقسيط"
+                                                            @blur="
+                                                                setChangesMade(
+                                                                    true
+                                                                )
+                                                            "
+                                                            outlined
+                                                            dense
+                                                        ></v-select>
+
+                                                        <v-text-field
+                                                            v-model="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .paid_Up
+                                                            "
+                                                            label="ادخل المبلغ للدفع"
+                                                            outlined
+                                                            dense
+                                                            @input="
+                                                                setChangesMade(
+                                                                    true
+                                                                )
+                                                            "
+                                                        ></v-text-field>
+                                                    </v-row>
+
+                                                    <div
+                                                        v-if="
+                                                            selectedStudent
+                                                                .payments
+                                                                .payment_System ===
+                                                                'نظام التقسيط' &&
+                                                            selectedStudent
+                                                                .payments
+                                                                .Installment_System
+                                                        "
+                                                        class="payment-section"
+                                                    >
+                                                        <v-row
+                                                            style="
+                                                                margin: 10px
+                                                                    15px 10px
+                                                                    15px;
+                                                                overflow: hidden;
+                                                            "
                                                         >
-                                                            <v-row
-                                                                style="
-                                                                    margin: 10px
-                                                                        15px
-                                                                        10px
-                                                                        15px;
-                                                                "
+                                                            <div
+                                                                class="timeline-container"
                                                             >
                                                                 <div
-                                                                    class="timeline-container"
+                                                                    class="timeline"
                                                                 >
                                                                     <div
-                                                                        class="timeline"
+                                                                        class="timeline-line"
+                                                                    ></div>
+                                                                    <div
+                                                                        class="progress_container"
                                                                     >
                                                                         <div
-                                                                            class="timeline-line"
-                                                                        ></div>
-                                                                        <div
-                                                                            class="progress_container"
-                                                                        >
-                                                                            <div
-                                                                                class="progress"
-                                                                                :style="{
-                                                                                    height:
-                                                                                        (selectedStudent
-                                                                                            .payments
-                                                                                            .paid_Up /
-                                                                                            selectedStudent
-                                                                                                .payments
-                                                                                                .Expenses) *
-                                                                                            100 +
-                                                                                        '%',
-                                                                                    backgroundColor:
-                                                                                        'var(--main-color)',
-                                                                                }"
-                                                                            ></div>
-                                                                            <span
-                                                                                class="progress-label mb-3"
-                                                                            >
-                                                                                {{
-                                                                                    selectedStudent
+                                                                            class="progress"
+                                                                            :style="{
+                                                                                height:
+                                                                                    (selectedStudent
                                                                                         .payments
-                                                                                        .paid_Up
-                                                                                }}
-                                                                                مدفوعاتك
-                                                                            </span>
-                                                                        </div>
-                                                                        <div
-                                                                            v-for="month in numberOfMonths(
+                                                                                        .paid_Up /
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .Expenses) *
+                                                                                        100 +
+                                                                                    '%',
+                                                                                backgroundColor:
+                                                                                    'var(--main-color)',
+                                                                            }"
+                                                                        ></div>
+                                                                        <span
+                                                                            class="progress-label mb-3"
+                                                                        >
+                                                                            {{
                                                                                 selectedStudent
                                                                                     .payments
-                                                                                    .Installment_System
-                                                                            )"
-                                                                            :key="
-                                                                                month
-                                                                            "
-                                                                            class="timeline-item"
+                                                                                    .paid_Up
+                                                                            }}
+                                                                            مدفوعاتك
+                                                                        </span>
+                                                                    </div>
+                                                                    <div
+                                                                        v-for="month in numberOfMonths(
+                                                                            selectedStudent
+                                                                                .payments
+                                                                                .Installment_System
+                                                                        )"
+                                                                        :key="
+                                                                            month
+                                                                        "
+                                                                        class="timeline-item"
+                                                                    >
+                                                                        <div
+                                                                            class="timeline-item-content"
+                                                                            :style="{
+                                                                                backgroundColor:
+                                                                                    selectedStudent
+                                                                                        .payments
+                                                                                        .paid_Up >=
+                                                                                    installmentAmount(
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .Expenses,
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .Installment_System
+                                                                                    ) *
+                                                                                        month
+                                                                                        ? '#d8588c'
+                                                                                        : '#fff',
+                                                                                color:
+                                                                                    selectedStudent
+                                                                                        .payments
+                                                                                        .paid_Up >=
+                                                                                    installmentAmount(
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .Expenses,
+                                                                                        selectedStudent
+                                                                                            .payments
+                                                                                            .Installment_System
+                                                                                    ) *
+                                                                                        month
+                                                                                        ? '#fff'
+                                                                                        : '#333',
+                                                                            }"
                                                                         >
                                                                             <div
-                                                                                class="timeline-item-content"
-                                                                                :style="{
-                                                                                    backgroundColor:
-                                                                                        selectedStudent
-                                                                                            .payments
-                                                                                            .paid_Up >=
-                                                                                        installmentAmount(
-                                                                                            selectedStudent
-                                                                                                .payments
-                                                                                                .Expenses,
-                                                                                            selectedStudent
-                                                                                                .payments
-                                                                                                .Installment_System
-                                                                                        ) *
-                                                                                            month
-                                                                                            ? '#d8588c'
-                                                                                            : '#fff',
-                                                                                    color:
-                                                                                        selectedStudent
-                                                                                            .payments
-                                                                                            .paid_Up >=
-                                                                                        installmentAmount(
-                                                                                            selectedStudent
-                                                                                                .payments
-                                                                                                .Expenses,
-                                                                                            selectedStudent
-                                                                                                .payments
-                                                                                                .Installment_System
-                                                                                        ) *
-                                                                                            month
-                                                                                            ? '#fff'
-                                                                                            : '#333',
-                                                                                }"
+                                                                                class="timeline-item-header"
                                                                             >
-                                                                                <div
-                                                                                    class="timeline-item-header"
-                                                                                >
-                                                                                    <span
-                                                                                        class="month-name"
-                                                                                        :style="{
-                                                                                            color:
+                                                                                <span
+                                                                                    class="month-name"
+                                                                                    :style="{
+                                                                                        color:
+                                                                                            selectedStudent
+                                                                                                .payments
+                                                                                                .paid_Up >=
+                                                                                            installmentAmount(
                                                                                                 selectedStudent
                                                                                                     .payments
-                                                                                                    .paid_Up >=
-                                                                                                installmentAmount(
-                                                                                                    selectedStudent
-                                                                                                        .payments
-                                                                                                        .Expenses,
-                                                                                                    selectedStudent
-                                                                                                        .payments
-                                                                                                        .Installment_System
-                                                                                                ) *
-                                                                                                    month
-                                                                                                    ? '#fff'
-                                                                                                    : '#333',
-                                                                                        }"
-                                                                                    >
-                                                                                        {{
-                                                                                            getMonthName(
+                                                                                                    .Expenses,
+                                                                                                selectedStudent
+                                                                                                    .payments
+                                                                                                    .Installment_System
+                                                                                            ) *
                                                                                                 month
-                                                                                            )
-                                                                                        }}
-                                                                                    </span>
-                                                                                </div>
-                                                                                <div
-                                                                                    class="timeline-item-body"
+                                                                                                ? '#fff'
+                                                                                                : '#333',
+                                                                                    }"
                                                                                 >
-                                                                                    <p>
-                                                                                        القسط
-                                                                                        الشهري
-                                                                                        :
-                                                                                        {{
-                                                                                            Math.floor(
-                                                                                                installmentAmount(
-                                                                                                    selectedStudent
-                                                                                                        .payments
-                                                                                                        .Expenses,
-                                                                                                    selectedStudent
-                                                                                                        .payments
-                                                                                                        .Installment_System
-                                                                                                )
+                                                                                    {{
+                                                                                        getMonthName(
+                                                                                            month
+                                                                                        )
+                                                                                    }}
+                                                                                </span>
+                                                                            </div>
+                                                                            <div
+                                                                                class="timeline-item-body"
+                                                                            >
+                                                                                <p>
+                                                                                    القسط
+                                                                                    الشهري
+                                                                                    :
+                                                                                    {{
+                                                                                        Math.floor(
+                                                                                            installmentAmount(
+                                                                                                selectedStudent
+                                                                                                    .payments
+                                                                                                    .Expenses,
+                                                                                                selectedStudent
+                                                                                                    .payments
+                                                                                                    .Installment_System
                                                                                             )
-                                                                                        }}
-                                                                                        جنيه
-                                                                                    </p>
-                                                                                </div>
+                                                                                        )
+                                                                                    }}
+                                                                                    جنيه
+                                                                                </p>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </v-row>
-                                                            <div
-                                                                class="Title"
-                                                                v-show="
-                                                                    CreateChart
-                                                                "
-                                                                style="
-                                                                    margin-top: 55px;
-                                                                "
-                                                            >
-                                                                <font-awesome-icon
-                                                                    :icon="[
-                                                                        'fas',
-                                                                        'chart-pie',
-                                                                    ]"
-                                                                />
-                                                                <div>
-                                                                    إحصائيات
-                                                                </div>
                                                             </div>
-                                                            <div
-                                                                class="details"
-                                                                v-show="
-                                                                    CreateChart
-                                                                "
-                                                            >
-                                                                <div
-                                                                    class="myChart"
-                                                                >
-                                                                    <canvas
-                                                                        id="myChart"
-                                                                    ></canvas>
-                                                                </div>
-                                                                <ul>
-                                                                    <li
-                                                                        class="li"
-                                                                    >
-                                                                        <font-awesome-icon
-                                                                            :icon="[
-                                                                                'fas',
-                                                                                'money-bills',
-                                                                            ]"
-                                                                        />
-                                                                        <div>
-                                                                            المصروفات
-                                                                            المستحقة
-                                                                        </div>
-                                                                        <div>
-                                                                            <span
-                                                                                >{{
-                                                                                    selectedStudent
-                                                                                        .payments
-                                                                                        .Expenses
-                                                                                }}</span
-                                                                            >
-                                                                            جنية
-                                                                        </div>
-                                                                    </li>
-                                                                    <li>
-                                                                        <div>
-                                                                            المصروفات
-                                                                            المدفوعة
-                                                                        </div>
-                                                                        <div>
-                                                                            <span
-                                                                                >{{
-                                                                                    selectedStudent
-                                                                                        .payments
-                                                                                        .paid_Up
-                                                                                }}</span
-                                                                            >
-                                                                            جنية
-                                                                        </div>
-                                                                    </li>
-                                                                    <li>
-                                                                        <div>
-                                                                            المصروفات
-                                                                            المتبقية
-                                                                        </div>
-                                                                        <div>
-                                                                            <span
-                                                                                >{{
-                                                                                    selectedStudent
-                                                                                        .payments
-                                                                                        .Residual
-                                                                                }}</span
-                                                                            >
-                                                                            جنية
-                                                                        </div>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
+                                                        </v-row>
+                                                        <div
+                                                            class="Title"
+                                                            v-if="CreateChart"
+                                                            style="
+                                                                margin-top: 55px;
+                                                            "
+                                                        >
+                                                            <font-awesome-icon
+                                                                :icon="[
+                                                                    'fas',
+                                                                    'chart-pie',
+                                                                ]"
+                                                            />
+                                                            <div>إحصائيات</div>
                                                         </div>
-                                                    </v-container>
-                                                </v-card>
-                                            </div>
+                                                        <div
+                                                            class="details"
+                                                            v-if="CreateChart"
+                                                        >
+                                                            <div
+                                                                class="myChart"
+                                                            >
+                                                                <canvas
+                                                                    id="myChart"
+                                                                ></canvas>
+                                                            </div>
+                                                            <ul>
+                                                                <li class="li">
+                                                                    <font-awesome-icon
+                                                                        :icon="[
+                                                                            'fas',
+                                                                            'money-bills',
+                                                                        ]"
+                                                                    />
+                                                                    <div>
+                                                                        المصروفات
+                                                                        المستحقة
+                                                                    </div>
+                                                                    <div>
+                                                                        <span>{{
+                                                                            selectedStudent
+                                                                                .payments
+                                                                                .Expenses
+                                                                        }}</span>
+                                                                        جنية
+                                                                    </div>
+                                                                </li>
+                                                                <li>
+                                                                    <div>
+                                                                        المصروفات
+                                                                        المدفوعة
+                                                                    </div>
+                                                                    <div>
+                                                                        <span>{{
+                                                                            selectedStudent
+                                                                                .payments
+                                                                                .paid_Up
+                                                                        }}</span>
+                                                                        جنية
+                                                                    </div>
+                                                                </li>
+                                                                <li>
+                                                                    <div>
+                                                                        المصروفات
+                                                                        المتبقية
+                                                                    </div>
+                                                                    <div>
+                                                                        <span>{{
+                                                                            selectedStudent
+                                                                                .payments
+                                                                                .Residual
+                                                                        }}</span>
+                                                                        جنية
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </v-container>
+                                            </v-card>
                                         </div>
                                         <div v-if="e1 === 6" ref="slide6">
                                             <div
@@ -2297,12 +2290,23 @@
                                 <v-tab value="student">بيانات الطالب</v-tab>
                                 <v-tab value="parent">ولي الأمر</v-tab>
                             </v-tabs>
-
+                            <!-- 111111111111111111111111111111111111111111111111111111111111111111111111111111 -->
                             <v-card-text>
                                 <v-tabs-window v-model="tab">
                                     <v-tabs-window-item value="student">
                                         <form @submit.prevent="submit">
                                             <div style="padding: 20px">
+                                                <!-- حقل معرف الطالب -->
+                                                <v-text-field
+                                                    v-model="form.student_id"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.student_id
+                                                    "
+                                                    required
+                                                    label="الرقم القومى"
+                                                ></v-text-field>
+
                                                 <div
                                                     style="
                                                         width: 100%;
@@ -2353,6 +2357,7 @@
                                                         required
                                                     ></v-select>
                                                 </div>
+
                                                 <div
                                                     style="
                                                         width: 100%;
@@ -2368,7 +2373,7 @@
                                                         "
                                                         label="الجنس"
                                                         required
-                                                        :items="['انثي', 'ذكر']"
+                                                        :items="['أنثى', 'ذكر']"
                                                         variant="outlined"
                                                     ></v-select>
                                                 </div>
@@ -2445,6 +2450,7 @@
                                                         </v-card-actions>
                                                     </v-card>
                                                 </v-menu>
+
                                                 <div class="text-center">
                                                     <v-btn
                                                         append-icon="mdi-account-circle"
@@ -2460,9 +2466,8 @@
                                                             padding: 3px;
                                                             width: 42%;
                                                         "
+                                                        >إضافة طالب</v-btn
                                                     >
-                                                        اضافه طالب
-                                                    </v-btn>
                                                 </div>
                                             </div>
                                         </form>
@@ -2502,22 +2507,16 @@
                 </v-dialog>
             </v-col>
         </v-row>
-        <confirm_message2
-            v-model="showSnackbar"
-            :text="confirmationText"
-            :snackbar="showSnackbar"
-            @close-snackbar="showSnackbar = false"
-        />
+        <confirm_message :text="confirmationText" v-model="showSnackbar" />
     </v-container>
 </template>
 
 <script>
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Empty_error from "@/components/Empty_error.vue";
-// import Chart from "chart.js/auto";
 import {
     collection,
-    addDoc,
+    // addDoc,
     deleteDoc,
     getDocs,
     doc,
@@ -2546,19 +2545,17 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 const storage = getStorage(app);
-import confirm_message2 from "@/components/confirm_message2.vue";
+import confirm_message from "@/components/confirm_message.vue";
 
 export { db, storage };
 import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 import Chart from "chart.js/auto";
 import { useDialogStore } from "@/store/useDialogStore";
-import { mapState } from "pinia";
-import { useAuthStore } from "../store/userStore";
 export default {
     name: "StudentList",
     components: {
-        confirm_message2,
+        confirm_message,
         Empty_error,
     },
     props: {
@@ -2588,7 +2585,7 @@ export default {
     data() {
         return {
             dialog_stu: false,
-            CreateChart: null,
+            CreateChart: false,
             myChart: null,
             searchId: "", // متغير لتخزين معرف الطالب الذي تريد البحث عنه
             menuz: false,
@@ -2602,6 +2599,7 @@ export default {
                 "الصور",
             ],
             selectedParent: {
+                National_id: "",
                 name: "",
                 Child: [], // مصفوفة تحتوي على أسماء الأبناء
             },
@@ -2646,7 +2644,7 @@ export default {
                 class: "",
                 gender: "",
                 section: "",
-                birthday: "2024/07/19",
+                birthday: null,
                 parent_name: "",
                 national_id: "",
 
@@ -2914,7 +2912,7 @@ export default {
             selectedStudent: "",
             dialogStudentDetails: false,
             changesMade: false,
-            changesMade2: false,
+            changesMade2: true,
             changesMade3: false,
             interval: null,
             value: 0,
@@ -3078,6 +3076,52 @@ export default {
             this.changesMade2 = false;
         },
 
+        // getAlertType(notificationType) {
+        //     // if (notificationType === "سي") {
+        //     //     return "error";
+        //     // }
+        //     // switch (notificationType) {
+        //     //     case "success":
+        //     //         return "success";
+        //     //     case "error":
+        //     //         return "error";
+        //     //     case "warning":
+        //     //         return "warning";
+        //     //     case "info":
+        //     //         return "info";
+        //     //     default:
+        //     //         return "info";
+        //     // }
+        // },
+        // getIcon(notificationType) {
+        //     switch (notificationType) {
+        //         case "success":
+        //             return "mdi-check-circle";
+        //         case "error":
+        //         case "سي":
+        //             return "mdi-alert-circle";
+        //         case "warning":
+        //             return "mdi-alert";
+        //         case "info":
+        //             return "mdi-information";
+        //         default:
+        //             return "mdi-information";
+        //     }
+        // getIconClass(notificationType) {
+        //     switch (notificationType) {
+        //         case "success":
+        //             return "green";
+        //         case "error":
+        //         case "سي":
+        //             return "red";
+        //         case "warning":
+        //             return "orange";
+        //         case "info":
+        //             return "blue";
+        //         default:
+        //             return "blue";
+        //     }
+        // },
         async fetchStudents() {
             try {
                 const q = query(
@@ -3095,6 +3139,7 @@ export default {
                             new Date(studentData.birthday * 1000)
                         ), // Convert birthday to string if it's a Timestamp
                     };
+                    // تحديث Residual بناءً على البيانات الجديدة
                     return student;
                 });
                 this.loading1 = false; // بدء تحميل البيانات
@@ -3103,45 +3148,48 @@ export default {
                 console.error("Error fetching students:", error);
             }
         },
-
+        // 3333333333333333333333333333333333333333333333333333333333333
         async submit() {
             if (this.validateForm()) {
                 try {
                     // التأكد من أن تاريخ الميلاد يتم تخزينه كسلسلة منسقة
-                    // this.formattedDate = this.formatDate(
-                    //     new Date(this.form.birthday)
-                    // );
+                    const formattedBirthday = this.formatDate(
+                        new Date(this.form.birthday)
+                    );
 
-                    // إضافة الطالب إلى مجموعة "students"
-                    const docRef = await addDoc(collection(db, "students"), {
+                    // إضافة الطالب إلى مجموعة "students" باستخدام `student_id` المخصص
+                    await setDoc(doc(db, "students", this.form.student_id), {
                         student_name: this.form.student_name,
                         class: this.form.class,
                         gender: this.form.gender,
                         section: this.form.section,
-                        birthday: this.formattedDate,
+                        birthday: formattedBirthday,
                         Results: this.form.Results,
                         payments: this.form.payments,
                         Notifications: this.form.Notifications,
                         photos: this.form.photos,
                         educational_level: this.year,
                         year: new Date().getFullYear(),
+                        National_id: this.form.parent_national_id, // إضافة National_id هنا
+                        state: true,
                     });
 
-                    const newStudentId = docRef.id;
-
                     const newStudent = {
-                        id: newStudentId,
+                        id: this.form.student_id,
                         student_name: this.form.student_name,
                         class: this.form.class,
                         gender: this.form.gender,
                         section: this.form.section,
-                        birthday: this.formattedDate,
+                        birthday: formattedBirthday,
                         Results: this.form.Results,
                         payments: this.form.payments,
                         Notifications: this.form.Notifications,
                         photos: this.form.photos,
                         year: new Date().getFullYear(),
+                        National_id: this.form.parent_national_id, // إضافة National_id هنا
+                        state: true,
                     };
+
                     this.students.push(newStudent);
 
                     // تحقق من وجود مستند "Parents" بالرقم القومي
@@ -3157,7 +3205,11 @@ export default {
                         await setDoc(
                             parentDocRef,
                             {
-                                Child: arrayUnion(this.form.student_name),
+                                Child: arrayUnion({
+                                    student_name: this.form.student_name,
+                                    educational_level: this.year,
+                                    class: this.form.class,
+                                }),
                             },
                             { merge: true }
                         );
@@ -3170,14 +3222,20 @@ export default {
                         await setDoc(parentDocRef, {
                             name: this.form.parent_name,
                             National_id: this.form.parent_national_id,
-                            Child: [this.form.student_name], // أو يمكنك استخدام arrayUnion إذا كنت تريد التأكد من عدم التكرار
+                            Child: [
+                                {
+                                    student_name: this.form.student_name,
+                                    educational_level: this.year,
+                                    class: this.form.class,
+                                },
+                            ],
                         });
 
                         console.log("Created new parent document successfully");
                     }
 
                     this.dialog_addstudent = false;
-                    // this.formattedDate = "";
+                    this.formattedDate = "";
                     this.handleReset();
                     this.dialogStore.hideAddStudentDialog();
                     this.$emit("close-dialog");
@@ -3185,51 +3243,24 @@ export default {
                     // إعداد نص الرسالة وتفعيل Snackbar
                     this.confirmationText = "تم إضافة الطالب بنجاح";
                     this.showSnackbar = true;
-                    this.form.birthday = this.formattedDate;
                     await this.fetchStudents();
                 } catch (error) {
                     console.error("Error adding document:", error);
                 }
             }
         },
-
-        // async submitParent() {
-        //     try {
-        //         await setDoc(
-        //             doc(db, "parents", this.form.parent_national_id),
-        //             {
-        //                 name: this.form.parent_name,
-        //                 National_id: this.form.parent_national_id,
-        //                 Child: arrayUnion(this.form.student_name),
-        //             },
-        //             { merge: true }
-        //         );
-
-        //         // معالجة النتائج الأخرى بعد الإضافة
-        //         console.log("Parent document updated successfully");
-        //     } catch (error) {
-        //         console.error("Error updating parent document:", error);
-        //     }
-        // },
         formatDate(date) {
             const d = new Date(date);
+            let month = "" + (d.getMonth() + 1); // استخدام let بدلاً من const
+            let day = "" + d.getDate(); // استخدام let بدلاً من const
             const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, "0");
-            const day = String(d.getDate()).padStart(2, "0");
-            return `${year}/${month}/${day}`;
+
+            if (month.length < 2) month = "0" + month;
+            if (day.length < 2) day = "0" + day;
+
+            return [year, month, day].join("-");
         },
-        // formatDateh(birthday) {
-        //     if (birthday.seconds) {
-        //         const date = new Date(birthday.seconds * 1000);
-        //         const day = date.getDate();
-        //         const month = date.getMonth() + 1; // Months are zero-based
-        //         const year = date.getFullYear();
-        //         return `${day}/${month}/${year}`;
-        //     } else {
-        //         return birthday; // If it's already formatted
-        //     }
-        // },
-        // Example function to generate a unique ID
+
         generateUniqueId() {
             return "id-" + Math.random().toString(36).substr(2, 9);
         },
@@ -3443,11 +3474,9 @@ export default {
                     },
                 ],
                 payments: {
-                    Expenses: 0,
-                    payment_System: "",
-                    Installment_System: "",
-                    paid_Up: 0,
-                    Residual: 0,
+                    Requird: 0,
+                    paid_up: 0,
+                    installment_system: "",
                 },
                 Notifications: [],
 
@@ -3546,20 +3575,73 @@ export default {
                 });
             }
         },
+        // 44444444444444444444444444444444444444444
+        async loadParentDetails(National_id) {
+            if (!National_id) {
+                console.error("No National_id provided");
+                return;
+            }
 
+            console.log("Loading parent details for National_id:", National_id);
+
+            try {
+                // جلب بيانات الأب من كوليكشن Parents
+                const parentDoc = doc(db, "parents", National_id);
+                const parentSnapshot = await getDoc(parentDoc);
+
+                if (parentSnapshot.exists()) {
+                    const parentData = parentSnapshot.data();
+                    this.selectedParent = {
+                        name: parentData.name || "غير متوفر",
+                        Child: [],
+                    };
+
+                    // جلب الأطفال من كوليكشن students
+                    const studentsQuery = query(
+                        collection(db, "students"),
+                        where("National_id", "==", National_id)
+                    );
+                    const studentsSnapshot = await getDocs(studentsQuery);
+
+                    const children = [];
+                    studentsSnapshot.forEach((doc) => {
+                        children.push({
+                            student_name: doc.data().student_name,
+                            educational_level: doc.data().educational_level,
+                            class: doc.data().class,
+                        });
+                    });
+
+                    this.selectedParent.Child = children;
+                } else {
+                    console.error("No such document!");
+                    this.selectedParent = {
+                        name: "غير متوفر",
+                        Child: [],
+                    };
+                }
+            } catch (error) {
+                console.error("Error getting document:", error);
+                this.selectedParent = {
+                    name: "خطأ في جلب البيانات",
+                    Child: [],
+                };
+            }
+        },
         openStudentDetails(student) {
             this.selectedStudent = student;
+            this.loadParentDetails(student.National_id);
             this.dialogStudentDetails = true;
         },
         // l;
         initializeTempDate() {
             // this.tempDate = this.form.birthday;
-            this.tempDate = new Date(this.form.birthday);
+            this.tempDate = this.form.birthday;
             new Date().toISOString().substr(0, 10);
         },
         confirmDate() {
             this.form.birthday = this.tempDate;
-            this.formattedDate = this.formatDate(new Date(this.tempDate));
+            this.formattedDate = this.formatDate(this.tempDate);
             this.menu = false;
         },
 
@@ -3949,19 +4031,19 @@ export default {
             };
         },
         // aos
-        // async saveStudentDetails() {
-        //     if (this.selectedStudent) {
-        //         try {
-        //             const studentRef = doc(db, "students", this.student.id);
-        //             await updateDoc(studentRef, this.student);
-        //             await this.fetchStudents(); // Optionally refetch students to update the list
-        //             this.dialogStudentDetails = false;
-        //             console.log("Student details updated successfully");
-        //         } catch (error) {
-        //             console.error("Error updating student details:", error);
-        //         }
-        //     }
-        // },
+        async saveStudentDetails() {
+            if (this.selectedStudent) {
+                try {
+                    const studentRef = doc(db, "students", this.student.id);
+                    await updateDoc(studentRef, this.student);
+                    await this.fetchStudents(); // Optionally refetch students to update the list
+                    this.dialogStudentDetails = false;
+                    console.log("Student details updated successfully");
+                } catch (error) {
+                    console.error("Error updating student details:", error);
+                }
+            }
+        },
         async updateMonthlyDegrees(degrees) {
             if (!this.selectedStudent) {
                 this.console.error("Error: selectedStudent is null");
@@ -3980,7 +4062,6 @@ export default {
                         if (month.Certificate_title === this.selectedMonth) {
                             return { ...month, Degrees: degrees };
                         }
-                        // this.changesMade2 = true;
                         return month;
                     }
                 );
@@ -4019,33 +4100,7 @@ export default {
         //     );
         //     this.changesMade3 = false;
         // },
-        // createChart(data) {
-        //     const ctx = document.getElementById("myChart");
-        //     if (ctx) {
-        //         // تحقق مما إذا كان هناك مخطط موجود وقم بتدميره
-        //         if (this.myChart) {
-        //             this.myChart.destroy();
-        //         }
 
-        //         console.log("start createChart");
-        //         this.CreateChart = true;
-        //         this.myChart = new Chart(ctx, {
-        //             type: "doughnut",
-        //             data: {
-        //                 datasets: [
-        //                     {
-        //                         label: "المصروفات",
-        //                         data: data,
-        //                         backgroundColor: ["#336699", "#d8588c"],
-        //                         hoverOffset: 4,
-        //                     },
-        //                 ],
-        //             },
-        //         });
-        //     } else {
-        //         console.log("error");
-        //     }
-        // },
         updatePaymentOptions() {
             if (this.paymentMethod === "نظام التقسيط") {
                 this.selectedPlan = null;
@@ -4164,9 +4219,9 @@ export default {
             const expenses = this.form.payments.Expenses || 0;
             const paidUp = this.form.payments.paid_Up || 0;
             this.form.payments.Residual = expenses - paidUp;
-            // this.createChart([paidUp, this.form.payments.Residual]);
+            this.createChart([paidUp, this.form.payments.Residual]);
         },
-        createChart() {
+        createChart(data) {
             const ctx = document.getElementById("myChart");
             if (ctx) {
                 // تحقق مما إذا كان هناك مخطط موجود وقم بتدميره
@@ -4176,20 +4231,18 @@ export default {
 
                 console.log("start createChart");
                 this.CreateChart = true;
-                this.$nextTick(() => {
-                    this.myChart = new Chart(ctx, {
-                        type: "doughnut",
-                        data: {
-                            datasets: [
-                                {
-                                    label: "المصروفات",
-                                    data: [20, 50],
-                                    backgroundColor: ["#336699", "#d8588c"],
-                                    hoverOffset: 4,
-                                },
-                            ],
-                        },
-                    });
+                this.myChart = new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        datasets: [
+                            {
+                                label: "المصروفات",
+                                data: data,
+                                backgroundColor: ["#336699", "#d8588c"],
+                                hoverOffset: 4,
+                            },
+                        ],
+                    },
                 });
             } else {
                 console.log("error");
@@ -4208,13 +4261,13 @@ export default {
             this.formattedDate = this.formatDate(newVal);
         },
 
-        // selectedMonthlyDegrees: {
-        //     handler() {
-        //         // Save changes to Firebase
-        //         this.changesMade2 = false;
-        //     },
-        //     deep: true,
-        // },
+        selectedMonthlyDegrees: {
+            handler() {
+                // Save changes to Firebase
+                this.changesMade2 = true;
+            },
+            deep: true,
+        },
         "form.payments.Expenses"() {
             this.updateResidual();
         },
@@ -4223,7 +4276,6 @@ export default {
         },
     },
     computed: {
-        ...mapState(useAuthStore, ["user"]),
         filteredStudents() {
             if (this.selectedSection === "الكل") {
                 return this.students.filter(
@@ -4273,18 +4325,22 @@ export default {
         this.searchStudent(); // Fetch all students initially
         this.generateRandomPassword();
         this.fetchStudents();
-        // this.interval = setInterval(() => {
-        //     if (this.value === 100) {
-        //         clearInterval(this.interval);
-        //         return;
-        //     }
-        //     this.value += 10;
-        // }, 100);
-        this.students = this.$parent.students_class; // Assuming students_class is passed down from parent
+        this.interval = setInterval(() => {
+            if (this.value === 100) {
+                clearInterval(this.interval);
+                return;
+            }
+            this.value += 10;
+        }, 100);
+        this.students = this.$parent.students_class;
+        // مثال لاستدعاء الدالة
+        this.loadParentDetails(this.form.parent_national_id);
+
+        // Assuming students_class is passed down from parent
     },
-    // beforeUnmount() {
-    //     clearInterval(this.interval);
-    // },
+    beforeUnmount() {
+        clearInterval(this.interval);
+    },
 };
 </script>
 

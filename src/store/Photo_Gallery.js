@@ -42,6 +42,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
     state: () => ({
         dialog: false,
         dialog_3: false,
+        dialog_4: false,
         dialog_6: false,
         photos_show: "",
         File_Name: "",
@@ -288,6 +289,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                 this.Get_data();
 
                 this.dialog_3 = false;
+                this.dialog_4 = false;
             } catch (error) {
                 console.error("Error deleting Photo:", error);
             }

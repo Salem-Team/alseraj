@@ -18,7 +18,13 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);*/
 export const useAuthStore = defineStore("auth", {
     state: () => ({
-        user: { email: "", password: "", userType: "", roles: [] },
+        user: {
+            id: "",
+            National_id: "",
+            password: "",
+            userType: "",
+            roles: [],
+        },
         loading: false,
         error: null,
     }),
@@ -59,12 +65,12 @@ export const useAuthStore = defineStore("auth", {
                 }
             });
         },*/
-        async login(email, userType, roles, name) {
+        async login(id, National_id, userType, roles, name) {
             this.loading = true;
             try {
                 // تحقق من البريد الإلكتروني وكلمة المرور
 
-                this.user = { email, userType, roles, name };
+                this.user = { id, National_id, userType, roles, name };
                 this.error = null;
                 // تخزين بيانات المستخدم في الكوكيز
                 Cookies.set("user", JSON.stringify(this.user), {
@@ -77,7 +83,13 @@ export const useAuthStore = defineStore("auth", {
             }
         },
         logout() {
-            (this.user = { email: "", password: "", userType: "", roles: [] }),
+            (this.user = {
+                id: "",
+                National_id: "",
+                password: "",
+                userType: "",
+                roles: [],
+            }),
                 // إزالة بيانات المستخدم من الكوكيز
                 Cookies.remove("user");
         },

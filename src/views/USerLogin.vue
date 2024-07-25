@@ -191,6 +191,7 @@ export default {
                     } else if (authenticatedUser.userType === "admin") {
                         this.$router.push({ name: "admin_Dashboard" });
                     } else {
+                        // تأكد من تمرير المعلمة id بشكل صحيح
                         this.$router.push({
                             name: "Student_Dashboard",
                             params: { id: authenticatedUser.id },

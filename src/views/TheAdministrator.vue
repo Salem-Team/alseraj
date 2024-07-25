@@ -16,7 +16,7 @@
                 class="card"
                 v-if="user.roles.includes('تعديل ونشر الصور')"
                 link
-                @click="$router.push('/Modifications')"
+                @click="$router.push('/Top_Board')"
             >
                 <img src="../assets/admin/certificate.png" alt="" />
                 <div>لوحة الشرف</div>

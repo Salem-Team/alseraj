@@ -1201,11 +1201,33 @@
                                                                 size="large"
                                                                 @click="
                                                                     selectMonth(
-                                                                        'شهر يناير'
+                                                                        'شهر أكتوبر'
                                                                     )
                                                                 "
                                                                 >شهر
-                                                                يناير</v-btn
+                                                                أكتوبر</v-btn
+                                                            >
+                                                            <v-btn
+                                                                rounded="xs"
+                                                                size="large"
+                                                                @click="
+                                                                    selectMonth(
+                                                                        'شهر نوفمبر'
+                                                                    )
+                                                                "
+                                                                >شهر
+                                                                نوفمبر</v-btn
+                                                            >
+                                                            <v-btn
+                                                                rounded="xs"
+                                                                size="large"
+                                                                @click="
+                                                                    selectMonth(
+                                                                        'الترم الأول'
+                                                                    )
+                                                                "
+                                                                >الترم
+                                                                الأول</v-btn
                                                             >
                                                             <v-btn
                                                                 rounded="xs"
@@ -1217,27 +1239,6 @@
                                                                 "
                                                                 >شهر
                                                                 فبراير</v-btn
-                                                            >
-                                                            <v-btn
-                                                                rounded="xs"
-                                                                size="large"
-                                                                @click="
-                                                                    selectMonth(
-                                                                        'شهر مارس'
-                                                                    )
-                                                                "
-                                                                >شهر مارس</v-btn
-                                                            >
-                                                            <v-btn
-                                                                rounded="xs"
-                                                                size="large"
-                                                                @click="
-                                                                    selectMonth(
-                                                                        'شهر ابرايل'
-                                                                    )
-                                                                "
-                                                                >شهر
-                                                                ابرايل</v-btn
                                                             >
                                                         </v-col>
                                                     </v-row>
@@ -2612,7 +2613,7 @@ export default {
             editedField: "",
             editedValue: "",
             randomPassword: "",
-            selectedMonth: "شهر يناير",
+            selectedMonth: "شهر أكتوبر",
             dialogAddSubject: false,
             newSubject: {
                 Subject_Name: "",
@@ -2664,7 +2665,7 @@ export default {
                     {
                         Monthly: [
                             {
-                                Certificate_title: "شهر يناير",
+                                Certificate_title: "شهر أكتوبر",
                                 Degrees: [
                                     {
                                         Subject_Name: "عربي",
@@ -2701,81 +2702,81 @@ export default {
                                 ],
                             },
                             {
+                                Certificate_title: "شهر نوفمبر",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
+                                    },
+                                ],
+                            },
+                            {
+                                Certificate_title: "الترم الأول",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
+                                    },
+                                ],
+                            },
+                            {
                                 Certificate_title: "شهر فبراير",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
-                            {
-                                Certificate_title: "شهر مارس",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
-                            {
-                                Certificate_title: "شهر ابرايل",
                                 Degrees: [
                                     {
                                         Subject_Name: "انجليزى",
@@ -3323,7 +3324,7 @@ export default {
                     {
                         Monthly: [
                             {
-                                Certificate_title: "شهر يناير",
+                                Certificate_title: "شهر أكتوبر",
                                 Degrees: [
                                     {
                                         Subject_Name: "عربي",
@@ -3360,81 +3361,81 @@ export default {
                                 ],
                             },
                             {
+                                Certificate_title: "شهر نوفمبر",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
+                                    },
+                                ],
+                            },
+                            {
+                                Certificate_title: "الترم الأول",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
+                                    },
+                                ],
+                            },
+                            {
                                 Certificate_title: "شهر فبراير",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
-                            {
-                                Certificate_title: "شهر مارس",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
-                            {
-                                Certificate_title: "شهر ابرايل",
                                 Degrees: [
                                     {
                                         Subject_Name: "انجليزى",
@@ -4184,8 +4185,8 @@ export default {
                 "شهر نوفمبر",
                 "شهر ديسمبر",
                 "الترم الأول",
-                "شهر فبراير",
-                "شهر مارس",
+                "شهر نوفمبر",
+                "الترم الأول",
             ];
             return monthNames[month - 1] || month;
         },

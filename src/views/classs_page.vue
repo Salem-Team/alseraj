@@ -728,7 +728,7 @@
                 <transition name="fade">
                     <v-card>
                         <v-card-title class="headline">
-                            فلتر الطلابه
+                            فلتر الطلاب
                         </v-card-title>
                         <v-card-text>
                             <!-- Filter Options -->

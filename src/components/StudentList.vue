@@ -303,7 +303,7 @@
                                                 margin-bottom: 20px;
                                             "
                                         >
-                                            1000/1500
+                                            1000/1500 1000/1500
                                         </h3>
                                     </div>
                                     <div>
@@ -708,69 +708,437 @@
                                                 <div
                                                     style="
                                                         display: flex;
-                                                        margin-bottom: 20px;
+                                                        justify-content: space-between;
                                                         align-items: center;
-                                                    "
-                                                >
-                                                    <v-avatar
-                                                        color="info"
-                                                        style="
-                                                            margin-left: 20px;
-                                                        "
-                                                        >{{
-                                                            index + 2
-                                                        }}</v-avatar
-                                                    >
-                                                    <h2 style="color: #2196f3">
-                                                        ولي الامر
-                                                    </h2>
-                                                </div>
-
-                                                <!-- حقل اسم الأب -->
-                                                <v-text-field
-                                                    v-model="
-                                                        selectedParent.name
-                                                    "
-                                                    label="اسم الأب"
-                                                    required
-                                                    style="margin-bottom: 20px"
-                                                ></v-text-field>
-
-                                                <!-- عرض عدد الأبناء -->
-                                                <div
-                                                    style="
                                                         margin-bottom: 20px;
-                                                        color: #2196f3;
                                                     "
                                                 >
-                                                    عدد الأبناء:
-                                                    {{
-                                                        selectedParent.Child
-                                                            ? selectedParent
-                                                                  .Child.length
-                                                            : 0
-                                                    }}
+                                                    <div
+                                                        style="
+                                                            display: flex;
+
+                                                            align-items: center;
+                                                        "
+                                                    >
+                                                        <v-avatar
+                                                            color="info"
+                                                            style="
+                                                                margin-left: 20px;
+                                                            "
+                                                        >
+                                                            {{ index + 3 }}
+                                                        </v-avatar>
+                                                        <h2
+                                                            style="
+                                                                color: #2196f3;
+                                                            "
+                                                        >
+                                                            النتائج الاسبوعيه
+                                                        </h2>
+                                                    </div>
+                                                    <v-btn
+                                                        color="blue"
+                                                        @click="
+                                                            dialogAddSubject = true
+                                                        "
+                                                        >إضافة مادة جديدة</v-btn
+                                                    >
                                                 </div>
 
-                                                <!-- عرض أسماء الأبناء -->
-                                                <v-list>
-                                                    <v-list-item-group
+                                                <v-row>
+                                                    <v-col
+                                                        v-if="
+                                                            selectedStudent
+                                                                .Results[0]
+                                                                .weekly
+                                                                .length === 0
+                                                        "
+                                                    >
+                                                        <Empty_error
+                                                            text="لا يوجد نتائج اسبوعيه."
+                                                        />
+                                                    </v-col>
+                                                    <v-col
+                                                        v-else
+                                                        cols="4"
                                                         v-for="(
-                                                            child, index
-                                                        ) in selectedParent.Child"
+                                                            week, index
+                                                        ) in selectedStudent
+                                                            .Results[0].weekly"
                                                         :key="index"
                                                     >
-                                                        <v-list-item>
-                                                            <v-list-item-content>
-                                                                <v-list-item-title
-                                                                    >{{
-                                                                        child.student_name
-                                                                    }}</v-list-item-title
+                                                        <v-card
+                                                            style="
+                                                                padding: 17px;
+                                                            "
+                                                        >
+                                                            <div
+                                                                style="
+                                                                    display: flex;
+                                                                    justify-content: space-between;
+                                                                    align-items: center;
+                                                                    margin-bottom: 20px;
+                                                                "
+                                                            >
+                                                                <div
+                                                                    style="
+                                                                        display: flex;
+                                                                        align-items: center;
+                                                                    "
                                                                 >
-                                                            </v-list-item-content>
-                                                        </v-list-item>
-                                                    </v-list-item-group>
-                                                </v-list>
+                                                                    <v-avatar
+                                                                        color="info"
+                                                                        style="
+                                                                            margin-left: 20px;
+                                                                        "
+                                                                    >
+                                                                        {{
+                                                                            index +
+                                                                            1
+                                                                        }}
+                                                                    </v-avatar>
+                                                                    <h2>
+                                                                        {{
+                                                                            week.Subject_Name
+                                                                        }}
+                                                                    </h2>
+                                                                </div>
+                                                                <div>
+                                                                    <v-icon
+                                                                        color="primary"
+                                                                        @click="
+                                                                            editSubject(
+                                                                                selectedStudent.id,
+                                                                                index
+                                                                            )
+                                                                        "
+                                                                    >
+                                                                        mdi-pencil
+                                                                    </v-icon>
+                                                                    <v-icon
+                                                                        color="red"
+                                                                        @click="
+                                                                            deleteSubject(
+                                                                                selectedStudent.id,
+                                                                                index
+                                                                            )
+                                                                        "
+                                                                    >
+                                                                        mdi-delete
+                                                                    </v-icon>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <table
+                                                                    class="styled-table"
+                                                                >
+                                                                    <tr>
+                                                                        <td>
+                                                                            درجة
+                                                                            الطالب
+                                                                        </td>
+                                                                        <td>
+                                                                            {{
+                                                                                week.Student_degree
+                                                                            }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            الدرجة
+                                                                            الكلية
+                                                                        </td>
+                                                                        <td>
+                                                                            {{
+                                                                                week.Major_degree
+                                                                            }}
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            تاريخ
+                                                                            الامتحان
+                                                                        </td>
+                                                                        <td>
+                                                                            {{
+                                                                                week.Date
+                                                                            }}
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+                                                        </v-card>
+                                                    </v-col>
+                                                </v-row>
+                                                <!-- Add Subject Dialog -->
+                                                <v-dialog
+                                                    v-model="dialogAddSubject"
+                                                    max-width="500px"
+                                                >
+                                                    <v-card>
+                                                        <v-card-title>
+                                                            <span
+                                                                class="headline"
+                                                                >إضافة مادة
+                                                                جديدة</span
+                                                            >
+                                                        </v-card-title>
+                                                        <v-card-text>
+                                                            <v-form
+                                                                ref="addForm"
+                                                            >
+                                                                <v-text-field
+                                                                    v-model="
+                                                                        newSubject.Subject_Name
+                                                                    "
+                                                                    label="اسم المادة"
+                                                                    required
+                                                                ></v-text-field>
+                                                                <v-text-field
+                                                                    v-model="
+                                                                        newSubject.Major_degree
+                                                                    "
+                                                                    label="الدرجة الكلية"
+                                                                    type="number"
+                                                                    required
+                                                                ></v-text-field>
+                                                                <v-text-field
+                                                                    v-model="
+                                                                        newSubject.Student_degree
+                                                                    "
+                                                                    label="درجة الطالب"
+                                                                    type="number"
+                                                                    required
+                                                                ></v-text-field>
+                                                                <v-menu
+                                                                    ref="menuz"
+                                                                    v-model="
+                                                                        menuz
+                                                                    "
+                                                                    :close-on-content-click="
+                                                                        false
+                                                                    "
+                                                                    transition="scale-transition"
+                                                                    offset-y
+                                                                    min-width="290px"
+                                                                    @open="
+                                                                        initializeTempDatez
+                                                                    "
+                                                                >
+                                                                    <template
+                                                                        v-slot:activator="{
+                                                                            on,
+                                                                            attrs,
+                                                                        }"
+                                                                    >
+                                                                        <v-text-field
+                                                                            v-model="
+                                                                                newSubject.Date
+                                                                            "
+                                                                            label="تاريخ الامتحان"
+                                                                            prepend-icon="mdi-calendar"
+                                                                            readonly
+                                                                            required
+                                                                            @click="
+                                                                                menuz = true
+                                                                            "
+                                                                            v-bind="
+                                                                                attrs
+                                                                            "
+                                                                            v-on="
+                                                                                on
+                                                                            "
+                                                                        ></v-text-field>
+                                                                    </template>
+                                                                    <v-card>
+                                                                        <v-date-picker
+                                                                            v-model="
+                                                                                tempDatez
+                                                                            "
+                                                                            locale="ar"
+                                                                            scrollable
+                                                                            :first-day-of-week="
+                                                                                1
+                                                                            "
+                                                                        ></v-date-picker>
+                                                                        <v-card-actions>
+                                                                            <v-spacer></v-spacer>
+                                                                            <v-btn
+                                                                                text
+                                                                                @click="
+                                                                                    menuz = false
+                                                                                "
+                                                                                >إلغاء</v-btn
+                                                                            >
+                                                                            <v-btn
+                                                                                text
+                                                                                @click="
+                                                                                    confirmDatez
+                                                                                "
+                                                                                >تأكيد</v-btn
+                                                                            >
+                                                                        </v-card-actions>
+                                                                    </v-card>
+                                                                </v-menu>
+                                                            </v-form>
+                                                        </v-card-text>
+                                                        <v-card-actions>
+                                                            <v-spacer></v-spacer>
+                                                            <v-btn
+                                                                color="blue darken-1"
+                                                                text
+                                                                @click="
+                                                                    dialogAddSubject = false
+                                                                "
+                                                                >إلغاء</v-btn
+                                                            >
+                                                            <v-btn
+                                                                color="blue darken-1"
+                                                                text
+                                                                @click="
+                                                                    addSubject(
+                                                                        selectedStudent.id
+                                                                    )
+                                                                "
+                                                                >حفظ</v-btn
+                                                            >
+                                                        </v-card-actions>
+                                                    </v-card>
+                                                </v-dialog>
+
+                                                <!-- Edit Subject Dialog -->
+                                                <v-dialog
+                                                    v-model="editDialog"
+                                                    max-width="500px"
+                                                >
+                                                    <v-card>
+                                                        <v-card-title>
+                                                            <span
+                                                                class="headline"
+                                                                >تعديل
+                                                                المادة</span
+                                                            >
+                                                        </v-card-title>
+                                                        <v-card-text>
+                                                            <v-form
+                                                                ref="editForm"
+                                                            >
+                                                                <v-text-field
+                                                                    v-model="
+                                                                        editedSubject.Subject_Name
+                                                                    "
+                                                                    label="اسم المادة"
+                                                                    required
+                                                                ></v-text-field>
+                                                                <v-text-field
+                                                                    v-model="
+                                                                        editedSubject.Major_degree
+                                                                    "
+                                                                    label="الدرجة الكلية"
+                                                                    type="number"
+                                                                    required
+                                                                ></v-text-field>
+                                                                <v-text-field
+                                                                    v-model="
+                                                                        editedSubject.Student_degree
+                                                                    "
+                                                                    label="درجة الطالب"
+                                                                    type="number"
+                                                                    required
+                                                                ></v-text-field>
+                                                                <v-menu
+                                                                    ref="menu"
+                                                                    v-model="
+                                                                        menuz
+                                                                    "
+                                                                    :close-on-content-click="
+                                                                        false
+                                                                    "
+                                                                    transition="scale-transition"
+                                                                    offset-y
+                                                                    min-width="290px"
+                                                                    @open="
+                                                                        initializeTempDatez
+                                                                    "
+                                                                >
+                                                                    <template
+                                                                        v-slot:activator="{
+                                                                            on,
+                                                                            attrs,
+                                                                        }"
+                                                                    >
+                                                                        <v-text-field
+                                                                            v-model="
+                                                                                editedSubject.Date
+                                                                            "
+                                                                            label="تاريخ الامتحان"
+                                                                            prepend-icon="mdi-calendar"
+                                                                            readonly
+                                                                            required
+                                                                            @click="
+                                                                                menuz = true
+                                                                            "
+                                                                            v-bind="
+                                                                                attrs
+                                                                            "
+                                                                            v-on="
+                                                                                on
+                                                                            "
+                                                                        ></v-text-field>
+                                                                    </template>
+                                                                    <v-card>
+                                                                        <v-date-picker
+                                                                            v-model="
+                                                                                tempDatez
+                                                                            "
+                                                                            locale="ar"
+                                                                            scrollable
+                                                                            :first-day-of-week="
+                                                                                1
+                                                                            "
+                                                                        ></v-date-picker>
+                                                                        <v-card-actions>
+                                                                            <v-spacer></v-spacer>
+                                                                            <v-btn
+                                                                                text
+                                                                                @click="
+                                                                                    menu = false
+                                                                                "
+                                                                                >إلغاء</v-btn
+                                                                            >
+                                                                            <v-btn
+                                                                                text
+                                                                                @click="
+                                                                                    confirmDatez
+                                                                                "
+                                                                                >تأكيد</v-btn
+                                                                            >
+                                                                        </v-card-actions>
+                                                                    </v-card>
+                                                                </v-menu>
+                                                            </v-form>
+                                                        </v-card-text>
+                                                        <v-card-actions>
+                                                            <v-spacer></v-spacer>
+                                                            <v-btn
+                                                                color="blue darken-1"
+                                                                text
+                                                                @click="
+                                                                    closeDialog
+                                                                "
+                                                                >إلغاء</v-btn
+                                                            >
+                                                            <v-btn
+                                                                color="blue darken-1"
+                                                                text
+                                                                @click="
+                                                                    saveEdit
+                                                                "
+                                                                >حفظ</v-btn
+                                                            >
+                                                        </v-card-actions>
+                                                    </v-card>
+                                                </v-dialog>
                                             </div>
                                         </div>
                                         <div v-if="e1 === 4" ref="slide4">
@@ -1240,9 +1608,6 @@
                                                                     true
                                                                 )
                                                             "
-                                                            @change="
-                                                                CreateChart = true
-                                                            "
                                                         ></v-text-field>
                                                     </v-row>
 
@@ -1528,12 +1893,24 @@
 
                                             <v-row>
                                                 <v-col
+                                                    v-if="
+                                                        selectedStudent
+                                                            .Notifications
+                                                            .length === 0
+                                                    "
+                                                >
+                                                    <Empty_error
+                                                        text="لا يوجد اشعارات"
+                                                    />
+                                                </v-col>
+                                                <v-col
                                                     v-for="(
                                                         note, index
                                                     ) in selectedStudent.Notifications"
                                                     :key="index"
                                                     cols="12"
                                                     md="4"
+                                                    v-else
                                                 >
                                                     <v-alert
                                                         :type="
@@ -1760,12 +2137,23 @@
                                             </div>
                                             <v-row style="gap: 0px">
                                                 <v-col
+                                                    v-if="
+                                                        selectedStudent.photos
+                                                            .length === 0
+                                                    "
+                                                >
+                                                    <Empty_error
+                                                        text="لا يوجد صور"
+                                                    />
+                                                </v-col>
+                                                <v-col
                                                     v-for="(
                                                         photo, index
                                                     ) in selectedStudent.photos"
                                                     :key="index"
                                                     cols="12"
                                                     md="4"
+                                                    v-else
                                                 >
                                                     <v-card
                                                         class="pa-3 mb-3 notification-card"
@@ -2232,6 +2620,7 @@ export default {
                 Student_degree: null,
                 Date: null,
             },
+            maxExpenses: 0,
             years: "",
             AddNotice: {
                 NoticeTitle: "",
@@ -2270,14 +2659,7 @@ export default {
                 errors: {},
                 Results: [
                     {
-                        weekly: [
-                            {
-                                Subject_Name: "",
-                                Major_degree: 0,
-                                Student_degree: 0,
-                                Date: null,
-                            },
-                        ],
+                        weekly: [],
                     },
                     {
                         Monthly: [
@@ -2439,20 +2821,9 @@ export default {
                     paid_Up: 0,
                     Residual: 0,
                 },
-                Notifications: [
-                    {
-                        NoticeTitle: "",
-                        theDescription: "",
-                        NotificationType: "",
-                    },
-                ],
+                Notifications: [],
 
-                photos: [
-                    {
-                        Date: "",
-                        link: "",
-                    },
-                ],
+                photos: [],
             },
             loading1: true, // خاصية لتحميل البيانات
             errors: {
@@ -2932,7 +3303,10 @@ export default {
                 class: "",
                 gender: "",
                 section: "",
-                birthday: "",
+                birthday: "2024/07/19",
+                parent_name: "",
+                national_id: "",
+
                 Guardian: [
                     { Guardian_name: "" },
                     { Guardian_phone: "" },
@@ -2941,16 +3315,10 @@ export default {
                     { Brothers_in_school: "" },
                     { brother: [""] },
                 ],
+                errors: {},
                 Results: [
                     {
-                        weekly: [
-                            {
-                                Subject_Name: "",
-                                Major_degree: 0,
-                                Student_degree: 0,
-                                Date: null,
-                            },
-                        ],
+                        weekly: [],
                     },
                     {
                         Monthly: [
@@ -3110,19 +3478,9 @@ export default {
                     paid_up: 0,
                     installment_system: "",
                 },
-                Notifications: [
-                    {
-                        NoticeTitle: "",
-                        theDescription: "",
-                        NotificationType: "",
-                    },
-                ],
-                photos: [
-                    {
-                        Date: "",
-                        link: "",
-                    },
-                ],
+                Notifications: [],
+
+                photos: [],
             };
         },
         validateForm() {
@@ -3888,6 +4246,13 @@ export default {
                 });
             } else {
                 console.log("error");
+            }
+        },
+        validatePaidUp() {
+            const expenses = this.selectedStudent.payments.Expenses || 0;
+            this.maxExpenses = expenses;
+            if (this.selectedStudent.payments.paid_Up > expenses) {
+                this.selectedStudent.payments.paid_Up = expenses;
             }
         },
     },

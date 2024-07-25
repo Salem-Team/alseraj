@@ -18,7 +18,7 @@
             <v-row>
                 <v-col
                     cols="4"
-                    v-for="(plan, index) in weeklyPlans"
+                    v-for="(plan, index) in filteredWeeklyPlans"
                     :key="index"
                 >
                     <v-card
@@ -39,7 +39,7 @@
                                 font-size: 22px;
                             "
                         >
-                            <p>{{ year }}</p>
+                            <p>{{ selectedYear }}</p>
                             <p>{{ plan.class }}</p>
                             <p>{{ plan.section }}</p>
                         </div>
@@ -315,6 +315,7 @@ export default {
             showAddWeeklyPlan: false,
             selectedClass: null,
             selectedSection: null,
+            selectedYear: null,
             classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
             sections: ["عربي", "لغات"],
             showDialog2: false,
@@ -358,10 +359,19 @@ export default {
                     student_degree: "",
                 },
             ],
+            years: [2024, 2023, 2022, 2021], // Example years
         };
     },
     async mounted() {
+        this.selectedYear = this.year;
         await this.loadWeeklyPlans();
+    },
+    computed: {
+        filteredWeeklyPlans() {
+            return this.weeklyPlans.filter(
+                (plan) => plan.educational_level === this.selectedYear
+            );
+        },
     },
     methods: {
         async loadWeeklyPlans() {
@@ -387,7 +397,8 @@ export default {
                     const existingPlanIndex = this.weeklyPlans.findIndex(
                         (plan) =>
                             plan.class === this.selectedClass &&
-                            plan.section === this.selectedSection
+                            plan.section === this.selectedSection &&
+                            plan.educational_level === this.selectedYear
                     );
 
                     if (existingPlanIndex !== -1) {
@@ -400,13 +411,11 @@ export default {
                         await setDoc(docRef, {
                             ...this.weeklyPlans[existingPlanIndex],
                             days: this.daysOfWeek,
-                            // lastModified: Timestamp.now(),
                         });
 
                         this.weeklyPlans[existingPlanIndex] = {
                             ...this.weeklyPlans[existingPlanIndex],
                             days: this.daysOfWeek,
-                            // lastModified: new Date().toLocaleString(),
                         };
                     } else {
                         // Add new plan
@@ -414,8 +423,7 @@ export default {
                             class: this.selectedClass,
                             section: this.selectedSection,
                             days: this.daysOfWeek,
-                            educational_level: this.year,
-                            // createdAt: Timestamp.now(),
+                            educational_level: this.selectedYear,
                         };
                         const docRef = await addDoc(
                             collection(db, "weeklyPlan"),
@@ -452,11 +460,9 @@ export default {
                 const docRef = doc(db, "weeklyPlan", this.selectedPlan.id);
                 await setDoc(docRef, {
                     ...this.selectedPlan,
-                    // lastModified: Timestamp.now(),
                 });
 
                 this.changesMade = false;
-                // this.lastModified = new Date().toLocaleString();
                 this.showDetails6 = false;
             } catch (error) {
                 console.error("Error updating plan details: ", error);

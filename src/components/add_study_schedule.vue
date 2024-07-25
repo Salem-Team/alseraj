@@ -232,7 +232,7 @@ export default {
                     "studySchedule",
                     `${this.selectedClass.replace("/", "-")}_${
                         this.selectedSection
-                    }`
+                    }-${this.year}`
                 );
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
@@ -331,7 +331,7 @@ export default {
                     "studySchedule",
                     `${this.selectedClass.replace("/", "-")}_${
                         this.selectedSection
-                    }`
+                    }-${this.year}`
                 );
                 await setDoc(docRef, {
                     class: this.selectedClass,

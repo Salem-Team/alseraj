@@ -107,8 +107,8 @@
                                         text-align: center;
                                         display: inline-block;
                                         position: relative;
-                                        top: -12px;
-                                        left: -12px;
+                                        top: -20px;
+                                        left: -20px;
                                         transform: translate(50%, 50%);
                                         font-size: 12px;
                                     "

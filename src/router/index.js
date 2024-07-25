@@ -9,7 +9,7 @@ import Parent_Dashboard from "../views/Parent_Dashboard.vue";
 import Student_Dashboard from "../views/Student_Dashboard.vue";
 import admin_Dashboard from "../views/admin_Dashboard.vue";
 import Edit_profile from "../views/Edit_profile.vue";
-import Modifications from "../views/Modifications_admin.vue";
+import Top_Board from "../views/Top_Board.vue";
 import Add_News from "../views/Add_News.vue";
 import Add_job from "../views/Add_job.vue";
 import notification_test from "../views/notification_test.vue";
@@ -51,9 +51,9 @@ const routes = [
         component: Student_Dashboard,
     },
     {
-        path: "/Modifications",
-        name: "Modifications",
-        component: Modifications,
+        path: "/Top_Board",
+        name: "Top_Board",
+        component: Top_Board,
     },
     {
         path: "/Add_News",

@@ -9,7 +9,7 @@
                     align-items: center;
                 "
             >
-                إضافة خطة أسبوعية
+                الخطط الأسبوعية
                 <v-spacer></v-spacer>
                 <v-btn color="green darken-1" @click="showAddWeeklyPlanDialog">
                     إضافة خطة أسبوعية
@@ -20,13 +20,14 @@
                     cols="4"
                     v-for="(plan, index) in weeklyPlans"
                     :key="index"
-                    ><v-card
+                >
+                    <v-card
                         class="my-2"
                         color="info"
                         style="width: 100%; padding: 20px; text-align: center"
                     >
                         <v-card-title class="mb-5">
-                            الأسبوع {{ index + 1 }}
+                            الخطه الاسبوعيه
                             <v-spacer></v-spacer>
                         </v-card-title>
                         <div
@@ -34,17 +35,33 @@
                                 display: flex;
                                 justify-content: space-between;
                                 align-items: center;
+                                margin-bottom: 24px;
+                                font-size: 22px;
                             "
                         >
-                            <v-btn icon @click="showDetailsDialog(plan)">
-                                <v-icon>mdi-eye</v-icon>
-                            </v-btn>
-                            <v-btn icon @click="deletePlan(plan.id)">
-                                <v-icon>mdi-delete</v-icon>
-                            </v-btn>
+                            <p>{{ year }}</p>
+                            <p>{{ plan.class }}</p>
+                            <p>{{ plan.section }}</p>
                         </div>
-                    </v-card></v-col
-                >
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                font-size: 22px;
+                            "
+                        >
+                            <v-icon
+                                @click="showDetailsDialog(plan)"
+                                class="mr-2"
+                                >mdi-eye</v-icon
+                            >
+                            <v-icon @click="deletePlan(plan.id)"
+                                >mdi-delete</v-icon
+                            >
+                        </div>
+                    </v-card>
+                </v-col>
             </v-row>
         </v-card>
         <v-dialog v-model="showAddWeeklyPlan" max-width="90%">
@@ -61,18 +78,32 @@
                     إضافة خطة أسبوعية جديدة
                     <v-spacer></v-spacer>
                     <v-btn color="green darken-1" @click="addWeeklyPlan">
-                        اضافه
+                        إضافة
                     </v-btn>
                 </v-card-title>
                 <v-card-text>
+                    <v-select
+                        v-model="selectedClass"
+                        :items="classes"
+                        label="اختر الفصل"
+                        @change="loadScheduleForClass"
+                    >
+                    </v-select>
+                    <v-select
+                        v-model="selectedSection"
+                        :items="sections"
+                        label="اختر القسم"
+                        @change="loadScheduleForClass"
+                    >
+                    </v-select>
                     <div class="table">
                         <v-table>
                             <thead>
                                 <tr>
                                     <th>اليوم الدراسي</th>
-                                    <th>الفتره الاولي</th>
-                                    <th>الفتره الثانيه</th>
-                                    <th>الفتره الثالثه</th>
+                                    <th>الفتره الأولى</th>
+                                    <th>الفتره الثانية</th>
+                                    <th>الفتره الثالثة</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -144,15 +175,38 @@
                 </v-card-title>
                 <v-card-text>
                     <div style="padding: 20px">
+                        <div style="text-align: right; font-size: 24px">
+                            <p>
+                                المرحله الدراسيه:
+                                <span
+                                    style="color: rgb(33, 150, 243) !important"
+                                    >{{ year }}</span
+                                >
+                            </p>
+                            <p>
+                                الفصل:
+                                <span
+                                    style="color: rgb(33, 150, 243) !important"
+                                    >{{ selectedPlan.class }}</span
+                                >
+                            </p>
+                            <p>
+                                القسم:
+                                <span
+                                    style="color: rgb(33, 150, 243) !important"
+                                    >{{ selectedPlan.section }}</span
+                                >
+                            </p>
+                        </div>
                         <v-card flat>
                             <div class="table">
                                 <v-table>
                                     <thead>
                                         <tr>
                                             <th>اليوم الدراسي</th>
-                                            <th>الفتره الاولي</th>
-                                            <th>الفتره الثانيه</th>
-                                            <th>الفتره الثالثه</th>
+                                            <th>الفتره الأولى</th>
+                                            <th>الفتره الثانية</th>
+                                            <th>الفتره الثالثة</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -162,9 +216,7 @@
                                             ) in selectedPlan.days"
                                             :key="index"
                                         >
-                                            <td>
-                                                {{ degree.day }}
-                                            </td>
+                                            <td>{{ degree.day }}</td>
                                             <td>
                                                 <v-text-field
                                                     v-model="
@@ -201,9 +253,6 @@
                             </div>
                         </v-card>
                     </div>
-                    <div style="padding: 20px; text-align: right">
-                        <p>آخر تعديل: {{ lastModified }}</p>
-                    </div>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -218,10 +267,6 @@
             </v-card>
         </v-dialog>
     </v-dialog>
-
-    <!-- Dialog for adding weekly plan -->
-
-    <!-- Dialog for details -->
 </template>
 
 <script>
@@ -230,10 +275,11 @@ import {
     doc,
     setDoc,
     getDocs,
-    Timestamp,
+    // Timestamp,
     collection,
     addDoc,
     deleteDoc,
+    getDoc,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { initializeApp } from "@firebase/app";
@@ -254,16 +300,26 @@ const storage = getStorage(app);
 export { db, storage };
 
 export default {
+    props: {
+        year: {
+            type: Number,
+            required: true,
+        },
+    },
     data() {
         return {
-            showDialog2: false,
-            showAddWeeklyPlan: false,
             showDetails6: false,
-            changesMade: false,
-            newPlanName: "",
             selectedPlan: {},
-            weeklyPlans: [], // Store weekly plans here
             lastModified: "",
+            changesMade: false,
+            showAddWeeklyPlan: false,
+            selectedClass: null,
+            selectedSection: null,
+            classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
+            sections: ["عربي", "لغات"],
+            showDialog2: false,
+            newPlanName: "",
+            weeklyPlans: [], // Store weekly plans here
             daysOfWeek: [
                 {
                     day: "السبت",
@@ -322,64 +378,59 @@ export default {
             }
         },
         showAddWeeklyPlanDialog() {
+            this.resetForm(); // Reset the form fields when showing the dialog
             this.showAddWeeklyPlan = true;
         },
         async addWeeklyPlan() {
-            try {
-                const newPlan = {
-                    days: this.daysOfWeek,
-                    createdAt: Timestamp.now(),
-                };
-                const docRef = await addDoc(
-                    collection(db, "weeklyPlan"),
-                    newPlan
-                );
-                this.weeklyPlans.push({
-                    id: docRef.id,
-                    ...newPlan,
-                });
-                // Reset daysOfWeek to default values
-                this.daysOfWeek = [
-                    {
-                        day: "السبت",
-                        minor_degree: "",
-                        major_degree: "",
-                        student_degree: "",
-                    },
-                    {
-                        day: "الأحد",
-                        minor_degree: "",
-                        major_degree: "",
-                        student_degree: "",
-                    },
-                    {
-                        day: "الإثنين",
-                        minor_degree: "",
-                        major_degree: "",
-                        student_degree: "",
-                    },
-                    {
-                        day: "الثلاثاء",
-                        minor_degree: "",
-                        major_degree: "",
-                        student_degree: "",
-                    },
-                    {
-                        day: "الأربعاء",
-                        minor_degree: "",
-                        major_degree: "",
-                        student_degree: "",
-                    },
-                    {
-                        day: "الخميس",
-                        minor_degree: "",
-                        major_degree: "",
-                        student_degree: "",
-                    },
-                ];
-                this.showAddWeeklyPlan = false;
-            } catch (error) {
-                console.error("Error adding weekly plan: ", error);
+            if (this.selectedClass && this.selectedSection) {
+                try {
+                    const existingPlanIndex = this.weeklyPlans.findIndex(
+                        (plan) =>
+                            plan.class === this.selectedClass &&
+                            plan.section === this.selectedSection
+                    );
+
+                    if (existingPlanIndex !== -1) {
+                        // Update existing plan
+                        const docRef = doc(
+                            db,
+                            "weeklyPlan",
+                            this.weeklyPlans[existingPlanIndex].id
+                        );
+                        await setDoc(docRef, {
+                            ...this.weeklyPlans[existingPlanIndex],
+                            days: this.daysOfWeek,
+                            // lastModified: Timestamp.now(),
+                        });
+
+                        this.weeklyPlans[existingPlanIndex] = {
+                            ...this.weeklyPlans[existingPlanIndex],
+                            days: this.daysOfWeek,
+                            // lastModified: new Date().toLocaleString(),
+                        };
+                    } else {
+                        // Add new plan
+                        const newPlan = {
+                            class: this.selectedClass,
+                            section: this.selectedSection,
+                            days: this.daysOfWeek,
+                            educational_level: this.year,
+                            // createdAt: Timestamp.now(),
+                        };
+                        const docRef = await addDoc(
+                            collection(db, "weeklyPlan"),
+                            newPlan
+                        );
+                        this.weeklyPlans.push({
+                            id: docRef.id,
+                            ...newPlan,
+                        });
+                    }
+
+                    this.closeAddWeeklyPlanDialog();
+                } catch (error) {
+                    console.error("Error adding/updating weekly plan: ", error);
+                }
             }
         },
         async deletePlan(id) {
@@ -400,12 +451,12 @@ export default {
             try {
                 const docRef = doc(db, "weeklyPlan", this.selectedPlan.id);
                 await setDoc(docRef, {
-                    days: this.selectedPlan.days,
-                    lastModified: Timestamp.now(), // Update lastModified
+                    ...this.selectedPlan,
+                    // lastModified: Timestamp.now(),
                 });
 
                 this.changesMade = false;
-                this.lastModified = new Date().toLocaleString();
+                // this.lastModified = new Date().toLocaleString();
                 this.showDetails6 = false;
             } catch (error) {
                 console.error("Error updating plan details: ", error);
@@ -419,6 +470,106 @@ export default {
         },
         handleInputChange() {
             this.changesMade = true;
+        },
+        async loadScheduleForClass() {
+            if (!this.selectedClass || !this.selectedSection) return;
+            try {
+                const docRef = doc(
+                    db,
+                    "studySchedule",
+                    `${this.selectedClass.replace("/", "-")}_${
+                        this.selectedSection
+                    }`
+                );
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    this.daysOfWeek = data.schedule || [
+                        {
+                            day: "السبت",
+                            minor_degree: "",
+                            major_degree: "",
+                            student_degree: "",
+                        },
+                        {
+                            day: "الأحد",
+                            minor_degree: "",
+                            major_degree: "",
+                            student_degree: "",
+                        },
+                        {
+                            day: "الإثنين",
+                            minor_degree: "",
+                            major_degree: "",
+                            student_degree: "",
+                        },
+                        {
+                            day: "الثلاثاء",
+                            minor_degree: "",
+                            major_degree: "",
+                            student_degree: "",
+                        },
+                        {
+                            day: "الأربعاء",
+                            minor_degree: "",
+                            major_degree: "",
+                            student_degree: "",
+                        },
+                        {
+                            day: "الخميس",
+                            minor_degree: "",
+                            major_degree: "",
+                            student_degree: "",
+                        },
+                    ];
+                } else {
+                    this.resetForm(); // Reset form if no data is found
+                }
+            } catch (error) {
+                console.error("Error getting document: ", error);
+            }
+        },
+        resetForm() {
+            this.selectedClass = null;
+            this.selectedSection = null;
+            this.daysOfWeek = [
+                {
+                    day: "السبت",
+                    minor_degree: "",
+                    major_degree: "",
+                    student_degree: "",
+                },
+                {
+                    day: "الأحد",
+                    minor_degree: "",
+                    major_degree: "",
+                    student_degree: "",
+                },
+                {
+                    day: "الإثنين",
+                    minor_degree: "",
+                    major_degree: "",
+                    student_degree: "",
+                },
+                {
+                    day: "الثلاثاء",
+                    minor_degree: "",
+                    major_degree: "",
+                    student_degree: "",
+                },
+                {
+                    day: "الأربعاء",
+                    minor_degree: "",
+                    major_degree: "",
+                    student_degree: "",
+                },
+                {
+                    day: "الخميس",
+                    minor_degree: "",
+                    major_degree: "",
+                    student_degree: "",
+                },
+            ];
         },
     },
 };

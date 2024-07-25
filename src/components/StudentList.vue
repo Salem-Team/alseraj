@@ -697,6 +697,19 @@
 
                                                 <v-row>
                                                     <v-col
+                                                        v-if="
+                                                            selectedStudent
+                                                                .Results[0]
+                                                                .weekly
+                                                                .length === 0
+                                                        "
+                                                    >
+                                                        <Empty_error
+                                                            text="لا يوجد نتائج اسبوعيه."
+                                                        />
+                                                    </v-col>
+                                                    <v-col
+                                                        v-else
                                                         cols="4"
                                                         v-for="(
                                                             week, index
@@ -1574,11 +1587,18 @@
                                                                 "
                                                                 label="ادخل المبلغ للدفع"
                                                                 outlined
+                                                                type="number"
                                                                 dense
                                                                 @input="
                                                                     setChangesMade(
                                                                         true
                                                                     )
+                                                                "
+                                                                :max="
+                                                                    maxExpenses
+                                                                "
+                                                                @change="
+                                                                    validatePaidUp
                                                                 "
                                                             ></v-text-field>
                                                         </v-row>
@@ -1880,12 +1900,24 @@
 
                                             <v-row>
                                                 <v-col
+                                                    v-if="
+                                                        selectedStudent
+                                                            .Notifications
+                                                            .length === 0
+                                                    "
+                                                >
+                                                    <Empty_error
+                                                        text="لا يوجد اشعارات"
+                                                    />
+                                                </v-col>
+                                                <v-col
                                                     v-for="(
                                                         note, index
                                                     ) in selectedStudent.Notifications"
                                                     :key="index"
                                                     cols="12"
                                                     md="4"
+                                                    v-else
                                                 >
                                                     <v-alert
                                                         :type="
@@ -2112,12 +2144,23 @@
                                             </div>
                                             <v-row style="gap: 0px">
                                                 <v-col
+                                                    v-if="
+                                                        selectedStudent.photos
+                                                            .length === 0
+                                                    "
+                                                >
+                                                    <Empty_error
+                                                        text="لا يوجد صور"
+                                                    />
+                                                </v-col>
+                                                <v-col
                                                     v-for="(
                                                         photo, index
                                                     ) in selectedStudent.photos"
                                                     :key="index"
                                                     cols="12"
                                                     md="4"
+                                                    v-else
                                                 >
                                                     <v-card
                                                         class="pa-3 mb-3 notification-card"
@@ -2579,6 +2622,7 @@ export default {
                 Student_degree: null,
                 Date: null,
             },
+            maxExpenses: 0,
             years: "",
             AddNotice: {
                 NoticeTitle: "",
@@ -2617,14 +2661,7 @@ export default {
                 errors: {},
                 Results: [
                     {
-                        weekly: [
-                            {
-                                Subject_Name: "",
-                                Major_degree: 0,
-                                Student_degree: 0,
-                                Date: null,
-                            },
-                        ],
+                        weekly: [],
                     },
                     {
                         Monthly: [
@@ -2786,20 +2823,9 @@ export default {
                     paid_Up: 0,
                     Residual: 0,
                 },
-                Notifications: [
-                    {
-                        NoticeTitle: "",
-                        theDescription: "",
-                        NotificationType: "",
-                    },
-                ],
+                Notifications: [],
 
-                photos: [
-                    {
-                        Date: "",
-                        link: "",
-                    },
-                ],
+                photos: [],
             },
             loading1: true, // خاصية لتحميل البيانات
             errors: {
@@ -3246,7 +3272,10 @@ export default {
                 class: "",
                 gender: "",
                 section: "",
-                birthday: "",
+                birthday: "2024/07/19",
+                parent_name: "",
+                national_id: "",
+
                 Guardian: [
                     { Guardian_name: "" },
                     { Guardian_phone: "" },
@@ -3255,16 +3284,10 @@ export default {
                     { Brothers_in_school: "" },
                     { brother: [""] },
                 ],
+                errors: {},
                 Results: [
                     {
-                        weekly: [
-                            {
-                                Subject_Name: "",
-                                Major_degree: 0,
-                                Student_degree: 0,
-                                Date: null,
-                            },
-                        ],
+                        weekly: [],
                     },
                     {
                         Monthly: [
@@ -3426,19 +3449,9 @@ export default {
                     paid_Up: 0,
                     Residual: 0,
                 },
-                Notifications: [
-                    {
-                        NoticeTitle: "",
-                        theDescription: "",
-                        NotificationType: "",
-                    },
-                ],
-                photos: [
-                    {
-                        Date: "",
-                        link: "",
-                    },
-                ],
+                Notifications: [],
+
+                photos: [],
             };
         },
         validateForm() {
@@ -4180,6 +4193,13 @@ export default {
                 });
             } else {
                 console.log("error");
+            }
+        },
+        validatePaidUp() {
+            const expenses = this.selectedStudent.payments.Expenses || 0;
+            this.maxExpenses = expenses;
+            if (this.selectedStudent.payments.paid_Up > expenses) {
+                this.selectedStudent.payments.paid_Up = expenses;
             }
         },
     },

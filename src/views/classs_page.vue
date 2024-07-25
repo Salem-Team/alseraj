@@ -109,7 +109,10 @@
                                     @closeDialog="closeDialog"
                                     :localSubject="subject"
                                 />
-                                <add-study-schedule v-model="showDialog" />
+                                <add-study-schedule
+                                    :year="year"
+                                    v-model="showDialog"
+                                />
                                 <v-row
                                     style="
                                         display: flex;
@@ -189,7 +192,10 @@
                                         >
                                     </v-card>
                                 </v-row>
-                                <weeklyPlan v-model="showDialog2" />
+                                <weeklyPlan
+                                    v-model="showDialog2"
+                                    :year="year"
+                                />
                             </div>
                         </v-card>
                     </v-dialog>
@@ -854,7 +860,7 @@ export default {
     data() {
         return {
             activeButton: "الكل",
-            all_classes: ["1/1", "1/2"],
+            all_classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
             section: ["عربي", "لغات"],
             selectedSection: "الكل",
             dialog_6: false,

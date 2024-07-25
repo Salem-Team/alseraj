@@ -90,7 +90,7 @@
                             </v-breadcrumbs-item>
                             <v-breadcrumbs-divider />
                             <v-breadcrumbs-item
-                                >التقديم على الوظائف</v-breadcrumbs-item
+                                >الوحة الشرف</v-breadcrumbs-item
                             >
                         </v-breadcrumbs>
                     </div>

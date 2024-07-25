@@ -45,7 +45,7 @@ const routes = [
         component: ChildDetails,
     },
     {
-        path: "/Student_Dashboard",
+        path: "/Student_Dashboard/:id",
         name: "Student_Dashboard",
         component: Student_Dashboard,
     },

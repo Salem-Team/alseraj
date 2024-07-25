@@ -83,9 +83,9 @@ export default {
             } else if (newValue === "admin") {
                 this.National_id = "1210987654321";
                 this.password = "123456";
-            } else {
-                this.National_id = "12345665412";
-                this.password = "123456";
+            } else if (newValue === "student") {
+                this.National_id = "123456789";
+                this.password = "123456789";
             }
         },
     },
@@ -161,7 +161,7 @@ export default {
                                 email: "",
                                 name: doc.data().student_name,
                                 userType: "student",
-                                National_id: doc.data().National_id,
+                                National_id: doc.id,
                                 roles: "",
                             };
                         }
@@ -191,7 +191,10 @@ export default {
                     } else if (authenticatedUser.userType === "admin") {
                         this.$router.push({ name: "admin_Dashboard" });
                     } else {
-                        this.$router.push({ name: "Student_Dashboard" });
+                        this.$router.push({
+                            name: "Student_Dashboard",
+                            params: { id: authenticatedUser.id },
+                        });
                     }
                 }
             } else {

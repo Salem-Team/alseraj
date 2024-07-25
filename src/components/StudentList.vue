@@ -2422,6 +2422,14 @@
                                                             v-bind="attrs"
                                                             v-on="on"
                                                         ></v-text-field>
+                                                        <v-text-field
+                                                            v-model="
+                                                                form.password
+                                                            "
+                                                            label="الباسوورد"
+                                                            type="password"
+                                                            required
+                                                        ></v-text-field>
                                                     </template>
                                                     <v-card>
                                                         <v-date-picker
@@ -3077,52 +3085,6 @@ export default {
             this.changesMade2 = false;
         },
 
-        // getAlertType(notificationType) {
-        //     // if (notificationType === "سي") {
-        //     //     return "error";
-        //     // }
-        //     // switch (notificationType) {
-        //     //     case "success":
-        //     //         return "success";
-        //     //     case "error":
-        //     //         return "error";
-        //     //     case "warning":
-        //     //         return "warning";
-        //     //     case "info":
-        //     //         return "info";
-        //     //     default:
-        //     //         return "info";
-        //     // }
-        // },
-        // getIcon(notificationType) {
-        //     switch (notificationType) {
-        //         case "success":
-        //             return "mdi-check-circle";
-        //         case "error":
-        //         case "سي":
-        //             return "mdi-alert-circle";
-        //         case "warning":
-        //             return "mdi-alert";
-        //         case "info":
-        //             return "mdi-information";
-        //         default:
-        //             return "mdi-information";
-        //     }
-        // getIconClass(notificationType) {
-        //     switch (notificationType) {
-        //         case "success":
-        //             return "green";
-        //         case "error":
-        //         case "سي":
-        //             return "red";
-        //         case "warning":
-        //             return "orange";
-        //         case "info":
-        //             return "blue";
-        //         default:
-        //             return "blue";
-        //     }
-        // },
         async fetchStudents() {
             try {
                 const q = query(
@@ -3173,6 +3135,7 @@ export default {
                         year: new Date().getFullYear(),
                         National_id: this.form.parent_national_id, // إضافة National_id هنا
                         state: true,
+                        password: this.form.password, // إضافة الباسوورد هنا
                     });
 
                     const newStudent = {
@@ -3189,6 +3152,7 @@ export default {
                         year: new Date().getFullYear(),
                         National_id: this.form.parent_national_id, // إضافة National_id هنا
                         state: true,
+                        password: this.form.password, // إضافة الباسوورد هنا
                     };
 
                     this.students.push(newStudent);

@@ -21,6 +21,7 @@ import Add_admin from "../views/Add_admin.vue";
 import Add_teacher from "../views/Add_teacher.vue";
 import student_charts from "../views/student_charts.vue";
 import ChildDetails from "../views/ChildDetails.vue";
+// import { query } from "firebase/firestore";
 const routes = [
     {
         path: "/",
@@ -65,7 +66,7 @@ const routes = [
         component: Add_job,
     },
     {
-        path: "/admin_Dashboard",
+        path: "/admin_dashboard",
         name: "admin_Dashboard",
         component: admin_Dashboard,
     },

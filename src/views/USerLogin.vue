@@ -84,8 +84,8 @@ export default {
                 this.National_id = "1210987654321";
                 this.password = "123456";
             } else if (newValue === "student") {
-                this.National_id = "123456789";
-                this.password = "123456789";
+                this.National_id = "111";
+                this.password = "111";
             }
         },
     },
@@ -191,6 +191,7 @@ export default {
                     } else if (authenticatedUser.userType === "admin") {
                         this.$router.push({ name: "admin_Dashboard" });
                     } else {
+                        // تأكد من تمرير المعلمة id بشكل صحيح
                         this.$router.push({
                             name: "Student_Dashboard",
                             params: { id: authenticatedUser.id },

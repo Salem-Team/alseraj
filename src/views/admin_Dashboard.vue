@@ -32,9 +32,11 @@
                     <v-card flat>
                         <v-card-text>
                             <!-- زر لتغيير حالة جميع الطلاب -->
-                            <v-btn @click="toggleAllStudentsVisibility"
-                                >تغيير حالة الطلاب</v-btn
-                            >
+                            <v-switch
+                                v-model="showTests"
+                                label="عرض الاختبارات"
+                                @change="updateVisibilitySetting"
+                            ></v-switch>
                         </v-card-text>
                     </v-card>
                 </v-tab-item>
@@ -56,60 +58,69 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "pinia";
+import { mapState } from "pinia";
 import { useAuthStore } from "../store/userStore";
+import { db } from "@/Firebase.js";
 import {
-    getFirestore,
     collection,
+    doc,
+    getDoc,
     getDocs,
     updateDoc,
-    doc,
 } from "firebase/firestore";
-import { firebaseConfig } from "../Firebase"; // تأكد من تعديل المسار حسب موقع ملف Firebase.js
-
-const db = getFirestore(firebaseConfig);
 
 export default {
     data: () => ({
         tab: "first-tab",
+        showTests: false,
+        // studentId: "حدد_معرف_الطالب_هنا", // قم بتحديد معرف الطالب الذي تريد تعديل حالته
     }),
+    async created() {
+        // تحميل الإعدادات الحالية من قاعدة البيانات
+        const visibilitySnap = await getDoc(
+            doc(db, "admin_settings", "visibility")
+        );
+        if (visibilitySnap.exists()) {
+            const settings = visibilitySnap.data();
+            this.showTests = settings.tests || false;
+        }
+    },
     computed: {
         ...mapState(useAuthStore, ["user"]),
     },
     methods: {
-        ...mapActions(useAuthStore, ["logout"]),
-        Edit() {
-            this.$router.push({ name: "Edit_profile" });
-        },
-        async My_Logout() {
+        async updateVisibilitySetting() {
             try {
-                await this.logout();
-                this.$router.push({ name: "home" });
-            } catch (error) {
-                console.error("حدث خطأ أثناء تسجيل الخروج:", error.message);
-            }
-        },
-        async toggleAllStudentsVisibility() {
-            const studentsCollection = collection(db, "students");
-            const studentsSnapshot = await getDocs(studentsCollection);
-            const studentsData = studentsSnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
+                // جلب جميع وثائق الطلاب
+                const querySnapshot = await getDocs(collection(db, "students"));
 
-            const updatePromises = studentsData.map((student) =>
-                updateDoc(doc(db, "students", student.id), {
-                    state: !student.state,
-                })
-            );
-            await Promise.all(updatePromises);
+                // تحديث حالة `state` لكل وثيقة طالب
+                const promises = querySnapshot.docs.map((doc) => {
+                    return updateDoc(doc.ref, {
+                        state: this.showTests,
+                    });
+                });
+
+                // انتظار جميع التحديثات
+                await Promise.all(promises);
+
+                console.log("تم تحديث حالة عرض الاختبارات لجميع الطلاب");
+            } catch (error) {
+                console.error(
+                    "Error updating visibility settings for all students:",
+                    error
+                );
+            }
         },
     },
 };
 </script>
 
 <style scoped>
-* {
-    direction: rtl;
+.v-card {
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>

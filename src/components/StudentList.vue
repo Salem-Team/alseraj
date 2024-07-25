@@ -2561,6 +2561,8 @@ import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 import Chart from "chart.js/auto";
 import { useDialogStore } from "@/store/useDialogStore";
+import { mapActions } from "pinia";
+import { usenotification } from "../store/notification.js";
 export default {
     name: "StudentList",
     components: {
@@ -2957,6 +2959,7 @@ export default {
         this.years = new Date().getFullYear();
     },
     methods: {
+        ...mapActions(usenotification, ["send_Notification"]),
         totalDegrees(student) {
             const degrees = student.Results[1].Monthly[0].Degrees; // Assuming the first month is the desired one
             let total = 0;
@@ -3848,6 +3851,10 @@ export default {
                         theDescription: this.AddNotice.theDescription,
                         NotificationType: this.AddNotice.NotificationType,
                     };
+                    this.send_Notification(
+                        this.AddNotice.NoticeTitle,
+                        this.AddNotice.theDescription
+                    );
                     // إعداد نص الرسالة وتفعيل Snackbar
                     this.confirmationText = "تم  اضافه الاشعار بنجاح";
                     this.showSnackbar = true;

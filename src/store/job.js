@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore, mapActions } from "pinia";
 import {
     collection,
     addDoc,
@@ -38,7 +38,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
-
+import { usenotification } from "../store/notification.js";
 // Define Pinia store
 export const useJobs = defineStore("job", {
     state: () => ({
@@ -97,7 +97,7 @@ export const useJobs = defineStore("job", {
     }),
     actions: {
         // Action methods
-
+        ...mapActions(usenotification, ["send_Notification"]),
         // Upload CV file to Firebase Storage
         async upload_CV(file) {
             this.random = Math.random();
@@ -196,6 +196,10 @@ export const useJobs = defineStore("job", {
                         this.Apply.name +
                         " بالتقديم على وظيفة " +
                         this.Title_Information;
+                    this.send_Notification(
+                        "اشعار تقديم على الوظيفة",
+                        this.text
+                    );
                     const Data = {
                         text: secrureDataStore.encryptData(this.text, "12343a"),
                         time: currentTime,

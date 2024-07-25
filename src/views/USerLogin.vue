@@ -83,6 +83,9 @@ export default {
             } else if (newValue === "admin") {
                 this.National_id = "1210987654321";
                 this.password = "123456";
+            } else if (newValue === "student") {
+                this.National_id = "123456789";
+                this.password = "123456789";
             }
         },
     },

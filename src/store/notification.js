@@ -58,7 +58,7 @@ export const usenotification = defineStore("notification_vue", {
             }
         },
         */
-        async send_Notification() {
+        async send_Notification(title, text) {
             try {
                 // Check if the browser supports notifications and permission is not denied
                 if (
@@ -68,8 +68,8 @@ export const usenotification = defineStore("notification_vue", {
                     const permission = await Notification.requestPermission();
                     if (permission === "granted") {
                         // Notification permission is granted, create a notification
-                        this.notification = new Notification("Title", {
-                            body: "I am the body text!",
+                        this.notification = new Notification(title, {
+                            body: text,
                             icon: "/path/to/icon.png", // Optional icon path
                         });
 

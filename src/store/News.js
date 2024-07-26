@@ -290,9 +290,13 @@ export const useNews = defineStore("News", {
             if (file) {
                 // Convert file to a URL that can be used as an image source
                 this.image = URL.createObjectURL(file);
+                console.log(this.image);
                 // Step 1: Upload the image and get the download URL
-                const imageUrl = await this.upload_Image(this.New.image);
+                const imageUrl = await this.upload_Image(
+                    this.Image_Information
+                );
                 this.Image_Information = imageUrl;
+                return imageUrl;
             } else {
                 this.image = null;
             }

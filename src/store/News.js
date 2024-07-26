@@ -292,7 +292,10 @@ export const useNews = defineStore("News", {
                 this.image = URL.createObjectURL(file);
                 console.log(this.image);
                 // Step 1: Upload the image and get the download URL
-                const imageUrl = await this.upload_Image(this.image);
+                const imageUrl = await this.upload_Image(
+                    this.Image_Information
+                );
+                this.Image_Information = imageUrl;
                 return imageUrl;
             } else {
                 this.image = null;
@@ -304,7 +307,6 @@ export const useNews = defineStore("News", {
                 this.loading = true;
                 const currentTime = Timestamp.now();
                 const secrureDataStore = useSecureDataStore();
-                this.Image_Information = this.image;
                 const docRef = doc(db, "News", NewId);
                 // Update the document in Firestore
                 await updateDoc(docRef, {

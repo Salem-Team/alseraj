@@ -235,7 +235,7 @@
                                             "
                                             :loading="loading"
                                             :disabled="loading"
-                                            @click="photos.Add_Photos"
+                                            @click="subMutPhoto()"
                                         >
                                             إضافة صورة
                                         </v-btn>
@@ -794,6 +794,8 @@
 import { storeToRefs } from "pinia";
 import { defineComponent } from "vue";
 import { usePhoto_Gallery } from "@/store/Photo_Gallery.js";
+import axios from "axios";
+
 export default defineComponent({
     setup() {
         const photos = usePhoto_Gallery();

@@ -178,434 +178,227 @@
                             color: #fff;
                         "
                     >
-                        <stop offset="0" stop-color="#336699"></stop>
-                        <stop
-                            offset=".3"
-                            stop-color="#336699"
-                            stop-opacity=".9"
-                        ></stop>
-                        <stop
-                            offset=".6"
-                            stop-color="#336699"
-                            stop-opacity=".6"
-                        ></stop>
-                        <stop
-                            offset=".8"
-                            stop-color="#336699"
-                            stop-opacity=".3"
-                        ></stop>
-                        <stop
-                            offset="1"
-                            stop-color="#336699"
-                            stop-opacity="0"
-                        ></stop>
-                    </radialGradient>
-                    <circle
-                        transform-origin="center"
-                        fill="none"
-                        stroke="url(#a12)"
-                        stroke-width="15"
-                        stroke-linecap="round"
-                        stroke-dasharray="200 1000"
-                        stroke-dashoffset="0"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                    >
-                        <animateTransform
-                            type="rotate"
-                            attributeName="transform"
-                            calcMode="spline"
-                            dur="2"
-                            values="360;0"
-                            keyTimes="0;1"
-                            keySplines="0 0 1 1"
-                            repeatCount="indefinite"
-                        ></animateTransform>
-                    </circle>
-                    <circle
-                        transform-origin="center"
-                        fill="none"
-                        opacity=".2"
-                        stroke="#336699"
-                        stroke-width="15"
-                        stroke-linecap="round"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                    ></circle>
-                </svg>
-                <div class="right">
-                    <div>
-                        <v-breadcrumbs>
-                            <v-breadcrumbs-item
-                                @click="$router.push('/admin')"
-                                link
-                            >
-                                الإشراف
-                            </v-breadcrumbs-item>
-                            <v-breadcrumbs-divider />
-                            <v-breadcrumbs-item>
-                                إدارة المدرسين
-                            </v-breadcrumbs-item>
-                        </v-breadcrumbs>
+                        إضافة
+                    </v-btn>
+                </form>
+            </v-card></v-dialog
+        >
+
+        <v-dialog v-model="teacher.dialog_1" width="90%">
+            <v-card width="100%" class="popup">
+                <div class="d-flex justify-space-between align-center title">
+                    <div style="color: var(--main-color)">
+                        تعديل بينات المشرف
                     </div>
-                    <div class="left">
-                        <img
-                            src="../assets/add_admin/followers.png"
-                            alt=""
-                            @click="teacher.dialog = true"
-                            class="pluse"
-                        />
-                    </div>
+                    <v-btn
+                        icon="mdi-close"
+                        @click="teacher.dialog_1 = false"
+                    ></v-btn>
                 </div>
-                <v-dialog v-model="teacher.dialog" width="90%">
+                <form ref="form" @submit.prevent class="ma-auto">
+                    <v-text-field
+                        v-model="teacher.name_Information"
+                        type="text"
+                        label=" الاسم"
+                        :rules="[(v) => !!v || 'الاسم مطلوب']"
+                        variant="outlined"
+                        required
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="teacher.email_Information"
+                        type="email"
+                        label="بريد الكتروني"
+                        variant="outlined"
+                        :rules="[
+                            (v) => !!v || 'البريد الإلكتروني مطلوب',
+                            (v) =>
+                                /.+@.+\..+/.test(v) ||
+                                'البريد الإلكتروني غير صالح',
+                        ]"
+                        required
+                    ></v-text-field>
+                    <v-select
+                        style="width: 100%"
+                        v-model="teacher.roles_Information"
+                        :items="teacher.role"
+                        :rules="[
+                            (v) => (!!v && v.length > 0) || 'أختر نوع الصلاحية',
+                        ]"
+                        label="أختر نوع الصلاحية"
+                        variant="outlined"
+                        multiple
+                        required
+                    ></v-select>
+                    <v-btn
+                        type="submit"
+                        :loading="loading"
+                        :disabled="loading"
+                        @click="teacher.Update_teacher(teacher.Id_Information)"
+                        class="d-flex align-center mt-4"
+                        style="
+                            width: 100%;
+                            padding: 20px;
+                            letter-spacing: normal;
+                            font-weight: bold;
+                            font-size: 19px;
+                            background: var(--main-color);
+                            color: #fff;
+                        "
+                    >
+                        تعديل
+                    </v-btn>
+                </form>
+            </v-card></v-dialog
+        >
+        <v-container
+            class="box d-flex align-center justify-space-around"
+            width="90%"
+            v-if="!loading1"
+        >
+            <div class="feat" v-for="user in users" :key="user.id">
+                <v-dialog v-model="dialog_3" width="90%">
                     <v-card width="100%" class="popup">
                         <div
                             class="d-flex justify-space-between align-center title"
                         >
                             <div style="color: var(--main-color)">
-                                إضافة مشرف
+                                تأكيد الحذف!
                             </div>
                             <v-btn
                                 icon="mdi-close"
-                                @click="teacher.dialog = false"
+                                @click="dialog_3 = false"
                             ></v-btn>
                         </div>
-                        <form ref="form" @submit.prevent class="ma-auto">
-                            <v-text-field
-                                v-model="user.name"
-                                :rules="[(v) => !!v || 'الاسم مطلوب']"
-                                type="text"
-                                label="الاسم"
-                                variant="outlined"
-                                required
-                            ></v-text-field>
 
-                            <v-text-field
-                                v-model="user.email"
-                                :rules="[
-                                    (v) => !!v || 'البريد الإلكتروني مطلوب',
-                                    (v) =>
-                                        /.+@.+\..+/.test(v) ||
-                                        'البريد الإلكتروني غير صالح',
-                                ]"
-                                type="email"
-                                label="بريد الكتروني"
-                                variant="outlined"
-                                required
-                            ></v-text-field>
-
-                            <v-select
-                                style="width: 100%"
-                                v-model="user.roles"
-                                :items="teacher.role"
-                                :rules="[
-                                    (v) =>
-                                        (!!v && v.length > 0) ||
-                                        'أختر نوع الصلاحية',
-                                ]"
-                                label="أختر نوع الصلاحية"
-                                variant="outlined"
-                                multiple
-                                required
-                            ></v-select>
-
-                            <v-text-field
-                                v-model="user.password"
-                                :rules="[
-                                    (v) => !!v || 'كلمة المرور مطلوبة',
-                                    (v) =>
-                                        (v && v.length >= 6) ||
-                                        'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
-                                ]"
-                                :type="
-                                    teacher.show_Password ? 'text' : 'password'
-                                "
-                                label="كلمة مرور"
-                                variant="outlined"
-                                required
-                                :append-inner-icon="
-                                    teacher.show_Password
-                                        ? 'mdi-eye'
-                                        : 'mdi-eye-off'
-                                "
-                                @click:append-inner="
-                                    teacher.toggle_Show_Password
-                                "
-                            ></v-text-field>
-                            <v-btn
-                                class="d-flex align-center mt-4"
-                                type="submit"
-                                :loading="loading"
-                                :disabled="loading"
-                                @click="teacher.add_teacher"
-                                style="
-                                    width: 100%;
-                                    padding: 20px;
-                                    letter-spacing: normal;
-                                    font-weight: bold;
-                                    font-size: 19px;
-                                    background: var(--main-color);
-                                    color: #fff;
-                                "
-                            >
-                                إضافة
-                            </v-btn>
-                        </form>
-                    </v-card></v-dialog
-                >
-
-                <v-dialog v-model="teacher.dialog_1" width="90%">
-                    <v-card width="100%" class="popup">
-                        <div
-                            class="d-flex justify-space-between align-center title"
+                        <p
+                            style="
+                                padding: 20px;
+                                color: var(--therd-color);
+                                font-weight: bold;
+                            "
                         >
-                            <div style="color: var(--main-color)">
-                                تعديل بينات المشرف
-                            </div>
-                            <v-btn
-                                icon="mdi-close"
-                                @click="teacher.dialog_1 = false"
-                            ></v-btn>
-                        </div>
-                        <form ref="form" @submit.prevent class="ma-auto">
-                            <v-text-field
-                                v-model="teacher.name_Information"
-                                type="text"
-                                label=" الاسم"
-                                :rules="[(v) => !!v || 'الاسم مطلوب']"
-                                variant="outlined"
-                                required
-                            ></v-text-field>
-                            <v-text-field
-                                v-model="teacher.email_Information"
-                                type="email"
-                                label="بريد الكتروني"
-                                variant="outlined"
-                                :rules="[
-                                    (v) => !!v || 'البريد الإلكتروني مطلوب',
-                                    (v) =>
-                                        /.+@.+\..+/.test(v) ||
-                                        'البريد الإلكتروني غير صالح',
-                                ]"
-                                required
-                            ></v-text-field>
-                            <v-select
-                                style="width: 100%"
-                                v-model="teacher.roles_Information"
-                                :items="teacher.role"
-                                :rules="[
-                                    (v) =>
-                                        (!!v && v.length > 0) ||
-                                        'أختر نوع الصلاحية',
-                                ]"
-                                label="أختر نوع الصلاحية"
-                                variant="outlined"
-                                multiple
-                                required
-                            ></v-select>
-                            <v-btn
-                                type="submit"
-                                :loading="loading"
-                                :disabled="loading"
-                                @click="
-                                    teacher.Update_teacher(
-                                        teacher.Id_Information
-                                    )
-                                "
-                                class="d-flex align-center mt-4"
-                                style="
-                                    width: 100%;
-                                    padding: 20px;
-                                    letter-spacing: normal;
-                                    font-weight: bold;
-                                    font-size: 19px;
-                                    background: var(--main-color);
-                                    color: #fff;
-                                "
-                            >
-                                تعديل
-                            </v-btn>
-                        </form>
-                    </v-card></v-dialog
-                >
-                <Empty_error v-if="empty === true" :text="text0" />
-                <v-container
-                    class="box d-flex align-center justify-space-around"
-                    width="90%"
-                    v-if="(!loading1, empty === false)"
-                >
-                    <div class="feat" v-for="user in users" :key="user.id">
-                        <v-dialog v-model="dialog_3" width="90%">
-                            <v-card width="100%" class="popup">
-                                <div
-                                    class="d-flex justify-space-between align-center title"
-                                >
-                                    <div style="color: var(--main-color)">
-                                        تأكيد الحذف!
-                                    </div>
-                                    <v-btn
-                                        icon="mdi-close"
-                                        @click="dialog_3 = false"
-                                    ></v-btn>
-                                </div>
-
-                                <p
+                            هل أنت متأكد من حذفك لهذا المشرف؟
+                        </p>
+                        <v-card-text>
+                            <div class="d-flex align-center">
+                                <v-btn
+                                    type="submit"
+                                    color="var(--main-color)"
+                                    :loading="loading"
+                                    :disabled="loading"
+                                    @click="dialog_3 = false"
                                     style="
-                                        padding: 20px;
-                                        color: var(--therd-color);
+                                        color: #fff;
                                         font-weight: bold;
+                                        width: 48%;
+                                        height: 45px;
                                     "
                                 >
-                                    هل أنت متأكد من حذفك لهذا المشرف؟
-                                </p>
-                                <v-card-text>
-                                    <div class="d-flex align-center">
-                                        <v-btn
-                                            type="submit"
-                                            color="var(--main-color)"
-                                            :loading="loading"
-                                            :disabled="loading"
-                                            @click="dialog_3 = false"
-                                            style="
-                                                color: #fff;
-                                                font-weight: bold;
-                                                width: 48%;
-                                                height: 45px;
-                                            "
-                                        >
-                                            إلغاء
-                                        </v-btn>
-                                        <v-spacer />
-                                        <v-btn
-                                            type="submit"
-                                            color="var(--pink-color)"
-                                            :loading="loading"
-                                            :disabled="loading"
-                                            @click="
-                                                teacher.delete_user(
-                                                    teacher.Id_Information
-                                                )
-                                            "
-                                            style="
-                                                color: #fff;
-                                                font-weight: bold;
-                                                width: 48%;
-                                                height: 45px;
-                                            "
-                                        >
-                                            تأكيد
-                                        </v-btn>
-                                    </div>
-                                </v-card-text>
-                            </v-card></v-dialog
-                        >
-                        <div>
-                            <div class="head">
-                                <div>
-                                    <div class="name">{{ user.name }}</div>
-                                </div>
-                                <div>
-                                    <font-awesome-icon
-                                        :icon="['fas', 'user-pen']"
-                                        @click="teacher.user_Information(user)"
-                                        @click.="dialog_1 = true"
-                                    />
-                                    <font-awesome-icon
-                                        :icon="['fas', 'trash']"
-                                        @click="teacher.user_Information(user)"
-                                        @click.="dialog_3 = true"
-                                    />
-                                </div>
-                            </div>
-                            <div class="body">
-                                <div>الصلاحيات</div>
-                                <ul v-for="index in user.roles" :key="index">
-                                    <li>{{ index }}</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="footer">
-                            <v-dialog max-width="500">
-                                <template
-                                    v-slot:activator="{ props: activatorProps }"
+                                    إلغاء
+                                </v-btn>
+                                <v-spacer />
+                                <v-btn
+                                    type="submit"
+                                    color="var(--pink-color)"
+                                    :loading="loading"
+                                    :disabled="loading"
+                                    @click="
+                                        teacher.delete_user(
+                                            teacher.Id_Information
+                                        )
+                                    "
+                                    style="
+                                        color: #fff;
+                                        font-weight: bold;
+                                        width: 48%;
+                                        height: 45px;
+                                    "
                                 >
-                                    <div
-                                        class="show_password"
-                                        v-bind="activatorProps"
-                                    >
-                                        <font-awesome-icon
-                                            :icon="['fas', 'lock-open']"
-                                        />
-                                        <div>عرض كلمة المرور</div>
-                                    </div>
-                                </template>
-
-                                <template v-slot:default="{ isActive }">
-                                    <v-card>
-                                        <div class="head">
-                                            <div>كلمة مرور</div>
-                                            <font-awesome-icon
-                                                :icon="['fas', 'xmark']"
-                                                @click="isActive.value = false"
-                                            />
-                                        </div>
-                                        <div class="body">
-                                            <div id="password">
-                                                {{ user.password }}
-                                            </div>
-                                            <div>
-                                                <div>
-                                                    <font-awesome-icon
-                                                        :icon="['fas', 'copy']"
-                                                        @click="
-                                                            Snackbar_Function
-                                                        "
-                                                        @click.prevent="
-                                                            isActive.value = false
-                                                        "
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </v-card>
-                                </template>
-                            </v-dialog>
+                                    تأكيد
+                                </v-btn>
+                            </div>
+                        </v-card-text>
+                    </v-card></v-dialog
+                >
+                <div>
+                    <div class="head">
+                        <div>
+                            <div class="name">{{ user.name }}</div>
+                        </div>
+                        <div>
+                            <font-awesome-icon
+                                :icon="['fas', 'user-pen']"
+                                @click="teacher.user_Information(user)"
+                                @click.="dialog_1 = true"
+                            />
+                            <font-awesome-icon
+                                :icon="['fas', 'trash']"
+                                @click="teacher.user_Information(user)"
+                                @click.="dialog_3 = true"
+                            />
                         </div>
                     </div>
-                </v-container>
-            </template>
-        </Offline_error>
+                    <div class="body">
+                        <div>الصلاحيات</div>
+                        <ul v-for="index in user.roles" :key="index">
+                            <li>{{ index }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer">
+                    <v-dialog max-width="500">
+                        <template v-slot:activator="{ props: activatorProps }">
+                            <div class="show_password" v-bind="activatorProps">
+                                <font-awesome-icon
+                                    :icon="['fas', 'lock-open']"
+                                />
+                                <div>عرض كلمة المرور</div>
+                            </div>
+                        </template>
+
+                        <template v-slot:default="{ isActive }">
+                            <v-card>
+                                <div class="head">
+                                    <div>كلمة مرور</div>
+                                    <font-awesome-icon
+                                        :icon="['fas', 'xmark']"
+                                        @click="isActive.value = false"
+                                    />
+                                </div>
+                                <div class="body">
+                                    <div id="password">{{ user.password }}</div>
+                                    <div>
+                                        <div>
+                                            <font-awesome-icon
+                                                :icon="['fas', 'copy']"
+                                                @click="Snackbar_Function"
+                                                @click.prevent="
+                                                    isActive.value = false
+                                                "
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </v-card>
+                        </template>
+                    </v-dialog>
+                </div>
+            </div>
+        </v-container>
     </div>
-    <v-snackbar v-model="snackbar1" timeout="3000">
+    <v-snackbar v-model="snackbar">
         {{ text }}
 
         <template v-slot:actions>
             <v-btn
                 color="var(--main-color)"
                 variant="text"
-                @click="snackbar1 = false"
+                @click="snackbar = false"
             >
                 إغلاق
             </v-btn>
         </template>
     </v-snackbar>
-    <confirm_message
-        v-if="snackbar === true"
-        :text="text10"
-        :snackbar1="snackbar"
-    />
-    <confirm_message
-        v-if="snackbar2 === true"
-        :text="text11"
-        :snackbar1="snackbar2"
-    />
-    <confirm_message
-        v-if="snackbar3 === true"
-        :text="text12"
-        :snackbar1="snackbar3"
-    />
 </template>
 
 <script scoped>
@@ -616,12 +409,6 @@ import { useStepStudy } from "@/store/useStepStudy.js";
 import { ref, computed, onMounted } from "vue";
 
 export default {
-    inject: ["Emitter"],
-    components: {
-        confirm_message,
-        Empty_error,
-        Offline_error,
-    },
     setup() {
         const teacher = useteacher();
         const stepStudy = useStepStudy();
@@ -659,14 +446,6 @@ export default {
             role,
             show_Password,
             dialog_1,
-            text10,
-            text11,
-            text12,
-            snackbar3,
-            snackbar,
-            snackbar2,
-            empty,
-            text0,
             loading1,
             loading,
             Update_teacher,
@@ -688,14 +467,6 @@ export default {
             loading,
             loading1,
             dialog_3,
-            text10,
-            text11,
-            text12,
-            snackbar3,
-            snackbar,
-            snackbar2,
-            empty,
-            text0,
             generate_Random_Password,
             user,
             toggle_Show_Password,
@@ -714,7 +485,7 @@ export default {
     },
 
     data: () => ({
-        snackbar1: false,
+        snackbar: false,
         text: `تم نسخ كلمة المرور`,
         stage: [],
     }),
@@ -740,7 +511,7 @@ export default {
                 .writeText(password)
                 .then(() => {
                     console.log("تم نسخ كلمة المرور بنجاح!");
-                    this.snackbar1 = true;
+                    this.snackbar = true;
                 })
                 .catch((err) => {
                     console.error("فشل في نسخ كلمة المرور: ", err);

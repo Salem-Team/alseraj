@@ -121,6 +121,13 @@ body {
         }
     }
 }
+body.pwa .main_header {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 11;
+    left: 0;
+}
 .v-overlay__scrim {
     background: rgb(0 0 0 / 36%) !important;
 }

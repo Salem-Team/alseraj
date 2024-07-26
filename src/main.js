@@ -2,48 +2,49 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import "vuetify/styles";
-import Toast from "vue-toastification";
-import "vue-toastification/dist/index.css";
-import VTooltip from "v-tooltip";
-import { ref } from "vue";
 import { createPinia } from "pinia";
-// Initialize Pinia
-const pinia = createPinia();
-
-// Vuetify
-import "vuetify/styles";
 import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
+import "vuetify/styles";
 import "@mdi/font/css/materialdesignicons.css";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faCoffee } from "@fortawesome/free-solid-svg-icons";
-
-library.add(faCoffee);
-
-// تسجيل مكون FontAwesomeIcon
 import { fas } from "@fortawesome/free-solid-svg-icons";
-library.add(fas);
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+import VTooltip from "v-tooltip";
+import mitt from "mitt";
+import Cookies from "vue-cookies"; // Import Cookies
 
+// Initialize Pinia
+const pinia = createPinia();
+
+// Add FontAwesome icons
+library.add(faCoffee, fas);
+
+// Create Vuetify instance
 const vuetify = createVuetify({
     components,
     directives,
 });
-// Emitter configuration
-import mitt from "mitt";
+
+// Create an event emitter
 const Emitter = mitt();
 
-const app = createApp(App)
-    .use(ref)
-    .use(pinia)
+// Create Vue app
+const app = createApp(App);
+
+// Configure the app with plugins and provide necessary instances
+app.use(pinia)
     .use(store)
     .use(vuetify)
+    .use(Cookies) // Add Cookies plugin
     .use(router)
     .use(VTooltip)
-    .provide("Emitter", Emitter)
     .use(Toast, { position: "top-right", timeout: 3000 })
+    .provide("Emitter", Emitter)
     .component("font-awesome-icon", FontAwesomeIcon);
 
 // Detect if the app is running as PWA

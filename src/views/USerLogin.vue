@@ -73,7 +73,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(useAuthStore, ["loading", "error"]),
+        ...mapState(useAuthStore, ["loading", "error", "user_data"]),
     },
     watch: {
         userType(newValue) {
@@ -84,13 +84,13 @@ export default {
                 this.National_id = "1210987654321";
                 this.password = "123456";
             } else if (newValue === "student") {
-                this.National_id = "123456789";
-                this.password = "123456789";
+                this.National_id = "111";
+                this.password = "111";
             }
         },
     },
     methods: {
-        ...mapActions(useAuthStore, ["login"]),
+        ...mapActions(useAuthStore, ["login", "get_Cookies"]),
         async Check_User() {
             const decryption = useSecureDataStore();
             let authenticatedUser = null;
@@ -184,13 +184,14 @@ export default {
                     authenticatedUser.roles,
                     authenticatedUser.name
                 );
-
+                await this.get_Cookies();
                 if (!this.error) {
                     if (authenticatedUser.userType === "parent") {
                         this.$router.push({ name: "Parent_Dashboard" });
                     } else if (authenticatedUser.userType === "admin") {
                         this.$router.push({ name: "admin_Dashboard" });
                     } else {
+                        // تأكد من تمرير المعلمة id بشكل صحيح
                         this.$router.push({
                             name: "Student_Dashboard",
                             params: { id: authenticatedUser.id },

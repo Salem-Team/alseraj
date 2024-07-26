@@ -1,10 +1,47 @@
+// const express = require("express");
+// const multer = require("multer");
+// const uuiv4 = require("uuid").v4;
+// const path = require("path");
+// const app = express();
+// const multerStorage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, "./uploads");
+//     },
+//     filename: function (req, file, cb) {
+//         const ext = file.mimetype.split("/")[1];
+//         cb(
+//             null,
+//             `category-${uuiv4().split("-").join("")}-${Date.now()}.${ext}`
+//         );
+//     },
+// });
+// function multerFilter(req, file, cb) {
+//     const fileType = file.mimetype.split("/")[0];
+//     if (fileType.startsWith("image") || fileType.startsWith("video")) {
+//         cb(null, true);
+//     } else {
+//         cb(new Error("Only Images allowed !!", 400), false);
+//     }
+// }
+// const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+// app.use(express.json());
+// app.use(express.static(path.join(__dirname, "uploads")));
+// app.post("/upload", upload.single("image"), (req, res) => {
+//     res.status(200).json({
+//         message: `http://localhost:3000/${req.file.filename}`,
+//     });
+// });
+// app.listen(3000, () => console.log("Server is running on port 3000"));
 const express = require("express");
 const path = require("path");
+<<<<<<< HEAD
 const cors = require("cors");
 const multer = require("multer");
 const { v2: cloudinary } = require("cloudinary");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 require("dotenv").config(); // تحميل متغيرات البيئة
+=======
+>>>>>>> e4f99dc33f2c75570682b3485d72e895deccec57
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -56,6 +93,7 @@ function multerFilter(req, file, cb) {
 
 const upload = multer({ storage: storage, fileFilter: multerFilter });
 
+<<<<<<< HEAD
 const corsOptions = {
   origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
@@ -64,8 +102,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+=======
+>>>>>>> e4f99dc33f2c75570682b3485d72e895deccec57
 app.use(express.json());
 
+<<<<<<< HEAD
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
@@ -87,3 +128,19 @@ app.post("/upload", upload.single("file"), (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+=======
+app.post("/upload", upload.single("file"), (req, res) => {
+    if (req.fileValidationError) {
+        return res.status(400).json({ message: req.fileValidationError });
+    }
+    if (!req.file) {
+        return res.status(400).json({ message: "Please upload a file" });
+    }
+    res.status(200).json({
+        message: `http://localhost:3000/${req.file.filename}`,
+    });
+    console.log({ message: `http://localhost:3000/${req.file.filename}` });
+});
+
+app.listen(3000, () => console.log("Server is running on port 3000"));
+>>>>>>> e4f99dc33f2c75570682b3485d72e895deccec57

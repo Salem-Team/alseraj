@@ -5,17 +5,25 @@
                 <router-link class="a" to="/">الرئيسية</router-link>
             </div>
             <div>
-                <router-link class="a" to="/admin">لوحة الاشراف</router-link>
+                <router-link
+                    class="a"
+                    to="/admin"
+                    v-if="user.userType === 'admin'"
+                    >لوحة الاشراف</router-link
+                >
             </div>
-            <div v-if="user">
-                <router-link class="a" to="/Parent_Dashboard"
+            <div>
+                <router-link
+                    class="a"
+                    to="/Parent_Dashboard"
+                    v-if="user.userType === 'parent'"
                     >الملف الشخصي</router-link
                 >
             </div>
             <div>
                 <router-link
                     class="a"
-                    v-if="user"
+                    v-if="user.National_id !== '' || user.id !== ''"
                     @click="logout"
                     to="/UserLogin"
                     >تسجيل خروج</router-link
@@ -34,6 +42,14 @@ import { useAuthStore } from "./store/userStore";
 import { mapActions, mapState } from "pinia";
 
 export default {
+    setup() {
+        const authStore = useAuthStore();
+        authStore.get_Cookies();
+        return {
+            ...mapActions(useAuthStore, ["get_Cookies"]),
+        };
+    },
+
     computed: {
         ...mapState(useAuthStore, ["user"]),
     },
@@ -73,7 +89,7 @@ body {
     nav {
         display: flex;
         align-items: center;
-        gap: 30px;
+        gap: 20px;
         flex-flow: wrap;
         .container {
             display: flex;

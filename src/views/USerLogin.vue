@@ -11,9 +11,9 @@
                         required
                     ></v-select>
                     <v-text-field
-                        v-model="email"
-                        label="Email"
-                        type="email"
+                        v-model="National_id"
+                        label="National_id"
+                        type="text"
                         required
                     ></v-text-field>
                     <v-text-field
@@ -43,40 +43,166 @@
 <script>
 import { mapState, mapActions } from "pinia";
 import { useAuthStore } from "../store/userStore";
-
+import { initializeApp } from "@firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getDocs, collection } from "@firebase/firestore";
+//import { useSecureDataStore } from "./secureData";
+const firebaseConfig = {
+    // Firebase configuration object
+    apiKey: "AIzaSyBdk3sqIHjXvB2C-O-lvkRgMFpg8pemkno",
+    authDomain: "alseraj--almoner.firebaseapp.com",
+    projectId: "alseraj--almoner",
+    storageBucket: "alseraj--almoner.appspot.com",
+    messagingSenderId: "462211256149",
+    appId: "1:462211256149:web:a03ace3c70b306620169dc",
+};
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+import { useSecureDataStore } from "@/store/secureData.js";
 export default {
     data() {
         return {
-            email: "",
+            National_id: "",
             password: "",
             userType: "",
-            userTypes: ["parent", "admin"],
+            id: "",
+            roles: [],
+            userTypes: ["parent", "admin", "student"],
+            user: [],
         };
     },
     computed: {
-        ...mapState(useAuthStore, ["loading", "error"]),
+        ...mapState(useAuthStore, ["loading", "error", "user_data"]),
     },
     watch: {
         userType(newValue) {
             if (newValue === "parent") {
-                this.email = "parent@gmail.com";
+                this.National_id = "1234567891011";
                 this.password = "123456";
             } else if (newValue === "admin") {
-                this.email = "admin@gmail.com";
+                this.National_id = "1210987654321";
                 this.password = "123456";
+            } else if (newValue === "student") {
+                this.National_id = "111";
+                this.password = "111";
             }
         },
     },
     methods: {
-        ...mapActions(useAuthStore, ["login"]),
-        async handleLogin() {
-            await this.login(this.email, this.password, this.userType);
-            if (!this.error) {
+        ...mapActions(useAuthStore, ["login", "get_Cookies"]),
+        async Check_User() {
+            const decryption = useSecureDataStore();
+            let authenticatedUser = null;
+            try {
                 if (this.userType === "parent") {
-                    this.$router.push({ name: "Parent_Dashboard" });
-                } else if (this.userType === "admin") {
-                    this.$router.push({ name: "admin_Dashboard" });
+                    const querySnapshot = await getDocs(
+                        collection(db, "parents")
+                    );
+                    querySnapshot.forEach((doc) => {
+                        if (
+                            doc.id === this.National_id &&
+                            doc.data().password === this.password
+                        ) {
+                            authenticatedUser = {
+                                id: doc.id,
+                                National_id: doc.data().National_id,
+                                name: doc.data().name,
+                                userType: "parent",
+                                email: "",
+                                roles: "",
+                            };
+                        }
+                    });
+                    return authenticatedUser;
                 }
+                if (this.userType === "admin") {
+                    const querySnapshot = await getDocs(
+                        collection(db, "users")
+                    );
+                    querySnapshot.forEach((doc) => {
+                        const decryptedNational_id = decryption.decryptData(
+                            doc.data().National_id,
+                            "12345a"
+                        );
+                        if (
+                            decryptedNational_id === this.National_id &&
+                            doc.data().password === this.password
+                        ) {
+                            authenticatedUser = {
+                                id: doc.id,
+                                email: decryption.decryptData(
+                                    doc.data().email,
+                                    "12345a"
+                                ),
+                                name: decryption.decryptData(
+                                    doc.data().name,
+                                    "12345a"
+                                ),
+                                userType: doc.data().userType,
+                                National_id: decryptedNational_id,
+                                roles: doc.data().roles,
+                            };
+                        }
+                    });
+                    return authenticatedUser;
+                }
+                if (this.userType === "student") {
+                    const querySnapshot = await getDocs(
+                        collection(db, "students")
+                    );
+                    querySnapshot.forEach((doc) => {
+                        if (
+                            doc.id === this.National_id &&
+                            doc.data().password === this.password
+                        ) {
+                            authenticatedUser = {
+                                id: doc.id,
+                                email: "",
+                                name: doc.data().student_name,
+                                userType: "student",
+                                National_id: doc.id,
+                                roles: "",
+                            };
+                        }
+                    });
+                    return authenticatedUser;
+                }
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                throw error; // Optionally rethrow the error for higher-level error handling
+            }
+        },
+        async handleLogin() {
+            let authenticatedUser = await this.Check_User();
+            if (authenticatedUser) {
+                // Call your login method or perform necessary actions
+                await this.login(
+                    authenticatedUser.id,
+                    authenticatedUser.email,
+                    authenticatedUser.userType,
+                    authenticatedUser.roles,
+                    authenticatedUser.name
+                );
+                await this.get_Cookies();
+                if (!this.error) {
+                    if (authenticatedUser.userType === "parent") {
+                        this.$router.push({ name: "Parent_Dashboard" });
+                    } else if (authenticatedUser.userType === "admin") {
+                        this.$router.push({ name: "admin_Dashboard" });
+                    } else {
+                        // تأكد من تمرير المعلمة id بشكل صحيح
+                        this.$router.push({
+                            name: "Student_Dashboard",
+                            params: { id: authenticatedUser.id },
+                        });
+                    }
+                }
+            } else {
+                // Handle invalid credentials
+                console.log("Invalid email or password.");
+                // Set an error message or handle the UI accordingly
+                this.error = true; // Assuming error handling mechanism
             }
         },
     },

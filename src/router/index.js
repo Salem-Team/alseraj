@@ -9,9 +9,10 @@ import Parent_Dashboard from "../views/Parent_Dashboard.vue";
 import Student_Dashboard from "../views/Student_Dashboard.vue";
 import admin_Dashboard from "../views/admin_Dashboard.vue";
 import Edit_profile from "../views/Edit_profile.vue";
-import Modifications from "../views/Modifications_admin.vue";
+import Top_Board from "../views/Top_Board.vue";
 import Add_News from "../views/Add_News.vue";
 import Add_job from "../views/Add_job.vue";
+import notification_test from "../views/notification_test.vue";
 import jobs_more from "../views/jobs_more.vue";
 import News_more from "../views/News_more.vue";
 import Photos_more from "../views/Photos_more.vue";
@@ -20,6 +21,7 @@ import Add_admin from "../views/Add_admin.vue";
 import Add_teacher from "../views/Add_teacher.vue";
 import student_charts from "../views/student_charts.vue";
 import ChildDetails from "../views/ChildDetails.vue";
+// import { query } from "firebase/firestore";
 const routes = [
     {
         path: "/",
@@ -44,14 +46,14 @@ const routes = [
         component: ChildDetails,
     },
     {
-        path: "/Student_Dashboard",
+        path: "/Student_Dashboard/:id",
         name: "Student_Dashboard",
         component: Student_Dashboard,
     },
     {
-        path: "/Modifications",
-        name: "Modifications",
-        component: Modifications,
+        path: "/Top_Board",
+        name: "Top_Board",
+        component: Top_Board,
     },
     {
         path: "/Add_News",
@@ -64,7 +66,7 @@ const routes = [
         component: Add_job,
     },
     {
-        path: "/admin_Dashboard",
+        path: "/admin_dashboard",
         name: "admin_Dashboard",
         component: admin_Dashboard,
     },
@@ -124,6 +126,11 @@ const routes = [
         path: "/Photos_more",
         name: "Photos_more",
         component: Photos_more,
+    },
+    {
+        path: "/notification_test",
+        name: "notification_test",
+        component: notification_test,
     },
 ];
 

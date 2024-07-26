@@ -1,14 +1,14 @@
 <template>
     <v-card>
         <div class="d-flex justify-space-between" v-if="user">
-            <h5 class="text-right ma-4">أهلا {{ user.email }}</h5>
+            <h5 class="text-right ma-4">أهلا {{ user.name }}</h5>
             <div>
-                <v-btn class="ma-2" size="small" @click="Edit()"
-                    >تعديل البيانات</v-btn
-                >
-                <v-btn class="ma-2" size="small" @click="My_Logout()"
-                    >تسجيل خروج</v-btn
-                >
+                <v-btn class="ma-2" size="small" @click="Edit()">
+                    تعديل البيانات
+                </v-btn>
+                <v-btn class="ma-2" size="small" @click="My_Logout()">
+                    تسجيل خروج
+                </v-btn>
             </div>
         </div>
 
@@ -16,19 +16,28 @@
 
         <div class="d-flex flex-row">
             <v-tabs v-model="tab" color="primary" direction="vertical">
-                <v-tab prepend-icon="mdi-account" value="first-tab"
-                    >تعديل بياناتك</v-tab
-                >
-                <v-tab prepend-icon="mdi-lock" value="second-tab">نتائج</v-tab>
-                <v-tab prepend-icon="mdi-access-point" value="third-tab"
-                    >إحصائيات</v-tab
-                >
+                <v-tab prepend-icon="mdi-account" value="first-tab">
+                    تعديل بياناتك
+                </v-tab>
+                <v-tab prepend-icon="mdi-lock" value="second-tab">
+                    نتائج
+                </v-tab>
+                <v-tab prepend-icon="mdi-access-point" value="third-tab">
+                    إحصائيات
+                </v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
                 <v-tab-item value="first-tab">
                     <v-card flat>
-                        <v-card-text></v-card-text>
+                        <v-card-text>
+                            <!-- زر لتغيير حالة جميع الطلاب -->
+                            <v-switch
+                                v-model="showTests"
+                                label="عرض الاختبارات"
+                                @change="updateVisibilitySetting"
+                            ></v-switch>
+                        </v-card-text>
                     </v-card>
                 </v-tab-item>
 
@@ -49,27 +58,58 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "pinia";
+import { mapState } from "pinia";
 import { useAuthStore } from "../store/userStore";
+import { db } from "@/Firebase.js";
+import {
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    updateDoc,
+} from "firebase/firestore";
 
 export default {
     data: () => ({
         tab: "first-tab",
+        showTests: false,
+        // studentId: "حدد_معرف_الطالب_هنا", // قم بتحديد معرف الطالب الذي تريد تعديل حالته
     }),
+    async created() {
+        // تحميل الإعدادات الحالية من قاعدة البيانات
+        const visibilitySnap = await getDoc(
+            doc(db, "admin_settings", "visibility")
+        );
+        if (visibilitySnap.exists()) {
+            const settings = visibilitySnap.data();
+            this.showTests = settings.tests || false;
+        }
+    },
     computed: {
         ...mapState(useAuthStore, ["user"]),
     },
     methods: {
-        ...mapActions(useAuthStore, ["logout"]),
-        Edit() {
-            this.$router.push({ name: "Edit_profile" });
-        },
-        async My_Logout() {
+        async updateVisibilitySetting() {
             try {
-                await this.logout();
-                this.$router.push({ name: "home" });
+                // جلب جميع وثائق الطلاب
+                const querySnapshot = await getDocs(collection(db, "students"));
+
+                // تحديث حالة `state` لكل وثيقة طالب
+                const promises = querySnapshot.docs.map((doc) => {
+                    return updateDoc(doc.ref, {
+                        state: this.showTests,
+                    });
+                });
+
+                // انتظار جميع التحديثات
+                await Promise.all(promises);
+
+                console.log("تم تحديث حالة عرض الاختبارات لجميع الطلاب");
             } catch (error) {
-                console.error("حدث خطأ أثناء تسجيل الخروج:", error.message);
+                console.error(
+                    "Error updating visibility settings for all students:",
+                    error
+                );
             }
         },
     },
@@ -77,7 +117,10 @@ export default {
 </script>
 
 <style scoped>
-* {
-    direction: rtl;
+.v-card {
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>

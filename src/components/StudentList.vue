@@ -303,7 +303,7 @@
                                                 margin-bottom: 20px;
                                             "
                                         >
-                                            1000/1500
+                                            1000/1500 1000/1500
                                         </h3>
                                     </div>
                                     <div>
@@ -600,6 +600,7 @@
                                                 </v-menu>
                                             </div>
                                         </div>
+                                        <!-- 22222222222222222222222222222222222222222222222222222222222 -->
                                         <div v-if="e1 === 2" ref="slide2">
                                             <div style="padding: 20px">
                                                 <div
@@ -618,7 +619,12 @@
                                                             index + 2
                                                         }}</v-avatar
                                                     >
-                                                    <h2 style="color: #2196f3">
+                                                    <h2
+                                                        style="
+                                                            color: #2196f3;
+                                                            font-weight: bold;
+                                                        "
+                                                    >
                                                         ولي الامر
                                                     </h2>
                                                 </div>
@@ -629,11 +635,30 @@
                                                         selectedParent.name
                                                     "
                                                     label="اسم الأب"
+                                                    disabled
                                                     required
                                                     style="margin-bottom: 20px"
+                                                    outlined
+                                                    color="primary"
                                                 ></v-text-field>
 
-                                                <!-- عرض أسماء الأبناء -->
+                                                <!-- عرض عدد الأبناء -->
+                                                <h4
+                                                    style="
+                                                        margin-bottom: 20px;
+                                                        margin-right: 10px;
+                                                        color: #2196f3;
+                                                        font-size: 18px;
+                                                    "
+                                                >
+                                                    عدد الأبناء :
+                                                    <strong class="mr-2">{{
+                                                        selectedParent.Child
+                                                            .length
+                                                    }}</strong>
+                                                </h4>
+
+                                                <!-- عرض أسماء الأبناء والمرحلة الدراسية -->
                                                 <v-list>
                                                     <v-list-item-group
                                                         v-for="(
@@ -641,11 +666,36 @@
                                                         ) in selectedParent.Child"
                                                         :key="index"
                                                     >
-                                                        <v-list-item>
+                                                        <v-list-item
+                                                            style="
+                                                                background-color: #f1f1f1;
+                                                                margin-bottom: 10px;
+                                                                border-radius: 8px;
+                                                            "
+                                                        >
                                                             <v-list-item-content>
-                                                                <v-list-item-title>
-                                                                    {{ child }}
+                                                                <v-list-item-title
+                                                                    style="
+                                                                        font-size: 18px;
+                                                                        font-weight: bold;
+                                                                    "
+                                                                >
+                                                                    {{
+                                                                        child.student_name
+                                                                    }}
                                                                 </v-list-item-title>
+                                                                <v-list-item-subtitle
+                                                                    style="
+                                                                        font-size: 14px;
+                                                                        color: #757575;
+                                                                    "
+                                                                >
+                                                                    المرحلة
+                                                                    الدراسية:
+                                                                    {{
+                                                                        child.educational_level
+                                                                    }}
+                                                                </v-list-item-subtitle>
                                                             </v-list-item-content>
                                                         </v-list-item>
                                                     </v-list-item-group>
@@ -697,6 +747,19 @@
 
                                                 <v-row>
                                                     <v-col
+                                                        v-if="
+                                                            selectedStudent
+                                                                .Results[0]
+                                                                .weekly
+                                                                .length === 0
+                                                        "
+                                                    >
+                                                        <Empty_error
+                                                            text="لا يوجد نتائج اسبوعيه."
+                                                        />
+                                                    </v-col>
+                                                    <v-col
+                                                        v-else
                                                         cols="4"
                                                         v-for="(
                                                             week, index
@@ -1138,11 +1201,33 @@
                                                                 size="large"
                                                                 @click="
                                                                     selectMonth(
-                                                                        'شهر يناير'
+                                                                        'شهر أكتوبر'
                                                                     )
                                                                 "
                                                                 >شهر
-                                                                يناير</v-btn
+                                                                أكتوبر</v-btn
+                                                            >
+                                                            <v-btn
+                                                                rounded="xs"
+                                                                size="large"
+                                                                @click="
+                                                                    selectMonth(
+                                                                        'شهر نوفمبر'
+                                                                    )
+                                                                "
+                                                                >شهر
+                                                                نوفمبر</v-btn
+                                                            >
+                                                            <v-btn
+                                                                rounded="xs"
+                                                                size="large"
+                                                                @click="
+                                                                    selectMonth(
+                                                                        'الترم الأول'
+                                                                    )
+                                                                "
+                                                                >الترم
+                                                                الأول</v-btn
                                                             >
                                                             <v-btn
                                                                 rounded="xs"
@@ -1154,27 +1239,6 @@
                                                                 "
                                                                 >شهر
                                                                 فبراير</v-btn
-                                                            >
-                                                            <v-btn
-                                                                rounded="xs"
-                                                                size="large"
-                                                                @click="
-                                                                    selectMonth(
-                                                                        'شهر مارس'
-                                                                    )
-                                                                "
-                                                                >شهر مارس</v-btn
-                                                            >
-                                                            <v-btn
-                                                                rounded="xs"
-                                                                size="large"
-                                                                @click="
-                                                                    selectMonth(
-                                                                        'شهر ابرايل'
-                                                                    )
-                                                                "
-                                                                >شهر
-                                                                ابرايل</v-btn
                                                             >
                                                         </v-col>
                                                     </v-row>
@@ -1545,9 +1609,6 @@
                                                                     true
                                                                 )
                                                             "
-                                                            @change="
-                                                                CreateChart = true
-                                                            "
                                                         ></v-text-field>
                                                     </v-row>
 
@@ -1833,12 +1894,24 @@
 
                                             <v-row>
                                                 <v-col
+                                                    v-if="
+                                                        selectedStudent
+                                                            .Notifications
+                                                            .length === 0
+                                                    "
+                                                >
+                                                    <Empty_error
+                                                        text="لا يوجد اشعارات"
+                                                    />
+                                                </v-col>
+                                                <v-col
                                                     v-for="(
                                                         note, index
                                                     ) in selectedStudent.Notifications"
                                                     :key="index"
                                                     cols="12"
                                                     md="4"
+                                                    v-else
                                                 >
                                                     <v-alert
                                                         :type="
@@ -2065,12 +2138,23 @@
                                             </div>
                                             <v-row style="gap: 0px">
                                                 <v-col
+                                                    v-if="
+                                                        selectedStudent.photos
+                                                            .length === 0
+                                                    "
+                                                >
+                                                    <Empty_error
+                                                        text="لا يوجد صور"
+                                                    />
+                                                </v-col>
+                                                <v-col
                                                     v-for="(
                                                         photo, index
                                                     ) in selectedStudent.photos"
                                                     :key="index"
                                                     cols="12"
                                                     md="4"
+                                                    v-else
                                                 >
                                                     <v-card
                                                         class="pa-3 mb-3 notification-card"
@@ -2207,12 +2291,23 @@
                                 <v-tab value="student">بيانات الطالب</v-tab>
                                 <v-tab value="parent">ولي الأمر</v-tab>
                             </v-tabs>
-
+                            <!-- 111111111111111111111111111111111111111111111111111111111111111111111111111111 -->
                             <v-card-text>
                                 <v-tabs-window v-model="tab">
                                     <v-tabs-window-item value="student">
                                         <form @submit.prevent="submit">
                                             <div style="padding: 20px">
+                                                <!-- حقل معرف الطالب -->
+                                                <v-text-field
+                                                    v-model="form.student_id"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.student_id
+                                                    "
+                                                    required
+                                                    label="الرقم القومى"
+                                                ></v-text-field>
+
                                                 <div
                                                     style="
                                                         width: 100%;
@@ -2230,6 +2325,15 @@
                                                         "
                                                         required
                                                         label="اسم الطالب"
+                                                    ></v-text-field>
+                                                    <v-text-field
+                                                        v-model="form.phone"
+                                                        style="width: 50%"
+                                                        :error-messages="
+                                                            errors.phone
+                                                        "
+                                                        required
+                                                        label="رقم التليفون"
                                                     ></v-text-field>
 
                                                     <v-select
@@ -2263,6 +2367,7 @@
                                                         required
                                                     ></v-select>
                                                 </div>
+
                                                 <div
                                                     style="
                                                         width: 100%;
@@ -2278,7 +2383,7 @@
                                                         "
                                                         label="الجنس"
                                                         required
-                                                        :items="['انثي', 'ذكر']"
+                                                        :items="['أنثى', 'ذكر']"
                                                         variant="outlined"
                                                     ></v-select>
                                                 </div>
@@ -2326,6 +2431,14 @@
                                                             v-bind="attrs"
                                                             v-on="on"
                                                         ></v-text-field>
+                                                        <v-text-field
+                                                            v-model="
+                                                                form.password
+                                                            "
+                                                            label="الباسوورد"
+                                                            type="password"
+                                                            required
+                                                        ></v-text-field>
                                                     </template>
                                                     <v-card>
                                                         <v-date-picker
@@ -2355,6 +2468,7 @@
                                                         </v-card-actions>
                                                     </v-card>
                                                 </v-menu>
+
                                                 <div class="text-center">
                                                     <v-btn
                                                         append-icon="mdi-account-circle"
@@ -2370,9 +2484,8 @@
                                                             padding: 3px;
                                                             width: 42%;
                                                         "
+                                                        >إضافة طالب</v-btn
                                                     >
-                                                        اضافه طالب
-                                                    </v-btn>
                                                 </div>
                                             </div>
                                         </form>
@@ -2421,7 +2534,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Empty_error from "@/components/Empty_error.vue";
 import {
     collection,
-    addDoc,
+    // addDoc,
     deleteDoc,
     getDocs,
     doc,
@@ -2457,6 +2570,8 @@ import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 import Chart from "chart.js/auto";
 import { useDialogStore } from "@/store/useDialogStore";
+import { mapActions } from "pinia";
+import { usenotification } from "../store/notification.js";
 export default {
     name: "StudentList",
     components: {
@@ -2504,6 +2619,7 @@ export default {
                 "الصور",
             ],
             selectedParent: {
+                National_id: "",
                 name: "",
                 Child: [], // مصفوفة تحتوي على أسماء الأبناء
             },
@@ -2516,7 +2632,7 @@ export default {
             editedField: "",
             editedValue: "",
             randomPassword: "",
-            selectedMonth: "شهر يناير",
+            selectedMonth: "شهر أكتوبر",
             dialogAddSubject: false,
             newSubject: {
                 Subject_Name: "",
@@ -2524,6 +2640,7 @@ export default {
                 Student_degree: null,
                 Date: null,
             },
+            maxExpenses: 0,
             years: "",
             AddNotice: {
                 NoticeTitle: "",
@@ -2550,6 +2667,7 @@ export default {
                 birthday: null,
                 parent_name: "",
                 national_id: "",
+                phone: "",
 
                 Guardian: [
                     { Guardian_name: "" },
@@ -2564,17 +2682,21 @@ export default {
                     {
                         weekly: [
                             {
-                                Subject_Name: "",
-                                Major_degree: 0,
-                                Student_degree: 0,
-                                Date: null,
+                                Subject_Name: "دين",
+                                Major_degree: 100,
+                                Student_degree: 96,
+                            },
+                            {
+                                Subject_Name: "دراسات",
+                                Major_degree: 50,
+                                Student_degree: 42,
                             },
                         ],
                     },
                     {
                         Monthly: [
                             {
-                                Certificate_title: "شهر يناير",
+                                Certificate_title: "شهر أكتوبر",
                                 Degrees: [
                                     {
                                         Subject_Name: "عربي",
@@ -2611,81 +2733,81 @@ export default {
                                 ],
                             },
                             {
+                                Certificate_title: "شهر نوفمبر",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
+                                    },
+                                ],
+                            },
+                            {
+                                Certificate_title: "الترم الأول",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
+                                    },
+                                ],
+                            },
+                            {
                                 Certificate_title: "شهر فبراير",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
-                            {
-                                Certificate_title: "شهر مارس",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
-                            {
-                                Certificate_title: "شهر ابرايل",
                                 Degrees: [
                                     {
                                         Subject_Name: "انجليزى",
@@ -2731,20 +2853,9 @@ export default {
                     paid_Up: 0,
                     Residual: 0,
                 },
-                Notifications: [
-                    {
-                        NoticeTitle: "",
-                        theDescription: "",
-                        NotificationType: "",
-                    },
-                ],
+                Notifications: [],
 
-                photos: [
-                    {
-                        Date: "",
-                        link: "",
-                    },
-                ],
+                photos: [],
             },
             loading1: true, // خاصية لتحميل البيانات
             errors: {
@@ -2869,6 +2980,7 @@ export default {
         this.years = new Date().getFullYear();
     },
     methods: {
+        ...mapActions(usenotification, ["send_Notification"]),
         totalDegrees(student) {
             const degrees = student.Results[1].Monthly[0].Degrees; // Assuming the first month is the desired one
             let total = 0;
@@ -2997,52 +3109,6 @@ export default {
             this.changesMade2 = false;
         },
 
-        // getAlertType(notificationType) {
-        //     // if (notificationType === "سي") {
-        //     //     return "error";
-        //     // }
-        //     // switch (notificationType) {
-        //     //     case "success":
-        //     //         return "success";
-        //     //     case "error":
-        //     //         return "error";
-        //     //     case "warning":
-        //     //         return "warning";
-        //     //     case "info":
-        //     //         return "info";
-        //     //     default:
-        //     //         return "info";
-        //     // }
-        // },
-        // getIcon(notificationType) {
-        //     switch (notificationType) {
-        //         case "success":
-        //             return "mdi-check-circle";
-        //         case "error":
-        //         case "سي":
-        //             return "mdi-alert-circle";
-        //         case "warning":
-        //             return "mdi-alert";
-        //         case "info":
-        //             return "mdi-information";
-        //         default:
-        //             return "mdi-information";
-        //     }
-        // getIconClass(notificationType) {
-        //     switch (notificationType) {
-        //         case "success":
-        //             return "green";
-        //         case "error":
-        //         case "سي":
-        //             return "red";
-        //         case "warning":
-        //             return "orange";
-        //         case "info":
-        //             return "blue";
-        //         default:
-        //             return "blue";
-        //     }
-        // },
         async fetchStudents() {
             try {
                 const q = query(
@@ -3069,7 +3135,7 @@ export default {
                 console.error("Error fetching students:", error);
             }
         },
-
+        // 3333333333333333333333333333333333333333333333333333333333333
         async submit() {
             if (this.validateForm()) {
                 try {
@@ -3078,8 +3144,8 @@ export default {
                         new Date(this.form.birthday)
                     );
 
-                    // إضافة الطالب إلى مجموعة "students"
-                    const docRef = await addDoc(collection(db, "students"), {
+                    // إضافة الطالب إلى مجموعة "students" باستخدام `student_id` المخصص
+                    await setDoc(doc(db, "students", this.form.student_id), {
                         student_name: this.form.student_name,
                         class: this.form.class,
                         gender: this.form.gender,
@@ -3091,12 +3157,14 @@ export default {
                         photos: this.form.photos,
                         educational_level: this.year,
                         year: new Date().getFullYear(),
+                        National_id: this.form.parent_national_id, // إضافة National_id هنا
+                        state: true,
+                        password: this.form.password, // إضافة الباسوورد هنا
+                        phone: this.form.phone,
                     });
 
-                    const newStudentId = docRef.id;
-
                     const newStudent = {
-                        id: newStudentId,
+                        id: this.form.student_id,
                         student_name: this.form.student_name,
                         class: this.form.class,
                         gender: this.form.gender,
@@ -3107,6 +3175,10 @@ export default {
                         Notifications: this.form.Notifications,
                         photos: this.form.photos,
                         year: new Date().getFullYear(),
+                        National_id: this.form.parent_national_id, // إضافة National_id هنا
+                        state: true,
+                        password: this.form.password, // إضافة الباسوورد هنا
+                        phone: this.form.phone,
                     };
 
                     this.students.push(newStudent);
@@ -3124,7 +3196,11 @@ export default {
                         await setDoc(
                             parentDocRef,
                             {
-                                Child: arrayUnion(this.form.student_name),
+                                Child: arrayUnion({
+                                    student_name: this.form.student_name,
+                                    educational_level: this.year,
+                                    class: this.form.class,
+                                }),
                             },
                             { merge: true }
                         );
@@ -3137,7 +3213,13 @@ export default {
                         await setDoc(parentDocRef, {
                             name: this.form.parent_name,
                             National_id: this.form.parent_national_id,
-                            Child: [this.form.student_name], // أو يمكنك استخدام arrayUnion إذا كنت تريد التأكد من عدم التكرار
+                            Child: [
+                                {
+                                    student_name: this.form.student_name,
+                                    educational_level: this.year,
+                                    class: this.form.class,
+                                },
+                            ],
                         });
 
                         console.log("Created new parent document successfully");
@@ -3158,25 +3240,6 @@ export default {
                 }
             }
         },
-
-        // async submitParent() {
-        //     try {
-        //         await setDoc(
-        //             doc(db, "parents", this.form.parent_national_id),
-        //             {
-        //                 name: this.form.parent_name,
-        //                 National_id: this.form.parent_national_id,
-        //                 Child: arrayUnion(this.form.student_name),
-        //             },
-        //             { merge: true }
-        //         );
-
-        //         // معالجة النتائج الأخرى بعد الإضافة
-        //         console.log("Parent document updated successfully");
-        //     } catch (error) {
-        //         console.error("Error updating parent document:", error);
-        //     }
-        // },
         formatDate(date) {
             const d = new Date(date);
             let month = "" + (d.getMonth() + 1); // استخدام let بدلاً من const
@@ -3188,18 +3251,7 @@ export default {
 
             return [year, month, day].join("-");
         },
-        // formatDateh(birthday) {
-        //     if (birthday.seconds) {
-        //         const date = new Date(birthday.seconds * 1000);
-        //         const day = date.getDate();
-        //         const month = date.getMonth() + 1; // Months are zero-based
-        //         const year = date.getFullYear();
-        //         return `${day}/${month}/${year}`;
-        //     } else {
-        //         return birthday; // If it's already formatted
-        //     }
-        // },
-        // Example function to generate a unique ID
+
         generateUniqueId() {
             return "id-" + Math.random().toString(36).substr(2, 9);
         },
@@ -3242,7 +3294,10 @@ export default {
                 class: "",
                 gender: "",
                 section: "",
-                birthday: "",
+                birthday: "2024/07/19",
+                parent_name: "",
+                national_id: "",
+
                 Guardian: [
                     { Guardian_name: "" },
                     { Guardian_phone: "" },
@@ -3251,21 +3306,15 @@ export default {
                     { Brothers_in_school: "" },
                     { brother: [""] },
                 ],
+                errors: {},
                 Results: [
                     {
-                        weekly: [
-                            {
-                                Subject_Name: "",
-                                Major_degree: 0,
-                                Student_degree: 0,
-                                Date: null,
-                            },
-                        ],
+                        weekly: [],
                     },
                     {
                         Monthly: [
                             {
-                                Certificate_title: "شهر يناير",
+                                Certificate_title: "شهر أكتوبر",
                                 Degrees: [
                                     {
                                         Subject_Name: "عربي",
@@ -3302,81 +3351,81 @@ export default {
                                 ],
                             },
                             {
+                                Certificate_title: "شهر نوفمبر",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
+                                    },
+                                ],
+                            },
+                            {
+                                Certificate_title: "الترم الأول",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
+                                    },
+                                ],
+                            },
+                            {
                                 Certificate_title: "شهر فبراير",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
-                            {
-                                Certificate_title: "شهر مارس",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
-                            {
-                                Certificate_title: "شهر ابرايل",
                                 Degrees: [
                                     {
                                         Subject_Name: "انجليزى",
@@ -3420,19 +3469,9 @@ export default {
                     paid_up: 0,
                     installment_system: "",
                 },
-                Notifications: [
-                    {
-                        NoticeTitle: "",
-                        theDescription: "",
-                        NotificationType: "",
-                    },
-                ],
-                photos: [
-                    {
-                        Date: "",
-                        link: "",
-                    },
-                ],
+                Notifications: [],
+
+                photos: [],
             };
         },
         validateForm() {
@@ -3527,31 +3566,59 @@ export default {
                 });
             }
         },
+        // 44444444444444444444444444444444444444444
         async loadParentDetails(National_id) {
             if (!National_id) {
                 console.error("No National_id provided");
                 return;
             }
 
+            console.log("Loading parent details for National_id:", National_id);
+
             try {
-                const parentDoc = doc(db, "Parents", National_id);
+                // جلب بيانات الأب من كوليكشن Parents
+                const parentDoc = doc(db, "parents", National_id);
                 const parentSnapshot = await getDoc(parentDoc);
-                console.log("dxasdsasdsasa:", parentDoc);
 
                 if (parentSnapshot.exists()) {
                     const parentData = parentSnapshot.data();
-                    this.selectedParent.name = parentData.name || "غير متوفر";
-                    this.selectedParent.children = parentData.Child || []; // تأكد من أن Child ليست undefined
+                    this.selectedParent = {
+                        name: parentData.name || "غير متوفر",
+                        Child: [],
+                    };
+
+                    // جلب الأطفال من كوليكشن students
+                    const studentsQuery = query(
+                        collection(db, "students"),
+                        where("National_id", "==", National_id)
+                    );
+                    const studentsSnapshot = await getDocs(studentsQuery);
+
+                    const children = [];
+                    studentsSnapshot.forEach((doc) => {
+                        children.push({
+                            student_name: doc.data().student_name,
+                            educational_level: doc.data().educational_level,
+                            class: doc.data().class,
+                        });
+                    });
+
+                    this.selectedParent.Child = children;
                 } else {
                     console.error("No such document!");
-                    this.selectedParent.name = "غير متوفر";
-                    this.selectedParent.children = [];
+                    this.selectedParent = {
+                        name: "غير متوفر",
+                        Child: [],
+                    };
                 }
             } catch (error) {
                 console.error("Error getting document:", error);
+                this.selectedParent = {
+                    name: "خطأ في جلب البيانات",
+                    Child: [],
+                };
             }
         },
-
         openStudentDetails(student) {
             this.selectedStudent = student;
             this.loadParentDetails(student.National_id);
@@ -3807,6 +3874,10 @@ export default {
                         theDescription: this.AddNotice.theDescription,
                         NotificationType: this.AddNotice.NotificationType,
                     };
+                    this.send_Notification(
+                        this.AddNotice.NoticeTitle,
+                        this.AddNotice.theDescription
+                    );
                     // إعداد نص الرسالة وتفعيل Snackbar
                     this.confirmationText = "تم  اضافه الاشعار بنجاح";
                     this.showSnackbar = true;
@@ -4108,8 +4179,8 @@ export default {
                 "شهر نوفمبر",
                 "شهر ديسمبر",
                 "الترم الأول",
-                "شهر فبراير",
-                "شهر مارس",
+                "شهر نوفمبر",
+                "الترم الأول",
             ];
             return monthNames[month - 1] || month;
         },
@@ -4170,6 +4241,13 @@ export default {
                 });
             } else {
                 console.log("error");
+            }
+        },
+        validatePaidUp() {
+            const expenses = this.selectedStudent.payments.Expenses || 0;
+            this.maxExpenses = expenses;
+            if (this.selectedStudent.payments.paid_Up > expenses) {
+                this.selectedStudent.payments.paid_Up = expenses;
             }
         },
     },
@@ -4249,7 +4327,11 @@ export default {
             }
             this.value += 10;
         }, 100);
-        this.students = this.$parent.students_class; // Assuming students_class is passed down from parent
+        this.students = this.$parent.students_class;
+        // مثال لاستدعاء الدالة
+        this.loadParentDetails(this.form.parent_national_id);
+
+        // Assuming students_class is passed down from parent
     },
     beforeUnmount() {
         clearInterval(this.interval);

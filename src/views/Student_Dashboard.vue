@@ -1,416 +1,287 @@
 <template>
-    <div class="container">
-        <v-card flat class="mx-auto my-4" max-width="90%">
-            <v-card-title class="text-h4 custom-font" style="color: #2980b9">
-                المدفوعات
-            </v-card-title>
-            <v-card-subtitle class="mb-4 text-h6 custom-title">
-                ادخل المبلغ واختر نظام الدفع
-            </v-card-subtitle>
-            <v-container>
+    <v-container>
+        <!-- عنصر تحميل -->
+        <v-dialog v-model="loading" persistent max-width="290" hide-overlay>
+            <v-card class="loading-dialog" flat>
+                <v-card-title class="justify-center">
+                    <v-progress-circular
+                        style="position: relative; right: 60px"
+                        indeterminate
+                        color="primary"
+                        size="64"
+                        width="6"
+                        class="mx-auto"
+                    >
+                    </v-progress-circular>
+                </v-card-title>
+                <v-card-subtitle class="text-center">
+                    جاري تحميل البيانات...
+                </v-card-subtitle>
+            </v-card>
+        </v-dialog>
+
+        <!-- معلومات الطالب -->
+        <v-card class="mb-5 student-card" v-if="isAuthenticated">
+            <v-card-title class="student-card-title"
+                >معلومات الطالب</v-card-title
+            >
+            <v-card-text>
                 <v-row>
                     <v-col cols="12" md="6">
                         <v-text-field
-                            v-model="totalAmount"
-                            label="ادخل المبلغ"
-                            outlined
-                            dense
-                            required
-                            @blur="validateTotalAmount"
+                            label="اسم الطالب"
+                            v-model="student.student_name"
+                            readonly
                         ></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6">
-                        <v-select
-                            v-model="paymentMethod"
-                            :items="paymentMethods"
-                            label="اختر نظام الدفع"
-                            @change="updatePaymentOptions"
-                            outlined
-                            dense
-                        ></v-select>
+                        <v-text-field
+                            label="الرقم القومي"
+                            v-model="student.National_id"
+                            readonly
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field
+                            label="المرحلة الدراسية"
+                            v-model="student.educational_level"
+                            readonly
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field
+                            label="الفصل"
+                            v-model="student.class"
+                            readonly
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field
+                            label="القسم"
+                            v-model="student.section"
+                            readonly
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field
+                            label="النوع"
+                            v-model="student.gender"
+                            readonly
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field
+                            label="تاريخ الميلاد"
+                            v-model="student.birthday"
+                            readonly
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field
+                            label="رقم التليفون"
+                            v-model="student.phone"
+                            readonly
+                        ></v-text-field>
                     </v-col>
                 </v-row>
-                <v-row v-if="paymentMethod === 'نظام التقسيط'">
-                    <v-col cols="12" md="12">
-                        <v-select
-                            v-model="selectedPlan"
-                            :items="selectPaid"
-                            label="اختر نظام التقسيط"
-                            @change="updateCircles"
-                            outlined
-                            dense
-                        ></v-select>
-                    </v-col>
-                </v-row>
-            </v-container>
+            </v-card-text>
         </v-card>
 
-        <div
-            v-if="paymentMethod === 'نظام التقسيط' && selectedPlan"
-            class="payment-section"
-        >
-            <v-row>
-                <div class="timeline-container">
-                    <div class="timeline">
-                        <div class="timeline-line"></div>
-                        <div class="progress_container">
-                            <div
-                                class="progress"
-                                :style="{
-                                    height:
-                                        (paidAmount / totalAmount) * 100 + '%',
-                                    backgroundColor: '#2980b9',
-                                }"
-                            ></div>
-                            <span class="progress-label mb-3">
-                                <!-- {{ (paidAmount / totalAmount) * 100 }} % -->
-                                {{ paidAmount }}
-                                مدفوعاتك
-                            </span>
-                        </div>
-                        <div
-                            v-for="month in numberOfMonths"
-                            :key="month"
-                            class="timeline-item"
-                        >
-                            <div
-                                class="timeline-item-content"
-                                :style="{
-                                    backgroundColor:
-                                        paidAmount >= installmentAmount * month
-                                            ? '#d8588c'
-                                            : '#fff',
-                                    color:
-                                        paidAmount >= installmentAmount * month
-                                            ? '#fff'
-                                            : '#333', // أو أي لون آخر تفضله
-                                }"
+        <!-- الاختبارات -->
+        <v-card class="mb-5 student-card" v-if="isAuthenticated">
+            <v-card-title class="student-card-title">الاختبارات</v-card-title>
+            <v-card-text>
+                <v-list v-if="student.state">
+                    <ul>
+                        <li>First</li>
+                        <li>Seconde</li>
+                        <li>Third</li>
+                        <li>Fourth</li>
+                    </ul>
+                </v-list>
+                <v-alert v-else type="warning">
+                    تم حجب الاختبارات لحين السداد.
+                </v-alert>
+            </v-card-text>
+        </v-card>
+
+        <!-- النتائج الأسبوعية -->
+        <v-card class="mb-5 student-card" v-if="isAuthenticated">
+            <v-card-title class="student-card-title"
+                >النتائج الأسبوعية</v-card-title
+            >
+            <v-card-text>
+                <v-data-table
+                    :headers="weeklyHeaders"
+                    :items="student.Results[0].weekly"
+                >
+                    <template v-slot:item="{ item }">
+                        <tr>
+                            <td>{{ item.Subject_Name }}</td>
+                            <td>{{ item.Major_degree }}</td>
+                            <td>{{ item.Student_degree }}</td>
+                        </tr>
+                    </template>
+                </v-data-table>
+            </v-card-text>
+        </v-card>
+        <!-- النتائج الشهرية -->
+        <v-card class="mb-5 student-card" v-if="isAuthenticated">
+            <v-card-title class="student-card-title"
+                >النتائج الشهرية</v-card-title
+            >
+            <v-card-text>
+                <v-accordion
+                    v-if="
+                        student.Results[0].Monthly &&
+                        student.Results[0].Monthly.length
+                    "
+                >
+                    <v-accordion-item
+                        v-for="(month, monthIndex) in student.Results[0]
+                            .Monthly"
+                        :key="monthIndex"
+                        :value="monthIndex"
+                    >
+                        <template v-slot:title>
+                            {{ month.Certificate_title }}
+                        </template>
+                        <v-accordion-item__body>
+                            <v-data-table
+                                :headers="monthlyHeaders"
+                                :items="month.Degrees"
                             >
-                                <div class="timeline-item-header">
-                                    <span
-                                        class="month-name"
-                                        :style="{
-                                            color:
-                                                paidAmount >=
-                                                installmentAmount * month
-                                                    ? '#fff'
-                                                    : '#333',
-                                        }"
-                                        >شهر {{ month }}</span
-                                    >
-                                </div>
-                                <div class="timeline-item-body">
-                                    <p>
-                                        القسط الشهري:
-                                        {{ Math.floor(installmentAmount) }} جنيه
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </v-row>
-            <v-row>
-                <v-col>
-                    <v-dialog
-                        v-model="dialogSuccess"
-                        max-width="600"
-                        @input="handleDialogClose"
-                    >
-                        <v-card>
-                            <v-card-actions class="justify-center">
-                                <v-icon color="success" size="100"
-                                    >mdi-check-circle-outline</v-icon
-                                >
-                            </v-card-actions>
-                            <v-card-text class="text-center">
-                                <p class="success-message">
-                                    تم دفع مبلغ {{ paidAmount }} جنيه. بنجاح
-                                </p>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-btn
-                                    color="success"
-                                    @click="dialogSuccess = false"
-                                >
-                                    موافق
-                                </v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-dialog>
-                </v-col>
-            </v-row>
-            <v-row class="my-4">
-                <v-col cols="12" md="4">
-                    <v-text-field
-                        v-model="amount"
-                        label="ادخل المبلغ للدفع"
-                        outlined
-                        dense
-                    ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4">
-                    <v-btn color="primary" size="x-large" @click="payAmount"
-                        >ادفع</v-btn
-                    >
-                </v-col>
-            </v-row>
-            <v-row class="my-4">
-                <v-col cols="12" md="4">
-                    <v-card class="pa-4">
-                        <v-card-title>المبلغ المستحق</v-card-title>
-                        <v-card-subtitle
-                            >{{ totalAmount }} جنيه</v-card-subtitle
-                        >
-                    </v-card>
-                </v-col>
-                <v-col cols="12" md="4">
-                    <v-card class="pa-4">
-                        <v-card-title>المبلغ المدفوع</v-card-title>
-                        <v-card-subtitle>{{ paidAmount }} جنيه</v-card-subtitle>
-                    </v-card>
-                </v-col>
-                <v-col cols="12" md="4">
-                    <v-card class="pa-4">
-                        <v-card-title>باقي المبلغ المستحق</v-card-title>
-                        <v-card-subtitle
-                            >{{ remainingAmount }} جنيه</v-card-subtitle
-                        >
-                    </v-card>
-                </v-col>
-            </v-row>
-        </div>
-        <!-- v-alert for notifications -->
-        <v-alert
-            title="تنبيه"
-            class="custom-alert mt-4"
-            v-if="alertMessage"
-            v-model="alertMessage"
-            dense
-            outlined
-            closable
-            type="warning"
-        >
-            {{ alertMessage }}
-        </v-alert>
-    </div>
+                                <template v-slot:item="{ item }">
+                                    <tr>
+                                        <td>{{ item.Subject_Name }}</td>
+                                        <td>{{ item.Behavior_assessment }}</td>
+                                        <td>{{ item.Major_degree }}</td>
+                                        <td>{{ item.Minor_degree }}</td>
+                                        <td>{{ item.Student_degree }}</td>
+                                        <td>{{ item.Teacher_Name }}</td>
+                                    </tr>
+                                </template>
+                            </v-data-table>
+                        </v-accordion-item__body>
+                    </v-accordion-item>
+                </v-accordion>
+            </v-card-text>
+        </v-card>
+
+        <!-- الإحصائيات -->
+        <v-card class="student-card" v-if="isAuthenticated">
+            <v-card-title class="student-card-title">الإحصائيات</v-card-title>
+            <v-card-text>
+                <!-- رسوم بيانية أو بيانات إحصائية -->
+            </v-card-text>
+        </v-card>
+    </v-container>
 </template>
 
 <script>
+import { db } from "@/Firebase.js";
+import { doc, getDoc } from "firebase/firestore";
+
 export default {
     data() {
-        return {};
+        return {
+            student: {
+                student_name: "",
+                National_id: "",
+                educational_level: "",
+                class: "",
+                section: "",
+                gender: "",
+                birthday: "",
+                phone: "",
+                tests: [],
+                Results: [], // بيانات النتائج ستكون هنا
+                state: false, // إضافة حالة للتحكم في عرض الاختبارات
+            },
+            isAuthenticated: false,
+            loading: true, // أضفناه لتفعيل عنصر التحميل
+            weeklyHeaders: [
+                { text: "Subject Name", value: "Subject_Name" },
+                { text: "Major Degree", value: "Major_degree" },
+                { text: "Student Degree", value: "Student_degree" },
+            ],
+            monthlyHeaders: [
+                { text: "Subject Name", value: "Subject_Name" },
+                { text: "Behavior Assessment", value: "Behavior_assessment" },
+                { text: "Major Degree", value: "Major_degree" },
+                { text: "Minor Degree", value: "Minor_degree" },
+                { text: "Student Degree", value: "Student_degree" },
+                { text: "Teacher Name", value: "Teacher_Name" },
+            ],
+        };
     },
-    computed: {
-        numberOfMonths() {
-            if (!this.selectedPlan) return [];
-            const monthsMap = {
-                شهر: 1,
-                شهرين: 2,
-                "3 شهر": 3,
-                "4 شهر": 4,
-                "5 شهر": 5,
-            };
-            return Array.from(
-                { length: monthsMap[this.selectedPlan] },
-                (_, i) => i + 1
-            );
-        },
-        installmentAmount() {
-            if (!this.selectedPlan) return 0;
-            const monthsMap = {
-                شهر: 1,
-                شهرين: 2,
-                "3 شهر": 3,
-                "4 شهر": 4,
-                "5 شهر": 5,
-            };
-            return Math.floor(this.totalAmount / monthsMap[this.selectedPlan]);
-        },
-        remainingAmount() {
-            return Math.max(this.totalAmount - this.paidAmount, 0);
-        },
-    },
-    methods: {
-        updatePaymentOptions() {
-            if (this.paymentMethod === "نظام التقسيط") {
-                this.selectedPlan = null;
-                this.paidAmount = 0;
-                this.amount = 0;
-            }
-        },
-        payAmount() {
-            const amountToPay = parseInt(this.amount);
+    async created() {
+        try {
+            const documentId = this.$route.params.id; // استلام documentId من الـ route params
+            this.documentId = documentId;
 
-            if (isNaN(amountToPay) || amountToPay <= 0) {
-                this.showAlert("الرجاء إدخال المبلغ صحيحا");
-                return;
+            // محاولة الحصول على بيانات الطالب
+            const docSnap = await getDoc(doc(db, "students", documentId));
+            if (docSnap.exists()) {
+                this.student = docSnap.data();
+                this.isAuthenticated = true;
+            } else {
+                console.error("No document found for the given ID");
+                this.isAuthenticated = false;
             }
-
-            this.paidAmount += amountToPay;
-            this.amount = 0;
-            this.dialogSuccess = true;
-        },
-        validateTotalAmount() {
-            if (this.totalAmount !== null) {
-                if (isNaN(this.totalAmount) || this.totalAmount < 0) {
-                    this.showAlert("لابد ان يكون رقما وليس سالبا");
-                    this.totalAmount = null;
-                }
-            }
-        },
-        showAlert(message) {
-            this.alertMessage = message;
-            setTimeout(() => {
-                this.alertMessage = "";
-            }, 3000);
-        },
-        resetPayment() {
-            this.paidAmount = 0;
-        },
+        } catch (error) {
+            console.error("Error fetching student data:", error);
+            this.isAuthenticated = false;
+        } finally {
+            // بعد الانتهاء من تحميل البيانات، قم بإخفاء عنصر التحميل
+            this.loading = false;
+        }
     },
 };
 </script>
 
 <style scoped>
-.container {
-    width: 90%;
-    max-width: 800px;
-    margin: auto;
-}
-
-.timeline-container {
-    margin-top: 20px;
-    width: 90%;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.timeline {
-    position: relative;
-    margin-left: 20px;
-}
-
-.timeline-line {
-    position: absolute;
-    width: 2px;
-    background-color: #ccc;
-    left: 8px;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-}
-.progress_container {
-    position: absolute;
-    width: 5px;
-    background-color: #eee;
-    left: 8px;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-}
-
-.timeline-item {
-    position: relative;
-    margin-bottom: 30px;
-}
-
-.timeline-item-content {
-    position: relative;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 4px;
-    position: relative;
-    margin-left: 20px;
-}
-.timeline-item-content::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: -27.2px;
-    transform: translate(-50%, -50%);
-    width: 12px;
-    height: 12px;
-    /* border-radius: 50%; */
-    transform: rotate(45deg);
-    background-color: #2980b9;
-}
-.timeline-item-content::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: -24px;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
-    border-right: 20px solid #d8588c;
-}
-.timeline-item-header {
-    padding-bottom: 10px;
-}
-
-.timeline-item-body {
-    font-size: 14px;
-}
-
-.month-name {
-    font-weight: bold;
-    color: #2980b9;
-}
-
-.payment-section {
-    margin-top: 20px;
-}
-.progress-label {
-    font-size: 14px;
-    font-weight: bold;
-    position: absolute;
-    right: 21px;
-    width: 106px;
-    background: #2980b9;
-    color: #fff;
-    text-align: center;
-    line-height: 36px;
-}
-.timeline-item-content {
-    margin-left: 30px;
-    transition: 0.5s;
-    transition: margin-left 0.5s;
-}
-.success-message {
-    color: #4caf50; /* لون أخضر لرسائل النجاح */
-    font-weight: bold;
-    font-size: 20px;
+.v-card {
     margin-bottom: 20px;
-    transition: 0.5s;
+    background-color: var(--secound-color);
+    border: 1px solid var(--main-color);
+    border-radius: 10px;
 }
 
-.timeline-item-content.transition {
-    margin-left: 60px; /* أو أي قيمة انتقال تفضلها */
+.student-card-title {
+    background-color: var(--main-color);
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
 }
 
-.progress {
-    transition: height 0.5s;
+.v-text-field {
+    background-color: white;
+    border-radius: 4px;
 }
 
-.progress.transition {
-    height: 100%;
+.student-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-.custom-alert {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50%;
-    height: 120px;
-    font-size: 20px;
-    z-index: 9999;
-    border-radius: 20px;
-    transition: all 0.5s ease-in-out;
-    /* text-align: center; */
+
+.v-list-item {
+    border-bottom: 1px solid var(--therd-color);
+}
+
+.v-list-item-title {
+    color: var(--pink-color);
+    font-weight: bold;
+}
+.loading-dialog {
+    border: none;
+    box-shadow: none;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.v-dialog__content {
+    align-items: center;
+    justify-content: center;
 }
 </style>

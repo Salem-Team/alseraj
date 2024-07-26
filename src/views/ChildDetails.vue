@@ -1070,7 +1070,7 @@
                                         <v-card flat v-if="student">
                                             <div
                                                 class="title"
-                                                style="margin-bottm: 20px"
+                                                style="margin-bottom: 20px"
                                             >
                                                 الإشعارات
                                             </div>

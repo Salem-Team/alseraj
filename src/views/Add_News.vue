@@ -278,6 +278,7 @@
                                 required
                             ></v-text-field>
                             <v-file-input
+                                v-model="news.image"
                                 label="صورة"
                                 accept="image/*"
                                 variant="outlined"

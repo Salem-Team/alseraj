@@ -42,6 +42,14 @@ import { useAuthStore } from "./store/userStore";
 import { mapActions, mapState } from "pinia";
 
 export default {
+    setup() {
+        const authStore = useAuthStore();
+        authStore.get_Cookies();
+        return {
+            ...mapActions(useAuthStore, ["get_Cookies"]),
+        };
+    },
+
     computed: {
         ...mapState(useAuthStore, ["user"]),
     },

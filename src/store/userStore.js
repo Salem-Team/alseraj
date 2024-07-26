@@ -65,6 +65,10 @@ export const useAuthStore = defineStore("auth", {
                 }
             });
         },*/
+        get_Cookies() {
+            const user_data = Cookies.get("user");
+            this.user = JSON.parse(user_data);
+        },
         async login(id, National_id, userType, roles, name) {
             this.loading = true;
             try {

@@ -73,7 +73,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(useAuthStore, ["loading", "error"]),
+        ...mapState(useAuthStore, ["loading", "error", "user_data"]),
     },
     watch: {
         userType(newValue) {
@@ -90,7 +90,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions(useAuthStore, ["login"]),
+        ...mapActions(useAuthStore, ["login", "get_Cookies"]),
         async Check_User() {
             const decryption = useSecureDataStore();
             let authenticatedUser = null;
@@ -184,7 +184,7 @@ export default {
                     authenticatedUser.roles,
                     authenticatedUser.name
                 );
-
+                await this.get_Cookies();
                 if (!this.error) {
                     if (authenticatedUser.userType === "parent") {
                         this.$router.push({ name: "Parent_Dashboard" });

@@ -710,7 +710,7 @@ export default defineComponent({
 
             try {
                 const response = await axios.post(
-                    "http://localhost:5500/upload",
+                    "http://localhost:3000/upload",
                     formData,
                     {
                         headers: {

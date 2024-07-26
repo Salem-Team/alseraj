@@ -112,20 +112,39 @@
                         variant="outlined"
                         required
                     ></v-text-field>
+                    <div>
+                        <v-select
+                            v-model="selectedStage"
+                            :items="
+                                stepStudy.getSteps().map((stage) => stage.name)
+                            "
+                            :rules="[(v) => !!v || 'أختر المرحلة الدراسية']"
+                            label="أختر المرحلة الدراسية"
+                            variant="outlined"
+                            required
+                        ></v-select>
 
-                    <v-select
-                        style="width: 100%"
-                        v-model="user.roles"
-                        :items="teacher.role"
-                        :rules="[
-                            (v) => (!!v && v.length > 0) || 'أختر نوع الصلاحية',
-                        ]"
-                        label="أختر نوع الصلاحية"
-                        variant="outlined"
-                        multiple
-                        required
-                    ></v-select>
-
+                        <v-select
+                            v-model="selectedGrade"
+                            :items="grades"
+                            :rules="[(v) => !!v || 'أختر الصف الدراسي']"
+                            label="أختر الصف الدراسي"
+                            variant="outlined"
+                            multiple
+                            required
+                            @update:model-value="updateGrades"
+                        ></v-select>
+                        <v-select
+                            v-model="subjectsData"
+                            :items="subjects"
+                            :rules="[(v) => !!v || 'أختر الصف الدراسي']"
+                            label="أختر الصف الدراسي"
+                            variant="outlined"
+                            multiple
+                            required
+                            @update:model-value="updateGrades"
+                        ></v-select>
+                    </div>
                     <v-text-field
                         v-model="user.password"
                         :rules="[
@@ -148,7 +167,7 @@
                         type="submit"
                         :loading="loading"
                         :disabled="loading"
-                        @click="teacher.add_teacher"
+                        @click="teacherData()"
                         style="
                             width: 100%;
                             padding: 20px;
@@ -386,9 +405,33 @@
 import { storeToRefs } from "pinia";
 // import { defineComponent } from "vue";
 import { useteacher } from "@/store/teacher.js";
+import { useStepStudy } from "@/store/useStepStudy.js";
+import { ref, computed, onMounted } from "vue";
+
 export default {
     setup() {
         const teacher = useteacher();
+        const stepStudy = useStepStudy();
+        const selectedStage = ref(null);
+        const selectedGrade = ref(null);
+        const subjects = ref(null);
+        const subjectsData = ref(null);
+
+        const grades = computed(() => {
+            return selectedStage.value
+                ? stepStudy.getGradesForStage(selectedStage.value)
+                : [];
+        });
+        const valueClass = onMounted(() => {
+            stepStudy.fetchAllClassRooms();
+            console.log("Class Rooms:", stepStudy.getClassRooms());
+        });
+        valueClass;
+        function updateGrades() {
+            // console.log(stepStudy.getSubjectsForStage());
+            // Update selected grades when the stage changes
+            // selectedGrade.value = null; // Reset selected grade
+        }
         teacher.Get_data();
         teacher.generate_Random_Password();
         const {
@@ -412,6 +455,14 @@ export default {
         } = storeToRefs(teacher);
         // Return the necessary reactive properties and methods
         return {
+            selectedGrade,
+            grades,
+            subjectsData,
+            subjects,
+            selectedStage,
+            updateGrades,
+            valueClass,
+            stepStudy,
             teacher,
             loading,
             loading1,
@@ -436,8 +487,20 @@ export default {
     data: () => ({
         snackbar: false,
         text: `تم نسخ كلمة المرور`,
+        stage: [],
     }),
     methods: {
+        teacherData() {
+            console.log("qqqqqqqqq");
+
+            console.log(this.stage);
+        },
+        teacherDatas() {
+            console.log("qqqqqqqqq");
+            // console.log(item);
+            // console.log(this.stage);
+            // console.log(item);
+        },
         Snackbar_Function() {
             const passwordElement = document.getElementById("password");
             const password =

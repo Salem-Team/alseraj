@@ -1,6 +1,5 @@
 <template>
     <div class="visible">
-<<<<<<< HEAD
         <svg
             style="
                 position: fixed;
@@ -178,29 +177,6 @@
                             background: var(--main-color);
                             color: #fff;
                         "
-=======
-        <Offline_error>
-            <template v-slot:default>
-                <svg
-                    style="
-                        position: fixed;
-                        top: 50%;
-                        left: 50%;
-                        transform: translate(-50%, -50%);
-                        width: 245px;
-                    "
-                    v-if="loading1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 200 200"
-                >
-                    <radialGradient
-                        id="a12"
-                        cx=".66"
-                        fx=".66"
-                        cy=".3125"
-                        fy=".3125"
-                        gradientTransform="scale(1.5)"
->>>>>>> e4f99dc33f2c75570682b3485d72e895deccec57
                     >
                         <stop offset="0" stop-color="#336699"></stop>
                         <stop
@@ -636,15 +612,9 @@
 import { storeToRefs } from "pinia";
 // import { defineComponent } from "vue";
 import { useteacher } from "@/store/teacher.js";
-<<<<<<< HEAD
 import { useStepStudy } from "@/store/useStepStudy.js";
 import { ref, computed, onMounted } from "vue";
 
-=======
-import Offline_error from "@/components/Offline_error.vue";
-import Empty_error from "@/components/Empty_error.vue";
-import confirm_message from "@/components/confirm_message.vue";
->>>>>>> e4f99dc33f2c75570682b3485d72e895deccec57
 export default {
     inject: ["Emitter"],
     components: {

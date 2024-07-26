@@ -881,7 +881,6 @@ export default defineComponent({
             this.onboarding =
                 this.onboarding - 1 <= 0 ? this.length : this.onboarding - 1;
         },
-<<<<<<< HEAD
         async subMutPhoto() {
             const file = this.photos.Photo.image;
 
@@ -909,8 +908,6 @@ export default defineComponent({
                 console.error("Error uploading file:", error);
             }
         },
-=======
->>>>>>> e4f99dc33f2c75570682b3485d72e895deccec57
     },
 });
 </script>

@@ -35,7 +35,7 @@ const vuetify = createVuetify({
 import mitt from "mitt";
 const Emitter = mitt();
 
-createApp(App)
+const app = createApp(App)
     .use(ref)
     .use(pinia)
     .use(store)
@@ -44,5 +44,11 @@ createApp(App)
     .use(VTooltip)
     .provide("Emitter", Emitter)
     .use(Toast, { position: "top-right", timeout: 3000 })
-    .component("font-awesome-icon", FontAwesomeIcon)
-    .mount("#app");
+    .component("font-awesome-icon", FontAwesomeIcon);
+
+// Detect if the app is running as PWA
+if (window.matchMedia("(display-mode: standalone)").matches) {
+    document.body.classList.add("pwa");
+}
+
+app.mount("#app");

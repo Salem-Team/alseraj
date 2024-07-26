@@ -131,4 +131,16 @@ a {
     color: var(--main-color);
     font-weight: bold;
 }
+/* src/assets/pwa.css */
+body.pwa {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+body.pwa h1 {
+    font-size: 2em;
+    color: #007bff;
+}
+
+/* أي أنماط إضافية لتخصيص الـ PWA */
 </style>

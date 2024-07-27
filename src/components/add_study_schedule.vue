@@ -25,14 +25,14 @@
                         v-model="selectedClass"
                         :items="classes"
                         label="اختر الفصل"
-                        @blur="loadSchedule"
+                        @blur="fetchScheduleId"
                         required
                     ></v-select>
                     <v-select
                         v-model="selectedSection"
                         :items="sections"
                         label="اختر القسم"
-                        @blur="loadSchedule"
+                        @blur="fetchScheduleId"
                         required
                     ></v-select>
                     <v-card flat>
@@ -89,16 +89,26 @@
                 </div>
             </v-card-text>
         </v-card>
+        <confirm_message
+            :text="confirmationText"
+            @close-snackbar="handleCloseSnackbar"
+            v-model="showSnackbar"
+        />
     </v-dialog>
 </template>
 
 <script>
+import { v4 as uuidv4 } from "uuid";
 import {
     getFirestore,
     doc,
     setDoc,
     getDoc,
+    getDocs,
     Timestamp,
+    query,
+    collection,
+    where,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { initializeApp } from "@firebase/app";
@@ -115,10 +125,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
+import confirm_message from "@/components/confirm_message.vue";
 
 export { db, storage };
 
 export default {
+    components: {
+        confirm_message,
+    },
     props: {
         year: {
             type: Number,
@@ -129,8 +143,10 @@ export default {
         return {
             showDialog: false,
             changesMade: false,
+            confirmationText: "",
             selectedClass: null,
             selectedSection: null,
+            showSnackbar: false,
             classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
             sections: ["عربي", "لغات"],
             Results: {
@@ -177,109 +193,134 @@ export default {
                 ],
             },
             lastModified: "لم يتم التعديل بعد",
+            scheduleId: null, // هنا لتخزين معرّف الجدول
         };
     },
     methods: {
+        handleCloseSnackbar() {
+            this.showSnackbar = false; // تحديث حالة الرسالة في المكون الأم
+        },
         async loadSchedule() {
             if (!this.selectedClass || !this.selectedSection) return;
 
-            // إعادة تعيين الجدول قبل تحميل البيانات الجديدة
-            this.Results.schedule = [
-                {
-                    Subject_Name: "السبت",
-                    Minor_degree: "",
-                    Major_degree: "",
-                    Student_degree: "",
-                },
-                {
-                    Subject_Name: "الاحد",
-                    Minor_degree: "",
-                    Major_degree: "",
-                    Student_degree: "",
-                },
-                {
-                    Subject_Name: "الاثنين ",
-                    Minor_degree: "",
-                    Major_degree: "",
-                    Student_degree: "",
-                },
-                {
-                    Subject_Name: "الثلاثاء",
-                    Minor_degree: "",
-                    Major_degree: "",
-                    Student_degree: "",
-                },
-                {
-                    Subject_Name: "الاربعاء",
-                    Minor_degree: "",
-                    Major_degree: "",
-                    Student_degree: "",
-                },
-                {
-                    Subject_Name: "الخميس",
-                    Minor_degree: "",
-                    Major_degree: "",
-                    Student_degree: "",
-                },
-            ];
-
-            this.changesMade = false;
-            this.lastModified = "لم يتم التعديل بعد";
-
             try {
-                const docRef = doc(
-                    db,
-                    "studySchedule",
-                    `${this.selectedClass.replace("/", "-")}_${
-                        this.selectedSection
-                    }-${this.year}`
-                );
+                // إعادة تعيين الجدول قبل تحميل البيانات الجديدة
+                this.Results.schedule = [
+                    {
+                        Subject_Name: "السبت",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                    {
+                        Subject_Name: "الأحد",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                    {
+                        Subject_Name: "الإثنين",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                    {
+                        Subject_Name: "الثلاثاء",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                    {
+                        Subject_Name: "الأربعاء",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                    {
+                        Subject_Name: "الخميس",
+                        Minor_degree: "",
+                        Major_degree: "",
+                        Student_degree: "",
+                    },
+                ];
+
+                this.changesMade = false;
+                this.lastModified = "لم يتم التعديل بعد";
+
+                // هنا تحقق إذا كانت البيانات موجودة
+                const docRef = doc(db, "studySchedule", this.scheduleId);
                 const docSnap = await getDoc(docRef);
+
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    this.Results.schedule = data.schedule || [
-                        {
-                            Subject_Name: "السبت",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                        {
-                            Subject_Name: "الاحد",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                        {
-                            Subject_Name: "الاثنين ",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                        {
-                            Subject_Name: "الثلاثاء",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                        {
-                            Subject_Name: "الاربعاء",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                        {
-                            Subject_Name: "الخميس",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                    ];
+                    this.Results.schedule =
+                        data.schedule || this.Results.schedule;
                     this.lastModified = data.lastModified
                         ? data.lastModified.toDate().toLocaleString()
                         : "لم يتم التعديل بعد";
+                }
+            } catch (error) {
+                console.error("Error getting document: ", error);
+            }
+        },
+        async saveSchedule() {
+            if (!this.selectedClass || !this.selectedSection) return;
+
+            try {
+                // استخدم معرّف الفصل من Firestore
+                const docRef = doc(db, "studySchedule", this.scheduleId);
+
+                const docSnap = await getDoc(docRef);
+
+                const isNew = !docSnap.exists(); // تحقق مما إذا كان الجدول جديدًا
+
+                await setDoc(
+                    docRef,
+                    {
+                        class: this.selectedClass,
+                        section: this.selectedSection,
+                        educational_level: this.year,
+                        schedule: this.Results.schedule,
+                        lastModified: Timestamp.now(),
+                    },
+                    { merge: true }
+                );
+
+                this.changesMade = false;
+                this.lastModified = new Date().toLocaleString();
+                this.closeDialog();
+
+                // إعداد الرسالة بناءً على حالة الجدول
+                if (isNew) {
+                    this.confirmationText = `تم إضافة جدول دراسي جديد للفصل ${this.selectedClass} للقسم ${this.selectedSection} للسنة الدراسية ${this.year}`;
                 } else {
-                    // في حالة عدم وجود بيانات، إعداد جدول دراسي فارغ
+                    this.confirmationText = "تم تعديل الجدول";
+                }
+                this.showSnackbar = true; // عرض الرسالة
+            } catch (error) {
+                console.error("Error updating document: ", error);
+            }
+        },
+        async fetchScheduleId() {
+            if (!this.selectedClass || !this.selectedSection) return;
+
+            try {
+                const querySnapshot = await getDocs(
+                    query(
+                        collection(db, "studySchedule"),
+                        where("class", "==", this.selectedClass),
+                        where("section", "==", this.selectedSection),
+                        where("educational_level", "==", this.year)
+                    )
+                );
+
+                if (!querySnapshot.empty) {
+                    const doc = querySnapshot.docs[0];
+                    this.scheduleId = doc.id;
+                    this.loadSchedule(); // تحميل البيانات الحالية
+                } else {
+                    // إذا لم يكن هناك معرّف، قم بإعادة تعيين القيم
+                    this.scheduleId = uuidv4();
                     this.Results.schedule = [
                         {
                             Subject_Name: "السبت",
@@ -288,13 +329,13 @@ export default {
                             Student_degree: "",
                         },
                         {
-                            Subject_Name: "الاحد",
+                            Subject_Name: "الأحد",
                             Minor_degree: "",
                             Major_degree: "",
                             Student_degree: "",
                         },
                         {
-                            Subject_Name: "الاثنين ",
+                            Subject_Name: "الإثنين",
                             Minor_degree: "",
                             Major_degree: "",
                             Student_degree: "",
@@ -306,7 +347,7 @@ export default {
                             Student_degree: "",
                         },
                         {
-                            Subject_Name: "الاربعاء",
+                            Subject_Name: "الأربعاء",
                             Minor_degree: "",
                             Major_degree: "",
                             Student_degree: "",
@@ -320,31 +361,7 @@ export default {
                     ];
                 }
             } catch (error) {
-                console.error("Error getting document: ", error);
-            }
-        },
-        async saveSchedule() {
-            if (!this.selectedClass || !this.selectedSection) return;
-            try {
-                const docRef = doc(
-                    db,
-                    "studySchedule",
-                    `${this.selectedClass.replace("/", "-")}_${
-                        this.selectedSection
-                    }-${this.year}`
-                );
-                await setDoc(docRef, {
-                    class: this.selectedClass,
-                    section: this.selectedSection,
-                    educational_level: this.year,
-                    schedule: this.Results.schedule,
-                    lastModified: Timestamp.now(),
-                });
-                this.changesMade = false;
-                this.lastModified = new Date().toLocaleString();
-                this.closeDialog();
-            } catch (error) {
-                console.error("Error updating document: ", error);
+                console.error("Error fetching schedule ID: ", error);
             }
         },
         closeDialog() {

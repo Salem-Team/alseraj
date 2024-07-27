@@ -2365,6 +2365,15 @@
                                                         required
                                                         label="اسم الطالب"
                                                     ></v-text-field>
+                                                    <v-text-field
+                                                        v-model="form.phone"
+                                                        style="width: 50%"
+                                                        :error-messages="
+                                                            errors.phone
+                                                        "
+                                                        required
+                                                        label="رقم التليفون"
+                                                    ></v-text-field>
 
                                                     <v-select
                                                         :items="[
@@ -2461,6 +2470,14 @@
                                                             v-bind="attrs"
                                                             v-on="on"
                                                         ></v-text-field>
+                                                        <v-text-field
+                                                            v-model="
+                                                                form.password
+                                                            "
+                                                            label="الباسوورد"
+                                                            type="password"
+                                                            required
+                                                        ></v-text-field>
                                                     </template>
                                                     <v-card>
                                                         <v-date-picker
@@ -2547,11 +2564,7 @@
                 </v-dialog>
             </v-col>
         </v-row>
-        <confirm_message
-            :text="confirmationText"
-            @close-snackbar="handleCloseSnackbar"
-            v-model="showSnackbar"
-        />
+        <confirm_message :text="confirmationText" v-model="showSnackbar" />
     </v-container>
 </template>
 
@@ -2596,6 +2609,8 @@ import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 import Chart from "chart.js/auto";
 import { useDialogStore } from "@/store/useDialogStore";
+import { mapActions } from "pinia";
+import { usenotification } from "../store/notification.js";
 export default {
     name: "StudentList",
     components: {
@@ -2695,6 +2710,7 @@ export default {
                 birthday: null,
                 parent_name: "",
                 national_id: "",
+                phone: "",
 
                 Guardian: [
                     { Guardian_name: "" },
@@ -2707,7 +2723,18 @@ export default {
                 errors: {},
                 Results: [
                     {
-                        weekly: [],
+                        weekly: [
+                            {
+                                Subject_Name: "دين",
+                                Major_degree: 100,
+                                Student_degree: 96,
+                            },
+                            {
+                                Subject_Name: "دراسات",
+                                Major_degree: 50,
+                                Student_degree: 42,
+                            },
+                        ],
                     },
                     {
                         Monthly: [
@@ -2859,88 +2886,14 @@ export default {
                                     },
                                 ],
                             },
-                            {
-                                Certificate_title: "شهر مارس",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
-                            {
-                                Certificate_title: "الترم الثاني",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
                         ],
                     },
                 ],
                 payments: {
-                    Expenses: 1000,
+                    Expenses: 0,
                     payment_System: "",
                     Installment_System: "",
-                    paid_Up: 100,
+                    paid_Up: 0,
                     Residual: 0,
                 },
                 Notifications: [],
@@ -3068,8 +3021,25 @@ export default {
     async created() {
         await this.fetchStudents();
         this.years = new Date().getFullYear();
+        this.get_notifications("student_notification");
     },
     methods: {
+        ...mapActions(usenotification, [
+            "send_Notification",
+            "get_notifications",
+        ]),
+        getMonthlyDegrees(student, month) {
+            const monthIndex = this.gradeOptions.indexOf(month);
+            if (monthIndex === -1) return 0;
+            const degrees =
+                student.Results[1].Monthly[monthIndex]?.Degrees || [];
+            let total = 0;
+            degrees.forEach((degree) => {
+                total += Number(degree.Student_degree);
+            });
+            const maxDegrees = degrees.length * 100;
+            return (total / maxDegrees) * 100;
+        },
         totalDegrees(student) {
             const degrees = student.Results[1].Monthly[0].Degrees; // Assuming the first month is the desired one
             let total = 0;
@@ -3195,9 +3165,6 @@ export default {
                 );
             }
         },
-        handleCloseSnackbar() {
-            this.showSnackbar = false; // تحديث حالة الرسالة في المكون الأم
-        },
         async saveChanges() {
             try {
                 const studentDoc = doc(db, "students", this.selectedStudent.id);
@@ -3229,18 +3196,6 @@ export default {
             this.changesMade2 = false;
         },
 
-        getMonthlyDegrees(student, month) {
-            const monthIndex = this.gradeOptions.indexOf(month);
-            if (monthIndex === -1) return 0;
-            const degrees =
-                student.Results[1].Monthly[monthIndex]?.Degrees || [];
-            let total = 0;
-            degrees.forEach((degree) => {
-                total += Number(degree.Student_degree);
-            });
-            const maxDegrees = degrees.length * 100;
-            return (total / maxDegrees) * 100;
-        },
         async fetchStudents() {
             try {
                 const q = query(
@@ -3291,6 +3246,8 @@ export default {
                         year: new Date().getFullYear(),
                         National_id: this.form.parent_national_id, // إضافة National_id هنا
                         state: true,
+                        password: this.form.password, // إضافة الباسوورد هنا
+                        phone: this.form.phone,
                     });
 
                     const newStudent = {
@@ -3307,6 +3264,8 @@ export default {
                         year: new Date().getFullYear(),
                         National_id: this.form.parent_national_id, // إضافة National_id هنا
                         state: true,
+                        password: this.form.password, // إضافة الباسوورد هنا
+                        phone: this.form.phone,
                     };
 
                     this.students.push(newStudent);
@@ -3554,80 +3513,6 @@ export default {
                             },
                             {
                                 Certificate_title: "شهر فبراير",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
-                            {
-                                Certificate_title: "شهر مارس",
-                                Degrees: [
-                                    {
-                                        Subject_Name: "انجليزى",
-                                        Teacher_Name: "كريم عمر",
-                                        Behavior_assessment: "جيد",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 98,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "كمال محمود",
-                                        Behavior_assessment: "جيد جدا",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 94,
-                                    },
-                                    {
-                                        Subject_Name: " جغرافيا",
-                                        Teacher_Name: "علاء محمود",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 82,
-                                    },
-                                    {
-                                        Subject_Name: " تاريخ",
-                                        Teacher_Name: "خالد محمد",
-                                        Behavior_assessment: "ممتاز",
-                                        Minor_degree: 50,
-                                        Major_degree: 100,
-                                        Student_degree: 79,
-                                    },
-                                ],
-                            },
-                            {
-                                Certificate_title: "الترم الثاني",
                                 Degrees: [
                                     {
                                         Subject_Name: "انجليزى",
@@ -4076,6 +3961,11 @@ export default {
                         theDescription: this.AddNotice.theDescription,
                         NotificationType: this.AddNotice.NotificationType,
                     };
+                    this.send_Notification(
+                        this.AddNotice.NoticeTitle,
+                        this.AddNotice.theDescription,
+                        "student_notification"
+                    );
                     // إعداد نص الرسالة وتفعيل Snackbar
                     this.confirmationText = "تم  اضافه الاشعار بنجاح";
                     this.showSnackbar = true;
@@ -4377,8 +4267,8 @@ export default {
                 "شهر نوفمبر",
                 "شهر ديسمبر",
                 "الترم الأول",
-                "شهر فبراير",
-                "شهر مارس",
+                "شهر نوفمبر",
+                "الترم الأول",
             ];
             return monthNames[month - 1] || month;
         },

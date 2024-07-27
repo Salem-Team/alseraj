@@ -1251,21 +1251,22 @@
                                                                 size="large"
                                                                 @click="
                                                                     selectMonth(
-                                                                        'شهر فبراير'
+                                                                        'شهر نوفمبر'
                                                                     )
                                                                 "
                                                                 >شهر
-                                                                فبراير</v-btn
+                                                                نوفمبر</v-btn
                                                             >
                                                             <v-btn
                                                                 rounded="xs"
                                                                 size="large"
                                                                 @click="
                                                                     selectMonth(
-                                                                        'شهر مارس'
+                                                                        'الترم الأول'
                                                                     )
                                                                 "
-                                                                >شهر مارس</v-btn
+                                                                >الترم
+                                                                الأول</v-btn
                                                             >
                                                             <v-btn
                                                                 rounded="xs"
@@ -2365,6 +2366,15 @@
                                                         required
                                                         label="اسم الطالب"
                                                     ></v-text-field>
+                                                    <v-text-field
+                                                        v-model="form.phone"
+                                                        style="width: 50%"
+                                                        :error-messages="
+                                                            errors.phone
+                                                        "
+                                                        required
+                                                        label="رقم التليفون"
+                                                    ></v-text-field>
 
                                                     <v-select
                                                         :items="[
@@ -2460,6 +2470,14 @@
                                                             required
                                                             v-bind="attrs"
                                                             v-on="on"
+                                                        ></v-text-field>
+                                                        <v-text-field
+                                                            v-model="
+                                                                form.password
+                                                            "
+                                                            label="الباسوورد"
+                                                            type="password"
+                                                            required
                                                         ></v-text-field>
                                                     </template>
                                                     <v-card>
@@ -2596,6 +2614,8 @@ import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 import Chart from "chart.js/auto";
 import { useDialogStore } from "@/store/useDialogStore";
+import { mapActions } from "pinia";
+import { usenotification } from "../store/notification.js";
 export default {
     name: "StudentList",
     components: {
@@ -2695,6 +2715,7 @@ export default {
                 birthday: null,
                 parent_name: "",
                 national_id: "",
+                phone: "",
 
                 Guardian: [
                     { Guardian_name: "" },
@@ -2707,7 +2728,18 @@ export default {
                 errors: {},
                 Results: [
                     {
-                        weekly: [],
+                        weekly: [
+                            {
+                                Subject_Name: "دين",
+                                Major_degree: 100,
+                                Student_degree: 96,
+                            },
+                            {
+                                Subject_Name: "دراسات",
+                                Major_degree: 50,
+                                Student_degree: 42,
+                            },
+                        ],
                     },
                     {
                         Monthly: [
@@ -2823,7 +2855,7 @@ export default {
                                 ],
                             },
                             {
-                                Certificate_title: "شهر فبراير",
+                                Certificate_title: "شهر نوفمبر",
                                 Degrees: [
                                     {
                                         Subject_Name: "انجليزى",
@@ -3070,6 +3102,7 @@ export default {
         this.years = new Date().getFullYear();
     },
     methods: {
+        ...mapActions(usenotification, ["send_Notification"]),
         totalDegrees(student) {
             const degrees = student.Results[1].Monthly[0].Degrees; // Assuming the first month is the desired one
             let total = 0;
@@ -3291,6 +3324,8 @@ export default {
                         year: new Date().getFullYear(),
                         National_id: this.form.parent_national_id, // إضافة National_id هنا
                         state: true,
+                        password: this.form.password, // إضافة الباسوورد هنا
+                        phone: this.form.phone,
                     });
 
                     const newStudent = {
@@ -3307,6 +3342,8 @@ export default {
                         year: new Date().getFullYear(),
                         National_id: this.form.parent_national_id, // إضافة National_id هنا
                         state: true,
+                        password: this.form.password, // إضافة الباسوورد هنا
+                        phone: this.form.phone,
                     };
 
                     this.students.push(newStudent);
@@ -3553,7 +3590,7 @@ export default {
                                 ],
                             },
                             {
-                                Certificate_title: "شهر فبراير",
+                                Certificate_title: "شهر نوفمبر",
                                 Degrees: [
                                     {
                                         Subject_Name: "انجليزى",
@@ -4076,6 +4113,10 @@ export default {
                         theDescription: this.AddNotice.theDescription,
                         NotificationType: this.AddNotice.NotificationType,
                     };
+                    this.send_Notification(
+                        this.AddNotice.NoticeTitle,
+                        this.AddNotice.theDescription
+                    );
                     // إعداد نص الرسالة وتفعيل Snackbar
                     this.confirmationText = "تم  اضافه الاشعار بنجاح";
                     this.showSnackbar = true;
@@ -4377,8 +4418,8 @@ export default {
                 "شهر نوفمبر",
                 "شهر ديسمبر",
                 "الترم الأول",
-                "شهر فبراير",
-                "شهر مارس",
+                "شهر نوفمبر",
+                "الترم الأول",
             ];
             return monthNames[month - 1] || month;
         },

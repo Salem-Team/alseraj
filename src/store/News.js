@@ -285,20 +285,23 @@ export const useNews = defineStore("News", {
             this.Image_Information = New.image;
             this.Time_Condition = New.time;
         },
-        // Action method to handle file change event and set image preview
         async onFileChange(event) {
             const file = event.target.files[0];
             if (file) {
                 // Convert file to a URL that can be used as an image source
                 this.image = URL.createObjectURL(file);
+                console.log(this.image);
                 // Step 1: Upload the image and get the download URL
-                const imageUrl = await this.upload_Image(this.New.image);
+                const imageUrl = await this.upload_Image(
+                    this.Image_Information
+                );
                 this.Image_Information = imageUrl;
+                return imageUrl;
             } else {
                 this.image = null;
             }
         },
-        // Action method to update news details in Firestore
+        // Method to update news details in Firestore
         async Update_News(NewId) {
             try {
                 this.loading = true;
@@ -319,15 +322,17 @@ export const useNews = defineStore("News", {
                     image: secrureDataStore.encryptData(
                         this.Image_Information,
                         "12343a"
-                    ), // Assign the determined image value here
+                    ), // Encrypted image URL
                 });
+
                 // Refresh news data
                 this.Get_data();
                 this.snackbar3 = true;
+            } catch (error) {
+                console.error("Error updating the News:", error);
+            } finally {
                 this.loading = false;
                 this.dialog_1 = false;
-            } catch (error) {
-                console.error("Error updating the New:", error);
             }
         },
     },

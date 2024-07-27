@@ -115,7 +115,11 @@
                                 @click="dialog = false"
                             ></v-btn>
                         </div>
-                        <form ref="form" @submit.prevent class="ma-auto mt-4">
+                        <form
+                            ref="form"
+                            @submit.prevent="news.Add_News"
+                            class="ma-auto mt-4"
+                        >
                             <v-text-field
                                 v-model="New.title"
                                 :rules="[
@@ -125,6 +129,8 @@
                                 label="عنوان"
                                 variant="outlined"
                                 required
+                                :minlength="10"
+                                :maxlength="150"
                             ></v-text-field>
 
                             <v-file-input
@@ -150,93 +156,29 @@
                                 </template>
                             </v-progress-linear>
                             <br />
-                            <div class="d-flex justify-space-between pb-0">
-                                <v-btn-toggle
-                                    v-model="formatting"
-                                    variant="outlined"
-                                    divided
-                                    multiple
-                                >
-                                    <v-btn>
-                                        <v-icon
-                                            icon="mdi-format-italic"
-                                        ></v-icon>
-                                    </v-btn>
-
-                                    <v-btn>
-                                        <v-icon icon="mdi-format-bold"></v-icon>
-                                    </v-btn>
-
-                                    <v-btn>
-                                        <v-icon
-                                            icon="mdi-format-underline"
-                                        ></v-icon>
-                                    </v-btn>
-
-                                    <v-btn>
-                                        <div
-                                            class="d-flex align-center flex-column justify-center"
-                                        >
-                                            <v-icon
-                                                icon="mdi-format-color-text"
-                                            ></v-icon>
-
-                                            <v-sheet
-                                                color="primary"
-                                                height="4"
-                                                width="26"
-                                                tile
-                                            ></v-sheet>
-                                        </div>
-                                    </v-btn>
-                                </v-btn-toggle>
-
-                                <v-btn-toggle
-                                    v-model="alignment"
-                                    variant="outlined"
-                                    divided
-                                >
-                                    <v-btn>
-                                        <v-icon
-                                            icon="mdi-format-align-center"
-                                        ></v-icon>
-                                    </v-btn>
-
-                                    <v-btn>
-                                        <v-icon
-                                            icon="mdi-format-align-left"
-                                        ></v-icon>
-                                    </v-btn>
-
-                                    <v-btn>
-                                        <v-icon
-                                            icon="mdi-format-align-right"
-                                        ></v-icon>
-                                    </v-btn>
-                                </v-btn-toggle>
-                            </div>
-                            <v-textarea
+                            <p>وصف قصير</p>
+                            <ckeditor
                                 v-model="New.description"
-                                :rules="[
-                                    (v) => !!v || 'الرجاء إدخال وصف قصير',
-                                    (v) =>
-                                        (v && v.length <= 150) ||
-                                        'يجب أن يكون الوصف 150 حرفًا كحد أقصى',
-                                ]"
-                                label="وصف قصير"
-                                :counter="150"
-                                rows="4"
-                                no-resize
-                                variant="outlined"
-                                :maxlength="150"
-                                required
-                            ></v-textarea>
+                                id="Description"
+                                :editor="editor"
+                                @input="updateCharCount"
+                                ref="ckeditor"
+                            ></ckeditor>
+                            <p>
+                                عدد الحروف: {{ charCount }} /
+                                {{ maxChars }}
+                                <span
+                                    v-if="charCount >= maxChars"
+                                    style="color: red"
+                                >
+                                    (Maximum characters reached)</span
+                                >
+                            </p>
                             <v-btn
                                 class="d-flex align-center mt-4 mb-4"
                                 type="submit"
                                 :loading="loading"
                                 :disabled="loading"
-                                @click="news.Add_News"
                                 style="
                                     width: 100%;
                                     padding: 20px;
@@ -266,7 +208,13 @@
                                 @click="dialog_1 = false"
                             ></v-btn>
                         </div>
-                        <form ref="form" @submit.prevent class="ma-auto mt-4">
+                        <form
+                            ref="form"
+                            @submit.prevent="
+                                news.Update_News(news.Id_Information)
+                            "
+                            class="ma-auto mt-4"
+                        >
                             <v-text-field
                                 v-model="news.Title_Information"
                                 :rules="[
@@ -276,6 +224,8 @@
                                 label="عنوان"
                                 variant="outlined"
                                 required
+                                :minlength="10"
+                                :maxlength="150"
                             ></v-text-field>
                             <v-file-input
                                 v-model="news.Image_Information"
@@ -283,11 +233,15 @@
                                 accept="image/*"
                                 variant="outlined"
                                 prepend-icon=""
-                                required
                                 prepend-inner-icon="mdi-paperclip"
                                 @change="news.onFileChange"
                             ></v-file-input>
-                            <div v-if="news.image === ''">
+                            <div
+                                v-if="
+                                    news.Image_Information !== '' &&
+                                    news.image == ''
+                                "
+                            >
                                 <v-fab
                                     icon="mdi-delete"
                                     location="top right"
@@ -298,7 +252,8 @@
                                     @click="
                                         news.delete_photo(
                                             news.Image_Information
-                                        )
+                                        ),
+                                            (news.Image_Information = '')
                                     "
                                 ></v-fab>
                                 <v-img
@@ -315,269 +270,29 @@
                                 ></v-img>
                             </div>
                             <br />
-                            <div v-if="editor">
-                                <button
-                                    :disabled="
-                                        !editor
-                                            .can()
-                                            .chain()
-                                            .focus()
-                                            .toggleBold()
-                                            .run()
-                                    "
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :class="{
-                                        'ring-indigo-900 ring-2':
-                                            editor.isActive('bold'),
-                                    }"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .toggleBold()
-                                            .run()
-                                    "
-                                    v-text="'bold'"
-                                />
-                                <button
-                                    :disabled="
-                                        !editor
-                                            .can()
-                                            .chain()
-                                            .focus()
-                                            .toggleItalic()
-                                            .run()
-                                    "
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :class="{
-                                        'ring-indigo-900 ring-2':
-                                            editor.isActive('italic'),
-                                    }"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .toggleItalic()
-                                            .run()
-                                    "
-                                    v-text="'italic'"
-                                />
-                                <button
-                                    :disabled="
-                                        !editor
-                                            .can()
-                                            .chain()
-                                            .focus()
-                                            .toggleStrike()
-                                            .run()
-                                    "
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :class="{
-                                        'ring-indigo-900 ring-2':
-                                            editor.isActive('strike'),
-                                    }"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .toggleStrike()
-                                            .run()
-                                    "
-                                    v-text="'strike'"
-                                />
-                                <button
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :class="{
-                                        'ring-indigo-900 ring-2':
-                                            editor.isActive('paragraph'),
-                                    }"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .setParagraph()
-                                            .run()
-                                    "
-                                    v-text="'paragraph'"
-                                />
-                                <button
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :class="{
-                                        'ring-indigo-900 ring-2':
-                                            editor.isActive('heading', {
-                                                level: 1,
-                                            }),
-                                    }"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .toggleHeading({ level: 1 })
-                                            .run()
-                                    "
-                                    v-text="'h1'"
-                                />
-                                <button
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :class="{
-                                        'ring-indigo-900 ring-2':
-                                            editor.isActive('heading', {
-                                                level: 2,
-                                            }),
-                                    }"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .toggleHeading({ level: 2 })
-                                            .run()
-                                    "
-                                    v-text="'h2'"
-                                />
-                                <button
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :class="{
-                                        'ring-indigo-900 ring-2':
-                                            editor.isActive('heading', {
-                                                level: 3,
-                                            }),
-                                    }"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .toggleHeading({ level: 3 })
-                                            .run()
-                                    "
-                                    v-text="'h3'"
-                                />
-                                <button
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :class="{
-                                        'ring-indigo-900 ring-2':
-                                            editor.isActive('bulletList'),
-                                    }"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .toggleBulletList()
-                                            .run()
-                                    "
-                                    v-text="'bullet list'"
-                                />
-                                <button
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :class="{
-                                        'ring-indigo-900 ring-2':
-                                            editor.isActive('orderedList'),
-                                    }"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .toggleOrderedList()
-                                            .run()
-                                    "
-                                    v-text="'ordered list'"
-                                />
-                                <button
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :class="{
-                                        'ring-indigo-900 ring-2':
-                                            editor.isActive('blockquote'),
-                                    }"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .toggleBlockquote()
-                                            .run()
-                                    "
-                                    v-text="'blockquote'"
-                                />
-                                <button
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .setHorizontalRule()
-                                            .run()
-                                    "
-                                    v-text="'horizontal rule'"
-                                />
-                                <button
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    @click="
-                                        editor
-                                            .chain()
-                                            .focus()
-                                            .setHardBreak()
-                                            .run()
-                                    "
-                                    v-text="'hard break'"
-                                />
-                                <button
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :disabled="
-                                        !editor
-                                            .can()
-                                            .chain()
-                                            .focus()
-                                            .undo()
-                                            .run()
-                                    "
-                                    @click="editor.chain().focus().undo().run()"
-                                >
-                                    <ArrowUturnLeftIcon
-                                        class="h-4 w-4 flex-shrink-0"
-                                        aria-hidden="true"
-                                    />
-                                </button>
-                                <button
-                                    class="m-1 inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10"
-                                    :disabled="
-                                        !editor
-                                            .can()
-                                            .chain()
-                                            .focus()
-                                            .redo()
-                                            .run()
-                                    "
-                                    @click="editor.chain().focus().redo().run()"
-                                >
-                                    <ArrowUturnRightIcon
-                                        class="h-4 w-4 flex-shrink-0"
-                                        aria-hidden="true"
-                                    />
-                                </button>
-                            </div>
-                            <EditorContent
-                                :editor="editor"
-                                content="news.Description_Information"
-                            />
-                            <v-textarea
+                            <p>وصف قصير</p>
+                            <ckeditor
                                 v-model="news.Description_Information"
-                                :rules="[
-                                    (v) => !!v || 'الرجاء إدخال وصف قصير',
-                                    (v) =>
-                                        (v && v.length <= 150) ||
-                                        'يجب أن يكون الوصف 150 حرفًا كحد أقصى',
-                                ]"
-                                label="وصف قصير"
-                                :counter="150"
-                                required
-                                rows="4"
-                                no-resize
-                                variant="outlined"
-                                :maxlength="150"
-                            ></v-textarea>
+                                id="Description"
+                                :editor="editor"
+                                @input="updateCharCount2"
+                                ref="ckeditor"
+                            ></ckeditor>
+                            <p>
+                                عدد الحروف: {{ charCount }} /
+                                {{ maxChars }}
+                                <span
+                                    v-if="charCount >= maxChars"
+                                    style="color: red"
+                                >
+                                    (Maximum characters reached)</span
+                                >
+                            </p>
+
                             <v-btn
                                 type="submit"
                                 :loading="loading"
                                 :disabled="loading"
-                                @click="news.Update_News(news.Id_Information)"
                                 class="d-flex align-center mt-4 mb-4"
                                 style="
                                     width: 100%;
@@ -647,7 +362,11 @@
                                     @click="dialog_6 = false"
                                 ></v-btn>
                             </div>
-                            <v-carousel hide-delimiters>
+                            <v-carousel
+                                :show-arrows="false"
+                                hide-delimiter-background
+                                color="var(--main-color)"
+                            >
                                 <v-carousel-item
                                     class="pa-5"
                                     :src="news.Image_Information"
@@ -741,42 +460,104 @@
 import { storeToRefs } from "pinia";
 import { defineComponent } from "vue";
 import { useNews } from "@/store/News.js";
-import { useEditor, EditorContent } from "@tiptap/vue-3";
-import StarterKit from "@tiptap/starter-kit";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import CKEditor from "@ckeditor/ckeditor5-vue";
 import Offline_error from "@/components/Offline_error.vue";
 import Empty_error from "@/components/Empty_error.vue";
 import confirm_message from "@/components/confirm_message.vue";
 export default defineComponent({
     inject: ["Emitter"],
+    mounted() {
+        this.editor.defaultConfig = {
+            toolbar: {
+                items: [
+                    "heading",
+                    "|",
+                    "bold",
+                    "italic",
+                    "link",
+                    "bulletedList",
+                    "numberedList",
+                    "blockQuote",
+                    "undo",
+                    "redo",
+                ],
+            },
+        };
+    },
     data() {
-        return {};
+        return {
+            editor: ClassicEditor,
+            charCount: 0,
+            maxChars: 150,
+        };
+    },
+    methods: {
+        updateCharCount2() {
+            this.charCount = this.news.Description_Information.length;
+
+            // Limit the text length
+            if (this.charCount > this.maxChars) {
+                this.news.Description_Information =
+                    this.news.Description_Information.substring(
+                        0,
+                        this.maxChars
+                    );
+                this.charCount = this.maxChars;
+                this.$refs.ckeditor.editor.setData(
+                    this.news.Description_Information
+                ); // Update CKEditor content
+            }
+        },
+        updateCharCount() {
+            this.charCount = this.New.description.length;
+
+            // Limit the text length
+            if (this.charCount > this.maxChars) {
+                this.New.description = this.New.description.substring(
+                    0,
+                    this.maxChars
+                );
+                this.charCount = this.maxChars;
+                this.$refs.ckeditor.editor.setData(this.New.description); // Update CKEditor content
+            }
+        },
+    },
+    watch: {
+        "New.description": function (newValue) {
+            if (newValue.length > this.maxChars) {
+                this.New.description = newValue.substring(0, this.maxChars);
+                this.charCount = this.maxChars;
+                this.$refs.ckeditor.editor.setData(this.New.description); // Update CKEditor content
+            } else {
+                this.charCount = newValue.length;
+            }
+        },
+        Description_Information: function (newValue) {
+            if (newValue.length > this.maxChars) {
+                this.Description_Information = newValue.substring(
+                    0,
+                    this.maxChars
+                );
+                this.charCount = this.maxChars;
+                this.$refs.ckeditor.editor.setData(
+                    this.Description_Information
+                ); // Update CKEditor content
+            } else {
+                this.charCount = newValue.length;
+            }
+        },
     },
     components: {
         Empty_error,
         Offline_error,
         confirm_message,
-        EditorContent,
+        ckeditor: CKEditor.component,
     },
     setup() {
         const news = useNews();
         news.Get_data();
-        const editor = useEditor({
-            editorProps: {
-                attributes: {
-                    class: "w-full prose my-6 mx-auto focus:outline-none",
-                },
-            },
-            extensions: [StarterKit],
-        });
-        const editor1 = useEditor({
-            content: "<p>Here is the content!</p>",
-            editorProps: {
-                attributes: {
-                    class: "w-full prose my-6 mx-auto focus:outline-none",
-                },
-            },
-            extensions: [StarterKit],
-        });
+
         // Destructure reactive references and methods from News store
         const {
             New,
@@ -810,8 +591,6 @@ export default defineComponent({
             New,
             Add_News,
             alignment,
-            editor,
-            editor1,
             text10,
             text11,
             snackbar,
@@ -843,7 +622,9 @@ form {
     width: 96.5%;
     margin: auto;
 }
-
+.Update div:nth-child(3) .ck.ck-editor__editable_inline > :last-child {
+    height: 100px;
+}
 .use {
     width: 95% !important;
     margin: auto;

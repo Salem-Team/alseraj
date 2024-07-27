@@ -56,7 +56,11 @@
                     <div style="color: var(--main-color)">الصور</div>
                     <v-btn icon="mdi-close" @click="dialog_6 = false"></v-btn>
                 </div>
-                <v-carousel hide-delimiters>
+                <v-carousel
+                    :show-arrows="false"
+                    hide-delimiter-background
+                    color="var(--main-color)"
+                >
                     <div>
                         <v-carousel-item
                             class="pa-5"

@@ -66,7 +66,7 @@
                             </v-btn>
                         </div>
 
-                        <!-- Job Application Form -->
+                        <!-- Form for Job Application with validation -->
                         <form
                             ref="form"
                             @submit.prevent="
@@ -74,7 +74,7 @@
                             "
                             class="ma-auto mt-4"
                         >
-                            <!-- Job Title Field -->
+                            <!-- Job Title Input -->
                             <v-text-field
                                 v-model="jobs.Title_Information"
                                 type="text"
@@ -84,7 +84,7 @@
                                 :rules="[(v) => !!v || 'يجب إدخال اسم الوظيفة']"
                             ></v-text-field>
 
-                            <!-- Name Field -->
+                            <!-- Name Input -->
                             <v-text-field
                                 v-model="jobs.Apply.name"
                                 type="text"
@@ -94,7 +94,7 @@
                                 :rules="[(v) => !!v || 'يجب إدخال الاسم']"
                             ></v-text-field>
 
-                            <!-- Email Field -->
+                            <!-- Email Input -->
                             <v-text-field
                                 v-model="jobs.Apply.email"
                                 type="email"
@@ -109,7 +109,7 @@
                                 ]"
                             ></v-text-field>
 
-                            <!-- Phone Field -->
+                            <!-- Phone Input -->
                             <v-text-field
                                 v-model="jobs.Apply.phone"
                                 type="text"
@@ -121,6 +121,7 @@
                                     (v) =>
                                         /^\d{10}$/.test(v) || 'الرقم غير صحيح',
                                 ]"
+                                :minlength="11"
                             ></v-text-field>
 
                             <!-- CV File Input -->
@@ -144,83 +145,16 @@
                                     <strong>{{ Math.ceil(value) }}%</strong>
                                 </template>
                             </v-progress-linear>
-                            <div class="d-flex justify-space-between pb-0">
-                                <v-btn-toggle
-                                    v-model="formatting"
-                                    variant="outlined"
-                                    divided
-                                    multiple
-                                >
-                                    <v-btn>
-                                        <v-icon
-                                            icon="mdi-format-italic"
-                                            value="italic"
-                                        ></v-icon>
-                                    </v-btn>
-
-                                    <v-btn>
-                                        <v-icon icon="mdi-format-bold"></v-icon>
-                                    </v-btn>
-
-                                    <v-btn>
-                                        <v-icon
-                                            icon="mdi-format-underline"
-                                            value="underline"
-                                        ></v-icon>
-                                    </v-btn>
-
-                                    <v-btn>
-                                        <div
-                                            class="d-flex align-center flex-column justify-center"
-                                        >
-                                            <v-icon
-                                                icon="mdi-format-color-text"
-                                                value="color"
-                                            ></v-icon>
-
-                                            <v-sheet
-                                                color="primary"
-                                                height="4"
-                                                width="26"
-                                                tile
-                                            ></v-sheet>
-                                        </div>
-                                    </v-btn>
-                                </v-btn-toggle>
-
-                                <v-btn-toggle
-                                    v-model="alignment"
-                                    variant="outlined"
-                                    divided
-                                >
-                                    <v-btn
-                                        icon="mdi-format-align-left"
-                                        value="left"
-                                    ></v-btn>
-                                    <v-btn
-                                        icon="mdi-format-align-center"
-                                        value="center"
-                                    ></v-btn>
-                                    <v-btn
-                                        icon="mdi-format-align-right"
-                                        value="right"
-                                    ></v-btn>
-                                    <v-btn
-                                        icon="mdi-format-align-justify"
-                                        value="justify"
-                                    ></v-btn>
-                                </v-btn-toggle>
-                            </div>
-
-                            <!-- Short Description Field -->
+                            <!-- Short Description Textarea -->
                             <v-textarea
                                 v-model="jobs.Apply.description"
                                 label="وصف قصير"
                                 variant="outlined"
                                 required
-                                :maxlength="150"
                                 rows="4"
                                 no-resize
+                                :minlength="10"
+                                :maxlength="150"
                                 :rules="[(v) => !!v || 'يجب إدخال وصف قصير']"
                             ></v-textarea>
 
@@ -250,7 +184,6 @@
                                 "
                             >
                                 تقديم
-                                <!-- Submit -->
                             </v-btn>
                         </form>
                     </v-card>

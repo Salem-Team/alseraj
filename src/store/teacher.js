@@ -114,6 +114,13 @@ export const useteacher = defineStore("teacher", {
                 });
                 console.log("Document written with ID: ", docRef.id);
                 this.Get_data(); // Refresh user data
+                this.user = {
+                    // Initial user object
+                    name: "",
+                    email: "",
+                    password: "",
+                    roles: [],
+                };
                 this.snackbar = true;
                 this.dialog = false; // Close dialog
                 this.loading = false; // Stop loading indicator
@@ -187,6 +194,11 @@ export const useteacher = defineStore("teacher", {
         },
         // Store user information
         user_Information(user) {
+            this.name_Information = "";
+            this.Id_Information = "";
+            this.National_id_Information = "";
+            this.email_Information = "";
+            this.roles_Information = [];
             this.name_Information = user.name;
             this.Id_Information = user.id;
             console.log(user.id);
@@ -211,6 +223,11 @@ export const useteacher = defineStore("teacher", {
                     ),
                     roles: this.roles_Information,
                 });
+                this.name_Information = "";
+                this.Id_Information = "";
+                this.National_id_Information = "";
+                this.email_Information = "";
+                this.roles_Information = [];
                 this.Get_data(); // Refresh user data
                 this.loading = false;
                 this.snackbar3 = true;

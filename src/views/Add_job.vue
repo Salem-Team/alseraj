@@ -168,7 +168,11 @@
                                 @click="dialog = false"
                             ></v-btn>
                         </div>
-                        <form ref="form" @submit.prevent class="ma-auto mt-4">
+                        <form
+                            ref="form"
+                            @submit.prevent="jobs.Add_Jobs"
+                            class="ma-auto mt-4"
+                        >
                             <v-text-field
                                 v-model="Job.title"
                                 :rules="[
@@ -194,6 +198,7 @@
                                     required
                                     rows="4"
                                     no-resize
+                                    :minlength="10"
                                     :maxlength="150"
                                 ></v-textarea>
                             </div>
@@ -201,7 +206,6 @@
                                 type="submit"
                                 :loading="loading"
                                 :disabled="loading"
-                                @click="jobs.Add_Jobs"
                                 class="d-flex align-center mb-4"
                                 style="
                                     width: 100%;
@@ -231,7 +235,13 @@
                                 @click="dialog_1 = false"
                             ></v-btn>
                         </div>
-                        <form ref="form" @submit.prevent class="ma-auto mt-4">
+                        <form
+                            ref="form"
+                            @submit.prevent="
+                                jobs.Update_Jobs(jobs.Id_Information)
+                            "
+                            class="ma-auto mt-4"
+                        >
                             <v-text-field
                                 v-model="jobs.Title_Information"
                                 :rules="[
@@ -259,6 +269,7 @@
                                     rows="4"
                                     no-resize
                                     variant="outlined"
+                                    :minlength="10"
                                     :maxlength="150"
                                 ></v-textarea>
                             </div>
@@ -266,7 +277,6 @@
                                 type="submit"
                                 :loading="loading"
                                 :disabled="loading"
-                                @click="jobs.Update_Jobs(jobs.Id_Information)"
                                 class="d-flex align-center mb-4"
                                 style="
                                     width: 100%;

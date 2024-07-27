@@ -2978,9 +2978,14 @@ export default {
     async created() {
         await this.fetchStudents();
         this.years = new Date().getFullYear();
+        this.get_notifications("student_notification");
     },
     methods: {
-        ...mapActions(usenotification, ["send_Notification"]),
+        ...mapActions(usenotification, [
+            "send_Notification",
+            "get_notifications",
+        ]),
+
         totalDegrees(student) {
             const degrees = student.Results[1].Monthly[0].Degrees; // Assuming the first month is the desired one
             let total = 0;
@@ -3876,7 +3881,8 @@ export default {
                     };
                     this.send_Notification(
                         this.AddNotice.NoticeTitle,
-                        this.AddNotice.theDescription
+                        this.AddNotice.theDescription,
+                        "student_notification"
                     );
                     // إعداد نص الرسالة وتفعيل Snackbar
                     this.confirmationText = "تم  اضافه الاشعار بنجاح";

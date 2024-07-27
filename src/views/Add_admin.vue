@@ -116,7 +116,11 @@
                                 @click="admin.dialog = false"
                             ></v-btn>
                         </div>
-                        <form ref="form" @submit.prevent class="ma-auto">
+                        <form
+                            ref="form"
+                            @submit.prevent="admin.add_admin"
+                            class="ma-auto"
+                        >
                             <v-text-field
                                 v-model="user.name"
                                 :rules="[(v) => !!v || 'الاسم مطلوب']"
@@ -136,6 +140,8 @@
                                 type="text"
                                 label="الرقم القومي"
                                 variant="outlined"
+                                :minlength="14"
+                                :maxlength="14"
                                 required
                             ></v-text-field>
 
@@ -186,6 +192,7 @@
                                         ? 'mdi-eye'
                                         : 'mdi-eye-off'
                                 "
+                                :minlength="6"
                                 @click:append-inner="admin.toggle_Show_Password"
                             ></v-text-field>
                             <v-btn
@@ -193,7 +200,6 @@
                                 type="submit"
                                 :loading="loading"
                                 :disabled="loading"
-                                @click="admin.add_admin"
                                 style="
                                     width: 100%;
                                     padding: 20px;
@@ -223,7 +229,13 @@
                                 @click="admin.dialog_1 = false"
                             ></v-btn>
                         </div>
-                        <form ref="form" @submit.prevent class="ma-auto">
+                        <form
+                            ref="form"
+                            @submit.prevent="
+                                admin.Update_Admin(admin.Id_Information)
+                            "
+                            class="ma-auto"
+                        >
                             <v-text-field
                                 v-model="admin.name_Information"
                                 type="text"
@@ -243,6 +255,8 @@
                                 type="text"
                                 label="الرقم القومي"
                                 variant="outlined"
+                                :minlength="14"
+                                :maxlength="14"
                                 required
                             ></v-text-field>
 
@@ -277,9 +291,6 @@
                                 type="submit"
                                 :loading="loading"
                                 :disabled="loading"
-                                @click="
-                                    admin.Update_Admin(admin.Id_Information)
-                                "
                                 class="d-flex align-center mt-4"
                                 style="
                                     width: 100%;

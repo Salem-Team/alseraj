@@ -32,16 +32,22 @@
                     >تسجيل دخول</router-link
                 >
             </div>
+            <v-spacer></v-spacer>
+            <pwa_btn />
         </nav>
     </div>
+
     <router-view />
 </template>
 
 <script>
 import { useAuthStore } from "./store/userStore";
 import { mapActions, mapState } from "pinia";
-
+import pwa_btn from "./components/pwa_btn.vue";
 export default {
+    components: {
+        pwa_btn,
+    },
     setup() {
         const authStore = useAuthStore();
         authStore.get_Cookies();

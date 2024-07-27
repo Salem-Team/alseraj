@@ -63,8 +63,8 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap");
 * {
     direction: rtl !important;
-    // transition: 0.3s;
-    // letter-spacing: normal !important;
+    transition: 0.3s;
+    letter-spacing: 0 !important;
 }
 body {
     direction: rtl;

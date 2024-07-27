@@ -728,7 +728,7 @@
                 <transition name="fade">
                     <v-card>
                         <v-card-title class="headline">
-                            فلتر الطلابه
+                            فلتر الطلاب
                         </v-card-title>
                         <v-card-text>
                             <!-- Filter Options -->
@@ -784,7 +784,8 @@
 import StudentList from "@/components/StudentList.vue";
 import { useDialogStore } from "@/store/useDialogStore";
 import { reactive } from "vue";
-
+import { mapActions } from "pinia";
+import { usenotification } from "../store/notification.js";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
     collection,
@@ -957,6 +958,10 @@ export default {
         },
     },
     methods: {
+        ...mapActions(usenotification, [
+            "send_Notification",
+            "get_notifications",
+        ]),
         updateSection(section) {
             this.activeButton = section;
             this.selectedSection = section;
@@ -1156,7 +1161,11 @@ export default {
                         this.newNotification,
                         classData
                     );
-
+                    this.send_Notification(
+                        this.newNotification.NoticeTitle,
+                        this.newNotification.theDescription,
+                        "Class_Notification"
+                    );
                     await updateDoc(classRef, classData);
                     this.dialogAddNotice = false;
                     this.newNotification = {
@@ -1283,6 +1292,7 @@ export default {
         await this.fetchClassRooms();
         console.log(this.filteredClasses);
         this.fetchClassRooms();
+        this.get_notifications("Class_Notification");
     },
 };
 </script>

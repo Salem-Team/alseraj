@@ -170,7 +170,7 @@
                                                 )
                                             }}%
                                         </h3>
-                                        <p>الشهر الاول</p>
+                                        <p>شهر أكتوبر</p>
                                     </v-card> </v-col
                                 ><v-col cols="2">
                                     <v-card
@@ -193,22 +193,7 @@
                                                 )
                                             }}%
                                         </h3>
-                                        <p>الشهر الثاني</p>
-                                    </v-card> </v-col
-                                ><v-col cols="2">
-                                    <v-card
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>90%</h3>
-                                        <p>امتحان الترم</p>
+                                        <p>شهر نوفمبر</p>
                                     </v-card> </v-col
                                 ><v-col cols="2">
                                     <v-card
@@ -231,7 +216,7 @@
                                                 )
                                             }}%
                                         </h3>
-                                        <p>الشهر الاول</p>
+                                        <p>امتحان الترم الاول</p>
                                     </v-card> </v-col
                                 ><v-col cols="2">
                                     <v-card
@@ -254,7 +239,30 @@
                                                 )
                                             }}%
                                         </h3>
-                                        <p>الشهر الثاني</p>
+                                        <p>شهر فبراير</p>
+                                    </v-card> </v-col
+                                ><v-col cols="2">
+                                    <v-card
+                                        style="
+                                            display: flex;
+                                            justify-content: center;
+                                            flex-direction: column;
+                                            align-items: center;
+                                            padding: 10px;
+                                            background: rgb(33, 150, 243);
+                                            color: #fff;
+                                        "
+                                    >
+                                        <h3>
+                                            {{
+                                                parseFloat(
+                                                    percentageTotalDegrees5(
+                                                        student
+                                                    ).toFixed(1)
+                                                )
+                                            }}%
+                                        </h3>
+                                        <p>شهر مارس</p>
                                     </v-card>
                                 </v-col>
                                 <v-col cols="2">
@@ -269,8 +277,16 @@
                                             color: #fff;
                                         "
                                     >
-                                        <h3>95%</h3>
-                                        <p>امتحان اخر العام</p>
+                                        <h3>
+                                            {{
+                                                parseFloat(
+                                                    percentageTotalDegrees6(
+                                                        student
+                                                    ).toFixed(1)
+                                                )
+                                            }}%
+                                        </h3>
+                                        <p>امتحان الترم الثاني</p>
                                     </v-card>
                                 </v-col>
                             </v-row>
@@ -303,7 +319,8 @@
                                                 margin-bottom: 20px;
                                             "
                                         >
-                                            1000/1500 1000/1500
+                                            {{ student.payments.Expenses }} /
+                                            {{ student.payments.paid_Up }}
                                         </h3>
                                     </div>
                                     <div>
@@ -1201,11 +1218,33 @@
                                                                 size="large"
                                                                 @click="
                                                                     selectMonth(
-                                                                        'شهر يناير'
+                                                                        'شهر أكتوبر'
                                                                     )
                                                                 "
                                                                 >شهر
-                                                                يناير</v-btn
+                                                                أكتوبر</v-btn
+                                                            >
+                                                            <v-btn
+                                                                rounded="xs"
+                                                                size="large"
+                                                                @click="
+                                                                    selectMonth(
+                                                                        'شهر نوفمبر'
+                                                                    )
+                                                                "
+                                                                >شهر
+                                                                نوفمبر</v-btn
+                                                            >
+                                                            <v-btn
+                                                                rounded="xs"
+                                                                size="large"
+                                                                @click="
+                                                                    selectMonth(
+                                                                        'الترم الأول'
+                                                                    )
+                                                                "
+                                                                >الترم
+                                                                الأول</v-btn
                                                             >
                                                             <v-btn
                                                                 rounded="xs"
@@ -1233,11 +1272,12 @@
                                                                 size="large"
                                                                 @click="
                                                                     selectMonth(
-                                                                        'شهر ابرايل'
+                                                                        'الترم الثاني'
                                                                     )
                                                                 "
-                                                                >شهر
-                                                                ابرايل</v-btn
+                                                            >
+                                                                الترم
+                                                                الثاني</v-btn
                                                             >
                                                         </v-col>
                                                     </v-row>
@@ -2507,7 +2547,11 @@
                 </v-dialog>
             </v-col>
         </v-row>
-        <confirm_message :text="confirmationText" v-model="showSnackbar" />
+        <confirm_message
+            :text="confirmationText"
+            @close-snackbar="handleCloseSnackbar"
+            v-model="showSnackbar"
+        />
     </v-container>
 </template>
 
@@ -2572,6 +2616,10 @@ export default {
             type: Boolean,
             required: true,
         },
+        isSortedAscending: Boolean,
+        paymentSortActive: Boolean,
+        gradeSortActive: String,
+        gradeOptions: Array,
     },
     setup() {
         const toast = useToast();
@@ -2612,7 +2660,7 @@ export default {
             editedField: "",
             editedValue: "",
             randomPassword: "",
-            selectedMonth: "شهر يناير",
+            selectedMonth: "شهر أكتوبر",
             dialogAddSubject: false,
             newSubject: {
                 Subject_Name: "",
@@ -2664,7 +2712,7 @@ export default {
                     {
                         Monthly: [
                             {
-                                Certificate_title: "شهر يناير",
+                                Certificate_title: "شهر أكتوبر",
                                 Degrees: [
                                     {
                                         Subject_Name: "عربي",
@@ -2697,6 +2745,80 @@ export default {
                                         Minor_degree: 50,
                                         Major_degree: 100,
                                         Student_degree: 77,
+                                    },
+                                ],
+                            },
+                            {
+                                Certificate_title: "شهر نوفمبر",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
+                                    },
+                                ],
+                            },
+                            {
+                                Certificate_title: "الترم الأول",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
                                     },
                                 ],
                             },
@@ -2775,7 +2897,7 @@ export default {
                                 ],
                             },
                             {
-                                Certificate_title: "شهر ابرايل",
+                                Certificate_title: "الترم الثاني",
                                 Degrees: [
                                     {
                                         Subject_Name: "انجليزى",
@@ -2815,10 +2937,10 @@ export default {
                     },
                 ],
                 payments: {
-                    Expenses: 0,
+                    Expenses: 1000,
                     payment_System: "",
                     Installment_System: "",
-                    paid_Up: 0,
+                    paid_Up: 100,
                     Residual: 0,
                 },
                 Notifications: [],
@@ -3004,6 +3126,34 @@ export default {
                 student.Results[1].Monthly[3].Degrees.length * 100; // Assuming each subject has a max of 100
             return (totalDegrees / maxDegrees) * 100;
         },
+        totalDegrees5(student) {
+            const degrees = student.Results[1].Monthly[4].Degrees; // Assuming the first month is the desired one
+            let total = 0;
+            degrees.forEach((degree) => {
+                total += Number(degree.Student_degree); // Ensuring the degree is a number
+            });
+            return total;
+        },
+        percentageTotalDegrees5(student) {
+            const totalDegrees = this.totalDegrees5(student);
+            const maxDegrees =
+                student.Results[1].Monthly[4].Degrees.length * 100; // Assuming each subject has a max of 100
+            return (totalDegrees / maxDegrees) * 100;
+        },
+        totalDegrees6(student) {
+            const degrees = student.Results[1].Monthly[5].Degrees; // Assuming the first month is the desired one
+            let total = 0;
+            degrees.forEach((degree) => {
+                total += Number(degree.Student_degree); // Ensuring the degree is a number
+            });
+            return total;
+        },
+        percentageTotalDegrees6(student) {
+            const totalDegrees = this.totalDegrees6(student);
+            const maxDegrees =
+                student.Results[1].Monthly[5].Degrees.length * 100; // Assuming each subject has a max of 100
+            return (totalDegrees / maxDegrees) * 100;
+        },
         async updateField(section, index, field, value) {
             if (!this.selectedStudent) {
                 console.error("Error: selectedStudent is null");
@@ -3045,6 +3195,9 @@ export default {
                 );
             }
         },
+        handleCloseSnackbar() {
+            this.showSnackbar = false; // تحديث حالة الرسالة في المكون الأم
+        },
         async saveChanges() {
             try {
                 const studentDoc = doc(db, "students", this.selectedStudent.id);
@@ -3076,52 +3229,18 @@ export default {
             this.changesMade2 = false;
         },
 
-        // getAlertType(notificationType) {
-        //     // if (notificationType === "سي") {
-        //     //     return "error";
-        //     // }
-        //     // switch (notificationType) {
-        //     //     case "success":
-        //     //         return "success";
-        //     //     case "error":
-        //     //         return "error";
-        //     //     case "warning":
-        //     //         return "warning";
-        //     //     case "info":
-        //     //         return "info";
-        //     //     default:
-        //     //         return "info";
-        //     // }
-        // },
-        // getIcon(notificationType) {
-        //     switch (notificationType) {
-        //         case "success":
-        //             return "mdi-check-circle";
-        //         case "error":
-        //         case "سي":
-        //             return "mdi-alert-circle";
-        //         case "warning":
-        //             return "mdi-alert";
-        //         case "info":
-        //             return "mdi-information";
-        //         default:
-        //             return "mdi-information";
-        //     }
-        // getIconClass(notificationType) {
-        //     switch (notificationType) {
-        //         case "success":
-        //             return "green";
-        //         case "error":
-        //         case "سي":
-        //             return "red";
-        //         case "warning":
-        //             return "orange";
-        //         case "info":
-        //             return "blue";
-        //         default:
-        //             return "blue";
-        //     }
-        // },
+        getMonthlyDegrees(student, month) {
+            const monthIndex = this.gradeOptions.indexOf(month);
+            if (monthIndex === -1) return 0;
+            const degrees =
+                student.Results[1].Monthly[monthIndex]?.Degrees || [];
+            let total = 0;
+            degrees.forEach((degree) => {
+                total += Number(degree.Student_degree);
+            });
+            const maxDegrees = degrees.length * 100;
+            return (total / maxDegrees) * 100;
+        },
         async fetchStudents() {
             try {
                 const q = query(
@@ -3323,7 +3442,7 @@ export default {
                     {
                         Monthly: [
                             {
-                                Certificate_title: "شهر يناير",
+                                Certificate_title: "شهر أكتوبر",
                                 Degrees: [
                                     {
                                         Subject_Name: "عربي",
@@ -3356,6 +3475,80 @@ export default {
                                         Minor_degree: 50,
                                         Major_degree: 100,
                                         Student_degree: 77,
+                                    },
+                                ],
+                            },
+                            {
+                                Certificate_title: "شهر نوفمبر",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
+                                    },
+                                ],
+                            },
+                            {
+                                Certificate_title: "الترم الأول",
+                                Degrees: [
+                                    {
+                                        Subject_Name: "انجليزى",
+                                        Teacher_Name: "كريم عمر",
+                                        Behavior_assessment: "جيد",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 98,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "كمال محمود",
+                                        Behavior_assessment: "جيد جدا",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 94,
+                                    },
+                                    {
+                                        Subject_Name: " جغرافيا",
+                                        Teacher_Name: "علاء محمود",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 82,
+                                    },
+                                    {
+                                        Subject_Name: " تاريخ",
+                                        Teacher_Name: "خالد محمد",
+                                        Behavior_assessment: "ممتاز",
+                                        Minor_degree: 50,
+                                        Major_degree: 100,
+                                        Student_degree: 79,
                                     },
                                 ],
                             },
@@ -3434,7 +3627,7 @@ export default {
                                 ],
                             },
                             {
-                                Certificate_title: "شهر ابرايل",
+                                Certificate_title: "الترم الثاني",
                                 Degrees: [
                                     {
                                         Subject_Name: "انجليزى",
@@ -4290,22 +4483,35 @@ export default {
         },
         sortedStudents() {
             const studentsToSort = this.filteredStudents;
-            const sorted = [...studentsToSort].sort((a, b) => {
-                const nameA = a.student_name.toUpperCase();
-                const nameB = b.student_name.toUpperCase();
 
-                if (this.$parent.isSortedAscending) {
-                    // الترتيب من الألف إلى الياء
-                    if (nameA < nameB) return -1;
-                    if (nameA > nameB) return 1;
-                } else {
-                    // الترتيب من الياء إلى الألف
-                    if (nameA < nameB) return 1;
-                    if (nameA > nameB) return -1;
-                }
-                return 0;
-            });
-            return sorted;
+            if (this.gradeSortActive) {
+                // الترتيب حسب الدرجات لشهر معين
+                return [...studentsToSort].sort((a, b) => {
+                    const gradeA = this.getMonthlyDegrees(
+                        a,
+                        this.gradeSortActive
+                    );
+                    const gradeB = this.getMonthlyDegrees(
+                        b,
+                        this.gradeSortActive
+                    );
+                    return gradeB - gradeA; // ترتيب تنازلي
+                });
+            } else if (this.paymentSortActive) {
+                // الترتيب حسب المدفوعات
+                return [...studentsToSort].sort((a, b) => {
+                    const residualA = a.payments.Expenses - a.payments.paid_Up;
+                    const residualB = b.payments.Expenses - b.payments.paid_Up;
+                    return residualA - residualB;
+                });
+            } else {
+                // الترتيب أبجدي
+                return studentsToSort.sort((a, b) => {
+                    const nameA = a.student_name.toUpperCase();
+                    const nameB = b.student_name.toUpperCase();
+                    return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
+                });
+            }
         },
         selectedMonthlyDegrees() {
             if (!this.selectedStudent) {

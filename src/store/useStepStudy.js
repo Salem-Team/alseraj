@@ -2,8 +2,7 @@ import { defineStore } from "pinia";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/Firebase";
 
-export const useStepStudy = defineStore({
-    id: "stepStudy",
+export const useStepStudy = defineStore("stepStudy", {
     state: () => ({
         school: {
             stepStudy: [
@@ -25,9 +24,9 @@ export const useStepStudy = defineStore({
                 {
                     name: "المرحلة الإعدادية",
                     grades: [
-                        "الإعدادي الصف الأول",
-                        "الإعدادي الصف الثاني",
-                        "الإعدادي الصف الثالث",
+                        "الصف الأول الإعدادي",
+                        "الصف الثاني الإعدادي",
+                        "الصف الثالث الإعدادي",
                     ],
                 },
                 {
@@ -40,7 +39,7 @@ export const useStepStudy = defineStore({
                 },
             ],
         },
-        subjects: {}, // لتخزين المواد الدراسية حسب المرحلة
+        subjects: {}, // Placeholder for subjects by stage
         classRoomsData: [],
     }),
     actions: {
@@ -55,12 +54,7 @@ export const useStepStudy = defineStore({
         },
         async fetchAllClassRooms() {
             try {
-                // Build the query with the specified filters
                 const q = collection(db, "class_rooms");
-                //                   where("subjects", "array-contains", subject) // Assuming subjects is an array
-                // where("grade", "==", grade)
-
-                // Fetch the documents that match the query
                 const querySnapshot = await getDocs(q);
                 const classRooms = [];
 
@@ -68,19 +62,16 @@ export const useStepStudy = defineStore({
                     classRooms.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Store the fetched data
-                console.log("firebase=>", classRooms);
-                this.classRoomsData = classRooms;
+                this.classRoomsData.push(classRooms);
             } catch (error) {
                 console.error("Error fetching data: ", error);
             }
         },
         getClassRooms() {
-            console.log("Getting=>>>>", this.classRoomsData);
             return this.classRoomsData;
         },
-        getSubjectsByStage: (state) => (stageValue) => {
-            return state.subjects[stageValue] || [];
+        getSubjectsByStage(stageValue) {
+            return this.subjects[stageValue] || [];
         },
     },
 });

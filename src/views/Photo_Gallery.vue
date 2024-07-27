@@ -235,7 +235,7 @@
                                             "
                                             :loading="loading"
                                             :disabled="loading"
-                                            @click="subMutPhoto()"
+                                            @click="subMutPho"
                                         >
                                             إضافة صورة
                                         </v-btn>

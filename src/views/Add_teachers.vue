@@ -75,7 +75,7 @@
                 <img
                     src="../assets/add_admin/followers.png"
                     alt=""
-                    @click="teacher.dialog = true"
+                    @click="openDialog()"
                     class="pluse"
                 />
             </div>
@@ -135,14 +135,13 @@
                             @update:model-value="updateGrades"
                         ></v-select>
                         <v-select
-                            v-model="subjectsData"
+                            v-model="selectedSubject"
                             :items="subjects"
-                            :rules="[(v) => !!v || 'أختر الصف الدراسي']"
-                            label="أختر الصف الدراسي"
+                            :rules="[(v) => !!v || 'أختر الماده الدراسيه']"
+                            label="أختر الماده الدراسيه"
                             variant="outlined"
                             multiple
                             required
-                            @update:model-value="updateGrades"
                         ></v-select>
                     </div>
                     <v-text-field
@@ -153,21 +152,21 @@
                                 (v && v.length >= 6) ||
                                 'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
                         ]"
-                        :type="teacher.show_Password ? 'text' : 'password'"
+                        :type="teacher.showPassword ? 'text' : 'password'"
                         label="كلمة مرور"
                         variant="outlined"
                         required
                         :append-inner-icon="
-                            teacher.show_Password ? 'mdi-eye' : 'mdi-eye-off'
+                            teacher.showPassword ? 'mdi-eye' : 'mdi-eye-off'
                         "
-                        @click:append-inner="teacher.toggle_Show_Password"
+                        @click:append-inner="teacher.toggleShowPassword()"
                     ></v-text-field>
                     <v-btn
                         class="d-flex align-center mt-4"
                         type="submit"
                         :loading="loading"
                         :disabled="loading"
-                        @click="teacherData()"
+                        @click="add_teacher()"
                         style="
                             width: 100%;
                             padding: 20px;
@@ -184,7 +183,7 @@
             </v-card></v-dialog
         >
 
-        <v-dialog v-model="teacher.dialog_1" width="90%">
+        <v-dialog v-model="dialog_1" width="90%">
             <v-card width="100%" class="popup">
                 <div class="d-flex justify-space-between align-center title">
                     <div style="color: var(--main-color)">
@@ -197,43 +196,81 @@
                 </div>
                 <form ref="form" @submit.prevent class="ma-auto">
                     <v-text-field
-                        v-model="teacher.name_Information"
-                        type="text"
-                        label=" الاسم"
+                        v-model="user.name"
                         :rules="[(v) => !!v || 'الاسم مطلوب']"
+                        type="text"
+                        label="الاسم"
                         variant="outlined"
                         required
                     ></v-text-field>
+
                     <v-text-field
-                        v-model="teacher.email_Information"
-                        type="email"
-                        label="بريد الكتروني"
-                        variant="outlined"
+                        v-model="user.email"
                         :rules="[
                             (v) => !!v || 'البريد الإلكتروني مطلوب',
                             (v) =>
                                 /.+@.+\..+/.test(v) ||
                                 'البريد الإلكتروني غير صالح',
                         ]"
+                        type="email"
+                        label="بريد الكتروني"
+                        variant="outlined"
                         required
                     ></v-text-field>
-                    <v-select
-                        style="width: 100%"
-                        v-model="teacher.roles_Information"
-                        :items="teacher.role"
+                    <div>
+                        <v-select
+                            v-model="selectedStage"
+                            :items="
+                                stepStudy.getSteps().map((stage) => stage.name)
+                            "
+                            :rules="[(v) => !!v || 'أختر المرحلة الدراسية']"
+                            label="أختر المرحلة الدراسية"
+                            variant="outlined"
+                            required
+                        ></v-select>
+
+                        <v-select
+                            v-model="selectedGrade"
+                            :items="grades"
+                            :rules="[(v) => !!v || 'أختر الصف الدراسي']"
+                            label="أختر الصف الدراسي"
+                            variant="outlined"
+                            multiple
+                            required
+                            @update:model-value="updateGrades"
+                        ></v-select>
+                        <v-select
+                            v-model="selectedSubject"
+                            :items="subjects"
+                            :rules="[(v) => !!v || 'أختر الماده الدراسيه']"
+                            label="أختر الماده الدراسيه"
+                            variant="outlined"
+                            multiple
+                            required
+                        ></v-select>
+                    </div>
+                    <v-text-field
+                        v-model="user.password"
                         :rules="[
-                            (v) => (!!v && v.length > 0) || 'أختر نوع الصلاحية',
+                            (v) => !!v || 'كلمة المرور مطلوبة',
+                            (v) =>
+                                (v && v.length >= 6) ||
+                                'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
                         ]"
-                        label="أختر نوع الصلاحية"
+                        :type="teacher.showPassword ? 'text' : 'password'"
+                        label="كلمة مرور"
                         variant="outlined"
-                        multiple
                         required
-                    ></v-select>
+                        :append-inner-icon="
+                            teacher.showPassword ? 'mdi-eye' : 'mdi-eye-off'
+                        "
+                        @click:append-inner="teacher.toggleShowPassword()"
+                    ></v-text-field>
                     <v-btn
                         type="submit"
                         :loading="loading"
                         :disabled="loading"
-                        @click="teacher.Update_teacher(teacher.Id_Information)"
+                        @click="update_teacher(user.id)"
                         class="d-flex align-center mt-4"
                         style="
                             width: 100%;
@@ -255,7 +292,7 @@
             width="90%"
             v-if="!loading1"
         >
-            <div class="feat" v-for="user in users" :key="user.id">
+            <div class="feat" v-for="sub in subjectsData" :key="sub.id">
                 <v-dialog v-model="dialog_3" width="90%">
                     <v-card width="100%" class="popup">
                         <div
@@ -302,11 +339,7 @@
                                     color="var(--pink-color)"
                                     :loading="loading"
                                     :disabled="loading"
-                                    @click="
-                                        teacher.delete_user(
-                                            teacher.Id_Information
-                                        )
-                                    "
+                                    @click="delete_user(user.id)"
                                     style="
                                         color: #fff;
                                         font-weight: bold;
@@ -323,24 +356,24 @@
                 <div>
                     <div class="head">
                         <div>
-                            <div class="name">{{ user.name }}</div>
+                            <div class="name">{{ sub.name }}</div>
                         </div>
                         <div>
                             <font-awesome-icon
                                 :icon="['fas', 'user-pen']"
-                                @click="teacher.user_Information(user)"
+                                @click="user_Information(sub)"
                                 @click.="dialog_1 = true"
                             />
                             <font-awesome-icon
                                 :icon="['fas', 'trash']"
-                                @click="teacher.user_Information(user)"
+                                @click="user_Information(sub)"
                                 @click.="dialog_3 = true"
                             />
                         </div>
                     </div>
                     <div class="body">
                         <div>الصلاحيات</div>
-                        <ul v-for="index in user.roles" :key="index">
+                        <ul v-for="index in sub.subject" :key="index">
                             <li>{{ index }}</li>
                         </ul>
                     </div>
@@ -366,7 +399,7 @@
                                     />
                                 </div>
                                 <div class="body">
-                                    <div id="password">{{ user.password }}</div>
+                                    <div id="password">{{ sub.password }}</div>
                                     <div>
                                         <div>
                                             <font-awesome-icon
@@ -402,111 +435,187 @@
 </template>
 
 <script scoped>
+// index.js (أو أي ملف مكون تستخدمه)
+import { ref, computed } from "vue";
 import { storeToRefs } from "pinia";
-// import { defineComponent } from "vue";
-import { useteacher } from "@/store/teacher.js";
+import { useTeacher } from "@/store/teacher.js";
 import { useStepStudy } from "@/store/useStepStudy.js";
-import { ref, computed, onMounted } from "vue";
+import { db } from "@/Firebase";
+import {
+    collection,
+    addDoc,
+    getDocs,
+    doc,
+    updateDoc,
+    deleteDoc,
+} from "firebase/firestore";
+// import { useVuelidate } from "@vuelidate/core";
+// import { minLength, required } from "@vuelidate/validators";
 
 export default {
     setup() {
-        const teacher = useteacher();
+        // const $v=useVuelidate();
+
+        const teacher = useTeacher();
         const stepStudy = useStepStudy();
         const selectedStage = ref(null);
         const selectedGrade = ref(null);
-        const subjects = ref(null);
-        const subjectsData = ref(null);
-
+        const selectedSubject = ref(null);
+        const subjects = ref([]);
+        const subjectId = ref([]);
+        const subjectsData = ref([]);
         const grades = computed(() => {
             return selectedStage.value
                 ? stepStudy.getGradesForStage(selectedStage.value)
                 : [];
         });
-        const valueClass = onMounted(() => {
-            stepStudy.fetchAllClassRooms();
-            console.log("Class Rooms:", stepStudy.getClassRooms());
-        });
-        valueClass;
+        const openDialog = () => {
+            teacher.dialog = true;
+            emptyData();
+        };
+        stepStudy.fetchAllClassRooms();
         function updateGrades() {
-            // console.log(stepStudy.getSubjectsForStage());
-            // Update selected grades when the stage changes
-            // selectedGrade.value = null; // Reset selected grade
+            subjects.value = [];
+            selectedGrade.value.forEach((item) => {
+                stepStudy.getClassRooms()[0].forEach((date) => {
+                    if (date.grade == item)
+                        date?.subjects?.forEach((sub) => {
+                            subjects.value.push({
+                                title: sub.title + " " + date.grade,
+                                id: sub.id,
+                            });
+                        });
+                });
+            });
         }
-        teacher.Get_data();
-        teacher.generate_Random_Password();
+
+        async function Get_data() {
+            subjectsData.value = [];
+            const querySnapshot = await getDocs(collection(db, "teachers"));
+            querySnapshot.forEach((doc) => {
+                subjectsData.value.push(doc.data());
+            });
+        }
+        Get_data();
+        function teacherData() {
+            Get_data();
+        }
+
+        async function add_teacher() {
+            try {
+                const docRef = await addDoc(collection(db, "teachers"), {
+                    name: user.value.name,
+                    email: user.value.email,
+                    password: user.value.password,
+                    stage: selectedStage.value,
+                    grade: selectedGrade.value,
+                    subject: selectedSubject.value,
+                });
+                await updateDoc(docRef, {
+                    id: docRef.id,
+                });
+                console.log("Document written with ID: ", docRef.id);
+                teacher.dialog = false;
+                Get_data();
+                emptyData();
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+        }
+
+        async function update_teacher(id) {
+            console.log(id);
+            const docRef = doc(db, "teachers", id);
+            await updateDoc(docRef, {
+                name: user.value.name,
+                email: user.value.email,
+                password: user.value.password,
+                stage: selectedStage.value,
+                grade: selectedGrade.value,
+                subject: selectedSubject.value,
+            });
+            teacher.dialog_1 = false;
+            Get_data();
+            emptyData();
+        }
+        function emptyData() {
+            user.value.name = "";
+            user.value.email = "";
+            user.value.password = "";
+            selectedStage.value = "";
+            selectedGrade.value = "";
+            selectedSubject.value = "";
+        }
+        function user_Information(date) {
+            user.value.name = date.name;
+            user.value.email = date.email;
+            user.value.password = date.password;
+            user.value.id = date.id;
+            selectedStage.value = date.stage;
+            selectedGrade.value = date.grade;
+            selectedSubject.value = date.subject;
+        }
+        async function delete_user(id) {
+            await deleteDoc(doc(db, "teachers", id));
+            Get_data();
+            teacher.dialog_3 = false;
+        }
+
         const {
             user,
-            add_teacher,
             toggle_Show_Password,
             dialog,
             dialog_3,
-            delete_user,
-            Get_data,
-            users,
-            role,
-            show_Password,
             dialog_1,
             loading1,
             loading,
-            Update_teacher,
-            copy_Password,
-            generate_Random_Password,
-            user_Information,
+            role,
+            show_Password,
+            users,
         } = storeToRefs(teacher);
-        // Return the necessary reactive properties and methods
+
         return {
+            openDialog,
+            emptyData,
+            subjectsData,
+            teacherData,
+            subjectId,
+            subjects,
+            selectedSubject,
             selectedGrade,
             grades,
-            subjectsData,
-            subjects,
             selectedStage,
             updateGrades,
-            valueClass,
             stepStudy,
             teacher,
             loading,
             loading1,
             dialog_3,
-            generate_Random_Password,
             user,
             toggle_Show_Password,
             role,
-            copy_Password,
             show_Password,
-            Update_teacher,
+            dialog,
+            dialog_1,
+            users,
+            add_teacher,
+            update_teacher,
             delete_user,
             Get_data,
             user_Information,
-            users,
-            add_teacher,
-            dialog,
-            dialog_1,
         };
     },
-
     data: () => ({
         snackbar: false,
-        text: `تم نسخ كلمة المرور`,
+        text: "تم نسخ كلمة المرور",
         stage: [],
     }),
     methods: {
-        teacherData() {
-            console.log("qqqqqqqqq");
-
-            console.log(this.stage);
-        },
-        teacherDatas() {
-            console.log("qqqqqqqqq");
-            // console.log(item);
-            // console.log(this.stage);
-            // console.log(item);
-        },
         Snackbar_Function() {
             const passwordElement = document.getElementById("password");
             const password =
                 passwordElement.innerText || passwordElement.textContent;
 
-            // استخدام واجهة برمجة تطبيقات الحافظة لنسخ النص
             navigator.clipboard
                 .writeText(password)
                 .then(() => {
@@ -520,6 +629,7 @@ export default {
     },
 };
 </script>
+
 <style lang="scss" scoped>
 form {
     padding: 20px;

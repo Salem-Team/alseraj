@@ -18,7 +18,7 @@ import News_more from "../views/News_more.vue";
 import Photos_more from "../views/Photos_more.vue";
 import Photo_Gallery from "../views/Photo_Gallery.vue";
 import Add_admin from "../views/Add_admin.vue";
-import Add_teacher from "../views/Add_teacher.vue";
+import Add_teacher from "../views/Add_teachers.vue";
 import student_charts from "../views/student_charts.vue";
 import ChildDetails from "../views/ChildDetails.vue";
 // import { query } from "firebase/firestore";

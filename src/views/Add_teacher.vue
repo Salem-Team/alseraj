@@ -90,7 +90,7 @@
                             </v-breadcrumbs-item>
                             <v-breadcrumbs-divider />
                             <v-breadcrumbs-item>
-                                إدارة المشرفين
+                                إدارة المدرسين
                             </v-breadcrumbs-item>
                         </v-breadcrumbs>
                     </div>
@@ -98,12 +98,12 @@
                         <img
                             src="../assets/add_admin/followers.png"
                             alt=""
-                            @click="admin.dialog = true"
+                            @click="teacher.dialog = true"
                             class="pluse"
                         />
                     </div>
                 </div>
-                <v-dialog v-model="admin.dialog" width="90%">
+                <v-dialog v-model="teacher.dialog" width="90%">
                     <v-card width="100%" class="popup">
                         <div
                             class="d-flex justify-space-between align-center title"
@@ -113,12 +113,12 @@
                             </div>
                             <v-btn
                                 icon="mdi-close"
-                                @click="admin.dialog = false"
+                                @click="teacher.dialog = false"
                             ></v-btn>
                         </div>
                         <form
                             ref="form"
-                            @submit.prevent="admin.add_admin"
+                            @submit.prevent="teacher.add_teacher"
                             class="ma-auto"
                         >
                             <v-text-field
@@ -127,21 +127,6 @@
                                 type="text"
                                 label="الاسم"
                                 variant="outlined"
-                                required
-                            ></v-text-field>
-                            <v-text-field
-                                v-model="user.National_id"
-                                :rules="[
-                                    (v) => !!v || 'الرقم القومي مطلوب',
-                                    (v) =>
-                                        (/.{14}/.test(v) && v.length <= 14) ||
-                                        'يجب أن يكون الرقم القومي مكون من 14 رقم',
-                                ]"
-                                type="text"
-                                label="الرقم القومي"
-                                variant="outlined"
-                                :minlength="14"
-                                :maxlength="14"
                                 required
                             ></v-text-field>
 
@@ -158,10 +143,11 @@
                                 variant="outlined"
                                 required
                             ></v-text-field>
+
                             <v-select
                                 style="width: 100%"
                                 v-model="user.roles"
-                                :items="admin.role"
+                                :items="teacher.role"
                                 :rules="[
                                     (v) =>
                                         (!!v && v.length > 0) ||
@@ -182,18 +168,19 @@
                                         'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
                                 ]"
                                 :type="
-                                    admin.show_Password ? 'text' : 'password'
+                                    teacher.show_Password ? 'text' : 'password'
                                 "
                                 label="كلمة مرور"
                                 variant="outlined"
                                 required
                                 :append-inner-icon="
-                                    admin.show_Password
+                                    teacher.show_Password
                                         ? 'mdi-eye'
                                         : 'mdi-eye-off'
                                 "
-                                :minlength="6"
-                                @click:append-inner="admin.toggle_Show_Password"
+                                @click:append-inner="
+                                    teacher.toggle_Show_Password
+                                "
                             ></v-text-field>
                             <v-btn
                                 class="d-flex align-center mt-4"
@@ -216,7 +203,7 @@
                     </v-card></v-dialog
                 >
 
-                <v-dialog v-model="admin.dialog_1" width="90%">
+                <v-dialog v-model="teacher.dialog_1" width="90%">
                     <v-card width="100%" class="popup">
                         <div
                             class="d-flex justify-space-between align-center title"
@@ -226,18 +213,18 @@
                             </div>
                             <v-btn
                                 icon="mdi-close"
-                                @click="admin.dialog_1 = false"
+                                @click="teacher.dialog_1 = false"
                             ></v-btn>
                         </div>
                         <form
                             ref="form"
                             @submit.prevent="
-                                admin.Update_Admin(admin.Id_Information)
+                                teacher.Update_teacher(teacher.Id_Information)
                             "
                             class="ma-auto"
                         >
                             <v-text-field
-                                v-model="admin.name_Information"
+                                v-model="teacher.name_Information"
                                 type="text"
                                 label=" الاسم"
                                 :rules="[(v) => !!v || 'الاسم مطلوب']"
@@ -245,23 +232,7 @@
                                 required
                             ></v-text-field>
                             <v-text-field
-                                v-model="admin.National_id_Information"
-                                :rules="[
-                                    (v) => !!v || 'الرقم القومي مطلوب',
-                                    (v) =>
-                                        (/.{14}/.test(v) && v.length <= 14) ||
-                                        'يجب أن يكون الرقم القومي مكون من 14 رقم',
-                                ]"
-                                type="text"
-                                label="الرقم القومي"
-                                variant="outlined"
-                                :minlength="14"
-                                :maxlength="14"
-                                required
-                            ></v-text-field>
-
-                            <v-text-field
-                                v-model="admin.email_Information"
+                                v-model="teacher.email_Information"
                                 type="email"
                                 label="بريد الكتروني"
                                 variant="outlined"
@@ -275,8 +246,8 @@
                             ></v-text-field>
                             <v-select
                                 style="width: 100%"
-                                v-model="admin.roles_Information"
-                                :items="admin.role"
+                                v-model="teacher.roles_Information"
+                                :items="teacher.role"
                                 :rules="[
                                     (v) =>
                                         (!!v && v.length > 0) ||
@@ -361,8 +332,8 @@
                                             :loading="loading"
                                             :disabled="loading"
                                             @click="
-                                                admin.delete_user(
-                                                    admin.Id_Information
+                                                teacher.delete_user(
+                                                    teacher.Id_Information
                                                 )
                                             "
                                             style="
@@ -386,12 +357,12 @@
                                 <div>
                                     <font-awesome-icon
                                         :icon="['fas', 'user-pen']"
-                                        @click="admin.user_Information(user)"
+                                        @click="teacher.user_Information(user)"
                                         @click.="dialog_1 = true"
                                     />
                                     <font-awesome-icon
                                         :icon="['fas', 'trash']"
-                                        @click="admin.user_Information(user)"
+                                        @click="teacher.user_Information(user)"
                                         @click.="dialog_3 = true"
                                     />
                                 </div>
@@ -455,7 +426,7 @@
             </template>
         </Offline_error>
     </div>
-    <v-snackbar v-model="snackbar1">
+    <v-snackbar v-model="snackbar1" timeout="3000">
         {{ text }}
 
         <template v-slot:actions>
@@ -478,12 +449,17 @@
         :text="text11"
         :snackbar1="snackbar2"
     />
+    <confirm_message
+        v-if="snackbar3 === true"
+        :text="text12"
+        :snackbar1="snackbar3"
+    />
 </template>
 
 <script scoped>
 import { storeToRefs } from "pinia";
 // import { defineComponent } from "vue";
-import { useadmin } from "@/store/admin.js";
+import { useteacher } from "@/store/teacher.js";
 import Offline_error from "@/components/Offline_error.vue";
 import Empty_error from "@/components/Empty_error.vue";
 import confirm_message from "@/components/confirm_message.vue";
@@ -495,58 +471,62 @@ export default {
         Offline_error,
     },
     setup() {
-        const admin = useadmin();
-        admin.Get_data();
-        admin.generate_Random_Password();
+        const teacher = useteacher();
+        teacher.Get_data();
+        teacher.generate_Random_Password();
         const {
             user,
-            add_admin,
+            add_teacher,
             toggle_Show_Password,
             dialog,
             dialog_3,
-            text10,
-            text11,
-            snackbar,
-            snackbar2,
-            empty,
             delete_user,
             Get_data,
             users,
-            text0,
             role,
             show_Password,
             dialog_1,
+            text10,
+            text11,
+            text12,
+            snackbar3,
+            snackbar,
+            snackbar2,
+            empty,
+            text0,
             loading1,
             loading,
-            Update_Admin,
+            Update_teacher,
             copy_Password,
             generate_Random_Password,
             user_Information,
-        } = storeToRefs(admin);
+        } = storeToRefs(teacher);
         // Return the necessary reactive properties and methods
         return {
-            admin,
+            teacher,
             loading,
             loading1,
-            text0,
-            empty,
+            dialog_3,
             text10,
             text11,
+            text12,
+            snackbar3,
             snackbar,
             snackbar2,
-            dialog_3,
+            empty,
+            text0,
             generate_Random_Password,
             user,
             toggle_Show_Password,
             role,
             copy_Password,
             show_Password,
-            Update_Admin,
+            Update_teacher,
             delete_user,
             Get_data,
             user_Information,
             users,
-            add_admin,
+            add_teacher,
             dialog,
             dialog_1,
         };
@@ -646,7 +626,7 @@ form {
     }
 }
 
-.admin-card {
+.teacher-card {
     padding: 68px;
     background-color: #2196f333;
 }

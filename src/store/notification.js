@@ -1,5 +1,14 @@
 import { defineStore } from "pinia";
-/*import { initializeApp } from "@firebase/app";
+import {
+    collection,
+    addDoc,
+    updateDoc,
+    getDocs,
+    deleteDoc,
+} from "@firebase/firestore";
+import { useSecureDataStore } from "./secureData";
+import { initializeApp } from "@firebase/app";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
     // Firebase configuration object
@@ -11,13 +20,13 @@ const firebaseConfig = {
     appId: "1:462211256149:web:a03ace3c70b306620169dc",
 };
 
-// Initialize Firebase
+// Initialize Firebase app and services
 const app = initializeApp(firebaseConfig);
-import { getMessaging, getToken } from "firebase/messaging";
-const messaging = getMessaging(app);*/
+const db = getFirestore(app);
 // Define Pinia store for managing photo gallery
 export const usenotification = defineStore("notification_vue", {
     state: () => ({
+        notifications: [],
         notification: "",
     }),
     actions: {
@@ -58,7 +67,55 @@ export const usenotification = defineStore("notification_vue", {
             }
         },
         */
-        async send_Notification(title, text) {
+        async send_Notification(title, text, name) {
+            try {
+                const secrureDataStore = useSecureDataStore();
+                const Data = {
+                    text: secrureDataStore.encryptData(text, "12343a"),
+                    title: secrureDataStore.encryptData(title, "12343a"),
+                };
+                const notRef = await addDoc(collection(db, name), Data);
+                console.log("Document written with ID: ", notRef.id);
+
+                // Update notification document with its own ID (optional)
+                await updateDoc(notRef, {
+                    id: notRef.id,
+                });
+            } catch (error) {
+                console.error("Error sending notification:", error);
+                throw error;
+            }
+        },
+        async get_notifications(name) {
+            try {
+                // Check if the browser supports notifications and permission is not denied
+                this.notifications = []; // Initialize notifications array
+                this.counter = 0;
+                const decryption = useSecureDataStore();
+                const querySnapshot = await getDocs(collection(db, name));
+                querySnapshot.forEach((doc) => {
+                    const Data = {
+                        id: doc.id,
+                        text: decryption.decryptData(doc.data().text, "12343a"),
+                        title: decryption.decryptData(
+                            doc.data().title,
+                            "12343a"
+                        ),
+                    };
+                    this.push_Notification(
+                        decryption.decryptData(doc.data().title, "12343a"),
+                        decryption.decryptData(doc.data().text, "12343a")
+                    );
+                    this.notifications.push(Data);
+                    // Delete the document from Firestore after processing
+                    deleteDoc(doc.ref);
+                });
+                console.log("notifications", this.notifications);
+            } catch (error) {
+                console.error("Error retrieving data:", error);
+            }
+        },
+        async push_Notification(title, text) {
             try {
                 // Check if the browser supports notifications and permission is not denied
                 if (

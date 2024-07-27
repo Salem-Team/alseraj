@@ -45,5 +45,13 @@ app.use(pinia)
     .use(VTooltip)
     .use(Toast, { position: "top-right", timeout: 3000 })
     .provide("Emitter", Emitter)
-    .component("font-awesome-icon", FontAwesomeIcon)
-    .mount("#app");
+    .component("font-awesome-icon", FontAwesomeIcon);
+
+// Detect if the app is running as PWA
+if (window.matchMedia("(display-mode: standalone)").matches) {
+    document.body.classList.add("pwa");
+} else {
+    document.body.classList.add("not-pwa");
+}
+
+app.mount("#app");

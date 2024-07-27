@@ -66,8 +66,38 @@ export const useAuthStore = defineStore("auth", {
             });
         },*/
         get_Cookies() {
+            // Retrieve the cookie value
             const user_data = Cookies.get("user");
-            this.user = JSON.parse(user_data);
+
+            // Check if user_data is not null or undefined
+            if (user_data) {
+                try {
+                    // Attempt to parse the JSON string
+                    this.user = JSON.parse(user_data);
+                } catch (error) {
+                    console.error(
+                        "Failed to parse user data from cookies:",
+                        error
+                    );
+                    // Handle the error as needed, for example, set `this.user` to a default value or an empty object
+                    this.user = {
+                        id: "",
+                        National_id: "",
+                        password: "",
+                        userType: "",
+                        roles: [],
+                    };
+                }
+            } else {
+                // Handle cases where the cookie does not exist or is empty
+                this.user = {
+                    id: "",
+                    National_id: "",
+                    password: "",
+                    userType: "",
+                    roles: [],
+                };
+            }
         },
         async login(id, National_id, userType, roles, name) {
             this.loading = true;

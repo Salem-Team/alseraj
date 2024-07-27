@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore, mapActions } from "pinia";
 import {
     collection,
     addDoc,
@@ -36,7 +36,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
-
+import { usenotification } from "../store/notification.js";
 // Define Pinia store for managing photo gallery
 export const usePhoto_Gallery = defineStore("Photo_Gallery", {
     state: () => ({
@@ -82,6 +82,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         text11: " تم الحذف بنجاح",
     }),
     actions: {
+        ...mapActions(usenotification, ["send_Notification"]),
         // Action method to handle setting File_Name based on type
         handletypes() {
             if (this.type === "trip") {
@@ -142,7 +143,16 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                     });
 
                     console.log("Document written with ID: ", docRef.id);
-
+                    this.Photo = {
+                        File_type: "",
+                        image: null,
+                        video: null,
+                    };
+                    this.send_Notification(
+                        "اشعار صور",
+                        "تم إضافة صورة جديدة",
+                        "public_notification"
+                    );
                     // Step 4: Refresh photo data
                     this.Get_data();
                     this.snackbar = true;
@@ -180,8 +190,17 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                     });
 
                     console.log("Document written with ID: ", docRef.id);
-
+                    this.Photo = {
+                        File_type: "",
+                        image: null,
+                        video: null,
+                    };
                     // Step 4: Refresh photo data
+                    this.send_Notification(
+                        "اشعار فيديو",
+                        "تم إضافة فيديو جديد",
+                        "public_notification"
+                    );
                     this.Get_data();
                     this.snackbar = true;
                     this.loading = false;
@@ -358,6 +377,10 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         },
         // Store Photo information
         photo_Information(Photo) {
+            this.Photo_Information = null;
+            this.Video_Information = "";
+            this.File_Information = "";
+            this.Id_Information = "";
             this.Photo_Information = Photo.image;
             this.Video_Information = Photo.video;
             this.File_Information = Photo.File_type;

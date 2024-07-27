@@ -90,7 +90,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions(useAuthStore, ["login", "get_Cookies"]),
+        ...mapActions(useAuthStore, ["login"]),
         async Check_User() {
             const decryption = useSecureDataStore();
             let authenticatedUser = null;
@@ -184,7 +184,6 @@ export default {
                     authenticatedUser.roles,
                     authenticatedUser.name
                 );
-                await this.get_Cookies();
                 if (!this.error) {
                     if (authenticatedUser.userType === "parent") {
                         this.$router.push({ name: "Parent_Dashboard" });

@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore, mapActions } from "pinia";
 import {
     collection,
     addDoc,
@@ -36,13 +36,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
-
+import { usenotification } from "../store/notification.js";
 // Define Pinia store for managing news
 export const useNews = defineStore("News", {
     state: () => ({
         dialog: false,
         dialog_1: false,
         dialog_3: false,
+        editor: [],
+        editor1: [],
         Title_Information: "",
         Description_Information: "",
         Image_Information: null,
@@ -70,6 +72,7 @@ export const useNews = defineStore("News", {
         text11: " تم الحذف بنجاح",
     }),
     actions: {
+        ...mapActions(usenotification, ["send_Notification"]),
         // Action method to upload an image to Firebase Storage
         async upload_Image(file) {
             this.random = Math.random();
@@ -137,10 +140,20 @@ export const useNews = defineStore("News", {
                         id: docRef.id,
                     });
                     console.log("Document written with ID: ", docRef.id);
-
+                    this.send_Notification(
+                        "اشعار أخبار",
+                        "تم إضافة خبر جديد",
+                        "public_notification"
+                    );
                     // Step 4: Refresh news data
                     this.Get_data();
                     this.snackbar = true;
+                    this.New = {
+                        title: "",
+                        image: null,
+                        description: "",
+                        time: "",
+                    };
                     this.loading = false;
                     this.dialog = false;
                 } else {
@@ -181,7 +194,6 @@ export const useNews = defineStore("News", {
                     this.News.push(Data);
                 });
                 console.log("this.News", this.News);
-                this.set_description();
                 if (this.News.length === 0) {
                     this.empty = true;
                 } else {
@@ -192,13 +204,6 @@ export const useNews = defineStore("News", {
                 console.error("Error retrieving data:", error);
             }
         },
-        async set_description() {
-            this.News.forEach((New) => {
-                console.log("working");
-                document.querySelectorAll(".description").innerHTML =
-                    New.description;
-            });
-        },
         // Action method to get limited news data (first 3 items)
         async Get_splice() {
             try {
@@ -208,7 +213,6 @@ export const useNews = defineStore("News", {
 
                 const querySnapshot = await getDocs(collection(db, "News"));
                 querySnapshot.forEach((doc) => {
-                    this.set_description(this.Description_Information);
                     const Data = {
                         id: doc.id,
                         title: decryption.decryptData(
@@ -229,7 +233,6 @@ export const useNews = defineStore("News", {
                 });
                 this.News = this.News.slice(0, 3);
                 console.log("this.News", this.News);
-                this.set_description();
                 if (this.News.length === 0) {
                     this.empty = true;
                 } else {
@@ -278,6 +281,9 @@ export const useNews = defineStore("News", {
 
         // Action method to set news details for displaying in a dialog
         New_Information(New) {
+            this.Title_Information = "";
+            this.Description_Information = "";
+            this.Image_Information = null;
             this.Title_Information = New.title;
             this.Id_Information = New.id;
             console.log(New.id);
@@ -285,20 +291,23 @@ export const useNews = defineStore("News", {
             this.Image_Information = New.image;
             this.Time_Condition = New.time;
         },
-        // Action method to handle file change event and set image preview
         async onFileChange(event) {
             const file = event.target.files[0];
             if (file) {
                 // Convert file to a URL that can be used as an image source
                 this.image = URL.createObjectURL(file);
+                console.log(this.image);
                 // Step 1: Upload the image and get the download URL
-                const imageUrl = await this.upload_Image(this.New.image);
+                const imageUrl = await this.upload_Image(
+                    this.Image_Information
+                );
                 this.Image_Information = imageUrl;
+                return imageUrl;
             } else {
                 this.image = null;
             }
         },
-        // Action method to update news details in Firestore
+        // Method to update news details in Firestore
         async Update_News(NewId) {
             try {
                 this.loading = true;
@@ -319,15 +328,20 @@ export const useNews = defineStore("News", {
                     image: secrureDataStore.encryptData(
                         this.Image_Information,
                         "12343a"
-                    ), // Assign the determined image value here
+                    ), // Encrypted image URL
                 });
+
                 // Refresh news data
                 this.Get_data();
+                this.Title_Information = "";
+                this.Description_Information = "";
+                this.Image_Information = null;
                 this.snackbar3 = true;
+            } catch (error) {
+                console.error("Error updating the News:", error);
+            } finally {
                 this.loading = false;
                 this.dialog_1 = false;
-            } catch (error) {
-                console.error("Error updating the New:", error);
             }
         },
     },

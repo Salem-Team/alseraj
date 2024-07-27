@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore, mapActions } from "pinia";
 import {
     collection,
     addDoc,
@@ -38,7 +38,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
-
+import { usenotification } from "../store/notification.js";
 // Define Pinia store
 export const useJobs = defineStore("job", {
     state: () => ({
@@ -97,7 +97,10 @@ export const useJobs = defineStore("job", {
     }),
     actions: {
         // Action methods
-
+        ...mapActions(usenotification, [
+            "send_Notification",
+            "get_notifications",
+        ]),
         // Upload CV file to Firebase Storage
         async upload_CV(file) {
             this.random = Math.random();
@@ -196,6 +199,11 @@ export const useJobs = defineStore("job", {
                         this.Apply.name +
                         " بالتقديم على وظيفة " +
                         this.Title_Information;
+                    this.send_Notification(
+                        "اشعار تقديم على الوظيفة",
+                        this.text,
+                        "Job_Applies"
+                    );
                     const Data = {
                         text: secrureDataStore.encryptData(this.text, "12343a"),
                         time: currentTime,
@@ -221,9 +229,16 @@ export const useJobs = defineStore("job", {
 
                     // Step 7: Refresh data if needed
                     this.Get_Apply_data();
-
-                    // Step 8: Close dialog or perform UI-related operations
-                    this.dialog_2 = false;
+                    (this.Apply = {
+                        name: "",
+                        email: "",
+                        phone: "",
+                        title: "",
+                        CV: null,
+                        description: "",
+                    }),
+                        // Step 8: Close dialog or perform UI-related operations
+                        (this.dialog_2 = false);
                 } else {
                     console.error("No File selected.");
                     this.loading = false;
@@ -321,11 +336,22 @@ export const useJobs = defineStore("job", {
                 await updateDoc(docRef, {
                     id: docRef.id,
                 });
-
+                this.send_Notification(
+                    "اشعار وظائف",
+                    "تم إضافة وظيفة جديدة",
+                    "public_notification"
+                );
                 console.log("Document written with ID: ", docRef.id);
                 this.Get_data();
                 this.snackbar = true;
                 this.loading = false;
+                this.Job = {
+                    title: "",
+                    description: "",
+                    applies: [],
+                    id: "",
+                    time: "",
+                };
                 this.dialog = false;
             } catch (error) {
                 console.error("Error adding document: ", error);
@@ -371,6 +397,7 @@ export const useJobs = defineStore("job", {
         // Retrieve notifications data
         async Get_notifications_data() {
             try {
+                this.get_notifications("Job_Applies");
                 this.notifications = []; // Initialize notifications array
                 this.counter = 0;
                 const decryption = useSecureDataStore();
@@ -676,7 +703,6 @@ export const useJobs = defineStore("job", {
             console.log(Apply.id);
             this.CV_Information = Apply.CV;
         },
-
         // Update job details
         async Update_Jobs(JobId) {
             try {
@@ -697,6 +723,11 @@ export const useJobs = defineStore("job", {
                 });
                 this.Get_data();
                 this.snackbar3 = true;
+                this.name_Information = "";
+                this.email_Information = "";
+                this.phone_Information = "";
+                this.CV_Information = null;
+                this.applies_Information = [];
                 this.loading = false;
                 this.dialog_1 = false;
             } catch (error) {

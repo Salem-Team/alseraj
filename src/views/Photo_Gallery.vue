@@ -608,7 +608,7 @@
                                     background: var(--main-color);
                                     color: #fff;
                                 "
-                                @click="photos.Add_Photos"
+                                @click="subMutPhoto()"
                             >
                                 إضافة صورة
                             </v-btn>
@@ -880,7 +880,9 @@ export default defineComponent({
             try {
                 const response = await axios.post(
                     "http://localhost:3000/upload",
-                    formData,
+                    {
+                        file: this.photos.Photo.image,
+                    },
                     {
                         headers: {
                             "Content-Type": "multipart/form-data",

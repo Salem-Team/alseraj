@@ -627,7 +627,7 @@
                                     background: var(--main-color);
                                     color: #fff;
                                 "
-                                @click="photos.Add_Video"
+                                @click="subMutPhoto()"
                             >
                                 إضافة فيديو
                             </v-btn>
@@ -866,23 +866,26 @@ export default defineComponent({
                 this.onboarding - 1 <= 0 ? this.length : this.onboarding - 1;
         },
         async subMutPhoto() {
-            const file = this.photos.Photo.image;
+            const file =
+                this.photos.type === "صورة"
+                    ? this.photos.Photo.image
+                    : this.photos.Photo.video;
 
             if (!file) {
                 console.error("No file selected");
                 return;
             }
-
+            console.log("start");
             // Create a FormData object to hold the file data
             const formData = new FormData();
             formData.append("file", file); // Append the file with the key 'file'
 
             try {
+                console.log("wait");
+
                 const response = await axios.post(
                     "http://localhost:3000/upload",
-                    {
-                        file: this.photos.Photo.image,
-                    },
+                    formData,
                     {
                         headers: {
                             "Content-Type": "multipart/form-data",
@@ -893,6 +896,7 @@ export default defineComponent({
             } catch (error) {
                 console.error("Error uploading file:", error);
             }
+            console.log("end");
         },
     },
 });

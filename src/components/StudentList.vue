@@ -113,7 +113,10 @@
                                             </v-avatar>
                                             {{ student.student_name }}
                                         </h2>
-                                        <div>
+                                        <div
+                                            class="d-flex align-center justify-center"
+                                        >
+                                            <!-- 000000000000000000000000000 -->
                                             <v-avatar color="info">
                                                 <v-icon
                                                     @click.stop="
@@ -123,6 +126,23 @@
                                                     "
                                                     icon="mdi-delete"
                                                 ></v-icon>
+                                            </v-avatar>
+
+                                            <v-avatar
+                                                class="mr-2"
+                                                :style="{
+                                                    color: student.state
+                                                        ? '#ccc'
+                                                        : '#2196f3',
+                                                }"
+                                            >
+                                                <v-icon
+                                                    size="36px"
+                                                    @click="toggleIcon(student)"
+                                                    class="custom-icon animated-icon"
+                                                >
+                                                    {{ icon(student) }}
+                                                </v-icon>
                                             </v-avatar>
                                         </div>
                                     </div>
@@ -2604,6 +2624,7 @@ export default {
     },
     data() {
         return {
+            state: true,
             dialog_stu: false,
             CreateChart: false,
             myChart: null,
@@ -2685,11 +2706,13 @@ export default {
                                 Subject_Name: "دين",
                                 Major_degree: 100,
                                 Student_degree: 96,
+                                Date_Test: "15/5",
                             },
                             {
                                 Subject_Name: "دراسات",
                                 Major_degree: 50,
                                 Student_degree: 42,
+                                Date_Test: "11/5",
                             },
                         ],
                     },
@@ -2980,6 +3003,36 @@ export default {
         this.years = new Date().getFullYear();
     },
     methods: {
+        async loadStudents() {
+            try {
+                const studentsSnapshot = await getDocs(
+                    collection(db, "students")
+                );
+                this.students = studentsSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                    state: doc.data().state || false, // استخدم حالة 'state' الحالية إذا كانت موجودة
+                }));
+            } catch (error) {
+                console.error("Error loading students:", error);
+            }
+        },
+        async toggleIcon(student) {
+            const studentRef = doc(db, "students", student.id);
+            const newState = !student.state;
+            try {
+                await updateDoc(studentRef, { state: newState });
+                // تحديث الحالة المحلية للطالب
+                this.students = this.students.map((s) =>
+                    s.id === student.id ? { ...s, state: newState } : s
+                );
+            } catch (error) {
+                console.error("Error updating document:", error);
+            }
+        },
+        icon(student) {
+            return student.state ? "mdi-eye-off" : "mdi-eye";
+        },
         ...mapActions(usenotification, ["send_Notification"]),
         totalDegrees(student) {
             const degrees = student.Results[1].Monthly[0].Degrees; // Assuming the first month is the desired one
@@ -3309,7 +3362,20 @@ export default {
                 errors: {},
                 Results: [
                     {
-                        weekly: [],
+                        weekly: [
+                            {
+                                Subject_Name: "دين",
+                                Major_degree: 100,
+                                Student_degree: 96,
+                                Date_Test: "15/5",
+                            },
+                            {
+                                Subject_Name: "دراسات",
+                                Major_degree: 50,
+                                Student_degree: 42,
+                                Date_Test: "11/5",
+                            },
+                        ],
                     },
                     {
                         Monthly: [
@@ -4271,6 +4337,9 @@ export default {
         },
     },
     computed: {
+        // icon() {
+        //     return this.isPressed ? "mdi-eye-off" : "mdi-eye";
+        // },
         filteredStudents() {
             if (this.selectedSection === "الكل") {
                 return this.students.filter(
@@ -4317,6 +4386,7 @@ export default {
         },
     },
     mounted() {
+        this.loadStudents();
         this.searchStudent(); // Fetch all students initially
         this.generateRandomPassword();
         this.fetchStudents();
@@ -5054,5 +5124,16 @@ th {
             }
         }
     }
+}
+.custom-icon {
+    font-size: 36px; /* يمكنك تعديل الحجم هنا */
+}
+
+.animated-icon {
+    transition: transform 0.3s ease-in-out;
+}
+
+.animated-icon:hover {
+    transform: scale(1.2); /* تكبير الأيقونة عند التمرير فوقها */
 }
 </style>

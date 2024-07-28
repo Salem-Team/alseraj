@@ -64,175 +64,6 @@
                                                 <div class="section">لغات</div>
                                             </div>
                                         </div>
-
-                                        <!-- <v-card
-                                            flat
-                                            v-if="student"
-                                            class="mx-auto my-4"
-                                            max-width="90%"
-                                        >
-                                            <v-card-title
-                                                style="
-                                                    background: var(--main-color);
-                                                    border-radius: 20px;
-                                                    padding: 24px;
-                                                "
-                                                class="d-flex flex-column align-center custom-font"
-                                            >
-                                                <img
-                                                    :src="student.photos.url"
-                                                    width="200"
-                                                    height="200"
-                                                    style="
-                                                        background-color: #eee;
-                                                        border-radius: 50%;
-                                                        box-shadow: 0 4px 8px
-                                                            rgba(0, 0, 0, 0.1);
-                                                    "
-                                                    class="avatar-hover"
-                                                />
-                                                <h2
-                                                    class="text-h5 mt-2 mb-1 text-white"
-                                                >
-                                                    {{ student.name }}
-                                                </h2>
-                                                <v-chip
-                                                    color="#fff"
-                                                    text-color="white"
-                                                    >{{
-                                                        student.gender
-                                                    }}</v-chip
-                                                >
-                                            </v-card-title>
-                                            <v-card-text>
-                                                <v-container fluid>
-                                                    <v-row class="ma-10">
-                                                        <v-col
-                                                            cols="12"
-                                                            sm="6"
-                                                            class="d-flex justify-center"
-                                                        >
-                                                            <v-card
-                                                                class="pa-3 mb-3 fixed-card"
-                                                                outlined
-                                                            >
-                                                                <v-card-title
-                                                                    class="custom-title custom-font text-center"
-                                                                    style="
-                                                                        font-size: 20px;
-                                                                    "
-                                                                >
-                                                                    العمر
-                                                                </v-card-title>
-                                                                <v-card-subtitle
-                                                                    class="custom-font centered-subtitle"
-                                                                    style="
-                                                                        font-size: 16px;
-                                                                    "
-                                                                    >{{
-                                                                        student.age
-                                                                    }}</v-card-subtitle
-                                                                >
-                                                            </v-card>
-                                                        </v-col>
-                                                        <v-col
-                                                            cols="12"
-                                                            sm="6"
-                                                            class="d-flex justify-center text-center"
-                                                        >
-                                                            <v-card
-                                                                class="pa-3 mb-3 fixed-card"
-                                                                outlined
-                                                            >
-                                                                <v-card-title
-                                                                    class="custom-title custom-font"
-                                                                    style="
-                                                                        font-size: 20px;
-                                                                    "
-                                                                >
-                                                                    تاريخ
-                                                                    الميلاد
-                                                                </v-card-title>
-                                                                <v-card-subtitle
-                                                                    class="custom-font centered-subtitle"
-                                                                    style="
-                                                                        font-size: 16px;
-                                                                    "
-                                                                    >{{
-                                                                        student.BithOfDate
-                                                                    }}</v-card-subtitle
-                                                                >
-                                                            </v-card>
-                                                        </v-col>
-                                                        <v-col
-                                                            cols="12"
-                                                            sm="6"
-                                                            class="d-flex justify-center"
-                                                        >
-                                                            <v-card
-                                                                class="pa-3 mb-3 fixed-card"
-                                                                outlined
-                                                            >
-                                                                <v-card-title
-                                                                    class="custom-title custom-font text-center"
-                                                                    style="
-                                                                        font-size: 20px;
-                                                                    "
-                                                                >
-                                                                    المرحلة
-                                                                    الدراسية
-                                                                </v-card-title>
-                                                                <v-card-subtitle
-                                                                    class="custom-font centered-subtitle"
-                                                                    style="
-                                                                        font-size: 16px;
-                                                                    "
-                                                                    >{{
-                                                                        student.gradeLevel
-                                                                    }}</v-card-subtitle
-                                                                >
-                                                            </v-card>
-                                                        </v-col>
-                                                        <v-col
-                                                            cols="12"
-                                                            sm="6"
-                                                            class="d-flex justify-center"
-                                                        >
-                                                            <v-card
-                                                                class="pa-3 mb-3 fixed-card"
-                                                                outlined
-                                                            >
-                                                                <v-card-title
-                                                                    class="custom-title custom-font text-center"
-                                                                    style="
-                                                                        font-size: 20px;
-                                                                    "
-                                                                >
-                                                                    السنة
-                                                                    الدراسية
-                                                                </v-card-title>
-                                                                <v-card-subtitle
-                                                                    class="custom-font centered-subtitle"
-                                                                    style="
-                                                                        font-size: 16px;
-                                                                    "
-                                                                    >{{
-                                                                        student.schoolYear
-                                                                    }}</v-card-subtitle
-                                                                >
-                                                            </v-card>
-                                                        </v-col>
-                                                    </v-row>
-                                                </v-container>
-                                            </v-card-text>
-                                        </v-card>
-                                        <v-alert
-                                            type="error"
-                                            v-else
-                                            class="custom-font"
-                                        >
-                                            لا يوجد بيانات لهذا الطالب
-                                        </v-alert> -->
                                     </v-tabs-window-item>
 
                                     <v-tabs-window-item
@@ -710,36 +541,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- <v-row>
-                                                <v-col
-                                                    v-for="photo in filteredPhotos"
-                                                    :key="photo.link"
-                                                    cols="12"
-                                                    sm="6"
-                                                    md="4"
-                                                    class="d-flex justify-center"
-                                                >
-                                                    <v-card
-                                                        outlined
-                                                        class="pa-3 mb-3"
-                                                    >
-                                                        <v-img
-                                                            :src="photo.link"
-                                                            aspect-ratio="1"
-                                                            class="mb-2"
-                                                        ></v-img>
-                                                        <v-card-subtitle
-                                                            class="custom-font"
-                                                            style="
-                                                                font-size: 16px;
-                                                            "
-                                                        >
-                                                            التاريخ:
-                                                            {{ photo.Date }}
-                                                        </v-card-subtitle>
-                                                    </v-card>
-                                                </v-col>
-                                            </v-row> -->
                                         </v-card>
                                         <v-alert type="error" v-else>
                                             لا يوجد بيانات لهذا الطالب
@@ -1194,11 +995,13 @@ export default {
                             Subject_Name: "دين",
                             Major_degree: 100,
                             Student_degree: 96,
+                            Date_Test: "2023-09-05",
                         },
                         {
                             Subject_Name: "دراسات",
                             Major_degree: 50,
                             Student_degree: 42,
+                            Date_Test: "2023-11-05",
                         },
                     ],
                 },

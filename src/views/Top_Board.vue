@@ -191,16 +191,18 @@
                             <div class="number">{{ index + 1 }}</div>
                             <div class="ranking">الترتيب</div>
                         </div>
-                        <div>
+                        <div class="flex-row-reverse">
                             <div class="text-center">
                                 <v-progress-circular
-                                    :model-value="10"
+                                    :model-value="student.percentage"
                                     :rotate="360"
-                                    :size="70"
+                                    :size="100"
                                     :width="15"
                                     color="var(--main-color)"
                                 >
-                                    <template v-slot:default> 10 % </template>
+                                    <template v-slot:default>
+                                        {{ student.percentage }} %
+                                    </template>
                                 </v-progress-circular>
                             </div>
                             <div class="ranking">النسبة المئوية</div>
@@ -218,7 +220,7 @@
                         </div>
                         <div>
                             <div>المجموع</div>
-                            <div>{{ student.totalDegree }} / 450</div>
+                            <div>{{ student.totalDegree }}</div>
                         </div>
                     </div>
                 </div>
@@ -350,23 +352,6 @@ export default {
             return this.selectedMonth ? this.selectedMonth : "";
         },
     },
-    watch: {
-        // selectedEducationalLevel() {
-        //     this.fetchStudents();
-        // },
-        // selectedClass() {
-        //     this.fetchStudents();
-        // },
-        // selectedGender() {
-        //     this.fetchStudents();
-        // },
-        // selectedSection() {
-        //     this.fetchStudents();
-        // },
-        // selectedMonth() {
-        //     this.fetchStudents();
-        // },
-    },
     methods: {
         Filter() {
             this.fetchStudents();
@@ -425,12 +410,23 @@ export default {
                                         sum + degree.Student_degree,
                                     0
                                 );
+                                const maxDegree = monthData.Degrees.reduce(
+                                    (sum, degree) => sum + degree.Major_degree,
+                                    0
+                                ); // حساب الدرجة القصوى
+
                                 studentData.totalDegree = totalDegree;
+                                studentData.percentage = (
+                                    (totalDegree / maxDegree) *
+                                    100
+                                ).toFixed(2); // حساب النسبة المئوية
                             } else {
                                 studentData.totalDegree = 0;
+                                studentData.percentage = "0.00"; // إذا لم توجد درجات
                             }
                         } else {
                             studentData.totalDegree = 0;
+                            studentData.percentage = "0.00"; // إذا لم توجد نتائج شهرية
                         }
                     }
 
@@ -448,7 +444,6 @@ export default {
                 } else {
                     this.showNoResultsAlert = false;
                 }
-                console.log("students => ", this.students);
             } catch (error) {
                 console.error("Error fetching students: ", error);
             } finally {

@@ -3021,7 +3021,6 @@ export default {
     async created() {
         await this.fetchStudents();
         this.years = new Date().getFullYear();
-        this.get_notifications("student_notification");
     },
     methods: {
         ...mapActions(usenotification, [

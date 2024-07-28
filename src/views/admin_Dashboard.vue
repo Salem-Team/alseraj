@@ -68,7 +68,8 @@ import {
     getDocs,
     updateDoc,
 } from "firebase/firestore";
-
+import { mapActions } from "pinia";
+import { usenotification } from "../store/notification.js";
 export default {
     data: () => ({
         tab: "first-tab",
@@ -85,10 +86,15 @@ export default {
             this.showTests = settings.tests || false;
         }
     },
+    mounted() {
+        this.get_notifications("public_notification");
+        this.get_notifications("Class_Notification");
+    },
     computed: {
         ...mapState(useAuthStore, ["user"]),
     },
     methods: {
+        ...mapActions(usenotification, ["get_notifications"]),
         async updateVisibilitySetting() {
             try {
                 // جلب جميع وثائق الطلاب

@@ -283,7 +283,7 @@
 <script>
 import { mapState, mapActions } from "pinia";
 import { useAuthStore } from "../store/userStore";
-
+import { usenotification } from "../store/notification.js";
 export default {
     data: () => ({
         items: ["بياناتك الشخصيه", "اطفالى"],
@@ -305,7 +305,12 @@ export default {
     computed: {
         ...mapState(useAuthStore, ["user"]),
     },
+    mounted() {
+        this.get_notifications("parent_notification");
+        this.get_notifications("student_notification");
+    },
     methods: {
+        ...mapActions(usenotification, ["get_notifications"]),
         ...mapActions(useAuthStore, ["logout"]),
         Edit() {
             this.$router.push({ name: "Edit_profile" });

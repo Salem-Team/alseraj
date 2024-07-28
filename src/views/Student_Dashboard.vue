@@ -181,7 +181,8 @@
 <script>
 import { db } from "@/Firebase.js";
 import { doc, getDoc } from "firebase/firestore";
-
+import { mapActions } from "pinia";
+import { usenotification } from "../store/notification.js";
 export default {
     data() {
         return {
@@ -214,6 +215,12 @@ export default {
                 { text: "Teacher Name", value: "Teacher_Name" },
             ],
         };
+    },
+    mounted() {
+        this.get_notifications("students_notification");
+    },
+    methods: {
+        ...mapActions(usenotification, ["get_notifications"]),
     },
     async created() {
         try {

@@ -341,6 +341,11 @@ export const useJobs = defineStore("job", {
                     "تم إضافة وظيفة جديدة",
                     "public_notification"
                 );
+                this.send_Notification(
+                    "اشعار وظائف",
+                    "تم إضافة وظيفة جديدة",
+                    "parent_notification"
+                );
                 console.log("Document written with ID: ", docRef.id);
                 this.Get_data();
                 this.snackbar = true;

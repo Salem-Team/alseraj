@@ -145,6 +145,16 @@ export const useNews = defineStore("News", {
                         "تم إضافة خبر جديد",
                         "public_notification"
                     );
+                    this.send_Notification(
+                        "اشعار أخبار",
+                        "تم إضافة خبر جديد",
+                        "parent_notification"
+                    );
+                    this.send_Notification(
+                        "اشعار أخبار",
+                        "تم إضافة خبر جديد",
+                        "students_notification"
+                    );
                     // Step 4: Refresh news data
                     this.Get_data();
                     this.snackbar = true;

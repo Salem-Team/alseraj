@@ -79,7 +79,7 @@
                         class="card"
                         v-for="photo in Photos"
                         :key="photo.id"
-                        width="400px"
+                        width="500px"
                         max-width="25%"
                         @click.="photos.photo_Information(photo)"
                         @click="dialog_6 = true"
@@ -92,8 +92,8 @@
                         ></v-img>
                         <video
                             v-if="photo.File_type == 'فيديو'"
-                            width="320"
-                            height="240"
+                            width="210"
+                            height="200"
                             controls
                         >
                             <source :src="photo.video" type="video/mp4" />
@@ -133,19 +133,14 @@
                                     </div>
                                     <div>
                                         <v-carousel-item
-                                            class="pa-5"
+                                            class="pa-5 text-center"
                                             v-if="
                                                 photos.File_Information ==
                                                 'فيديو'
                                             "
-                                            height="400"
                                             cover
                                         >
-                                            <video
-                                                width="400"
-                                                height="400"
-                                                controls
-                                            >
+                                            <video height="400" controls>
                                                 <source
                                                     :src="
                                                         photos.Video_Information

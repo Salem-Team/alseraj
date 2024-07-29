@@ -997,7 +997,10 @@ export default {
         },
     },
     methods: {
-        ...mapActions(usenotification, ["send_Notification"]),
+        ...mapActions(usenotification, [
+            "send_Notification",
+            "get_notifications",
+        ]),
         updateSection(section) {
             this.activeButton = section;
             this.selectedSection = section;
@@ -1349,6 +1352,7 @@ export default {
         await this.fetchClassRooms();
         console.log(this.filteredClasses);
         this.fetchClassRooms();
+        this.get_notifications("Class_Notification");
     },
 };
 </script>

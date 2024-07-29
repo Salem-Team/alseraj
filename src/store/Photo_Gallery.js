@@ -46,13 +46,14 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         dialog_6: false,
         photos_show: "",
         File_Name: "",
-        type: "",
+        type: "trip",
         types: "صورة",
         Photos: [],
         All_photos: [],
         trip: [],
         party: [],
         news: [],
+        all: [],
         image: null,
         video: null,
         tab: "all",
@@ -152,6 +153,16 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                         "اشعار صور",
                         "تم إضافة صورة جديدة",
                         "public_notification"
+                    );
+                    this.send_Notification(
+                        "اشعار أخبار",
+                        "تم إضافة خبر جديد",
+                        "parent_notification"
+                    );
+                    this.send_Notification(
+                        "اشعار أخبار",
+                        "تم إضافة خبر جديد",
+                        "students_notification"
                     );
                     // Step 4: Refresh photo data
                     this.Get_data();
@@ -336,7 +347,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                     this.empty2 = false;
                 }
             } else {
-                this.Get_data();
+                this.Photos = this.all;
             }
         },
         // Action method to categorize photos into respective arrays based on type
@@ -345,6 +356,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
             this.party = [];
             this.news = [];
             this.Photos.forEach((Photo) => {
+                this.all.push(Photo);
                 if (Photo.type === "trip") {
                     this.trip.push(Photo);
                 } else if (Photo.type === "party") {

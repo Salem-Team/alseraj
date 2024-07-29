@@ -472,7 +472,7 @@
                             class="d-flex justify-space-between align-center title"
                         >
                             <div style="color: var(--main-color)">
-                                إضافة صورة او فيديو
+                                إضافة {{ photos.types }}
                             </div>
                             <v-btn
                                 icon="mdi-close"
@@ -480,32 +480,18 @@
                             ></v-btn>
                         </div>
                         <form ref="form" @submit.prevent class="ma-auto mt-4">
-                            <label for="fileType">أختر نوع الملف</label>
-                            <br />
-                            <br />
-                            <select
-                                id="fileType"
+                            <v-select
+                                style="width: 100%"
                                 v-model="photos.types"
-                                @change="handleFileTypeChange"
+                                :items="['صورة', 'فيديو']"
+                                label="أختر نوع الملف "
+                                variant="outlined"
                                 required
-                                style="
-                                    width: 100%;
-                                    padding: 8px;
-                                    border-radius: 4px;
-                                    border: 1px solid #ccc;
-                                "
-                            >
-                                <option value="" disabled selected>
-                                    أختر نوع الملف
-                                </option>
-                                <option value="صورة">صورة</option>
-                                <option value="فيديو">فيديو</option>
-                            </select>
-                            <br />
-                            <br />
+                                :rules="[(v) => !!v || 'الرجاء اختيار النوع ']"
+                            ></v-select>
                             <!-- File input for images, shown if type is 'صورة' -->
                             <v-file-input
-                                v-if="photos.types === 'صورة'"
+                                v-if="photos.types == 'صورة'"
                                 style="width: 100%"
                                 v-model="photos.Photo.image"
                                 label="صورة"
@@ -514,27 +500,28 @@
                                 prepend-icon=""
                                 prepend-inner-icon="mdi-paperclip"
                                 @change="photos.onFileChange"
+                                @change.="subMutPhoto()"
                                 required
                                 :rules="[(v) => !!v || 'الرجاء اختيار صورة']"
-                            ></v-file-input>
+                            >
+                            </v-file-input>
                             <!-- File input for videos, shown if type is 'فيديو' -->
                             <v-file-input
-                                v-if="photos.types === 'فيديو'"
+                                v-if="photos.types == 'فيديو'"
                                 style="width: 100%"
                                 v-model="photos.Photo.video"
                                 label="فيديو"
-                                accept="video/mp4"
+                                accept="mp4"
                                 variant="outlined"
                                 prepend-icon=""
                                 prepend-inner-icon="mdi-paperclip"
                                 @change="photos.on_Video_Change"
                                 required
                                 :rules="[(v) => !!v || 'الرجاء اختيار فيديو']"
-                            ></v-file-input>
-
-                            <!-- Progress bar for image upload -->
+                            >
+                            </v-file-input>
                             <v-progress-linear
-                                v-if="photos.Photo.image"
+                                v-if="photos.Photo.image || photos.Photo.video"
                                 :value="progress"
                                 color="blue-grey"
                                 height="25"
@@ -543,11 +530,11 @@
                                     <strong>{{ Math.ceil(value) }}%</strong>
                                 </template>
                             </v-progress-linear>
-
+                            <br />
                             <!-- Display selected image -->
                             <v-img
                                 v-if="photos.Photo.image"
-                                :src="photos.Photo.image"
+                                :src="photos.image"
                                 height="200"
                             ></v-img>
 
@@ -556,43 +543,26 @@
                                 v-if="photos.Photo.video"
                                 width="320"
                                 height="240"
+                                style="text-align: center"
                                 controls
                             >
-                                <source
-                                    :src="photos.Photo.video"
-                                    type="video/mp4"
-                                />
+                                <source :src="photos.video" type="video/mp4" />
                                 Your browser does not support the video tag.
                             </video>
-                            <div v-if="photos.type === 'صورة'">
-                                <label for="imageType">أختر نوع الصورة</label>
-                                <br />
-                                <br />
-                                <!-- Optional select input for image type -->
-                                <select
-                                    id="imageType"
-                                    v-model="photos.types"
-                                    @change="photos.handletypes"
-                                    required
-                                    style="
-                                        width: 100%;
-                                        padding: 8px;
-                                        border-radius: 4px;
-                                        border: 1px solid #ccc;
-                                    "
-                                >
-                                    <option value="" disabled selected>
-                                        أختر نوع الصورة
-                                    </option>
-                                    <option
-                                        v-for="type in photos.Types"
-                                        :key="type"
-                                        :value="type"
-                                    >
-                                        {{ type }}
-                                    </option>
-                                </select>
-                            </div>
+                            <br />
+                            <v-select
+                                style="width: 100%"
+                                v-model="photos.type"
+                                :items="photos.Types"
+                                label="أختر نوع الصورة"
+                                variant="outlined"
+                                @blur="photos.handletypes"
+                                @click="photos.handletypes"
+                                required
+                                :rules="[
+                                    (v) => !!v || 'الرجاء اختيار نوع الصورة',
+                                ]"
+                            ></v-select>
                             <v-btn
                                 v-if="photos.types == 'صورة'"
                                 type="submit"
@@ -609,6 +579,7 @@
                                     color: #fff;
                                 "
                                 @click="photos.Add_Photos"
+                                @click.="subMutPhoto()"
                             >
                                 إضافة صورة
                             </v-btn>
@@ -628,6 +599,7 @@
                                     color: #fff;
                                 "
                                 @click="photos.Add_Video"
+                                @click.="subMutPhoto()"
                             >
                                 إضافة فيديو
                             </v-btn>
@@ -857,27 +829,24 @@ export default defineComponent({
     }),
 
     methods: {
-        next() {
-            this.onboarding =
-                this.onboarding + 1 > this.length ? 1 : this.onboarding + 1;
-        },
-        prev() {
-            this.onboarding =
-                this.onboarding - 1 <= 0 ? this.length : this.onboarding - 1;
-        },
         async subMutPhoto() {
-            const file = this.photos.Photo.image;
+            const file =
+                this.photos.types === "صورة"
+                    ? this.photos.Photo.image
+                    : this.photos.Photo.video;
 
             if (!file) {
                 console.error("No file selected");
                 return;
             }
-
+            console.log("start");
             // Create a FormData object to hold the file data
             const formData = new FormData();
             formData.append("file", file); // Append the file with the key 'file'
 
             try {
+                console.log("wait");
+
                 const response = await axios.post(
                     "http://localhost:3000/upload",
                     formData,
@@ -891,6 +860,7 @@ export default defineComponent({
             } catch (error) {
                 console.error("Error uploading file:", error);
             }
+            console.log("end");
         },
     },
 });

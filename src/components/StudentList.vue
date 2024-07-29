@@ -2390,15 +2390,6 @@
                                                         required
                                                         label="اسم الطالب"
                                                     ></v-text-field>
-                                                    <v-text-field
-                                                        v-model="form.phone"
-                                                        style="width: 50%"
-                                                        :error-messages="
-                                                            errors.phone
-                                                        "
-                                                        required
-                                                        label="رقم التليفون"
-                                                    ></v-text-field>
 
                                                     <v-select
                                                         :items="[
@@ -2494,14 +2485,6 @@
                                                             required
                                                             v-bind="attrs"
                                                             v-on="on"
-                                                        ></v-text-field>
-                                                        <v-text-field
-                                                            v-model="
-                                                                form.password
-                                                            "
-                                                            label="الباسوورد"
-                                                            type="password"
-                                                            required
                                                         ></v-text-field>
                                                     </template>
                                                     <v-card>
@@ -2639,8 +2622,6 @@ import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 import Chart from "chart.js/auto";
 import { useDialogStore } from "@/store/useDialogStore";
-import { mapActions } from "pinia";
-import { usenotification } from "../store/notification.js";
 export default {
     name: "StudentList",
     components: {
@@ -2740,7 +2721,6 @@ export default {
                 birthday: null,
                 parent_name: "",
                 national_id: "",
-                phone: "",
 
                 Guardian: [
                     { Guardian_name: "" },
@@ -2753,18 +2733,7 @@ export default {
                 errors: {},
                 Results: [
                     {
-                        weekly: [
-                            {
-                                Subject_Name: "دين",
-                                Major_degree: 100,
-                                Student_degree: 96,
-                            },
-                            {
-                                Subject_Name: "دراسات",
-                                Major_degree: 50,
-                                Student_degree: 42,
-                            },
-                        ],
+                        weekly: [],
                     },
                     {
                         Monthly: [
@@ -2994,10 +2963,10 @@ export default {
                     },
                 ],
                 payments: {
-                    Expenses: 0,
+                    Expenses: 1000,
                     payment_System: "",
                     Installment_System: "",
-                    paid_Up: 0,
+                    paid_Up: 100,
                     Residual: 0,
                 },
                 Notifications: [],
@@ -3125,26 +3094,12 @@ export default {
     async created() {
         await this.fetchStudents();
         this.years = new Date().getFullYear();
-        this.get_notifications("student_notification");
     },
     methods: {
-        ...mapActions(usenotification, [
-            "send_Notification",
-            "get_notifications",
-        ]),
-        calculatePaymentProgress(paid_Up, Expenses) {
-            if (Expenses === 0) {
-                return 0; // لتجنب القسمة على الصفر
-            }
-            return (paid_Up / Expenses) * 100;
-        },
-        calculateLabelPosition(paid_Up, Expenses) {
-            const progress = this.calculatePaymentProgress(paid_Up, Expenses);
-            return `calc(${progress}% - 50px)`; // تعديلات صغيرة على القيمة لضبط الموقع
-        },
-        handleCloseSnackbar() {
-            this.showSnackbar = false; // تحديث حالة الرسالة في المكون الأم
-        },
+        // ...mapActions(usenotification, [
+        //     "send_Notification",
+        //     "get_notifications",
+        // ]),
         getMonthlyDegrees(student, month) {
             const monthIndex = this.gradeOptions.indexOf(month);
             if (monthIndex === -1) return 0;
@@ -3282,6 +3237,9 @@ export default {
                 );
             }
         },
+        handleCloseSnackbar() {
+            this.showSnackbar = false; // تحديث حالة الرسالة في المكون الأم
+        },
         async saveChanges() {
             try {
                 const studentDoc = doc(db, "students", this.selectedStudent.id);
@@ -3312,7 +3270,28 @@ export default {
             this.updateMonthlyDegrees(this.selectedMonthlyDegrees); // Example to update Firebase
             this.changesMade2 = false;
         },
-
+        calculatePaymentProgress(paid_Up, Expenses) {
+            if (Expenses === 0) {
+                return 0; // لتجنب القسمة على الصفر
+            }
+            return (paid_Up / Expenses) * 100;
+        },
+        calculateLabelPosition(paid_Up, Expenses) {
+            const progress = this.calculatePaymentProgress(paid_Up, Expenses);
+            return `calc(${progress}% - 50px)`; // تعديلات صغيرة على القيمة لضبط الموقع
+        },
+        // getMonthlyDegrees(student, month) {
+        //     const monthIndex = this.gradeOptions.indexOf(month);
+        //     if (monthIndex === -1) return 0;
+        //     const degrees =
+        //         student.Results[1].Monthly[monthIndex]?.Degrees || [];
+        //     let total = 0;
+        //     degrees.forEach((degree) => {
+        //         total += Number(degree.Student_degree);
+        //     });
+        //     const maxDegrees = degrees.length * 100;
+        //     return (total / maxDegrees) * 100;
+        // },
         async fetchStudents() {
             try {
                 const q = query(
@@ -3363,8 +3342,6 @@ export default {
                         year: new Date().getFullYear(),
                         National_id: this.form.parent_national_id, // إضافة National_id هنا
                         state: true,
-                        password: this.form.password, // إضافة الباسوورد هنا
-                        phone: this.form.phone,
                     });
 
                     const newStudent = {
@@ -3381,8 +3358,6 @@ export default {
                         year: new Date().getFullYear(),
                         National_id: this.form.parent_national_id, // إضافة National_id هنا
                         state: true,
-                        password: this.form.password, // إضافة الباسوورد هنا
-                        phone: this.form.phone,
                     };
 
                     this.students.push(newStudent);
@@ -4152,11 +4127,6 @@ export default {
                         theDescription: this.AddNotice.theDescription,
                         NotificationType: this.AddNotice.NotificationType,
                     };
-                    this.send_Notification(
-                        this.AddNotice.NoticeTitle,
-                        this.AddNotice.theDescription,
-                        "student_notification"
-                    );
                     // إعداد نص الرسالة وتفعيل Snackbar
                     this.confirmationText = "تم  اضافه الاشعار بنجاح";
                     this.showSnackbar = true;
@@ -4465,8 +4435,8 @@ export default {
                 "شهر نوفمبر",
                 "شهر ديسمبر",
                 "الترم الأول",
-                "شهر نوفمبر",
-                "الترم الأول",
+                "شهر فبراير",
+                "شهر مارس",
             ];
             return monthNames[month - 1] || month;
         },

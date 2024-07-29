@@ -476,6 +476,7 @@
                                                 </div>
                                             </div>
                                         </v-tabs-window-item>
+                                        <!-- 00000000000000000000000000 -->
                                         <v-tabs-window-item
                                             value="three1"
                                             style="width: 100% !important"
@@ -762,11 +763,7 @@
                                             value="five1"
                                             style="border: none"
                                         >
-                                            <v-card
-                                                v-if="student.state"
-                                                flat
-                                                style="border: none"
-                                            >
+                                            <v-card flat style="border: none">
                                                 <div class="title">
                                                     صور الطالب
                                                 </div>

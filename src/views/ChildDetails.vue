@@ -214,313 +214,185 @@
                                         style="width: 100% !important"
                                         class="monthly"
                                     >
-                                        <div class="title">النتائج الشهرية</div>
-                                        <div class="header">
-                                            <v-select
-                                                v-model="selectedMonth"
-                                                label="أختر الشهر"
-                                                :items="[
-                                                    'شهر أكتوبر',
-                                                    'شهر نوفمبر',
-                                                    'الترم الأول',
-                                                    'شهر فبراير',
-                                                    'شهر مارس',
-                                                    'الترم الثاني',
-                                                ]"
-                                            ></v-select>
+                                        <div v-if="student.state">
                                             <div
-                                                class="download"
-                                                @click="downloadPDF"
+                                                class="title"
+                                                style="border: none"
                                             >
-                                                <img
-                                                    src="../assets/student/download-pdf.png"
-                                                    alt=""
-                                                />
-                                                <div>تحميل الشهادة</div>
+                                                النتائج الشهرية
                                             </div>
-                                        </div>
-                                        <div class="Certificate">
-                                            <div class="head">
-                                                <div class="right">
-                                                    <div>
-                                                        الإسم : محمود علي عماد
-                                                    </div>
-                                                    <div>
-                                                        المرحلة الدراسية : الصف
-                                                        الخامس الإبتدائي
-                                                    </div>
-                                                    <div>
-                                                        السنةالدراسية : 2023 -
-                                                        2024
-                                                    </div>
-                                                    <div>الفصل : 4 /5</div>
-                                                </div>
-                                                <div class="left">
+                                            <div class="header">
+                                                <v-select
+                                                    v-model="selectedMonth"
+                                                    label="أختر الشهر"
+                                                    :items="[
+                                                        'شهر أكتوبر',
+                                                        'شهر نوفمبر',
+                                                        'الترم الأول',
+                                                        'شهر فبراير',
+                                                        'شهر مارس',
+                                                        'الترم الثاني',
+                                                    ]"
+                                                ></v-select>
+                                                <div
+                                                    class="download"
+                                                    @click="downloadPDF"
+                                                >
                                                     <img
-                                                        src="../assets/images.jpeg"
-                                                        alt="School Logo"
+                                                        src="../assets/student/download-pdf.png"
+                                                        alt=""
                                                     />
-                                                    <p class="ma-2">
-                                                        معهد السراج المنير
-                                                        الأزهري
-                                                    </p>
+                                                    <div>تحميل الشهادة</div>
                                                 </div>
                                             </div>
-                                            <div class="body">
-                                                <table>
-                                                    <thead>
-                                                        <tr>
-                                                            <th>المادة</th>
-                                                            <th>المدرس</th>
-                                                            <th>
-                                                                تقييم السلوك
-                                                            </th>
-                                                            <th>
-                                                                الدرجة الصغرى
-                                                            </th>
-                                                            <th>درجة الطالب</th>
-                                                            <th>
-                                                                الدرجة الكبرى
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>الرياضيات</td>
-                                                            <td>أحمد</td>
-                                                            <td>جيد جدا</td>
-                                                            <td>50</td>
-                                                            <td>75</td>
-                                                            <td>100</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>العلوم</td>
-                                                            <td>محمد</td>
-                                                            <td>ممتاز</td>
-                                                            <td>45</td>
-                                                            <td>90</td>
-                                                            <td>100</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                اللغة العربية
-                                                            </td>
-                                                            <td>علي</td>
-                                                            <td>جيد</td>
-                                                            <td>40</td>
-                                                            <td>60</td>
-                                                            <td>100</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>التاريخ</td>
-                                                            <td>خالد</td>
-                                                            <td>مقبول</td>
-                                                            <td>35</td>
-                                                            <td>50</td>
-                                                            <td>100</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>الجغرافيا</td>
-                                                            <td>سعيد</td>
-                                                            <td>جيد جدا</td>
-                                                            <td>30</td>
-                                                            <td>80</td>
-                                                            <td>100</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <!-- <v-card flat>
-                                            <v-row
-                                                class="d-flex flex-row align-center justify-space-between"
-                                            >
-                                                <v-col>
-                                                    <h2 class="ma-2"></h2>
-                                                </v-col>
-                                                <v-col
-                                                    class="d-flex justify-end"
-                                                >
-                                                    <v-btn
-                                                        color="blue"
-                                                        class="ml-5"
-                                                        @click="downloadPDF"
-                                                    >
-                                                        <v-icon
-                                                            left
-                                                            size="25px"
-                                                            class="ml-2"
-                                                            >mdi-printer</v-icon
-                                                        >
-                                                        تحميل الشهادة
-                                                    </v-btn>
-                                                </v-col>
-                                            </v-row>
-
-                                            <v-row>
-                                                <v-col
-                                                    cols="12"
-                                                    class="d-flex justify-center ma-3"
-                                                >
-                                                    <v-btn
-                                                        rounded="xs"
-                                                        size="large"
-                                                        @click="
-                                                            selectMonth(
-                                                                'شهر يناير'
-                                                            )
-                                                        "
-                                                        >شهر يناير</v-btn
-                                                    >
-                                                    <v-btn
-                                                        rounded="xs"
-                                                        size="large"
-                                                        @click="
-                                                            selectMonth(
-                                                                'شهر فبراير'
-                                                            )
-                                                        "
-                                                        >شهر فبراير</v-btn
-                                                    >
-                                                    <v-btn
-                                                        rounded="xs"
-                                                        size="large"
-                                                        @click="
-                                                            selectMonth(
-                                                                'شهر مارس'
-                                                            )
-                                                        "
-                                                        >شهر مارس</v-btn
-                                                    >
-                                                    <v-btn
-                                                        rounded="xs"
-                                                        size="large"
-                                                        @click="
-                                                            selectMonth(
-                                                                'شهر ابرايل'
-                                                            )
-                                                        "
-                                                        >شهر ابرايل</v-btn
-                                                    >
-                                                </v-col>
-                                            </v-row>
-
-                                            <v-row
-                                                class="d-flex flex-row align-center justify-space-between ma-5"
-                                            >
-                                                <v-col>
-                                                    <v-col>
-                                                        <v-text-title
-                                                            >الاسم:</v-text-title
-                                                        >
-                                                        <v-text-title>{{
-                                                            student.name
-                                                        }}</v-text-title>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <v-text-title
-                                                            >المرحلة
-                                                            الدراسية:</v-text-title
-                                                        >
-                                                        <v-text-title>{{
-                                                            student.gradeLevel
-                                                        }}</v-text-title>
-                                                    </v-col>
-                                                    <v-col>
-                                                        <v-text-title
-                                                            >السنة
-                                                            الدراسية:</v-text-title
-                                                        >
-                                                        <v-text-title>{{
-                                                            student.schoolYear
-                                                        }}</v-text-title>
-                                                    </v-col>
-                                                </v-col>
-                                                <v-col
-                                                    class="d-flex flex-column align-end"
-                                                >
+                                            <div class="Certificate">
+                                                <div class="head">
                                                     <div
-                                                        class="par d-flex flex-column justify-center"
-                                                        style="
-                                                            width: 200px;
-                                                            height: 200px;
-                                                        "
+                                                        class="right"
+                                                        style="border: none"
+                                                    >
+                                                        <div>
+                                                            الإسم :
+                                                            {{
+                                                                student.student_name
+                                                            }}
+                                                        </div>
+                                                        <div>
+                                                            المرحلة الدراسية :
+                                                            {{
+                                                                student.educational_level
+                                                            }}
+                                                        </div>
+                                                        <div>
+                                                            السنة الدراسية :
+                                                            {{ student.year }}
+                                                        </div>
+                                                        <div>
+                                                            الفصل :
+                                                            {{
+                                                                student?.section
+                                                            }}
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="left"
+                                                        style="border: none"
                                                     >
                                                         <img
                                                             src="../assets/images.jpeg"
                                                             alt="School Logo"
                                                         />
-                                                        <p class="ma-2">
+                                                        <p
+                                                            class="ma-2 text-center"
+                                                        >
                                                             معهد السراج المنير
                                                             الأزهري
                                                         </p>
                                                     </div>
-                                                </v-col>
-                                            </v-row>
-
-                                            <div class="table">
-                                                <v-table>
-                                                    <thead>
-                                                        <tr>
-                                                            <th>اسم المادة</th>
-                                                            <th>اسم المعلم</th>
-                                                            <th>
-                                                                تقييم السلوك
-                                                            </th>
-                                                            <th>
-                                                                الدرجة الصغرى
-                                                            </th>
-                                                            <th>
-                                                                الدرجة الكبرى
-                                                            </th>
-                                                            <th>
-                                                                الدرجة النهائية
-                                                                للطالب
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr
-                                                            v-for="(
-                                                                degree, index
-                                                            ) in selectedMonthlyDegrees"
-                                                            :key="index"
-                                                        >
-                                                            <td>
-                                                                {{
-                                                                    degree.Subject_Name
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    degree.Teacher_Name
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    degree.Behavior_assessment
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    degree.Minor_degree
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    degree.Major_degree
-                                                                }}
-                                                            </td>
-                                                            <td>
-                                                                {{
-                                                                    degree.Student_degree
-                                                                }}
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </v-table>
+                                                </div>
+                                                <div class="body">
+                                                    <table>
+                                                        <thead>
+                                                            <tr>
+                                                                <th>المادة</th>
+                                                                <th>المدرس</th>
+                                                                <th>
+                                                                    تقييم السلوك
+                                                                </th>
+                                                                <th>
+                                                                    الدرجة
+                                                                    الصغرى
+                                                                </th>
+                                                                <th>
+                                                                    درجة الطالب
+                                                                </th>
+                                                                <th>
+                                                                    الدرجة
+                                                                    الكبرى
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <template
+                                                                v-if="
+                                                                    filteredResults.length >
+                                                                    0
+                                                                "
+                                                            >
+                                                                <template
+                                                                    v-for="(
+                                                                        monthly,
+                                                                        index
+                                                                    ) in filteredResults"
+                                                                    :key="index"
+                                                                >
+                                                                    <template
+                                                                        v-for="(
+                                                                            degree,
+                                                                            degreeIndex
+                                                                        ) in monthly.Degrees"
+                                                                        :key="
+                                                                            degreeIndex
+                                                                        "
+                                                                    >
+                                                                        <tr>
+                                                                            <td>
+                                                                                {{
+                                                                                    degree.Subject_Name
+                                                                                }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{
+                                                                                    degree.Teacher_Name
+                                                                                }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{
+                                                                                    degree.Behavior_assessment
+                                                                                }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{
+                                                                                    degree.Minor_degree
+                                                                                }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{
+                                                                                    degree.Student_degree
+                                                                                }}
+                                                                            </td>
+                                                                            <td>
+                                                                                {{
+                                                                                    degree.Major_degree
+                                                                                }}
+                                                                            </td>
+                                                                        </tr>
+                                                                    </template>
+                                                                </template>
+                                                            </template>
+                                                            <template v-else>
+                                                                <tr>
+                                                                    <td
+                                                                        colspan="6"
+                                                                    >
+                                                                        No data
+                                                                        available
+                                                                    </td>
+                                                                </tr>
+                                                            </template>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
-                                        </v-card> -->
+                                        </div>
+                                        <div v-else>
+                                            <div class="">
+                                                <v-alert type="warning">
+                                                    تم حجب الاختبارات لحين
+                                                    السداد.
+                                                </v-alert>
+                                            </div>
+                                        </div>
                                     </v-tabs-window-item>
 
                                     <v-tabs-window-item value="four1">
@@ -920,6 +792,8 @@
 </template>
 
 <script>
+import { db } from "@/Firebase.js";
+import { doc, getDoc, getDocs } from "firebase/firestore";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
@@ -979,9 +853,190 @@ export default {
 
             // خاص بالبروحريس بار وتقسيم القسط
 
+            // student: {
+            //     name: "أحمد محمد",
+            //     gender: "ذكر",
+            //     age: 12,
+            //     BithOfDate: "2009-08-05",
+            //     gradeLevel: "الصف الخامس",
+            //     schoolYear: "2023-2024",
+            //     photo: {
+            //         url1: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+            //     },
+            //     Results: {
+            //         weeklyResults: [
+            //             {
+            //                 Subject_Name: "دين",
+            //                 Major_degree: 100,
+            //                 Student_degree: 96,
+            //                 Date_Test: "2023-09-05",
+            //             },
+            //             {
+            //                 Subject_Name: "دراسات",
+            //                 Major_degree: 50,
+            //                 Student_degree: 42,
+            //                 Date_Test: "2023-11-05",
+            //             },
+            //         ],
+            //     },
+            //     Monthly: [
+            //         {
+            //             Certificate_title: "شهر يناير",
+            //             Degrees: [
+            //                 {
+            //                     Subject_Name: "عربي",
+            //                     Teacher_Name: "عماد عمر",
+            //                     Behavior_assessment: "ممتاز",
+            //                     Minor_degree: 50,
+            //                     Major_degree: 100,
+            //                     Student_degree: 99,
+            //                 },
+            //                 {
+            //                     Subject_Name: "قرآن كريم",
+            //                     Teacher_Name: "نور محمود",
+            //                     Behavior_assessment: "ممتاز",
+            //                     Minor_degree: 50,
+            //                     Major_degree: 100,
+            //                     Student_degree: 95,
+            //                 },
+            //                 {
+            //                     Subject_Name: " جغرافيا",
+            //                     Teacher_Name: "علاء محمود",
+            //                     Behavior_assessment: "ممتاز",
+            //                     Minor_degree: 50,
+            //                     Major_degree: 100,
+            //                     Student_degree: 80,
+            //                 },
+            //                 {
+            //                     Subject_Name: " تاريخ",
+            //                     Teacher_Name: "خالد محمد",
+            //                     Behavior_assessment: "ممتاز",
+            //                     Minor_degree: 50,
+            //                     Major_degree: 100,
+            //                     Student_degree: 77,
+            //                 },
+            //             ],
+            //         },
+            //         // أضف المزيد من الأشهر هنا
+            //         {
+            //             Certificate_title: "شهر فبراير",
+            //             Degrees: [
+            //                 {
+            //                     Subject_Name: "انجليزى",
+            //                     Teacher_Name: "كريم عمر",
+            //                     Behavior_assessment: "جيد",
+            //                     Minor_degree: 50,
+            //                     Major_degree: 100,
+            //                     Student_degree: 98,
+            //                 },
+            //                 {
+            //                     Subject_Name: " جغرافيا",
+            //                     Teacher_Name: "كمال محمود",
+            //                     Behavior_assessment: "جيد جدا",
+            //                     Minor_degree: 50,
+            //                     Major_degree: 100,
+            //                     Student_degree: 94,
+            //                 },
+            //                 {
+            //                     Subject_Name: " جغرافيا",
+            //                     Teacher_Name: "علاء محمود",
+            //                     Behavior_assessment: "ممتاز",
+            //                     Minor_degree: 50,
+            //                     Major_degree: 100,
+            //                     Student_degree: 82,
+            //                 },
+            //                 {
+            //                     Subject_Name: " تاريخ",
+            //                     Teacher_Name: "خالد محمد",
+            //                     Behavior_assessment: "ممتاز",
+            //                     Minor_degree: 50,
+            //                     Major_degree: 100,
+            //                     Student_degree: 79,
+            //                 },
+            //             ],
+            //         },
+            //     ],
+            //     payments: {
+            //         Requird: 100,
+            //         paid_up: 120,
+            //         installment_system: "شهريا",
+            //     },
+            //     Notifications: [
+            //         {
+            //             Title: "جواب الفصل لولي الأمر",
+            //             Details:
+            //                 "السيد/السيدة [اسم ولي الأمر]، نود إعلامكم بقرار فصل ابنكم/ابنتكم [اسم الطالب] من معهد السراج المنير الأزهري بسبب تكرار المخالفات للوائح والانضباط المدرسي، وذلك اعتبارًا من تاريخ هذا الخطاب.",
+            //         },
+            //         {
+            //             Title: "جواب الفصل لولي الأمر",
+            //             Details:
+            //                 "السيد/السيدة [اسم ولي الأمر]، نود إعلامكم بقرار فصل ابنكم/ابنتكم [اسم الطالب] من معهد السراج المنير الأزهري بسبب تكرار المخالفات للوائح والانضباط المدرسي، وذلك اعتبارًا من تاريخ هذا الخطاب.",
+            //         },
+            //         {
+            //             Title: "جواب الفصل لولي الأمر",
+            //             Details:
+            //                 "السيد/السيدة [اسم ولي الأمر]، نود إعلامكم بقرار فصل ابنكم/ابنتكم [اسم الطالب] من معهد السراج المنير الأزهري بسبب تكرار المخالفات للوائح والانضباط المدرسي، وذلك اعتبارًا من تاريخ هذا الخطاب.",
+            //         },
+            //     ],
+
+            //     photos: [
+            //         {
+            //             Date: "2023/2/5",
+            //             link: "https://images.pexels.com/photos/6778692/pexels-photo-6778692.jpeg",
+            //             grade: "الصف الأول",
+            //         },
+            //         {
+            //             Date: "2022/3/9",
+            //             link: "https://firebasestorage.googleapis.com/v0/b/alseraj--almoner.appspot.com/o/images%2F%D8%AE%D9%84%D9%81%D9%8A%D8%A9%20%D9%84%D9%84%D9%85%D8%B4%D8%B1%D9%88%D8%B9%20-%20Copy.jpg?alt=media&token=6262aa52-b522-47e1-b17d-a11ecec9e4cf",
+            //             grade: "الصف الثاني",
+            //         },
+            //         {
+            //             Date: "2022/3/4",
+            //             link: "https://images.pexels.com/photos/7410112/pexels-photo-7410112.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            //             grade: "الصف الثالث",
+            //         },
+            //         // أضف المزيد من الصور هنا
+            //         {
+            //             Date: "2023/5/15",
+            //             link: "https://images.pexels.com/photos/9389657/pexels-photo-9389657.jpeg",
+            //             grade: "الصف الأول",
+            //         },
+
+            //         {
+            //             Date: "2022/4/10",
+            //             link: "https://images.pexels.com/photos/62403/pexels-photo-62403.jpeg",
+            //             grade: "الصف الثاني",
+            //         },
+            //         {
+            //             Date: "2022/7/1",
+            //             link: "https://images.pexels.com/photos/870711/pexels-photo-870711.jpeg",
+            //             grade: "الصف الثالث",
+            //         },
+            //         {
+            //             Date: "2022/8/8",
+            //             link: "https://images.pexels.com/photos/3023202/pexels-photo-3023202.jpeg",
+            //             grade: "الصف الثالث",
+            //         },
+            //     ],
+            //     statistics: [
+            //         { id: 1, data: "إحصائيات تجريبية 1" },
+            //         { id: 2, data: "إحصائيات تجريبية 2" },
+            //     ],
+            // },
             student: {
+                notifications: [],
+                student_name: "",
+                National_id: "",
+                educational_level: "",
+                class: "",
+                section: "",
+                gender: "",
+                birthday: "",
+                phone: "",
+                tests: [],
+                // Results: [], // بيانات النتائج ستكون هنا
+                state: true, // إضافة حالة للتحكم في عرض الاختبارات
                 name: "أحمد محمد",
-                gender: "ذكر",
                 age: 12,
                 BithOfDate: "2009-08-05",
                 gradeLevel: "الصف الخامس",
@@ -989,169 +1044,21 @@ export default {
                 photo: {
                     url1: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
                 },
-                Results: {
-                    weeklyResults: [
-                        {
-                            Subject_Name: "دين",
-                            Major_degree: 100,
-                            Student_degree: 96,
-                            Date_Test: "2023-09-05",
-                        },
-                        {
-                            Subject_Name: "دراسات",
-                            Major_degree: 50,
-                            Student_degree: 42,
-                            Date_Test: "2023-11-05",
-                        },
-                    ],
-                },
-                Monthly: [
-                    {
-                        Certificate_title: "شهر يناير",
-                        Degrees: [
-                            {
-                                Subject_Name: "عربي",
-                                Teacher_Name: "عماد عمر",
-                                Behavior_assessment: "ممتاز",
-                                Minor_degree: 50,
-                                Major_degree: 100,
-                                Student_degree: 99,
-                            },
-                            {
-                                Subject_Name: "قرآن كريم",
-                                Teacher_Name: "نور محمود",
-                                Behavior_assessment: "ممتاز",
-                                Minor_degree: 50,
-                                Major_degree: 100,
-                                Student_degree: 95,
-                            },
-                            {
-                                Subject_Name: " جغرافيا",
-                                Teacher_Name: "علاء محمود",
-                                Behavior_assessment: "ممتاز",
-                                Minor_degree: 50,
-                                Major_degree: 100,
-                                Student_degree: 80,
-                            },
-                            {
-                                Subject_Name: " تاريخ",
-                                Teacher_Name: "خالد محمد",
-                                Behavior_assessment: "ممتاز",
-                                Minor_degree: 50,
-                                Major_degree: 100,
-                                Student_degree: 77,
-                            },
-                        ],
-                    },
-                    // أضف المزيد من الأشهر هنا
-                    {
-                        Certificate_title: "شهر فبراير",
-                        Degrees: [
-                            {
-                                Subject_Name: "انجليزى",
-                                Teacher_Name: "كريم عمر",
-                                Behavior_assessment: "جيد",
-                                Minor_degree: 50,
-                                Major_degree: 100,
-                                Student_degree: 98,
-                            },
-                            {
-                                Subject_Name: " جغرافيا",
-                                Teacher_Name: "كمال محمود",
-                                Behavior_assessment: "جيد جدا",
-                                Minor_degree: 50,
-                                Major_degree: 100,
-                                Student_degree: 94,
-                            },
-                            {
-                                Subject_Name: " جغرافيا",
-                                Teacher_Name: "علاء محمود",
-                                Behavior_assessment: "ممتاز",
-                                Minor_degree: 50,
-                                Major_degree: 100,
-                                Student_degree: 82,
-                            },
-                            {
-                                Subject_Name: " تاريخ",
-                                Teacher_Name: "خالد محمد",
-                                Behavior_assessment: "ممتاز",
-                                Minor_degree: 50,
-                                Major_degree: 100,
-                                Student_degree: 79,
-                            },
-                        ],
-                    },
-                ],
-                payments: {
-                    Requird: 100,
-                    paid_up: 120,
-                    installment_system: "شهريا",
-                },
-                Notifications: [
-                    {
-                        Title: "جواب الفصل لولي الأمر",
-                        Details:
-                            "السيد/السيدة [اسم ولي الأمر]، نود إعلامكم بقرار فصل ابنكم/ابنتكم [اسم الطالب] من معهد السراج المنير الأزهري بسبب تكرار المخالفات للوائح والانضباط المدرسي، وذلك اعتبارًا من تاريخ هذا الخطاب.",
-                    },
-                    {
-                        Title: "جواب الفصل لولي الأمر",
-                        Details:
-                            "السيد/السيدة [اسم ولي الأمر]، نود إعلامكم بقرار فصل ابنكم/ابنتكم [اسم الطالب] من معهد السراج المنير الأزهري بسبب تكرار المخالفات للوائح والانضباط المدرسي، وذلك اعتبارًا من تاريخ هذا الخطاب.",
-                    },
-                    {
-                        Title: "جواب الفصل لولي الأمر",
-                        Details:
-                            "السيد/السيدة [اسم ولي الأمر]، نود إعلامكم بقرار فصل ابنكم/ابنتكم [اسم الطالب] من معهد السراج المنير الأزهري بسبب تكرار المخالفات للوائح والانضباط المدرسي، وذلك اعتبارًا من تاريخ هذا الخطاب.",
-                    },
-                ],
-
-                photos: [
-                    {
-                        Date: "2023/2/5",
-                        link: "https://images.pexels.com/photos/6778692/pexels-photo-6778692.jpeg",
-                        grade: "الصف الأول",
-                    },
-                    {
-                        Date: "2022/3/9",
-                        link: "https://firebasestorage.googleapis.com/v0/b/alseraj--almoner.appspot.com/o/images%2F%D8%AE%D9%84%D9%81%D9%8A%D8%A9%20%D9%84%D9%84%D9%85%D8%B4%D8%B1%D9%88%D8%B9%20-%20Copy.jpg?alt=media&token=6262aa52-b522-47e1-b17d-a11ecec9e4cf",
-                        grade: "الصف الثاني",
-                    },
-                    {
-                        Date: "2022/3/4",
-                        link: "https://images.pexels.com/photos/7410112/pexels-photo-7410112.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                        grade: "الصف الثالث",
-                    },
-                    // أضف المزيد من الصور هنا
-                    {
-                        Date: "2023/5/15",
-                        link: "https://images.pexels.com/photos/9389657/pexels-photo-9389657.jpeg",
-                        grade: "الصف الأول",
-                    },
-
-                    {
-                        Date: "2022/4/10",
-                        link: "https://images.pexels.com/photos/62403/pexels-photo-62403.jpeg",
-                        grade: "الصف الثاني",
-                    },
-                    {
-                        Date: "2022/7/1",
-                        link: "https://images.pexels.com/photos/870711/pexels-photo-870711.jpeg",
-                        grade: "الصف الثالث",
-                    },
-                    {
-                        Date: "2022/8/8",
-                        link: "https://images.pexels.com/photos/3023202/pexels-photo-3023202.jpeg",
-                        grade: "الصف الثالث",
-                    },
-                ],
-                statistics: [
-                    { id: 1, data: "إحصائيات تجريبية 1" },
-                    { id: 2, data: "إحصائيات تجريبية 2" },
-                ],
             },
         };
     },
     computed: {
+        filteredResults() {
+            if (!this.results || !this.selectedMonth) return []; // التأكد من أن results و selectedMonth مُهيّأت
+            return this.results.flatMap((result) =>
+                result.Monthly
+                    ? result.Monthly.filter(
+                          (monthly) =>
+                              monthly.Certificate_title === this.selectedMonth
+                      )
+                    : []
+            );
+        },
         filteredPhotos() {
             if (!this.selectedGrade) {
                 return this.student.photos;
@@ -1161,12 +1068,32 @@ export default {
             );
         },
         selectedMonthlyDegrees() {
-            // اختر الشهر المحدد
-            return (
-                this.student.Monthly.find(
-                    (month) => month.Certificate_title === this.selectedMonth
-                )?.Degrees || []
-            );
+            // تأكد من أن student و Results و Monthly ليست null أو undefined
+            if (
+                this.student &&
+                this.student.Results &&
+                Array.isArray(this.student.Results) &&
+                this.student.Results.length > 0
+            ) {
+                const selectedResult = this.student.Results.find(
+                    (result) =>
+                        result.Monthly &&
+                        result.Monthly.length > 0 &&
+                        result.Monthly.find(
+                            (month) =>
+                                month.Certificate_title === this.selectedMonth
+                        )
+                );
+
+                if (selectedResult) {
+                    const selectedMonth = selectedResult.Monthly.find(
+                        (month) =>
+                            month.Certificate_title === this.selectedMonth
+                    );
+                    return selectedMonth ? selectedMonth.Degrees : [];
+                }
+            }
+            return [];
         },
         numberOfMonths() {
             if (!this.selectedPlan) return [];
@@ -1198,6 +1125,49 @@ export default {
         },
     },
     methods: {
+        async loadStudent(id) {
+            try {
+                const studentRef = doc(db, "students", id);
+                const studentSnapshot = await getDocs(studentRef);
+                if (studentSnapshot.exists()) {
+                    this.student = studentSnapshot.data();
+                } else {
+                    console.error("No such student!");
+                    this.student = null;
+                }
+            } catch (error) {
+                console.error("Error loading student:", error);
+                this.student = null;
+            }
+        },
+        getNotificationColor(type) {
+            switch (type) {
+                case "تنبيه":
+                    return "blue lighten-3";
+                case "سئ":
+                    return "orange lighten-3";
+                case "error":
+                    return "red lighten-3";
+                case "جيد":
+                    return "green lighten-3";
+                default:
+                    return "blue lighten-3";
+            }
+        },
+        getNotificationIcon(type) {
+            switch (type) {
+                case "تنبيه":
+                    return "mdi-information";
+                case "سئ":
+                    return "mdi-alert";
+                case "error":
+                    return "mdi-alert-circle";
+                case "جيد":
+                    return "mdi-check-circle";
+                default:
+                    return "mdi-information";
+            }
+        },
         createChart(data) {
             const ctx = document.getElementById("myChart");
             if (ctx) {
@@ -1373,6 +1343,33 @@ export default {
                 this.paidAmount = 0;
             }
         },
+    },
+    async created() {
+        const documentId = this.$route.params.id; // استلام documentId من الـ route params
+        this.loading = true; // بدء حالة التحميل
+
+        try {
+            // محاولة الحصول على بيانات الطالب
+            const docSnap = await getDoc(doc(db, "students", documentId));
+            if (docSnap.exists()) {
+                const studentData = docSnap.data();
+                this.student = studentData;
+                this.results = studentData.Results || []; // استخراج بيانات Results
+                this.isAuthenticated = true;
+
+                // جلب بيانات الإشعارات من حقل Notifications
+                this.notifications = studentData.Notifications || [];
+                this.photos = studentData.photos || [];
+            } else {
+                console.error("No document found for the given ID");
+                this.isAuthenticated = false;
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            this.isAuthenticated = false;
+        } finally {
+            this.loading1 = false; // إنهاء حالة التحميل
+        }
     },
 };
 </script>

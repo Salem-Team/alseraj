@@ -100,6 +100,7 @@
                         />
                     </div>
                 </div>
+
                 <v-dialog v-model="dialog" width="90%">
                     <v-card width="100%" class="popup">
                         <div
@@ -163,7 +164,7 @@
             </template>
         </Offline_error>
         <v-container>
-            <ul class="show_details">
+            <!-- <ul class="show_details">
                 <li v-show="selectedEducationalLevel">
                     {{ selectedEducationalLevel }}
                 </li>
@@ -177,7 +178,21 @@
                 <li v-show="selectedGender">
                     {{ selectedGender }}
                 </li>
+            </ul> -->
+
+            <ul class="show_details">
+                <li v-show="selectedEducationalLevel">
+                    {{ selectedEducationalLevel }}
+                </li>
+                <li v-show="selectedMonth">{{ selectedMonth }}</li>
+                <li v-show="selectedClass">فصل {{ selectedClass }}</li>
+                <li v-show="selectedSection">{{ selectedSection }}</li>
+                <li v-show="selectedGender">{{ selectedGender }}</li>
+                <li v-show="shouldShowResults">
+                    نتيجه البحث : {{ filteredStudentsCount }}
+                </li>
             </ul>
+
             <div class="boxes">
                 <div
                     class="box"
@@ -220,7 +235,12 @@
                         </div>
                         <div>
                             <div>المجموع</div>
-                            <div>{{ student.totalDegree }}</div>
+                            <div>
+                                {{ student.totalDegree }}
+                                <span v-if="maxDegree !== undefined">
+                                    / {{ maxDegree }}</span
+                                >
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -275,6 +295,7 @@ export default {
     },
     data() {
         return {
+            maxDegree: 0,
             interval: -1,
             loading1: null,
             text10: null,
@@ -324,7 +345,7 @@ export default {
     },
     mounted() {
         this.fetchStudents();
-
+        this.fetchMaxDegree();
         this.interval = setInterval(() => {
             if (this.value === 100) {
                 return (this.value = 0);
@@ -351,11 +372,67 @@ export default {
         currentMonth() {
             return this.selectedMonth ? this.selectedMonth : "";
         },
+        filteredStudentsCount() {
+            return this.students.length;
+        },
     },
     methods: {
         Filter() {
-            this.fetchStudents();
+            this.fetchStudents().then(() => {
+                this.fetchMaxDegree();
+            });
             this.dialog = false;
+        },
+        async fetchMaxDegree() {
+            try {
+                const studentsRef = collection(db, "students");
+                const q = query(
+                    studentsRef,
+                    where(
+                        "educational_level",
+                        "==",
+                        this.selectedEducationalLevel
+                    )
+                );
+                const querySnapshot = await getDocs(q);
+
+                let maxDegree = 0;
+                querySnapshot.forEach((doc) => {
+                    const studentData = doc.data();
+                    console.log("Student Data:", studentData); // تحقق من البيانات
+
+                    const monthlyResults = studentData.Results?.find(
+                        (result) => result.Monthly
+                    );
+
+                    if (monthlyResults) {
+                        const monthData = monthlyResults.Monthly.find(
+                            (item) =>
+                                item.Certificate_title === this.selectedMonth
+                        );
+                        console.log("Month Data:", monthData); // تحقق من بيانات الشهر
+
+                        if (monthData && monthData.Degrees) {
+                            const studentMaxDegree = monthData.Degrees.reduce(
+                                (sum, degree) => sum + degree.Major_degree,
+                                0
+                            );
+                            console.log(
+                                "Student Max Degree:",
+                                studentMaxDegree
+                            ); // تحقق من أقصى درجة
+                            if (studentMaxDegree > maxDegree) {
+                                maxDegree = studentMaxDegree;
+                            }
+                        }
+                    }
+                });
+
+                this.maxDegree = maxDegree;
+                console.log("Updated maxDegree:", this.maxDegree); // تحقق من القيمة النهائية
+            } catch (error) {
+                console.error("Error fetching maxDegree: ", error);
+            }
         },
         async fetchStudents() {
             if (!this.selectedEducationalLevel || !this.selectedMonth) {
@@ -440,7 +517,7 @@ export default {
                     if (this.alertTimeout) clearTimeout(this.alertTimeout);
                     this.alertTimeout = setTimeout(() => {
                         this.showNoResultsAlert = true;
-                    }, 2000);
+                    }, 400);
                 } else {
                     this.showNoResultsAlert = false;
                 }
@@ -857,6 +934,7 @@ ul.show_details {
     text-align: center;
     padding: 10px;
     border-radius: 5px;
+    transition: 0.5s;
 }
 @media (max-width: 599px) {
 }

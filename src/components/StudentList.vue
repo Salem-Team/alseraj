@@ -2641,6 +2641,8 @@ export { db, storage };
 import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 import Chart from "chart.js/auto";
+import { mapActions } from "pinia";
+import { usenotification } from "../store/notification.js";
 import { useDialogStore } from "@/store/useDialogStore";
 export default {
     name: "StudentList",
@@ -3128,6 +3130,7 @@ export default {
     async created() {
         await this.fetchStudents();
         this.years = new Date().getFullYear();
+        this.get_notifications("student_notification");
     },
     methods: {
         async loadStudents() {
@@ -3160,10 +3163,10 @@ export default {
         icon(student) {
             return student.state ? "mdi-eye-off" : "mdi-eye";
         },
-        // ...mapActions(usenotification, [
-        //     "send_Notification",
-        //     "get_notifications",
-        // ]),
+        ...mapActions(usenotification, [
+            "send_Notification",
+            "get_notifications",
+        ]),
         getMonthlyDegrees(student, month) {
             const monthIndex = this.gradeOptions.indexOf(month);
             if (monthIndex === -1) return 0;

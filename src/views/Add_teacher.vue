@@ -116,7 +116,11 @@
                                 @click="teacher.dialog = false"
                             ></v-btn>
                         </div>
-                        <form ref="form" @submit.prevent class="ma-auto">
+                        <form
+                            ref="form"
+                            @submit.prevent="teacher.add_teacher"
+                            class="ma-auto"
+                        >
                             <v-text-field
                                 v-model="user.name"
                                 :rules="[(v) => !!v || 'الاسم مطلوب']"
@@ -183,7 +187,6 @@
                                 type="submit"
                                 :loading="loading"
                                 :disabled="loading"
-                                @click="teacher.add_teacher"
                                 style="
                                     width: 100%;
                                     padding: 20px;
@@ -213,7 +216,13 @@
                                 @click="teacher.dialog_1 = false"
                             ></v-btn>
                         </div>
-                        <form ref="form" @submit.prevent class="ma-auto">
+                        <form
+                            ref="form"
+                            @submit.prevent="
+                                teacher.Update_teacher(teacher.Id_Information)
+                            "
+                            class="ma-auto"
+                        >
                             <v-text-field
                                 v-model="teacher.name_Information"
                                 type="text"
@@ -253,11 +262,6 @@
                                 type="submit"
                                 :loading="loading"
                                 :disabled="loading"
-                                @click="
-                                    teacher.Update_teacher(
-                                        teacher.Id_Information
-                                    )
-                                "
                                 class="d-flex align-center mt-4"
                                 style="
                                     width: 100%;

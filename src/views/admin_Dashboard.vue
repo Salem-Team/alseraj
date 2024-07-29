@@ -49,7 +49,6 @@
 <script>
 import { mapState } from "pinia";
 import { useAuthStore } from "../store/userStore";
-
 export default {
     data: () => ({
         tab: "first-tab",

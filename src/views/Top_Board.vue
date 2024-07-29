@@ -89,7 +89,7 @@
                                 الإشراف
                             </v-breadcrumbs-item>
                             <v-breadcrumbs-divider />
-                            <v-breadcrumbs-item>الوحة الشرف</v-breadcrumbs-item>
+                            <v-breadcrumbs-item>لوحة الشرف</v-breadcrumbs-item>
                         </v-breadcrumbs>
                     </div>
                     <div class="left">

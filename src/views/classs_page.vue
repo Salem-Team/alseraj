@@ -735,26 +735,16 @@
                             <v-form>
                                 <!-- Alphabetical Order Toggle -->
                                 <v-row class="mb-3">
-                                    <v-col cols="6">
-                                        <v-switch
-                                            v-model="isSortedAscending"
-                                            :label="
-                                                isSortedAscending
-                                                    ? 'ترتيب أبجدي'
-                                                    : 'ترتيب عكسي'
-                                            "
-                                            class="filter-switch"
-                                        />
-                                    </v-col>
-
-                                    <v-col cols="6">
+                                    <v-col>
                                         <v-switch
                                             v-model="paymentSortActive"
-                                            :label="
-                                                paymentSortActive
-                                                    ? ' اعلي المدفوعات'
-                                                    : 'اقل المدفوعات'
-                                            "
+                                            label="اعلي المدفوعات"
+                                            :style="{
+                                                color: paymentSortActive
+                                                    ? 'green'
+                                                    : '',
+                                            }"
+                                            @change="handlePaymentSortChange"
                                             class="filter-switch"
                                         />
                                     </v-col>
@@ -764,7 +754,7 @@
                                 <v-row class="mb-3">
                                     <v-col cols="12">
                                         <v-select
-                                            v-model="filters.byGrades"
+                                            v-model="filtersy.byGrades"
                                             :items="gradeOptions"
                                             label="ترتيب حسب الدرجات"
                                             outlined
@@ -782,6 +772,10 @@
             :year="year"
             :sortStudents="sortStudentsByYearAndAlphabetically"
             :selectedSection="selectedSection"
+            :isSortedAscending="isSortedAscending"
+            :paymentSortActive="paymentSortActive"
+            :gradeSortActive="filtersy.byGrades"
+            :gradeOptions="gradeOptions"
         />
     </div>
 </template>
@@ -848,6 +842,7 @@ export default {
     },
     data() {
         return {
+            paymentSortActive: false,
             activeButton: "الكل",
             all_classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
             section: ["عربي", "لغات"],
@@ -855,8 +850,12 @@ export default {
             dialog_6: false,
             showDialog: false,
             showDialog2: false,
+            isSortedAscending: true,
             StudySchedule: {
                 // البيانات التي ترغب في تمريرها إلى المكون
+            },
+            filtersy: {
+                byGrades: "",
             },
             newTest: {
                 className: "",
@@ -883,8 +882,7 @@ export default {
                 },
             ],
             subject: false,
-            paymentSortActive: false,
-            isSortedAscending: true,
+
             sortActive: false, // متغير لتتبع حالة الترتيب
             dialog: false,
             newNotification: {
@@ -924,7 +922,14 @@ export default {
                 link: "",
             },
 
-            gradeOptions: ["First Month", "Second Month"],
+            gradeOptions: [
+                "شهر أكتوبر",
+                "شهر نوفمبر",
+                "الترم الأول",
+                "شهر فبراير",
+                "شهر مارس",
+                "الترم الثاني",
+            ],
             monthOptions: [
                 "January",
                 "February",
@@ -1040,7 +1045,9 @@ export default {
                 return a.payment_status > b.payment_status ? -1 : 1;
             });
         },
-
+        togglePaymentSort() {
+            this.paymentSortActive = !this.paymentSortActive;
+        },
         async sortStudentsByYearAndAlphabetically() {
             try {
                 // جلب الطلاب المنتمين إلى السنة المحددة
@@ -1105,6 +1112,12 @@ export default {
             // تطبيق الفلتر بناءً على الخيارات المحددة
             this.dialog = false;
         },
+        handlePaymentSortChange() {
+            // عندما يكون paymentSortActive مفعلًا، نظبط filtersy.byGrades إلى null
+            if (this.paymentSortActive) {
+                this.filtersy.byGrades = null;
+            }
+        },
         applyFilters() {
             // Handle filter logic here
             console.log("Filters applied:", this.filters);
@@ -1147,7 +1160,8 @@ export default {
                     );
                     this.send_Notification(
                         this.newNotification.NoticeTitle,
-                        this.newNotification.theDescription
+                        this.newNotification.theDescription,
+                        "Class_Notification"
                     );
                     await updateDoc(classRef, classData);
                     this.dialogAddNotice = false;

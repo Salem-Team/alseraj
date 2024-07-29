@@ -830,6 +830,8 @@ import Chart from "chart.js/auto";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
+import { mapActions } from "pinia";
+import { usenotification } from "../store/notification.js";
 
 export default {
     data() {
@@ -902,6 +904,16 @@ export default {
             },
         };
     },
+    mounted() {
+        this.get_notifications("students_notification");
+        this.interval = setInterval(() => {
+            if (this.value === 100) {
+                clearInterval(this.interval);
+                return;
+            }
+            this.value += 10;
+        }, 100);
+    },
 
     async created() {
         const documentId = this.$route.params.id; // استلام documentId من الـ route params
@@ -929,15 +941,6 @@ export default {
         } finally {
             this.loading1 = false; // إنهاء حالة التحميل
         }
-    },
-    mounted() {
-        this.interval = setInterval(() => {
-            if (this.value === 100) {
-                clearInterval(this.interval);
-                return;
-            }
-            this.value += 10;
-        }, 100);
     },
     beforeUnmount() {
         clearInterval(this.interval);
@@ -1020,6 +1023,7 @@ export default {
         },
     },
     methods: {
+        ...mapActions(usenotification, ["get_notifications"]),
         async loadStudent(id) {
             try {
                 const studentRef = doc(db, "students", id);

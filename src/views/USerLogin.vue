@@ -73,7 +73,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(useAuthStore, ["loading", "error"]),
+        ...mapState(useAuthStore, ["loading", "error", "user_data"]),
     },
     watch: {
         userType(newValue) {
@@ -84,7 +84,7 @@ export default {
                 this.National_id = "1210987654321";
                 this.password = "123456";
             } else if (newValue === "student") {
-                this.National_id = "9876543212365";
+                this.National_id = "1233214569585202";
                 this.password = "111";
             }
         },
@@ -184,7 +184,6 @@ export default {
                     authenticatedUser.roles,
                     authenticatedUser.name
                 );
-
                 if (!this.error) {
                     if (authenticatedUser.userType === "parent") {
                         this.$router.push({ name: "Parent_Dashboard" });

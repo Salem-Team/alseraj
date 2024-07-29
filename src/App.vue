@@ -32,16 +32,30 @@
                     >تسجيل دخول</router-link
                 >
             </div>
+            <v-spacer></v-spacer>
+            <pwa_btn />
         </nav>
     </div>
+
     <router-view />
 </template>
 
 <script>
 import { useAuthStore } from "./store/userStore";
 import { mapActions, mapState } from "pinia";
-
+import pwa_btn from "./components/pwa_btn.vue";
 export default {
+    components: {
+        pwa_btn,
+    },
+    setup() {
+        const authStore = useAuthStore();
+        authStore.get_Cookies();
+        return {
+            ...mapActions(useAuthStore, ["get_Cookies"]),
+        };
+    },
+
     computed: {
         ...mapState(useAuthStore, ["user"]),
     },
@@ -55,8 +69,8 @@ export default {
 @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap");
 * {
     direction: rtl !important;
-    // transition: 0.3s;
-    // letter-spacing: normal !important;
+    letter-spacing: 0 !important;
+    transition-timing-function: 0.3s;
 }
 body {
     direction: rtl;
@@ -112,6 +126,13 @@ body {
             transition: 0.3s;
         }
     }
+}
+body.pwa .main_header {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 11;
+    left: 0;
 }
 .v-overlay__scrim {
     background: rgb(0 0 0 / 36%) !important;

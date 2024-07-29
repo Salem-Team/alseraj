@@ -225,6 +225,15 @@
                             <v-card-text>
                                 <v-row>
                                     <v-col
+                                        v-if="
+                                            filteredClasses[0].Notifications
+                                                .length === 0
+                                        "
+                                    >
+                                        <Empty_error text="لا يوجد اشعارات." />
+                                    </v-col>
+                                    <v-col
+                                        v-else
                                         v-for="(
                                             classRoom, index
                                         ) in filteredClasses[0].Notifications"
@@ -412,13 +421,7 @@
                                     margin-bottom: 20px;
                                 "
                             >
-                                <div
-                                    style="
-                                        display: flex;
-
-                                        align-items: center;
-                                    "
-                                >
+                                <div style="display: flex; align-items: center">
                                     <h2 style="color: #2196f3">الصور</h2>
                                 </div>
                                 <v-btn
@@ -429,6 +432,14 @@
                             </div>
                             <v-row>
                                 <v-col
+                                    v-if="
+                                        filteredClasses[0].photos.length === 0
+                                    "
+                                >
+                                    <Empty_error text="لا يوجد صور." />
+                                </v-col>
+                                <v-col
+                                    v-else
                                     cols="12"
                                     md="4"
                                     v-for="(photo, index) in filteredClasses[0]
@@ -464,6 +475,15 @@
                                                 aspect-ratio="1"
                                                 class="mb-2"
                                             ></v-img>
+                                            <!-- عرض وقت الصورة -->
+                                            <p
+                                                style="
+                                                    color: grey;
+                                                    font-size: 0.9em;
+                                                "
+                                            >
+                                                {{ photo.DatePhoto }}
+                                            </p>
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
@@ -513,6 +533,7 @@
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
+
                     <v-dialog v-model="dialog_bubble" max-width="90%">
                         <v-card style="padding: 0">
                             <div>
@@ -679,6 +700,13 @@
                         نوع الفلتر :
                         {{ paymentSortActive ? "حسب المدفوعات" : "" }}
                     </h3>
+                    <h3
+                        v-if="filtersy.byGrades"
+                        style="color: rgba(33, 150, 243, 0.768627451)"
+                    >
+                        نوع الفلتر :
+                        {{ filtersy.byGrades ? filtersy.byGrades : "" }}
+                    </h3>
                 </v-col>
             </v-row>
             <v-row>
@@ -777,11 +805,18 @@
             :gradeSortActive="filtersy.byGrades"
             :gradeOptions="gradeOptions"
         />
+        <confirm_message2
+            v-model="showSnackbar"
+            :text="confirmationText"
+            :snackbar="showSnackbar"
+            @close-snackbar="showSnackbar = false"
+        />
     </div>
 </template>
 
 <script>
 import StudentList from "@/components/StudentList.vue";
+import Empty_error from "@/components/Empty_error.vue";
 import { useDialogStore } from "@/store/useDialogStore";
 import { reactive } from "vue";
 
@@ -801,6 +836,7 @@ import {
 import { initializeApp } from "@firebase/app";
 import { getStorage } from "firebase/storage";
 import "vue-toastification/dist/index.css"; // Import the CSS file
+import confirm_message2 from "@/components/confirm_message2.vue";
 // import { decodeURIComponent } from "vue-router";
 import addSubject from "@/components/subject/addSubject.vue";
 // import addStudySchedule from "@/components/add_study_schedule.vue";
@@ -827,6 +863,8 @@ export default {
         addSubject,
         AddStudySchedule,
         weeklyPlan,
+        confirm_message2,
+        Empty_error,
     },
     props: ["year"],
     setup() {
@@ -850,6 +888,7 @@ export default {
             showDialog: false,
             showDialog2: false,
             isSortedAscending: true,
+            showSnackbar: false,
             StudySchedule: {
                 // البيانات التي ترغب في تمريرها إلى المكون
             },
@@ -957,6 +996,9 @@ export default {
         },
     },
     methods: {
+        handleCloseSnackbar() {
+            this.showSnackbar = false; // تحديث حالة الرسالة في المكون الأم
+        },
         updateSection(section) {
             this.activeButton = section;
             this.selectedSection = section;
@@ -1164,6 +1206,9 @@ export default {
                         theDescription: "",
                         NotificationType: "",
                     };
+                    this.confirmationText = "تم إضافة اشعار بنجاح";
+                    this.showSnackbar = true;
+
                     await this.fetchClassRooms();
                 } else {
                     console.error("Class document does not exist.");
@@ -1182,6 +1227,8 @@ export default {
                     await updateDoc(classRef, {
                         Notifications: classData.Notifications,
                     });
+                    this.confirmationText = "تم حذف اشعار بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchClassRooms();
                 }
             } catch (error) {
@@ -1211,6 +1258,8 @@ export default {
                         Notifications: classData.Notifications,
                     });
                     this.closeNotificationDialogs();
+                    this.confirmationText = "تم تعديل اشعار بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchClassRooms();
                 }
             } catch (error) {
@@ -1244,8 +1293,18 @@ export default {
                             classData.photos = [];
                         }
 
+                        // الحصول على الوقت الحالي بصيغة مناسبة
+                        const photoTime = new Date().toLocaleString("ar-EG", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                        });
+
                         classData.photos.push({
-                            DatePhoto: this.AddPhoto.Date,
+                            DatePhoto: photoTime,
                             linkphoto: downloadURL,
                         });
                         await updateDoc(classRef, { photos: classData.photos });
@@ -1255,6 +1314,8 @@ export default {
                             Date: "",
                             link: "",
                         };
+                        this.confirmationText = "تم اضافه الصوره بنجاح";
+                        this.showSnackbar = true;
                         await this.fetchClassRooms();
                     } else {
                         console.error("Class document does not exist.");
@@ -1272,6 +1333,8 @@ export default {
                     const classData = classDoc.data();
                     classData.photos.splice(photoIndex, 1);
                     await updateDoc(classRef, { photos: classData.photos });
+                    this.confirmationText = "تم حذف الصوره بنجاح";
+                    this.showSnackbar = true;
                     await this.fetchClassRooms();
                 }
             } catch (error) {

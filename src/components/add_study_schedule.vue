@@ -89,10 +89,11 @@
                 </div>
             </v-card-text>
         </v-card>
-        <confirm_message
-            :text="confirmationText"
-            @close-snackbar="handleCloseSnackbar"
+        <confirm_message2
             v-model="showSnackbar"
+            :text="confirmationText"
+            :snackbar="showSnackbar"
+            @close-snackbar="showSnackbar = false"
         />
     </v-dialog>
 </template>
@@ -125,13 +126,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
-import confirm_message from "@/components/confirm_message.vue";
+import confirm_message2 from "@/components/confirm_message2.vue";
 
 export { db, storage };
 
 export default {
     components: {
-        confirm_message,
+        confirm_message2,
     },
     props: {
         year: {
@@ -144,8 +145,8 @@ export default {
             showDialog: false,
             changesMade: false,
             confirmationText: "",
-            selectedClass: null,
-            selectedSection: null,
+            selectedClass: null, // تعيين القيمة الافتراضية لاحقًا
+            selectedSection: null, // تعيين القيمة الافتراضية لاحقًا
             showSnackbar: false,
             classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
             sections: ["عربي", "لغات"],
@@ -204,50 +205,9 @@ export default {
             if (!this.selectedClass || !this.selectedSection) return;
 
             try {
-                // إعادة تعيين الجدول قبل تحميل البيانات الجديدة
-                this.Results.schedule = [
-                    {
-                        Subject_Name: "السبت",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                    {
-                        Subject_Name: "الأحد",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                    {
-                        Subject_Name: "الإثنين",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                    {
-                        Subject_Name: "الثلاثاء",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                    {
-                        Subject_Name: "الأربعاء",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                    {
-                        Subject_Name: "الخميس",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                ];
-
                 this.changesMade = false;
                 this.lastModified = "لم يتم التعديل بعد";
 
-                // هنا تحقق إذا كانت البيانات موجودة
                 const docRef = doc(db, "studySchedule", this.scheduleId);
                 const docSnap = await getDoc(docRef);
 
@@ -267,12 +227,10 @@ export default {
             if (!this.selectedClass || !this.selectedSection) return;
 
             try {
-                // استخدم معرّف الفصل من Firestore
                 const docRef = doc(db, "studySchedule", this.scheduleId);
-
                 const docSnap = await getDoc(docRef);
 
-                const isNew = !docSnap.exists(); // تحقق مما إذا كان الجدول جديدًا
+                const isNew = !docSnap.exists();
 
                 await setDoc(
                     docRef,
@@ -290,13 +248,12 @@ export default {
                 this.lastModified = new Date().toLocaleString();
                 this.closeDialog();
 
-                // إعداد الرسالة بناءً على حالة الجدول
                 if (isNew) {
                     this.confirmationText = `تم إضافة جدول دراسي جديد للفصل ${this.selectedClass} للقسم ${this.selectedSection} للسنة الدراسية ${this.year}`;
                 } else {
                     this.confirmationText = "تم تعديل الجدول";
                 }
-                this.showSnackbar = true; // عرض الرسالة
+                this.showSnackbar = true;
             } catch (error) {
                 console.error("Error updating document: ", error);
             }
@@ -319,7 +276,6 @@ export default {
                     this.scheduleId = doc.id;
                     this.loadSchedule(); // تحميل البيانات الحالية
                 } else {
-                    // إذا لم يكن هناك معرّف، قم بإعادة تعيين القيم
                     this.scheduleId = uuidv4();
                     this.Results.schedule = [
                         {
@@ -369,6 +325,16 @@ export default {
         },
         handleInputChange() {
             this.changesMade = true;
+        },
+    },
+    watch: {
+        showDialog(val) {
+            if (val) {
+                // تعيين القيم الافتراضية عند فتح الحوار
+                this.selectedClass = "1/1";
+                this.selectedSection = "عربي";
+                this.fetchScheduleId(); // قم بتحديث الجدول عند فتح الحوار
+            }
         },
     },
     mounted() {

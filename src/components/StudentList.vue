@@ -344,37 +344,44 @@
                                         </h3>
                                     </div>
                                     <div>
-                                        <v-progress-linear
-                                            v-model="progress"
-                                            height="25"
-                                            color="blue"
-                                            reverse
-                                        >
-                                            <template
-                                                v-slot:default="{ value }"
+                                        <div class="progress-container">
+                                            <progress
+                                                :value="
+                                                    calculatePaymentProgress(
+                                                        student.payments
+                                                            .paid_Up,
+                                                        student.payments
+                                                            .Expenses
+                                                    )
+                                                "
+                                                max="100"
+                                                class="progress-bar"
+                                            ></progress>
+                                            <div
+                                                class="progress-label2"
+                                                :style="{
+                                                    right: calculateLabelPosition(
+                                                        student.payments
+                                                            .paid_Up,
+                                                        student.payments
+                                                            .Expenses
+                                                    ),
+                                                }"
                                             >
-                                                <div
-                                                    :style="{
-                                                        color: 'white',
-                                                        position: 'absolute',
-                                                        right: `calc(${value}% - 5%)`,
-                                                        transform:
-                                                            'translateX(-50%)',
-                                                        marginTop: '-70px',
-                                                    }"
-                                                    class="progress-label"
-                                                >
-                                                    <div
-                                                        class="label-container"
-                                                    >
-                                                        {{ Math.ceil(value) }}%
-                                                        <div
-                                                            class="arrow-down"
-                                                        ></div>
-                                                    </div>
+                                                <div class="label-box">
+                                                    {{
+                                                        Math.ceil(
+                                                            calculatePaymentProgress(
+                                                                student.payments
+                                                                    .paid_Up,
+                                                                student.payments
+                                                                    .Expenses
+                                                            )
+                                                        )
+                                                    }}%
                                                 </div>
-                                            </template>
-                                        </v-progress-linear>
+                                            </div>
+                                        </div>
                                         <div
                                             style="
                                                 display: flex;
@@ -1410,12 +1417,18 @@
                                                                                 text-align: center;
                                                                             "
                                                                             required
+                                                                            @input="
+                                                                                changesMade2 = true
+                                                                            "
                                                                         ></v-text-field>
                                                                     </td>
                                                                     <td>
                                                                         <v-text-field
                                                                             v-model="
                                                                                 degree.Behavior_assessment
+                                                                            "
+                                                                            @input="
+                                                                                changesMade2 = true
                                                                             "
                                                                             style="
                                                                                 text-align: center;
@@ -1440,6 +1453,9 @@
                                                                             "
                                                                             style="
                                                                                 text-align: center;
+                                                                            "
+                                                                            @input="
+                                                                                changesMade2 = true
                                                                             "
                                                                             required
                                                                         ></v-text-field>
@@ -2171,7 +2187,6 @@
                                                 <div
                                                     style="
                                                         display: flex;
-
                                                         align-items: center;
                                                     "
                                                 >
@@ -2213,7 +2228,6 @@
                                                     :key="index"
                                                     cols="12"
                                                     md="4"
-                                                    v-else
                                                 >
                                                     <v-card
                                                         class="pa-3 mb-3 notification-card"
@@ -2247,6 +2261,17 @@
                                                                 aspect-ratio="1"
                                                                 class="mb-2"
                                                             ></v-img>
+                                                            <p
+                                                                style="
+                                                                    color: grey;
+                                                                    font-size: 0.9em;
+                                                                "
+                                                            >
+                                                                {{
+                                                                    photo.DatePhoto
+                                                                }}
+                                                            </p>
+                                                            <!-- عرض وقت الصورة -->
                                                         </v-card-text>
                                                     </v-card>
                                                 </v-col>
@@ -2385,15 +2410,6 @@
                                                         required
                                                         label="اسم الطالب"
                                                     ></v-text-field>
-                                                    <v-text-field
-                                                        v-model="form.phone"
-                                                        style="width: 50%"
-                                                        :error-messages="
-                                                            errors.phone
-                                                        "
-                                                        required
-                                                        label="رقم التليفون"
-                                                    ></v-text-field>
 
                                                     <v-select
                                                         :items="[
@@ -2490,14 +2506,6 @@
                                                             v-bind="attrs"
                                                             v-on="on"
                                                         ></v-text-field>
-                                                        <v-text-field
-                                                            v-model="
-                                                                form.password
-                                                            "
-                                                            label="الباسوورد"
-                                                            type="password"
-                                                            required
-                                                        ></v-text-field>
                                                     </template>
                                                     <v-card>
                                                         <v-date-picker
@@ -2584,7 +2592,12 @@
                 </v-dialog>
             </v-col>
         </v-row>
-        <confirm_message :text="confirmationText" v-model="showSnackbar" />
+        <confirm_message2
+            v-model="showSnackbar"
+            :text="confirmationText"
+            :snackbar="showSnackbar"
+            @close-snackbar="showSnackbar = false"
+        />
     </v-container>
 </template>
 
@@ -2622,19 +2635,19 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 const storage = getStorage(app);
-import confirm_message from "@/components/confirm_message.vue";
+import confirm_message2 from "@/components/confirm_message2.vue";
 
 export { db, storage };
 import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 import Chart from "chart.js/auto";
-import { useDialogStore } from "@/store/useDialogStore";
 import { mapActions } from "pinia";
 import { usenotification } from "../store/notification.js";
+import { useDialogStore } from "@/store/useDialogStore";
 export default {
     name: "StudentList",
     components: {
-        confirm_message,
+        confirm_message2,
         Empty_error,
     },
     props: {
@@ -2731,7 +2744,6 @@ export default {
                 birthday: null,
                 parent_name: "",
                 national_id: "",
-                phone: "",
 
                 Guardian: [
                     { Guardian_name: "" },
@@ -2987,10 +2999,10 @@ export default {
                     },
                 ],
                 payments: {
-                    Expenses: 0,
+                    Expenses: 1000,
                     payment_System: "",
                     Installment_System: "",
-                    paid_Up: 0,
+                    paid_Up: 100,
                     Residual: 0,
                 },
                 Notifications: [],
@@ -3084,7 +3096,7 @@ export default {
             selectedStudent: "",
             dialogStudentDetails: false,
             changesMade: false,
-            changesMade2: true,
+            changesMade2: false,
             changesMade3: false,
             interval: null,
             value: 0,
@@ -3292,6 +3304,9 @@ export default {
                 );
             }
         },
+        handleCloseSnackbar() {
+            this.showSnackbar = false; // تحديث حالة الرسالة في المكون الأم
+        },
         async saveChanges() {
             try {
                 const studentDoc = doc(db, "students", this.selectedStudent.id);
@@ -3322,7 +3337,28 @@ export default {
             this.updateMonthlyDegrees(this.selectedMonthlyDegrees); // Example to update Firebase
             this.changesMade2 = false;
         },
-
+        calculatePaymentProgress(paid_Up, Expenses) {
+            if (Expenses === 0) {
+                return 0; // لتجنب القسمة على الصفر
+            }
+            return (paid_Up / Expenses) * 100;
+        },
+        calculateLabelPosition(paid_Up, Expenses) {
+            const progress = this.calculatePaymentProgress(paid_Up, Expenses);
+            return `calc(${progress}% - 50px)`; // تعديلات صغيرة على القيمة لضبط الموقع
+        },
+        // getMonthlyDegrees(student, month) {
+        //     const monthIndex = this.gradeOptions.indexOf(month);
+        //     if (monthIndex === -1) return 0;
+        //     const degrees =
+        //         student.Results[1].Monthly[monthIndex]?.Degrees || [];
+        //     let total = 0;
+        //     degrees.forEach((degree) => {
+        //         total += Number(degree.Student_degree);
+        //     });
+        //     const maxDegrees = degrees.length * 100;
+        //     return (total / maxDegrees) * 100;
+        // },
         async fetchStudents() {
             try {
                 const q = query(
@@ -3373,8 +3409,6 @@ export default {
                         year: new Date().getFullYear(),
                         National_id: this.form.parent_national_id, // إضافة National_id هنا
                         state: true,
-                        password: this.form.password, // إضافة الباسوورد هنا
-                        phone: this.form.phone,
                     });
 
                     const newStudent = {
@@ -3391,8 +3425,6 @@ export default {
                         year: new Date().getFullYear(),
                         National_id: this.form.parent_national_id, // إضافة National_id هنا
                         state: true,
-                        password: this.form.password, // إضافة الباسوورد هنا
-                        phone: this.form.phone,
                     };
 
                     this.students.push(newStudent);
@@ -3779,10 +3811,10 @@ export default {
             let isValid = true;
             // Clear previous error messages
             // Validation rules
-            // if (!this.form.student_information[0].student_name) {
-            //     this.errors.student_name.push("اسم الطالب مطلوب.");
-            //     isValid = false;
-            // }
+            if (!this.form.student_name) {
+                this.errors.student_name.push("اسم الطالب مطلوب.");
+                isValid = false;
+            }
             // if (!this.form.student_information[1].class) {
             //     this.errors.class.push("الفصل مطلوب.");
             // }
@@ -4175,11 +4207,6 @@ export default {
                         theDescription: this.AddNotice.theDescription,
                         NotificationType: this.AddNotice.NotificationType,
                     };
-                    this.send_Notification(
-                        this.AddNotice.NoticeTitle,
-                        this.AddNotice.theDescription,
-                        "student_notification"
-                    );
                     // إعداد نص الرسالة وتفعيل Snackbar
                     this.confirmationText = "تم  اضافه الاشعار بنجاح";
                     this.showSnackbar = true;
@@ -4245,20 +4272,27 @@ export default {
                             studentData
                         );
 
+                        // الحصول على الوقت الحالي بصيغة مناسبة
+                        const photoTime = new Date().toLocaleString("ar-EG", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                        });
+
                         studentData.photos.push({
-                            DatePhoto: this.AddPhoto.Date,
+                            DatePhoto: photoTime,
                             linkphoto: downloadURL,
                         });
                         await updateDoc(studentRef, studentData);
                         this.dialogAddPhoto = false;
 
-                        studentData.photos = {
-                            DatePhoto: "",
-                            linkphoto: null,
-                        };
+                        // إعادة تعيين النموذج بعد الإضافة
                         this.AddPhoto = {
                             Date: "",
-                            link: null,
+                            file: null,
                         };
                         // إعداد نص الرسالة وتفعيل Snackbar
                         this.confirmationText = "تم  اضافه الصوره بنجاح";
@@ -4481,8 +4515,8 @@ export default {
                 "شهر نوفمبر",
                 "شهر ديسمبر",
                 "الترم الأول",
-                "شهر نوفمبر",
-                "الترم الأول",
+                "شهر فبراير",
+                "شهر مارس",
             ];
             return monthNames[month - 1] || month;
         },
@@ -4558,13 +4592,6 @@ export default {
             this.formattedDate = this.formatDate(newVal);
         },
 
-        selectedMonthlyDegrees: {
-            handler() {
-                // Save changes to Firebase
-                this.changesMade2 = true;
-            },
-            deep: true,
-        },
         "form.payments.Expenses"() {
             this.updateResidual();
         },
@@ -4646,6 +4673,8 @@ export default {
             }
             this.value += 10;
         }, 100);
+
+        console.log(this.progress);
         this.students = this.$parent.students_class;
         // مثال لاستدعاء الدالة
         this.loadParentDetails(this.form.parent_national_id);
@@ -5220,7 +5249,7 @@ th {
 .v-row {
     margin: 10px;
     display: flex;
-    gap: 10px;
+    // gap: 10px;
     align-items: center;
     & > div {
         width: 48%;
@@ -5373,6 +5402,49 @@ th {
             }
         }
     }
+}
+.student-progress {
+    margin-bottom: 20px;
+}
+
+.progress-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 32px;
+    background: #e3f1fd;
+}
+
+.progress-label2 {
+    position: absolute;
+    top: -95%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    white-space: nowrap;
+}
+.label-box {
+    position: relative;
+    background-color: #007bff;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.label-box::after {
+    content: "";
+    position: absolute;
+    bottom: -10px; /* وضع السهم أسفل المربع */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #007bff; /* نفس لون خلفية المربع */
 }
 .custom-icon {
     font-size: 36px; /* يمكنك تعديل الحجم هنا */

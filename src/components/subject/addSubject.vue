@@ -17,7 +17,11 @@
                 </div>
                 <v-card-text>
                     <v-row>
+                        <v-col v-if="subjects.length === 0">
+                            <Empty_error text="لا يوجد مواد." />
+                        </v-col>
                         <v-col
+                            v-else
                             v-for="(sub, index) in subjects"
                             :key="sub.id"
                             cols="12"
@@ -175,11 +179,19 @@
                     </v-card>
                 </v-dialog>
             </v-card>
+            <confirm_message2
+                v-model="showSnackbar"
+                :text="confirmationText"
+                :snackbar="showSnackbar"
+                @close-snackbar="showSnackbar = false"
+            />
         </v-dialog>
     </div>
 </template>
 
 <script>
+import confirm_message2 from "@/components/confirm_message2.vue";
+import Empty_error from "@/components/Empty_error.vue";
 import { db } from "@/Firebase";
 import { useVuelidate } from "@vuelidate/core";
 import { minValue, required } from "@vuelidate/validators";
@@ -193,6 +205,10 @@ import {
 import { v4 as uuidv4 } from "uuid";
 
 export default {
+    components: {
+        confirm_message2,
+        Empty_error,
+    },
     props: ["localSubject"],
     data() {
         return {
@@ -206,6 +222,7 @@ export default {
             subjects: [],
             addSubjectForm: {},
             editSubjectForm: {},
+            showSnackbar: false,
         };
     },
     validations() {
@@ -273,6 +290,8 @@ export default {
                 });
 
                 await batch.commit();
+                this.confirmationText = "تم إضافة ماده بنجاح";
+                this.showSnackbar = true;
                 await this.fetchGradeData(); // Refresh the data after adding
                 this.closeAddSubjectDialog();
             } catch (error) {
@@ -304,6 +323,8 @@ export default {
                 });
 
                 await batch.commit();
+                this.confirmationText = "تم تعديل الماده بنجاح";
+                this.showSnackbar = true;
                 await this.fetchGradeData(); // Refresh the data after editing
                 this.closeEditSubjectDialog();
             } catch (error) {
@@ -329,6 +350,8 @@ export default {
                 });
 
                 await batch.commit();
+                this.confirmationText = "تم حذف الماده بنجاح";
+                this.showSnackbar = true;
                 await this.fetchGradeData(); // Refresh the data after deletion
             } catch (error) {
                 console.error("Error deleting document: ", error);

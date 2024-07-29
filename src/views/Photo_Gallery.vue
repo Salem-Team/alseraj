@@ -190,12 +190,22 @@
                                         </div>
                                         <div class="delete">
                                             <font-awesome-icon
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 v-if="photo.File_type == 'صورة'"
                                                 @click="photos.dialog_3 = true"
                                                 :icon="['fas', 'trash']"
                                             />
                                             <font-awesome-icon
                                                 v-else
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_4 = true"
                                                 :icon="['fas', 'trash']"
                                             />
@@ -247,12 +257,22 @@
                                         </div>
                                         <div class="delete">
                                             <font-awesome-icon
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 v-if="photo.File_type == 'صورة'"
                                                 @click="photos.dialog_3 = true"
                                                 :icon="['fas', 'trash']"
                                             />
                                             <font-awesome-icon
                                                 v-else
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_4 = true"
                                                 :icon="['fas', 'trash']"
                                             />
@@ -303,12 +323,22 @@
                                         </div>
                                         <div class="delete">
                                             <font-awesome-icon
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 v-if="photo.File_type == 'صورة'"
                                                 @click="photos.dialog_3 = true"
                                                 :icon="['fas', 'trash']"
                                             />
                                             <font-awesome-icon
                                                 v-else
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_4 = true"
                                                 :icon="['fas', 'trash']"
                                             />
@@ -361,11 +391,21 @@
                                         <div class="delete">
                                             <font-awesome-icon
                                                 v-if="photo.File_type == 'صورة'"
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_3 = true"
                                                 :icon="['fas', 'trash']"
                                             />
                                             <font-awesome-icon
                                                 v-else
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_4 = true"
                                                 :icon="['fas', 'trash']"
                                             />
@@ -609,19 +649,6 @@
             </template>
         </Offline_error>
     </div>
-    <img
-        style="
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 245px;
-        "
-        v-if="loading1"
-        src="../assets/Spinner@1x-1.0s-200px-200px.svg"
-        alt=""
-    />
-
     <v-dialog v-model="dialog_4" width="90%">
         <v-card width="100%" class="popup">
             <div class="d-flex justify-space-between align-center title">
@@ -638,8 +665,8 @@
             >
                 هل أنت متأكد من حذفك لهذا الفيديو؟
             </p>
-            <v-card-text>
-                <div class="d-flex align-center">
+            <v-card-text style="padding: 20px !important">
+                <div class="d-flex align-center p-4">
                     <v-btn
                         type="submit"
                         color="var(--main-color)"
@@ -696,7 +723,7 @@
             >
                 هل أنت متأكد من حذفك لهذه الصورة؟
             </p>
-            <v-card-text>
+            <v-card-text style="padding: 20px !important">
                 <div class="d-flex align-center">
                     <v-btn
                         type="submit"
@@ -738,6 +765,16 @@
             </v-card-text>
         </v-card></v-dialog
     >
+    <confirm_message
+        v-if="snackbar === true"
+        :text="text10"
+        v-model="snackbar"
+    />
+    <confirm_message
+        v-if="snackbar2 === true"
+        :text="text11"
+        v-model="snackbar2"
+    />
 </template>
 
 <script>
@@ -745,11 +782,13 @@ import { storeToRefs } from "pinia";
 import { defineComponent } from "vue";
 import { usePhoto_Gallery } from "@/store/Photo_Gallery.js";
 import axios from "axios";
-
+import confirm_message from "@/components/confirm_message.vue";
 import Offline_error from "@/components/Offline_error.vue";
 export default defineComponent({
+    inject: ["Emitter"],
     components: {
         Offline_error,
+        confirm_message,
     },
     setup() {
         const photos = usePhoto_Gallery();
@@ -782,6 +821,10 @@ export default defineComponent({
             image,
             onFileChange,
             trip,
+            text10,
+            text11,
+            snackbar,
+            snackbar2,
             progress,
             show_Data,
             party,
@@ -792,6 +835,10 @@ export default defineComponent({
         return {
             Photo,
             types,
+            text10,
+            text11,
+            snackbar,
+            snackbar2,
             on_Video_Change,
             Video_Information,
             video,

@@ -1469,6 +1469,12 @@
                                         </div>
                                         <div v-if="e1 === 5" ref="slide5">
                                             <div
+                                                v-if="
+                                                    user.roles.includes(
+                                                        'الاطلاع على الحسابات'
+                                                    ) ||
+                                                    user.roles.includes('الكل')
+                                                "
                                                 style="
                                                     display: flex;
                                                     justify-content: space-between;
@@ -2644,6 +2650,8 @@ import Chart from "chart.js/auto";
 import { mapActions } from "pinia";
 import { usenotification } from "../store/notification.js";
 import { useDialogStore } from "@/store/useDialogStore";
+import { mapState } from "pinia";
+import { useAuthStore } from "../store/userStore";
 export default {
     name: "StudentList",
     components: {
@@ -3130,7 +3138,6 @@ export default {
     async created() {
         await this.fetchStudents();
         this.years = new Date().getFullYear();
-        this.get_notifications("student_notification");
     },
     methods: {
         async loadStudents() {
@@ -3163,10 +3170,7 @@ export default {
         icon(student) {
             return student.state ? "mdi-eye-off" : "mdi-eye";
         },
-        ...mapActions(usenotification, [
-            "send_Notification",
-            "get_notifications",
-        ]),
+        ...mapActions(usenotification, ["send_Notification"]),
         getMonthlyDegrees(student, month) {
             const monthIndex = this.gradeOptions.indexOf(month);
             if (monthIndex === -1) return 0;
@@ -4600,6 +4604,7 @@ export default {
         },
     },
     computed: {
+        ...mapState(useAuthStore, ["user"]),
         // icon() {
         //     return this.isPressed ? "mdi-eye-off" : "mdi-eye";
         // },

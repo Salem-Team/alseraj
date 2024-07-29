@@ -14,7 +14,10 @@
             </v-card>
             <v-card
                 class="card"
-                v-if="user.roles.includes('تعديل ونشر الصور')"
+                v-if="
+                    user.roles.includes('تعديل ونشر الصور') ||
+                    user.roles.includes('الكل')
+                "
                 link
                 @click="$router.push('/Top_Board')"
             >
@@ -23,7 +26,10 @@
             </v-card>
             <v-card
                 class="card"
-                v-if="user.roles.includes(' الاطلاع على تقديم الوظائف')"
+                v-if="
+                    user.roles.includes(' الاطلاع على تقديم الوظائف') ||
+                    user.roles.includes('الكل')
+                "
                 link
                 @click="$router.push('/Add_job')"
             >
@@ -32,7 +38,10 @@
             </v-card>
             <v-card
                 class="card"
-                v-if="user.roles.includes('حذف واضافة مشرفين')"
+                v-if="
+                    user.roles.includes('حذف واضافة مشرفين') ||
+                    user.roles.includes('الكل')
+                "
                 link
                 @click="$router.push('/Add_admin')"
             >
@@ -44,7 +53,10 @@
                 <div>إدارة المدرسين</div>
             </v-card>
             <v-card
-                v-if="user.roles.includes('تعديل ونشر الأخبار')"
+                v-if="
+                    user.roles.includes('تعديل ونشر الأخبار') ||
+                    user.roles.includes('الكل')
+                "
                 class="card"
                 link
                 @click="$router.push('/Add_News')"
@@ -53,7 +65,10 @@
                 <div>الأخبار</div>
             </v-card>
             <v-card
-                v-if="user.roles.includes('تعديل ونشر الصور')"
+                v-if="
+                    user.roles.includes('تعديل ونشر الصور') ||
+                    user.roles.includes('الكل')
+                "
                 class="card"
                 link
                 @click="$router.push('/Photo_Gallery')"

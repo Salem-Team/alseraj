@@ -10,7 +10,6 @@ import {
     query,
     Timestamp,
 } from "@firebase/firestore";
-import { useSecureDataStore } from "./secureData";
 import { initializeApp } from "@firebase/app";
 import { getFirestore } from "firebase/firestore";
 import {
@@ -46,7 +45,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         dialog_6: false,
         photos_show: "",
         File_Name: "",
-        type: "trip",
+        type: "رحلات",
         types: "صورة",
         Photos: [],
         All_photos: [],
@@ -60,7 +59,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         progress: 0,
         Photo_Information: "",
         Id_Information: "",
-        Types: ["trip", "party", "news"],
+        Types: ["رحلات", "حفلات", "أخبار"],
         Photo: {
             File_type: "",
             image: null,
@@ -86,11 +85,11 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         ...mapActions(usenotification, ["send_Notification"]),
         // Action method to handle setting File_Name based on type
         handletypes() {
-            if (this.type === "trip") {
+            if (this.type === "رحلات") {
                 this.File_Name = "trip/";
-            } else if (this.type === "party") {
+            } else if (this.type === "حفلات") {
                 this.File_Name = "party/";
-            } else if (this.type === "news") {
+            } else if (this.type === "أخبار") {
                 this.File_Name = "news/";
             }
         },
@@ -119,7 +118,6 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         async Add_Photos() {
             try {
                 this.loading = true;
-                const secrureDataStore = useSecureDataStore();
                 if (this.Photo.image) {
                     // Step 1: Upload the image and get the download URL
                     const imageUrl = await this.upload_Image(this.Photo.image);
@@ -130,12 +128,9 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                     const docRef = await addDoc(collection(db, "Photos"), {
                         time: currentTime,
 
-                        image: secrureDataStore.encryptData(imageUrl, "12343a"),
-                        type: secrureDataStore.encryptData(this.type, "12343a"),
-                        File_type: secrureDataStore.encryptData(
-                            this.types,
-                            "12343a"
-                        ),
+                        image: imageUrl,
+                        type: this.type,
+                        File_type: this.types,
                     });
 
                     // Step 3: Update the newly added document with its own ID
@@ -357,11 +352,11 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
             this.news = [];
             this.Photos.forEach((Photo) => {
                 this.all.push(Photo);
-                if (Photo.type === "trip") {
+                if (Photo.type === "رحلات") {
                     this.trip.push(Photo);
-                } else if (Photo.type === "party") {
+                } else if (Photo.type === "حفلات") {
                     this.party.push(Photo);
-                } else if (Photo.type === "news") {
+                } else if (Photo.type === "أخبار") {
                     this.news.push(Photo);
                 }
             });

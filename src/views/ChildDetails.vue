@@ -13,27 +13,27 @@
                             <v-tabs v-model="tab_5">
                                 <v-tab value="one1"
                                     ><img
-                                        src="../assets/student/graduated.png"
+                                        src="../assets/student/graduated.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>
                                 <v-tab value="two1">
                                     <img
-                                        src="../assets/student/school.png"
+                                        src="../assets/student/school.svg"
                                         alt=""
                                         width="30px"
                                     />
                                 </v-tab>
                                 <v-tab value="three1">
                                     <img
-                                        src="../assets/student/academic.png"
+                                        src="../assets/student/academic.svg"
                                         alt=""
                                         width="30px"
                                     />
                                 </v-tab>
                                 <v-tab value="four1">
                                     <img
-                                        src="../assets/student/photo.png"
+                                        src="../assets/student/photo.svg"
                                         alt=""
                                         width="30px"
                                     />
@@ -239,7 +239,7 @@
                                                     @click="downloadPDF"
                                                 >
                                                     <img
-                                                        src="../assets/student/download-pdf.png"
+                                                        src="../assets/student/download-pdf.svg"
                                                         alt=""
                                                     />
                                                     <div>تحميل الشهادة</div>
@@ -428,20 +428,20 @@
                             <v-tabs v-model="tab_4">
                                 <v-tab value="one1">
                                     <img
-                                        src="../assets/student/money.png"
+                                        src="../assets/student/money.svg"
                                         alt=""
                                         width="30px"
                                     />
                                 </v-tab>
                                 <v-tab value="two1">
                                     <img
-                                        src="../assets/student/notification-bell.png"
+                                        src="../assets/student/notification-bell.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>
                                 <v-tab value="three1">
                                     <img
-                                        src="../assets/student/analysis.png"
+                                        src="../assets/student/analysis.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>

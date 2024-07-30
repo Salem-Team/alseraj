@@ -94,7 +94,7 @@
                     </div>
                     <div class="left">
                         <img
-                            src="../assets/news/plus.png"
+                            src="../assets/news/plus.svg"
                             alt=""
                             @click="dialog = true"
                             class="pluse"
@@ -144,18 +144,6 @@
                                 @input="news.upload_Image"
                             >
                             </v-file-input>
-                            <!-- Show progress bar if New.image is truthy (assuming New is a data property) -->
-                            <v-progress-linear
-                                v-if="New.image"
-                                :value="news.progress"
-                                color="blue-grey"
-                                height="25"
-                            >
-                                <template v-slot:default="{ value }">
-                                    <strong>{{ Math.ceil(value) }}%</strong>
-                                </template>
-                            </v-progress-linear>
-                            <br />
                             <p>وصف قصير</p>
                             <ckeditor
                                 v-model="New.description"
@@ -316,24 +304,30 @@
                 >
                     <div class="feat" v-for="New in News" :key="New.id">
                         <div class="Top">
-                            <font-awesome-icon
-                                :icon="['fas', 'pen-to-square']"
-                                @click="news.New_Information(New)"
-                                @click.="dialog_1 = true"
-                            />
-                            <font-awesome-icon
-                                :icon="['fas', 'trash']"
-                                @click.="news.New_Information(New)"
-                                @click="news.dialog_3 = true"
-                            />
-                            <v-img
-                                :src="New.image"
-                                width="100%"
-                                height="300"
-                                @click.="news.New_Information(New)"
-                                @click="dialog_6 = true"
-                                cover
-                            ></v-img>
+                            <v-lazy
+                                :min-height="200"
+                                :options="{ threshold: 0.5 }"
+                                transition="fade-transition"
+                            >
+                                <font-awesome-icon
+                                    :icon="['fas', 'pen-to-square']"
+                                    @click="news.New_Information(New)"
+                                    @click.="dialog_1 = true"
+                                />
+                                <font-awesome-icon
+                                    :icon="['fas', 'trash']"
+                                    @click.="news.New_Information(New)"
+                                    @click="news.dialog_3 = true"
+                                />
+                                <v-img
+                                    :src="New.image"
+                                    width="100%"
+                                    height="300"
+                                    @click.="news.New_Information(New)"
+                                    @click="dialog_6 = true"
+                                    cover
+                                ></v-img>
+                            </v-lazy>
                         </div>
                         <div class="Bottom">
                             <div class="title">{{ New.title }}</div>

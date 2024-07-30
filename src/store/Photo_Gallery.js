@@ -350,6 +350,11 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                 }
             } else {
                 this.Photos = this.all;
+                if (this.Photos.length === 0) {
+                    this.empty = true;
+                } else {
+                    this.empty = false;
+                }
             }
         },
         // Action method to categorize photos into respective arrays based on type

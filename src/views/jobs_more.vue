@@ -1,9 +1,76 @@
 <template>
-    <div style="width: 100% !important; margin: auto; padding: 40px 0px">
+    <div>
         <!-- Header Section -->
-        <div class="use">
-            <div class="title">
-                <div class="right">الوظائف</div>
+        <svg
+            style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 245px;
+            "
+            v-if="loading1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 200 200"
+        >
+            <radialGradient
+                id="a12"
+                cx=".66"
+                fx=".66"
+                cy=".3125"
+                fy=".3125"
+                gradientTransform="scale(1.5)"
+            >
+                <stop offset="0" stop-color="#336699"></stop>
+                <stop offset=".3" stop-color="#336699" stop-opacity=".9"></stop>
+                <stop offset=".6" stop-color="#336699" stop-opacity=".6"></stop>
+                <stop offset=".8" stop-color="#336699" stop-opacity=".3"></stop>
+                <stop offset="1" stop-color="#336699" stop-opacity="0"></stop>
+            </radialGradient>
+            <circle
+                transform-origin="center"
+                fill="none"
+                stroke="url(#a12)"
+                stroke-width="15"
+                stroke-linecap="round"
+                stroke-dasharray="200 1000"
+                stroke-dashoffset="0"
+                cx="100"
+                cy="100"
+                r="70"
+            >
+                <animateTransform
+                    type="rotate"
+                    attributeName="transform"
+                    calcMode="spline"
+                    dur="2"
+                    values="360;0"
+                    keyTimes="0;1"
+                    keySplines="0 0 1 1"
+                    repeatCount="indefinite"
+                ></animateTransform>
+            </circle>
+            <circle
+                transform-origin="center"
+                fill="none"
+                opacity=".2"
+                stroke="#336699"
+                stroke-width="15"
+                stroke-linecap="round"
+                cx="100"
+                cy="100"
+                r="70"
+            ></circle>
+        </svg>
+        <div class="right">
+            <div>
+                <v-breadcrumbs>
+                    <v-breadcrumbs-item @click="$router.push('/')" link>
+                        الرئيسية
+                    </v-breadcrumbs-item>
+                    <v-breadcrumbs-divider />
+                    <v-breadcrumbs-item>الوظائف</v-breadcrumbs-item>
+                </v-breadcrumbs>
             </div>
         </div>
 
@@ -240,55 +307,23 @@ form {
     margin: auto;
 }
 
-.use {
-    width: fit-content !important;
+.right {
+    width: 90% !important;
     margin: auto;
-    .title {
-        text-transform: uppercase;
+    font-weight: bold;
+    font-size: 20px;
+    border-bottom: 5px solid var(--secound-color);
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .v-breadcrumbs-item:first-child {
         color: var(--main-color);
-        margin: 0 auto 80px;
-        border: 2px solid var(--main-color);
-        padding: 10px 20px;
-        font-size: 30px;
-        width: fit-content;
-        position: relative;
-        z-index: 1;
-        transition: 0.3s;
+        cursor: pointer;
+        font-size: 24px;
     }
-    .title::before {
-        content: "";
-        width: 12px;
-        height: 12px;
-        background-color: var(--main-color);
-        position: absolute;
-        border-radius: 50%;
-        top: 50%;
-        right: -30px;
-        transform: translateY(-50%);
-    }
-    .title::after {
-        content: "";
-        width: 12px;
-        height: 12px;
-        background-color: var(--main-color);
-        position: absolute;
-        border-radius: 50%;
-        top: 50%;
-        left: -30px;
-        transform: translateY(-50%);
-    }
-    .title:hover::before {
-        z-index: -1;
-        animation: right-move 0.5s linear forwards;
-    }
-    .title:hover::after {
-        z-index: -1;
-        animation: left-move 0.5s linear forwards;
-    }
-    .title:hover {
-        color: white;
-        border: 2px solid white;
-        transition-delay: 0.5s;
+    .v-breadcrumbs {
+        padding: 16px 0;
     }
 }
 .job {

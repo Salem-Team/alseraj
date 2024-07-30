@@ -84,7 +84,7 @@
                     <v-breadcrumbs>
                         <v-breadcrumbs-item>
                             <img
-                                src="../assets/profile/user.png"
+                                src="../assets/profile/user.svg"
                                 alt=""
                                 class="pluse"
                             />
@@ -99,12 +99,12 @@
                 </div>
                 <div class="left">
                     <img
-                        src="../assets/profile/edit-info.png"
+                        src="../assets/profile/edit-info.svg"
                         alt=""
                         class="pluse pluse_1 ml-2"
                     />
                     <img
-                        src="../assets/profile/logout.png"
+                        src="../assets/profile/logout.svg"
                         alt=""
                         class="pluse pluse_1 ml-5"
                     />
@@ -135,46 +135,46 @@
                             >
                                 <v-tab value="one1"
                                     ><img
-                                        src="../assets/student/graduated.png"
+                                        src="../assets/student/graduated.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>
                                 <v-tab value="two1">
                                     <img
-                                        src="../assets/student/school.png"
+                                        src="../assets/student/school.svg"
                                         alt=""
                                         width="30px"
                                     />
                                 </v-tab>
                                 <v-tab value="three1">
                                     <img
-                                        src="../assets/student/academic.png"
+                                        src="../assets/student/academic.svg"
                                         alt=""
                                         width="30px"
                                     />
                                 </v-tab>
                                 <v-tab value="four1">
                                     <img
-                                        src="../assets/student/notification-bell.png"
+                                        src="../assets/student/notification-bell.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>
                                 <!-- <v-tab value="five1">
                                     <img
-                                        src="../assets/student/photo.png"
+                                        src="../assets/student/photo.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>
                                 <v-tab value="se11">
                                     <img
-                                        src="../assets/student/planning2.png"
+                                        src="../assets/student/planning2.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab> -->
 
                                 <v-tab value="seven1">
                                     <img
-                                        src="../assets/student/analysis.png"
+                                        src="../assets/student/analysis.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>
@@ -305,7 +305,7 @@
                                                                     }}
                                                                 </div>
                                                                 <img
-                                                                    src="../assets/profile/information.png"
+                                                                    src="../assets/profile/information.svg"
                                                                 />
                                                             </div>
                                                             <div
@@ -507,7 +507,7 @@
                                                         @click="downloadPDF"
                                                     >
                                                         <img
-                                                            src="../assets/student/download-pdf.png"
+                                                            src="../assets/student/download-pdf.svg"
                                                             alt=""
                                                         />
                                                         <div>تحميل الشهادة</div>

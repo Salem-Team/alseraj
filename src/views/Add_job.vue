@@ -131,6 +131,12 @@
                                     </v-list-item-title>
                                 </v-list-item>
                                 <v-list-item
+                                    style="
+                                        background-color: var(--secound-color);
+                                        margin-bottom: 5px;
+                                        border: 1px solid var(--main-color);
+                                        border-radius: 5px !important;
+                                    "
                                     v-for="notification in notifications"
                                     :key="notification.id"
                                     @click="
@@ -140,6 +146,7 @@
                                     "
                                 >
                                     <v-list-item-title
+                                        style="color: var(--main-color)"
                                         v-if="empty0 === false"
                                         >{{
                                             notification.text

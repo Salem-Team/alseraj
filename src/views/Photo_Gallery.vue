@@ -540,7 +540,6 @@
                                 prepend-icon=""
                                 prepend-inner-icon="mdi-paperclip"
                                 @change="photos.onFileChange"
-                                @change.="subMutPhoto()"
                                 required
                                 :rules="[(v) => !!v || 'الرجاء اختيار صورة']"
                             >
@@ -619,7 +618,6 @@
                                     color: #fff;
                                 "
                                 @click="photos.Add_Photos"
-                                @click.="subMutPhoto()"
                             >
                                 إضافة صورة
                             </v-btn>
@@ -639,7 +637,6 @@
                                     color: #fff;
                                 "
                                 @click="photos.Add_Video"
-                                @click.="subMutPhoto()"
                             >
                                 إضافة فيديو
                             </v-btn>
@@ -781,7 +778,6 @@
 import { storeToRefs } from "pinia";
 import { defineComponent } from "vue";
 import { usePhoto_Gallery } from "@/store/Photo_Gallery.js";
-import axios from "axios";
 import confirm_message from "@/components/confirm_message.vue";
 import Offline_error from "@/components/Offline_error.vue";
 export default defineComponent({
@@ -874,42 +870,6 @@ export default defineComponent({
         length: 2,
         onboarding: 1,
     }),
-
-    methods: {
-        async subMutPhoto() {
-            const file =
-                this.photos.types === "صورة"
-                    ? this.photos.Photo.image
-                    : this.photos.Photo.video;
-
-            if (!file) {
-                console.error("No file selected");
-                return;
-            }
-            console.log("start");
-            // Create a FormData object to hold the file data
-            const formData = new FormData();
-            formData.append("file", file); // Append the file with the key 'file'
-
-            try {
-                console.log("wait");
-
-                const response = await axios.post(
-                    "http://localhost:3000/upload",
-                    formData,
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
-                    }
-                );
-                console.log("File uploaded successfully:", response.data);
-            } catch (error) {
-                console.error("Error uploading file:", error);
-            }
-            console.log("end");
-        },
-    },
 });
 </script>
 <style lang="scss" scoped>

@@ -9,7 +9,7 @@
         </div>
         <v-container class="d-flex justify-space-evenly mb-4 mt-16">
             <v-card class="card" link @click="goToClasses">
-                <img src="../assets/admin/e-learning.png" alt="" />
+                <img src="../assets/admin/e-learning.svg" alt="" />
                 <div>الفصول الدراسية</div>
             </v-card>
             <v-card
@@ -21,7 +21,7 @@
                 link
                 @click="$router.push('/Top_Board')"
             >
-                <img src="../assets/admin/certificate.png" alt="" />
+                <img src="../assets/admin/certificate.svg" alt="" />
                 <div>لوحة الشرف</div>
             </v-card>
             <v-card
@@ -33,7 +33,7 @@
                 link
                 @click="$router.push('/Add_job')"
             >
-                <img src="../assets/admin/job-application.png" alt="" />
+                <img src="../assets/admin/job-application.svg" alt="" />
                 <div>التقديم على الوظائف</div>
             </v-card>
             <v-card
@@ -45,11 +45,11 @@
                 link
                 @click="$router.push('/Add_admin')"
             >
-                <img src="../assets/admin/developers (1).png" alt="" />
+                <img src="../assets/admin/developers (1).svg" alt="" />
                 <div>إدارة المشرفين</div>
             </v-card>
             <v-card class="card" link @click="$router.push('/Add_teacher')">
-                <img src="../assets/admin/management.png" alt="" />
+                <img src="../assets/admin/management.svg" alt="" />
                 <div>إدارة المدرسين</div>
             </v-card>
             <v-card
@@ -61,7 +61,7 @@
                 link
                 @click="$router.push('/Add_News')"
             >
-                <img src="../assets/admin/newspaper.png" alt="newspaper" />
+                <img src="../assets/admin/newspaper.svg" alt="newspaper" />
                 <div>الأخبار</div>
             </v-card>
             <v-card
@@ -73,7 +73,7 @@
                 link
                 @click="$router.push('/Photo_Gallery')"
             >
-                <img src="../assets/admin/picture.png" alt="picture" />
+                <img src="../assets/admin/picture.svg" alt="picture" />
                 <div>معرض الصور</div>
             </v-card>
         </v-container>

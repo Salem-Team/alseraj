@@ -96,7 +96,7 @@
                     </div>
                     <div class="left">
                         <img
-                            src="../assets/add_admin/followers.png"
+                            src="../assets/add_admin/followers.svg"
                             alt=""
                             @click="admin.dialog = true"
                             class="pluse"

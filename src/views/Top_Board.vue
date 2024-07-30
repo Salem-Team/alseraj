@@ -94,7 +94,7 @@
                     </div>
                     <div class="left">
                         <img
-                            src="../assets/top_board/filter.png"
+                            src="../assets/top_board/filter.svg"
                             alt=""
                             @click="dialog = true"
                         />

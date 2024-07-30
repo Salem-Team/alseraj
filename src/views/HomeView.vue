@@ -9,6 +9,7 @@
         <Q_A />
         <job_data />
     </div>
+
     <v-layout class="footer" visible>
         <v-footer
             class="d-flex flex-column"

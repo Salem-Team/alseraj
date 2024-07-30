@@ -12,14 +12,7 @@ import {
 } from "@firebase/firestore";
 import { initializeApp } from "@firebase/app";
 import { getFirestore } from "firebase/firestore";
-import {
-    getStorage,
-    ref,
-    deleteObject,
-    ref as storageRef,
-    uploadBytes,
-    getDownloadURL,
-} from "firebase/storage";
+import { getStorage, ref, deleteObject } from "firebase/storage";
 
 const firebaseConfig = {
     // Firebase configuration object
@@ -34,8 +27,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app);
 import { usenotification } from "../store/notification.js";
+import axios from "axios";
 // Define Pinia store for managing photo gallery
 export const usePhoto_Gallery = defineStore("Photo_Gallery", {
     state: () => ({
@@ -96,22 +89,36 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
 
         // Action method to upload an image to Firebase Storage
         async upload_Image(file) {
-            this.random = Math.random();
-            // Create a storage reference with the file name including type and random number
-            const storageReference = storageRef(
-                storage,
-                this.File_Name + this.random + file.name
-            );
-            // Upload the file bytes to the storage reference and get a snapshot of the upload
-            const snapshot = await uploadBytes(storageReference, file);
-            // Calculate the progress percentage
-            this.progress =
-                parseInt(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            // Log a message indicating the upload is complete, along with the snapshot details
-            console.log("Uploaded a blob or file!", snapshot);
+            if (!file) {
+                console.error("No file selected");
+                return;
+            }
+            console.log("start");
+            // Create a FormData object to hold the file data
+            const formData = new FormData();
+            formData.append("file", file); // Append the file with the key 'file'
 
-            // Return a promise that resolves with the download URL of the uploaded file
-            return getDownloadURL(snapshot.ref);
+            try {
+                console.log("wait");
+
+                const response = await axios.post(
+                    "http://localhost:3000/upload",
+                    formData,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+                console.log(
+                    "File uploaded successfully:",
+                    response.data.message
+                );
+                return response.data.message;
+            } catch (error) {
+                console.error("Error uploading file:", error);
+            }
+            console.log("end");
         },
 
         // Action method to add a photo to Firestore

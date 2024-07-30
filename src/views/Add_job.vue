@@ -636,17 +636,17 @@
     <confirm_message
         v-if="snackbar === true"
         :text="text10"
-        :snackbar1="snackbar"
+        v-model="snackbar"
     />
     <confirm_message
         v-if="snackbar2 === true"
         :text="text11"
-        :snackbar1="snackbar2"
+        v-model="snackbar2"
     />
     <confirm_message
         v-if="snackbar3 === true"
         :text="text12"
-        :snackbar1="snackbar3"
+        v-model="snackbar3"
     />
 </template>
 

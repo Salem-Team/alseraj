@@ -286,7 +286,8 @@
                                 variant="outlined"
                                 multiple
                                 required
-                            ></v-select>
+                            >
+                            </v-select>
                             <v-btn
                                 type="submit"
                                 :loading="loading"
@@ -471,12 +472,12 @@
     <confirm_message
         v-if="snackbar === true"
         :text="text10"
-        :snackbar1="snackbar"
+        v-model="snackbar"
     />
     <confirm_message
         v-if="snackbar2 === true"
         :text="text11"
-        :snackbar1="snackbar2"
+        v-model="snackbar2"
     />
 </template>
 
@@ -494,6 +495,7 @@ export default {
         Empty_error,
         Offline_error,
     },
+
     setup() {
         const admin = useadmin();
         admin.Get_data();
@@ -553,10 +555,32 @@ export default {
     },
 
     data: () => ({
+        All: false,
         snackbar1: false,
         text: `تم نسخ كلمة المرور`,
     }),
+    computed: {
+        // Compute whether "Select All" checkbox should be indeterminate
+        indeterminate() {
+            return (
+                this.All &&
+                this.admin.roles_Information.length > 0 &&
+                this.admin.roles_Information.length < this.admin.role.length
+            );
+        },
+    },
+
     methods: {
+        // Toggle all items
+        toggleAll() {
+            if (this.All) {
+                // Select all items
+                this.admin.roles_Information = this.admin.role.slice();
+            } else {
+                // Deselect all items
+                this.admin.roles_Information = [];
+            }
+        },
         Snackbar_Function() {
             const passwordElement = document.getElementById("password");
             const password =

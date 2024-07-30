@@ -17,6 +17,13 @@
             </v-card-title>
             <v-row>
                 <v-col
+                    style="margin-top: 100px"
+                    v-if="filteredWeeklyPlans.length === 0"
+                >
+                    <Empty_error text="لا يوجد خطط اسبوعيه." />
+                </v-col>
+                <v-col
+                    v-else
                     cols="4"
                     v-for="(plan, index) in filteredWeeklyPlans"
                     :key="index"
@@ -266,10 +273,19 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <confirm_message2
+            v-model="showSnackbar"
+            :text="confirmationText"
+            :snackbar="showSnackbar"
+            @close-snackbar="showSnackbar = false"
+        />
     </v-dialog>
 </template>
 
 <script>
+import confirm_message2 from "@/components/confirm_message2.vue";
+import Empty_error from "@/components/Empty_error.vue";
+
 import {
     getFirestore,
     doc,
@@ -300,6 +316,10 @@ const storage = getStorage(app);
 export { db, storage };
 
 export default {
+    components: {
+        confirm_message2,
+        Empty_error,
+    },
     props: {
         year: {
             type: Number,
@@ -315,6 +335,8 @@ export default {
             showAddWeeklyPlan: false,
             selectedClass: null,
             selectedSection: null,
+            showSnackbar: false,
+            confirmationText: "",
             selectedYear: null,
             classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
             sections: ["عربي", "لغات"],
@@ -434,7 +456,8 @@ export default {
                             ...newPlan,
                         });
                     }
-
+                    this.confirmationText = "تم اضافه الخطه الاسبوعيه بنجاح";
+                    this.showSnackbar = true;
                     this.closeAddWeeklyPlanDialog();
                 } catch (error) {
                     console.error("Error adding/updating weekly plan: ", error);
@@ -447,6 +470,8 @@ export default {
                 this.weeklyPlans = this.weeklyPlans.filter(
                     (plan) => plan.id !== id
                 );
+                this.confirmationText = "تم حذف الخطه الاسبوعيه بنجاح";
+                this.showSnackbar = true;
             } catch (error) {
                 console.error("Error deleting plan: ", error);
             }
@@ -464,6 +489,8 @@ export default {
 
                 this.changesMade = false;
                 this.showDetails6 = false;
+                this.confirmationText = "تم تعديل الخطه الاسبوعيه بنجاح";
+                this.showSnackbar = true;
             } catch (error) {
                 console.error("Error updating plan details: ", error);
             }

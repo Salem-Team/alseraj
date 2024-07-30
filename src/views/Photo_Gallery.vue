@@ -190,12 +190,22 @@
                                         </div>
                                         <div class="delete">
                                             <font-awesome-icon
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 v-if="photo.File_type == 'صورة'"
                                                 @click="photos.dialog_3 = true"
                                                 :icon="['fas', 'trash']"
                                             />
                                             <font-awesome-icon
                                                 v-else
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_4 = true"
                                                 :icon="['fas', 'trash']"
                                             />
@@ -247,12 +257,22 @@
                                         </div>
                                         <div class="delete">
                                             <font-awesome-icon
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 v-if="photo.File_type == 'صورة'"
                                                 @click="photos.dialog_3 = true"
                                                 :icon="['fas', 'trash']"
                                             />
                                             <font-awesome-icon
                                                 v-else
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_4 = true"
                                                 :icon="['fas', 'trash']"
                                             />
@@ -303,12 +323,22 @@
                                         </div>
                                         <div class="delete">
                                             <font-awesome-icon
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 v-if="photo.File_type == 'صورة'"
                                                 @click="photos.dialog_3 = true"
                                                 :icon="['fas', 'trash']"
                                             />
                                             <font-awesome-icon
                                                 v-else
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_4 = true"
                                                 :icon="['fas', 'trash']"
                                             />
@@ -361,11 +391,21 @@
                                         <div class="delete">
                                             <font-awesome-icon
                                                 v-if="photo.File_type == 'صورة'"
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_3 = true"
                                                 :icon="['fas', 'trash']"
                                             />
                                             <font-awesome-icon
                                                 v-else
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_4 = true"
                                                 :icon="['fas', 'trash']"
                                             />
@@ -472,7 +512,7 @@
                             class="d-flex justify-space-between align-center title"
                         >
                             <div style="color: var(--main-color)">
-                                إضافة صورة او فيديو
+                                إضافة {{ photos.types }}
                             </div>
                             <v-btn
                                 icon="mdi-close"
@@ -480,32 +520,18 @@
                             ></v-btn>
                         </div>
                         <form ref="form" @submit.prevent class="ma-auto mt-4">
-                            <label for="fileType">أختر نوع الملف</label>
-                            <br />
-                            <br />
-                            <select
-                                id="fileType"
+                            <v-select
+                                style="width: 100%"
                                 v-model="photos.types"
-                                @change="handleFileTypeChange"
+                                :items="['صورة', 'فيديو']"
+                                label="أختر نوع الملف "
+                                variant="outlined"
                                 required
-                                style="
-                                    width: 100%;
-                                    padding: 8px;
-                                    border-radius: 4px;
-                                    border: 1px solid #ccc;
-                                "
-                            >
-                                <option value="" disabled selected>
-                                    أختر نوع الملف
-                                </option>
-                                <option value="صورة">صورة</option>
-                                <option value="فيديو">فيديو</option>
-                            </select>
-                            <br />
-                            <br />
+                                :rules="[(v) => !!v || 'الرجاء اختيار النوع ']"
+                            ></v-select>
                             <!-- File input for images, shown if type is 'صورة' -->
                             <v-file-input
-                                v-if="photos.types === 'صورة'"
+                                v-if="photos.types == 'صورة'"
                                 style="width: 100%"
                                 v-model="photos.Photo.image"
                                 label="صورة"
@@ -514,27 +540,28 @@
                                 prepend-icon=""
                                 prepend-inner-icon="mdi-paperclip"
                                 @change="photos.onFileChange"
+                                @change.="subMutPhoto()"
                                 required
                                 :rules="[(v) => !!v || 'الرجاء اختيار صورة']"
-                            ></v-file-input>
+                            >
+                            </v-file-input>
                             <!-- File input for videos, shown if type is 'فيديو' -->
                             <v-file-input
-                                v-if="photos.types === 'فيديو'"
+                                v-if="photos.types == 'فيديو'"
                                 style="width: 100%"
                                 v-model="photos.Photo.video"
                                 label="فيديو"
-                                accept="video/mp4"
+                                accept="mp4"
                                 variant="outlined"
                                 prepend-icon=""
                                 prepend-inner-icon="mdi-paperclip"
                                 @change="photos.on_Video_Change"
                                 required
                                 :rules="[(v) => !!v || 'الرجاء اختيار فيديو']"
-                            ></v-file-input>
-
-                            <!-- Progress bar for image upload -->
+                            >
+                            </v-file-input>
                             <v-progress-linear
-                                v-if="photos.Photo.image"
+                                v-if="photos.Photo.image || photos.Photo.video"
                                 :value="progress"
                                 color="blue-grey"
                                 height="25"
@@ -543,11 +570,11 @@
                                     <strong>{{ Math.ceil(value) }}%</strong>
                                 </template>
                             </v-progress-linear>
-
+                            <br />
                             <!-- Display selected image -->
                             <v-img
                                 v-if="photos.Photo.image"
-                                :src="photos.Photo.image"
+                                :src="photos.image"
                                 height="200"
                             ></v-img>
 
@@ -556,43 +583,26 @@
                                 v-if="photos.Photo.video"
                                 width="320"
                                 height="240"
+                                style="text-align: center"
                                 controls
                             >
-                                <source
-                                    :src="photos.Photo.video"
-                                    type="video/mp4"
-                                />
+                                <source :src="photos.video" type="video/mp4" />
                                 Your browser does not support the video tag.
                             </video>
-                            <div v-if="photos.type === 'صورة'">
-                                <label for="imageType">أختر نوع الصورة</label>
-                                <br />
-                                <br />
-                                <!-- Optional select input for image type -->
-                                <select
-                                    id="imageType"
-                                    v-model="photos.types"
-                                    @change="photos.handletypes"
-                                    required
-                                    style="
-                                        width: 100%;
-                                        padding: 8px;
-                                        border-radius: 4px;
-                                        border: 1px solid #ccc;
-                                    "
-                                >
-                                    <option value="" disabled selected>
-                                        أختر نوع الصورة
-                                    </option>
-                                    <option
-                                        v-for="type in photos.Types"
-                                        :key="type"
-                                        :value="type"
-                                    >
-                                        {{ type }}
-                                    </option>
-                                </select>
-                            </div>
+                            <br />
+                            <v-select
+                                style="width: 100%"
+                                v-model="photos.type"
+                                :items="photos.Types"
+                                label="أختر نوع الصورة"
+                                variant="outlined"
+                                @blur="photos.handletypes"
+                                @click="photos.handletypes"
+                                required
+                                :rules="[
+                                    (v) => !!v || 'الرجاء اختيار نوع الصورة',
+                                ]"
+                            ></v-select>
                             <v-btn
                                 v-if="photos.types == 'صورة'"
                                 type="submit"
@@ -608,7 +618,8 @@
                                     background: var(--main-color);
                                     color: #fff;
                                 "
-                                @click="subMutPhoto()"
+                                @click="photos.Add_Photos"
+                                @click.="subMutPhoto()"
                             >
                                 إضافة صورة
                             </v-btn>
@@ -627,7 +638,8 @@
                                     background: var(--main-color);
                                     color: #fff;
                                 "
-                                @click="subMutPhoto()"
+                                @click="photos.Add_Video"
+                                @click.="subMutPhoto()"
                             >
                                 إضافة فيديو
                             </v-btn>
@@ -637,19 +649,6 @@
             </template>
         </Offline_error>
     </div>
-    <img
-        style="
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 245px;
-        "
-        v-if="loading1"
-        src="../assets/Spinner@1x-1.0s-200px-200px.svg"
-        alt=""
-    />
-
     <v-dialog v-model="dialog_4" width="90%">
         <v-card width="100%" class="popup">
             <div class="d-flex justify-space-between align-center title">
@@ -666,8 +665,8 @@
             >
                 هل أنت متأكد من حذفك لهذا الفيديو؟
             </p>
-            <v-card-text>
-                <div class="d-flex align-center">
+            <v-card-text style="padding: 20px !important">
+                <div class="d-flex align-center p-4">
                     <v-btn
                         type="submit"
                         color="var(--main-color)"
@@ -724,7 +723,7 @@
             >
                 هل أنت متأكد من حذفك لهذه الصورة؟
             </p>
-            <v-card-text>
+            <v-card-text style="padding: 20px !important">
                 <div class="d-flex align-center">
                     <v-btn
                         type="submit"
@@ -766,6 +765,16 @@
             </v-card-text>
         </v-card></v-dialog
     >
+    <confirm_message
+        v-if="snackbar === true"
+        :text="text10"
+        v-model="snackbar"
+    />
+    <confirm_message
+        v-if="snackbar2 === true"
+        :text="text11"
+        v-model="snackbar2"
+    />
 </template>
 
 <script>
@@ -773,11 +782,13 @@ import { storeToRefs } from "pinia";
 import { defineComponent } from "vue";
 import { usePhoto_Gallery } from "@/store/Photo_Gallery.js";
 import axios from "axios";
-
+import confirm_message from "@/components/confirm_message.vue";
 import Offline_error from "@/components/Offline_error.vue";
 export default defineComponent({
+    inject: ["Emitter"],
     components: {
         Offline_error,
+        confirm_message,
     },
     setup() {
         const photos = usePhoto_Gallery();
@@ -810,6 +821,10 @@ export default defineComponent({
             image,
             onFileChange,
             trip,
+            text10,
+            text11,
+            snackbar,
+            snackbar2,
             progress,
             show_Data,
             party,
@@ -820,6 +835,10 @@ export default defineComponent({
         return {
             Photo,
             types,
+            text10,
+            text11,
+            snackbar,
+            snackbar2,
             on_Video_Change,
             Video_Information,
             video,
@@ -857,17 +876,9 @@ export default defineComponent({
     }),
 
     methods: {
-        next() {
-            this.onboarding =
-                this.onboarding + 1 > this.length ? 1 : this.onboarding + 1;
-        },
-        prev() {
-            this.onboarding =
-                this.onboarding - 1 <= 0 ? this.length : this.onboarding - 1;
-        },
         async subMutPhoto() {
             const file =
-                this.photos.type === "صورة"
+                this.photos.types === "صورة"
                     ? this.photos.Photo.image
                     : this.photos.Photo.video;
 

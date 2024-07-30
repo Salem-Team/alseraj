@@ -1,31 +1,7 @@
 <template>
     <section class="parallax">
         <h1 id="text">مدرسة السراج المنير</h1>
-        <img
-            style="filter: grayscale(1)"
-            src="../assets/gate-left.png"
-            id="gate-left"
-        />
-        <img
-            style="filter: grayscale(1)"
-            src="../assets/gate-right.png"
-            id="gate-right"
-        />
-        <img
-            style="filter: grayscale(1)"
-            src="../assets/tree-left.png"
-            id="tree-left"
-        />
-        <img
-            style="filter: grayscale(1)"
-            src="../assets/tree-right.png"
-            id="tree-right"
-        />
-        <img
-            style="filter: grayscale(1) !important"
-            src="../assets/grass.png"
-            id="grass"
-        />
+        <img src="../assets/m_3.png" id="street" />
     </section>
     <div visible>
         <Photo_Gallery_data />
@@ -72,8 +48,6 @@ import News_data from "../components/News_data.vue";
 import Q_A from "../components/Q_A.vue";
 import Photo_Gallery_data from "../components/Photo_Gallery_data.vue";
 import { defineComponent } from "vue";
-import { mapActions } from "pinia";
-import { usenotification } from "../store/notification.js";
 export default defineComponent({
     components: {
         job_data,
@@ -94,23 +68,17 @@ export default defineComponent({
     },
     mounted() {
         this.moveText();
-        this.get_notifications("public_notification");
     },
     methods: {
-        ...mapActions(usenotification, ["get_notifications"]),
         moveText() {
             let text = document.getElementById("text");
-            let tree_left = document.getElementById("tree-left");
-            let tree_right = document.getElementById("tree-right");
-            let gate_left = document.getElementById("gate-left");
-            let gate_right = document.getElementById("gate-right");
+            let street = document.getElementById("street");
             window.addEventListener("scroll", () => {
                 let value = window.scrollY;
                 text.style.marginTop = value * 1.5 + `px`;
-                tree_left.style.left = value * -1.5 + `px`;
-                tree_right.style.left = value * 1.5 + `px`;
-                gate_left.style.left = value * 0.3 + `px`;
-                gate_right.style.left = value * -0.3 + `px`;
+                street.style.bottom = value * -0.3 + `px`;
+                let scale = 1 + value * 0.002; // Adjust the scaling factor as needed
+                street.style.transform = `scale(${scale})`;
             });
         },
     },
@@ -126,7 +94,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url("../assets/sky.jpg") no-repeat;
+    background: url("../assets/m_1.png") no-repeat;
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -134,12 +102,12 @@ body {
     #text {
         position: absolute;
         font-size: 5em;
-        color: #1b283a;
-        text-shadow: 2px 4px 5px #f9f9f9;
+        color: white;
+        text-shadow: 2px 4px 5px #1b283a;
         margin-top: 0px;
         top: 15%;
         transform: translate(-50%, -50%);
-        left: 50%;
+        left: 60%;
         width: 100%;
         text-align: center;
     }
@@ -149,17 +117,6 @@ body {
         bottom: 0;
         left: 0;
         pointer-events: none;
-    }
-    #grass {
-        bottom: 0;
-    }
-    #gate-left {
-        position: absolute;
-        transform: translateX(-282px);
-    }
-    #gate-right {
-        position: absolute;
-        transform: translateX(305px);
     }
 }
 .content_header {

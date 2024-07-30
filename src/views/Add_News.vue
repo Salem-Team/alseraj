@@ -448,12 +448,12 @@
     <confirm_message
         v-if="snackbar === true"
         :text="text10"
-        :snackbar1="snackbar"
+        v-model="snackbar"
     />
     <confirm_message
         v-if="snackbar2 === true"
         :text="text11"
-        :snackbar1="snackbar2"
+        v-model="snackbar2"
     />
 </template>
 <script>
@@ -661,7 +661,6 @@ form {
 }
 .box {
     flex-wrap: wrap;
-    gap: 10px;
 }
 .card_title {
     background: var(--secound-color);
@@ -713,7 +712,6 @@ form {
     flex-wrap: wrap;
     padding: 0;
     justify-content: flex-start !important;
-    flex-direction: column;
     gap: 40px;
 }
 .card {
@@ -727,15 +725,13 @@ form {
     font-weight: bold;
     padding: 20px;
     text-align: center;
-    width: 100%;
 }
 .feat {
-    width: 100%;
+    width: 24% !important;
     box-shadow: 0 0 10px #ddd;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
-    max-width: 33%;
     & > div {
         width: 100%;
         position: relative;
@@ -921,25 +917,6 @@ form {
         }
     }
 }
-@media (max-width: 599px) {
-}
-@media (min-width: 600px) and (max-width: 768px) {
-}
-@media (min-width: 769px) {
-    .v-container {
-        flex-direction: row;
-        gap: 15px;
-        align-items: stretch !important;
-    }
-    .card {
-        width: 32%;
-    }
-    .feat {
-        width: 32%;
-        justify-content: flex-start;
-    }
-}
-
 img.pluse {
     width: 40px;
     cursor: pointer;
@@ -986,6 +963,20 @@ img.pluse {
     box-shadow: none;
     &:hover {
         background: #fff;
+    }
+}
+@media (max-width: 700px) {
+    .box {
+        flex-direction: column !important;
+    }
+    .feat {
+        width: 100% !important;
+    }
+}
+
+@media (min-width: 700px) and (max-width: 950px) {
+    .feat {
+        width: 47% !important;
     }
 }
 </style>

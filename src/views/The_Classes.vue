@@ -32,7 +32,12 @@
                 v-for="classroom in class_rooms"
                 :key="classroom.id"
             >
-                <div v-if="user.roles.includes(classroom.grade)">
+                <div
+                    v-if="
+                        user.roles.includes(classroom.grade) ||
+                        user.roles.includes('الكل')
+                    "
+                >
                     <div class="feat2">
                         <div class="title">
                             <div>{{ classroom.grade }}</div>
@@ -88,7 +93,9 @@
                             <div
                                 class="box"
                                 v-if="
-                                    user.roles.includes('الاطلاع على الحسابات')
+                                    user.roles.includes(
+                                        'الاطلاع على الحسابات'
+                                    ) || user.roles.includes('الكل')
                                 "
                             >
                                 <div>
@@ -163,6 +170,18 @@ export default {
     name: "The_Classes",
     computed: {
         ...mapState(useAuthStore, ["user"]),
+    },
+    mounted() {
+        this.spliceRoles();
+    },
+    methods: {
+        spliceRoles() {
+            // Remove "مشرف" from each role
+            let splicedRoles = this.user.roles.map((role) =>
+                role.replace("مشرف ", "")
+            );
+            this.user.roles = splicedRoles;
+        },
     },
     setup() {
         const route = useRoute();

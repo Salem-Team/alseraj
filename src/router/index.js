@@ -34,7 +34,7 @@ const routes = [
         path: "/ChildDetails/:id",
         name: "ChildDetails",
         component: ChildDetails,
-        meta: { requiresAuth: true, requiredAuthority: "admin" || "student" },
+        meta: { requiresAuth: true, requiredAuthority: "parent" },
     },
     {
         path: "/Student_Dashboard/:id",
@@ -163,14 +163,6 @@ router.beforeEach(async (to, from, next) => {
                 next("/"); // Redirect to home or login page
                 return;
             }
-
-            // Check if user data is complete
-            if (!user.National_id || !user.id) {
-                console.log("Incomplete user data");
-                next("/"); // Redirect to home or login page
-                return;
-            }
-
             // Check if user has required authority
             if (requiredAuthority && user.userType !== requiredAuthority) {
                 console.log("User does not have required authority");

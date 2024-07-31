@@ -96,13 +96,14 @@
                 <v-container
                     class="box d-flex align-center justify-space-around"
                     v-if="(!loading1, empty === false)"
+                    atyle="width:100% !important"
                 >
                     <!-- News Card Loop -->
                     <v-card
                         class="feat"
                         v-for="New in News"
                         :key="New.id"
-                        width="24%"
+                        style="width: 24% !important"
                         @click.="news.New_Information(New)"
                         @click="dialog_6 = true"
                     >
@@ -129,9 +130,10 @@
 
                         <!-- Description -->
                         <v-card-text>
-                            <p style="color: var(--therd-color) !important">
-                                {{ New.description }}
-                            </p>
+                            <p
+                                v-html="New.description"
+                                style="color: var(--therd-color) !important"
+                            ></p>
                         </v-card-text>
                     </v-card>
                     <!-- Display each photo -->

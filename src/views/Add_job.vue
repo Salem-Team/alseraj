@@ -124,7 +124,7 @@
                                     >
                                 </span>
                             </template>
-                            <v-list>
+                            <v-list style="padding: 10px">
                                 <v-list-item v-if="empty0 === true">
                                     <v-list-item-title>
                                         <Empty_error :text="text2" />
@@ -132,10 +132,14 @@
                                 </v-list-item>
                                 <v-list-item
                                     style="
+                                        padding: 10px;
                                         background-color: var(--secound-color);
-                                        margin-bottom: 5px;
-                                        border: 1px solid var(--main-color);
+                                        margin: 0 0 10px;
+                                        color: var(--therd-color);
                                         border-radius: 5px !important;
+                                        font-weight: bold;
+                                        font-size: 14px;
+                                        text-align: center;
                                     "
                                     v-for="notification in notifications"
                                     :key="notification.id"
@@ -146,7 +150,6 @@
                                     "
                                 >
                                     <v-list-item-title
-                                        style="color: var(--main-color)"
                                         v-if="empty0 === false"
                                         >{{
                                             notification.text

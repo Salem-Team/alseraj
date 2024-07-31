@@ -380,6 +380,7 @@
                                         :show-arrows="false"
                                         hide-delimiter-background
                                         color="var(--main-color)"
+                                        style="overflow: auto"
                                     >
                                         <div>
                                             <v-carousel-item

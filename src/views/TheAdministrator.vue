@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import { gsap } from "gsap";
 import { mapState } from "pinia";
 import { useAuthStore } from "../store/userStore";
 export default {
@@ -92,6 +93,25 @@ export default {
     },
     computed: {
         ...mapState(useAuthStore, ["user"]),
+    },
+    mounted() {
+        // Animate cards when the component mounts
+        gsap.fromTo(
+            ".card",
+            {
+                opacity: 0,
+                y: 100,
+                stagger: 0.1, // Stagger animation for each card
+                ease: "power3.out", // Easing function
+            },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                stagger: 0.1,
+                ease: "power3.out",
+            }
+        );
     },
 };
 </script>

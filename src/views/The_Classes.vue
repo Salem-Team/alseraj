@@ -96,6 +96,7 @@
                 :key="classroom.id"
             >
                 <div
+                    class="card"
                     v-if="
                         user.roles.includes(classroom.grade) ||
                         user.roles.includes('الكل')
@@ -262,6 +263,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+import { gsap } from "gsap";
 import { mapState } from "pinia";
 import { useAuthStore } from "../store/userStore";
 export default {
@@ -333,6 +335,23 @@ export default {
                             createChart_3("myChart_3_" + classroom.id, [
                                 classroom.results,
                             ]);
+                            // Animate card when the component mounts
+                            gsap.fromTo(
+                                ".card",
+                                {
+                                    opacity: 0,
+                                    y: 100,
+                                    stagger: 0.2, // Stagger animation for each card
+                                    ease: "power3.out", // Easing function
+                                },
+                                {
+                                    opacity: 1,
+                                    y: 0,
+                                    duration: 3,
+                                    stagger: 0.2,
+                                    ease: "power3.out",
+                                }
+                            );
                         } else {
                             console.log(
                                 `Data missing for classroom ${classroom.id}`

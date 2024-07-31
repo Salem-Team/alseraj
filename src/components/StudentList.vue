@@ -3414,6 +3414,7 @@ export default {
                                     student_name: this.form.student_name,
                                     educational_level: this.year,
                                     class: this.form.class,
+                                    natioal_id: this.form.student_id,
                                 }),
                             },
                             { merge: true }
@@ -3432,6 +3433,7 @@ export default {
                                     student_name: this.form.student_name,
                                     educational_level: this.year,
                                     class: this.form.class,
+                                    natioal_id: this.form.student_id,
                                 },
                             ],
                         });

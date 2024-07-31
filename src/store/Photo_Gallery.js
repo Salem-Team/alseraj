@@ -62,13 +62,13 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         loading: false,
         loading1: false,
         empty: false,
-        text0: "لا يوجد صور",
         empty1: false,
-        text1: "لا يوجد صور رحلات",
         empty2: false,
-        text2: "لا يوجد صور أخبار",
         empty3: false,
-        text3: "لا يوجد صور حفلات",
+        text0: "لا يوجد صور",
+        text1: "لا يوجد صور حفلات",
+        text2: "لا يوجد صور أخبار",
+        text3: "لا يوجد صور رحلات",
         snackbar: false,
         snackbar2: false,
         text10: " تم الاضافة بنجاح",
@@ -128,6 +128,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                 if (this.Photo.image) {
                     // Step 1: Upload the image and get the download URL
                     const imageUrl = await this.upload_Image(this.Photo.image);
+                    console.log("this.Photo.image", this.Photo.image);
                     // Get current local time
                     const currentTime = Timestamp.now();
 
@@ -330,16 +331,16 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
             if (this.photos_show === "trip" || this.tab === "trip") {
                 this.Photos = this.trip;
                 if (this.Photos.length === 0) {
-                    this.empty1 = true;
+                    this.empty3 = true;
                 } else {
-                    this.empty1 = false;
+                    this.empty3 = false;
                 }
             } else if (this.photos_show === "party" || this.tab === "party") {
                 this.Photos = this.party;
                 if (this.Photos.length === 0) {
-                    this.empty3 = true;
+                    this.empty1 = true;
                 } else {
-                    this.empty3 = false;
+                    this.empty1 = false;
                 }
             } else if (this.photos_show === "news" || this.tab === "news") {
                 this.Photos = this.news;

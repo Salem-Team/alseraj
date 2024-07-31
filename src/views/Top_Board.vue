@@ -166,30 +166,70 @@
         <v-container>
             <!-- <ul class="show_details">
                 <li v-show="selectedEducationalLevel">
-                    {{ selectedEducationalLevel }}
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>
+                        {{ selectedEducationalLevel }}
+                    </div>
                 </li>
                 <li v-show="selectedMonth">
-                    {{ selectedMonth }}
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>
+                        {{ selectedMonth }}
+                    </div>
                 </li>
-                <li v-show="selectedClass">فصل {{ selectedClass }}</li>
+                <li v-show="selectedClass">
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>فصل {{ selectedClass }}</div>
+                </li>
+
                 <li v-show="selectedSection">
-                    {{ selectedSection }}
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>
+                        {{ selectedSection }}
+                    </div>
                 </li>
                 <li v-show="selectedGender">
-                    {{ selectedGender }}
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>
+                        {{ selectedGender }}
+                    </div>
                 </li>
             </ul> -->
 
             <ul class="show_details">
                 <li v-show="selectedEducationalLevel">
-                    {{ selectedEducationalLevel }}
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>
+                        {{ selectedEducationalLevel }}
+                    </div>
                 </li>
-                <li v-show="selectedMonth">{{ selectedMonth }}</li>
-                <li v-show="selectedClass">فصل {{ selectedClass }}</li>
-                <li v-show="selectedSection">{{ selectedSection }}</li>
-                <li v-show="selectedGender">{{ selectedGender }}</li>
+                <li v-show="selectedMonth">
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>
+                        {{ selectedMonth }}
+                    </div>
+                </li>
+                <li v-show="selectedClass">
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>
+                        {{ selectedClass }}
+                    </div>
+                </li>
+                <li v-show="selectedSection">
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>
+                        {{ selectedSection }}
+                    </div>
+                </li>
+                <li v-show="selectedGender">
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>
+                        {{ selectedGender }}
+                    </div>
+                </li>
                 <li v-show="shouldShowResults">
-                    نتيجه البحث : {{ filteredStudentsCount }}
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>نتيجه البحث : {{ filteredStudentsCount }}</div>
                 </li>
             </ul>
 
@@ -216,7 +256,8 @@
                                     color="var(--main-color)"
                                 >
                                     <template v-slot:default>
-                                        {{ student.percentage }} %
+                                        {{ student.percentage }}
+                                        %
                                     </template>
                                 </v-progress-circular>
                             </div>
@@ -864,8 +905,10 @@ ul.show_details {
     margin-bottom: 20px;
 
     li {
-        list-style-type: square;
-        list-style-position: inside;
+        list-style-type: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
         background: var(--secound-color);
         padding: 10px;
         border-radius: 5px;

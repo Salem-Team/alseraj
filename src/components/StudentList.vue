@@ -169,8 +169,16 @@
                                 </v-col>
                             </v-row>
                             <v-row style="gap: 0px">
-                                <v-col cols="2">
+                                <v-col
+                                    cols="2"
+                                    v-for="(grade, index) in gradeOptions"
+                                    :key="index"
+                                >
                                     <v-card
+                                        :class="{
+                                            'active-card':
+                                                gradeSortActive === grade,
+                                        }"
                                         style="
                                             display: flex;
                                             justify-content: center;
@@ -185,128 +193,13 @@
                                             {{
                                                 parseFloat(
                                                     percentageTotalDegrees(
-                                                        student
+                                                        student,
+                                                        index
                                                     ).toFixed(1)
                                                 )
                                             }}%
                                         </h3>
-                                        <p>شهر أكتوبر</p>
-                                    </v-card> </v-col
-                                ><v-col cols="2">
-                                    <v-card
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>
-                                            {{
-                                                parseFloat(
-                                                    percentageTotalDegrees2(
-                                                        student
-                                                    ).toFixed(1)
-                                                )
-                                            }}%
-                                        </h3>
-                                        <p>شهر نوفمبر</p>
-                                    </v-card> </v-col
-                                ><v-col cols="2">
-                                    <v-card
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>
-                                            {{
-                                                parseFloat(
-                                                    percentageTotalDegrees3(
-                                                        student
-                                                    ).toFixed(1)
-                                                )
-                                            }}%
-                                        </h3>
-                                        <p>امتحان الترم الاول</p>
-                                    </v-card> </v-col
-                                ><v-col cols="2">
-                                    <v-card
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>
-                                            {{
-                                                parseFloat(
-                                                    percentageTotalDegrees4(
-                                                        student
-                                                    ).toFixed(1)
-                                                )
-                                            }}%
-                                        </h3>
-                                        <p>شهر فبراير</p>
-                                    </v-card> </v-col
-                                ><v-col cols="2">
-                                    <v-card
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>
-                                            {{
-                                                parseFloat(
-                                                    percentageTotalDegrees5(
-                                                        student
-                                                    ).toFixed(1)
-                                                )
-                                            }}%
-                                        </h3>
-                                        <p>شهر مارس</p>
-                                    </v-card>
-                                </v-col>
-                                <v-col cols="2">
-                                    <v-card
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>
-                                            {{
-                                                parseFloat(
-                                                    percentageTotalDegrees6(
-                                                        student
-                                                    ).toFixed(1)
-                                                )
-                                            }}%
-                                        </h3>
-                                        <p>امتحان الترم الثاني</p>
+                                        <p>{{ grade }}</p>
                                     </v-card>
                                 </v-col>
                             </v-row>
@@ -3183,88 +3076,18 @@ export default {
             const maxDegrees = degrees.length * 100;
             return (total / maxDegrees) * 100;
         },
-        totalDegrees(student) {
-            const degrees = student.Results[1].Monthly[0].Degrees; // Assuming the first month is the desired one
+        totalDegrees(student, monthIndex) {
+            const degrees = student.Results[1].Monthly[monthIndex].Degrees;
             let total = 0;
             degrees.forEach((degree) => {
                 total += Number(degree.Student_degree); // Ensuring the degree is a number
             });
             return total;
         },
-        percentageTotalDegrees(student) {
-            const totalDegrees = this.totalDegrees(student);
+        percentageTotalDegrees(student, monthIndex) {
+            const totalDegrees = this.totalDegrees(student, monthIndex);
             const maxDegrees =
-                student.Results[1].Monthly[0].Degrees.length * 100; // Assuming each subject has a max of 100
-            return (totalDegrees / maxDegrees) * 100;
-        },
-        totalDegrees2(student) {
-            const degrees = student.Results[1].Monthly[1].Degrees; // Assuming the first month is the desired one
-            let total = 0;
-            degrees.forEach((degree) => {
-                total += Number(degree.Student_degree); // Ensuring the degree is a number
-            });
-            return total;
-        },
-        percentageTotalDegrees2(student) {
-            const totalDegrees = this.totalDegrees2(student);
-            const maxDegrees =
-                student.Results[1].Monthly[1].Degrees.length * 100; // Assuming each subject has a max of 100
-            return (totalDegrees / maxDegrees) * 100;
-        },
-        totalDegrees3(student) {
-            const degrees = student.Results[1].Monthly[2].Degrees; // Assuming the first month is the desired one
-            let total = 0;
-            degrees.forEach((degree) => {
-                total += Number(degree.Student_degree); // Ensuring the degree is a number
-            });
-            return total;
-        },
-        percentageTotalDegrees3(student) {
-            const totalDegrees = this.totalDegrees3(student);
-            const maxDegrees =
-                student.Results[1].Monthly[2].Degrees.length * 100; // Assuming each subject has a max of 100
-            return (totalDegrees / maxDegrees) * 100;
-        },
-        totalDegrees4(student) {
-            const degrees = student.Results[1].Monthly[3].Degrees; // Assuming the first month is the desired one
-            let total = 0;
-            degrees.forEach((degree) => {
-                total += Number(degree.Student_degree); // Ensuring the degree is a number
-            });
-            return total;
-        },
-        percentageTotalDegrees4(student) {
-            const totalDegrees = this.totalDegrees4(student);
-            const maxDegrees =
-                student.Results[1].Monthly[3].Degrees.length * 100; // Assuming each subject has a max of 100
-            return (totalDegrees / maxDegrees) * 100;
-        },
-        totalDegrees5(student) {
-            const degrees = student.Results[1].Monthly[4].Degrees; // Assuming the first month is the desired one
-            let total = 0;
-            degrees.forEach((degree) => {
-                total += Number(degree.Student_degree); // Ensuring the degree is a number
-            });
-            return total;
-        },
-        percentageTotalDegrees5(student) {
-            const totalDegrees = this.totalDegrees5(student);
-            const maxDegrees =
-                student.Results[1].Monthly[4].Degrees.length * 100; // Assuming each subject has a max of 100
-            return (totalDegrees / maxDegrees) * 100;
-        },
-        totalDegrees6(student) {
-            const degrees = student.Results[1].Monthly[5].Degrees; // Assuming the first month is the desired one
-            let total = 0;
-            degrees.forEach((degree) => {
-                total += Number(degree.Student_degree); // Ensuring the degree is a number
-            });
-            return total;
-        },
-        percentageTotalDegrees6(student) {
-            const totalDegrees = this.totalDegrees6(student);
-            const maxDegrees =
-                student.Results[1].Monthly[5].Degrees.length * 100; // Assuming each subject has a max of 100
+                student.Results[1].Monthly[monthIndex].Degrees.length * 100; // Assuming each subject has a max of 100
             return (totalDegrees / maxDegrees) * 100;
         },
         async updateField(section, index, field, value) {
@@ -3327,6 +3150,8 @@ export default {
                     console.log("Document updated successfully");
                 }
                 // Reset changesMade and original data
+                this.confirmationText = "تم تعديل بيانات الطالب بنجاح";
+                this.showSnackbar = true;
                 this.changesMade = false;
                 this.originalStudentData = {};
             } catch (error) {
@@ -3340,6 +3165,8 @@ export default {
         saveChanges2() {
             this.updateMonthlyDegrees(this.selectedMonthlyDegrees); // Example to update Firebase
             this.changesMade2 = false;
+            this.confirmationText = "تم التعديل بنجاح ";
+            this.showSnackbar = true;
         },
         calculatePaymentProgress(paid_Up, Expenses) {
             if (Expenses === 0) {
@@ -3393,44 +3220,37 @@ export default {
         async submit() {
             if (this.validateForm()) {
                 try {
-                    // التأكد من أن تاريخ الميلاد يتم تخزينه كسلسلة منسقة
                     const formattedBirthday = this.formatDate(
                         new Date(this.form.birthday)
                     );
 
-                    // إضافة الطالب إلى مجموعة "students" باستخدام `student_id` المخصص
-                    await setDoc(doc(db, "students", this.form.student_id), {
-                        student_name: this.form.student_name,
-                        class: this.form.class,
-                        gender: this.form.gender,
-                        section: this.form.section,
-                        birthday: formattedBirthday,
-                        Results: this.form.Results,
-                        payments: this.form.payments,
-                        Notifications: this.form.Notifications,
-                        photos: this.form.photos,
-                        educational_level: this.year,
-                        year: new Date().getFullYear(),
-                        National_id: this.form.parent_national_id, // إضافة National_id هنا
-                        state: true,
-                    });
-
-                    const newStudent = {
-                        id: this.form.student_id,
-                        student_name: this.form.student_name,
-                        class: this.form.class,
-                        gender: this.form.gender,
-                        section: this.form.section,
-                        birthday: formattedBirthday,
-                        Results: this.form.Results,
-                        payments: this.form.payments,
-                        Notifications: this.form.Notifications,
-                        photos: this.form.photos,
-                        year: new Date().getFullYear(),
-                        National_id: this.form.parent_national_id, // إضافة National_id هنا
+                    const studentData = {
+                        student_name: this.form.student_name || "",
+                        class: this.form.class || "",
+                        gender: this.form.gender || "",
+                        section: this.form.section || "",
+                        birthday: formattedBirthday || "",
+                        Results: this.form.Results || [],
+                        payments: this.form.payments || {},
+                        Notifications: this.form.Notifications || [],
+                        photos: this.form.photos || [],
+                        educational_level: this.form.educational_level || "",
+                        year:
+                            this.form.year ||
+                            new Date().getFullYear().toString(),
+                        National_id: this.form.parent_national_id || "",
                         state: true,
                     };
 
+                    await setDoc(
+                        doc(db, "students", this.form.student_id),
+                        studentData
+                    );
+
+                    const newStudent = {
+                        id: this.form.student_id,
+                        ...studentData,
+                    };
                     this.students.push(newStudent);
 
                     // تحقق من وجود مستند "Parents" بالرقم القومي
@@ -3442,37 +3262,91 @@ export default {
                     const parentDoc = await getDoc(parentDocRef);
 
                     if (parentDoc.exists()) {
-                        // إذا كان المستند موجوداً، فقط قم بإضافة اسم الطالب إلى قائمة Child
                         await setDoc(
                             parentDocRef,
                             {
                                 Child: arrayUnion({
                                     student_name: this.form.student_name,
-                                    educational_level: this.year,
+                                    educational_level:
+                                        this.form.educational_level,
                                     class: this.form.class,
                                 }),
                             },
                             { merge: true }
                         );
-
                         console.log(
                             "Updated existing parent document successfully"
                         );
                     } else {
-                        // إذا لم يكن المستند موجوداً، قم بإنشاء مستند جديد
                         await setDoc(parentDocRef, {
                             name: this.form.parent_name,
                             National_id: this.form.parent_national_id,
                             Child: [
                                 {
                                     student_name: this.form.student_name,
-                                    educational_level: this.year,
+                                    educational_level:
+                                        this.form.educational_level,
                                     class: this.form.class,
                                 },
                             ],
                         });
-
                         console.log("Created new parent document successfully");
+                    }
+
+                    // الحصول على مستند `class_rooms` بناءً على قيمة `grade`
+                    const classRoomsRef = collection(db, "class_rooms");
+                    const classRoomsSnapshot = await getDocs(classRoomsRef);
+                    let classRoomDoc = null;
+
+                    classRoomsSnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        if (data.grade === this.form.educational_level) {
+                            classRoomDoc = doc;
+                        }
+                    });
+
+                    if (classRoomDoc) {
+                        const classRoomRef = doc(
+                            db,
+                            "class_rooms",
+                            classRoomDoc.id
+                        );
+                        const classRoomData = classRoomDoc.data();
+                        const totalStudents =
+                            (classRoomData.total_students || 0) + 1;
+
+                        // تحديث عدد الطلاب الذكور والإناث
+                        const studentsGender =
+                            classRoomData.students_gender || {
+                                female: 0,
+                                male: 0,
+                            };
+                        if (this.form.gender === "ذكر") {
+                            studentsGender.male =
+                                (studentsGender.male || 0) + 1;
+                        } else if (this.form.gender === "أنثى") {
+                            studentsGender.female =
+                                (studentsGender.female || 0) + 1;
+                        }
+
+                        await setDoc(
+                            classRoomRef,
+                            {
+                                total_students: totalStudents,
+                                students_gender: studentsGender,
+                            },
+                            { merge: true }
+                        );
+
+                        console.log(
+                            "Class room updated with total students:",
+                            totalStudents
+                        );
+                    } else {
+                        console.error(
+                            "No matching class room found for grade:",
+                            this.form.educational_level
+                        );
                     }
 
                     this.dialog_addstudent = false;
@@ -3481,13 +3355,86 @@ export default {
                     this.dialogStore.hideAddStudentDialog();
                     this.$emit("close-dialog");
                     console.log("Added new student:", newStudent);
-                    // إعداد نص الرسالة وتفعيل Snackbar
+
                     this.confirmationText = "تم إضافة الطالب بنجاح";
                     this.showSnackbar = true;
                     await this.fetchStudents();
                 } catch (error) {
                     console.error("Error adding document:", error);
                 }
+            }
+        },
+
+        async deleteStudent(id) {
+            try {
+                const studentDoc = await getDoc(doc(db, "students", id));
+                const studentData = studentDoc.data();
+                const educationalLevel = studentData.educational_level;
+
+                await deleteDoc(doc(db, "students", id));
+                this.students = this.students.filter(
+                    (student) => student.id !== id
+                );
+
+                // الحصول على مستند `class_rooms` بناءً على قيمة `grade`
+                const classRoomsRef = collection(db, "class_rooms");
+                const classRoomsSnapshot = await getDocs(classRoomsRef);
+                let classRoomDoc = null;
+
+                classRoomsSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.grade === educationalLevel) {
+                        classRoomDoc = doc;
+                    }
+                });
+
+                if (classRoomDoc) {
+                    const classRoomRef = doc(
+                        db,
+                        "class_rooms",
+                        classRoomDoc.id
+                    );
+                    const classRoomData = classRoomDoc.data();
+                    const totalStudents =
+                        (classRoomData.total_students || 0) - 1;
+
+                    // تحديث عدد الطلاب الذكور والإناث
+                    const studentsGender = classRoomData.students_gender || {
+                        male: 0,
+                        female: 0,
+                    };
+                    if (studentData.gender === "ذكر") {
+                        studentsGender.male = (studentsGender.male || 0) - 1;
+                    } else if (studentData.gender === "أنثى") {
+                        studentsGender.female =
+                            (studentsGender.female || 0) - 1;
+                    }
+
+                    await setDoc(
+                        classRoomRef,
+                        {
+                            total_students: totalStudents,
+                            students_gender: studentsGender,
+                        },
+                        { merge: true }
+                    );
+
+                    console.log(
+                        "Class room updated with total students:",
+                        totalStudents
+                    );
+                } else {
+                    console.error(
+                        "No matching class room found for grade:",
+                        educationalLevel
+                    );
+                }
+
+                this.confirmationText = "تم مسح الطالب بنجاح";
+                this.showSnackbar = true;
+                console.log("Deleted student with id:", id);
+            } catch (error) {
+                console.error("Error deleting document:", error);
             }
         },
         formatDate(date) {
@@ -3523,20 +3470,7 @@ export default {
                 this.closeDeleteDialog();
             }
         },
-        async deleteStudent(id) {
-            try {
-                await deleteDoc(doc(db, "students", id));
-                this.students = this.students.filter(
-                    (student) => student.id !== id
-                );
-                // إعداد نص الرسالة وتفعيل Snackbar
-                this.confirmationText = "تم مسح الطالب بنجاح";
-                this.showSnackbar = true;
-                console.log("Deleted student with id:", id);
-            } catch (error) {
-                console.error("Error deleting document:", error);
-            }
-        },
+
         handleReset() {
             this.form = {
                 educational_level: this.year,
@@ -3906,7 +3840,7 @@ export default {
         // 44444444444444444444444444444444444444444
         async loadParentDetails(National_id) {
             if (!National_id) {
-                console.error("No National_id provided");
+                // console.error("No National_id provided");
                 return;
             }
 
@@ -4539,7 +4473,8 @@ export default {
                     "payments.paid_Up": student.payments.paid_Up ?? 0,
                     "payments.Residual": this.getResidual(student.id),
                 };
-
+                this.confirmationText = "تم التعديل بنجاح ";
+                this.showSnackbar = true;
                 updateDoc(studentRef, updateData)
                     .then(() => {
                         console.log("Document successfully updated!");
@@ -4679,7 +4614,6 @@ export default {
             this.value += 10;
         }, 100);
 
-        console.log(this.progress);
         this.students = this.$parent.students_class;
         // مثال لاستدعاء الدالة
         this.loadParentDetails(this.form.parent_national_id);
@@ -5458,7 +5392,10 @@ th {
 .animated-icon {
     transition: transform 0.3s ease-in-out;
 }
-
+.active-card {
+    background-color: rgb(12, 55, 100) !important;
+    color: #fff !important;
+}
 .animated-icon:hover {
     transform: scale(1.2); /* تكبير الأيقونة عند التمرير فوقها */
 }

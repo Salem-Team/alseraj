@@ -169,28 +169,47 @@
                                         >
                                     </v-card>
                                 </v-row>
-                                <v-row
-                                    style="
-                                        display: flex;
-                                        justify-content: space-around;
-                                        align-items: center;
-                                    "
-                                >
-                                    <v-card
-                                        style="
-                                            background-color: var(
-                                                --secound-color
-                                            ) !important;
-                                        "
-                                        class="card text-center mt-3"
-                                        prepend-icon="mdi-newspaper-variant-multiple-outline"
-                                        width="30%"
-                                        @click="openDialog2"
-                                    >
-                                        <v-card-title
-                                            >إضافة الخطه الاسبوعيه</v-card-title
+                                <v-row>
+                                    <v-col clos="4"
+                                        ><v-card
+                                            style="
+                                                background-color: var(
+                                                    --secound-color
+                                                ) !important;
+                                            "
+                                            class="card text-center mt-3"
+                                            prepend-icon="mdi-newspaper-variant-multiple-outline"
+                                            width="100%"
+                                            @click="openDialog2"
                                         >
-                                    </v-card>
+                                            <v-card-title
+                                                >إضافة الخطه
+                                                الاسبوعيه</v-card-title
+                                            >
+                                        </v-card></v-col
+                                    >
+                                    <v-col cols="4">
+                                        <v-card
+                                            style="
+                                                background-color: var(
+                                                    --secound-color
+                                                ) !important;
+                                            "
+                                            class="card text-center mt-3"
+                                            prepend-icon="mdi-newspaper-variant-multiple-outline"
+                                            width="100%"
+                                            @click="openDialogq"
+                                        >
+                                            <v-card-title
+                                                >إضافة محتوي
+                                                تعليمي</v-card-title
+                                            >
+                                        </v-card>
+                                    </v-col>
+                                    <EducationalContentDialog
+                                        :year="year"
+                                        v-model="dialogq"
+                                    />
                                 </v-row>
                                 <weeklyPlan
                                     v-model="showDialog2"
@@ -700,13 +719,13 @@
                         نوع الفلتر :
                         {{ paymentSortActive ? "حسب المدفوعات" : "" }}
                     </h3>
-                    <h3
+                    <!-- <h3
                         v-if="filtersy.byGrades"
                         style="color: rgba(33, 150, 243, 0.768627451)"
                     >
                         نوع الفلتر :
                         {{ filtersy.byGrades ? filtersy.byGrades : "" }}
-                    </h3>
+                    </h3> -->
                 </v-col>
             </v-row>
             <v-row>
@@ -815,12 +834,20 @@
 </template>
 
 <script>
+import EducationalContentDialog from "@/components/EducationalContentDialog.vue";
 import StudentList from "@/components/StudentList.vue";
 import Empty_error from "@/components/Empty_error.vue";
 import { useDialogStore } from "@/store/useDialogStore";
 import { reactive } from "vue";
 import { mapActions } from "pinia";
 import { usenotification } from "../store/notification.js";
+import "vue-toastification/dist/index.css"; // Import the CSS file
+import confirm_message2 from "@/components/confirm_message2.vue";
+// import { decodeURIComponent } from "vue-router";
+import addSubject from "@/components/subject/addSubject.vue";
+// import addStudySchedule from "@/components/add_study_schedule.vue";
+import AddStudySchedule from "@/components/add_study_schedule.vue";
+import weeklyPlan from "@/components/weeklyPlan.vue";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
     collection,
@@ -836,13 +863,7 @@ import {
 } from "firebase/firestore";
 import { initializeApp } from "@firebase/app";
 import { getStorage } from "firebase/storage";
-import "vue-toastification/dist/index.css"; // Import the CSS file
-import confirm_message2 from "@/components/confirm_message2.vue";
-// import { decodeURIComponent } from "vue-router";
-import addSubject from "@/components/subject/addSubject.vue";
-// import addStudySchedule from "@/components/add_study_schedule.vue";
-import AddStudySchedule from "@/components/add_study_schedule.vue";
-import weeklyPlan from "@/components/weeklyPlan.vue";
+
 const firebaseConfig = {
     apiKey: "AIzaSyBdk3sqIHjXvB2C-O-lvkRgMFpg8pemkno",
     authDomain: "alseraj--almoner.firebaseapp.com",
@@ -851,11 +872,9 @@ const firebaseConfig = {
     messagingSenderId: "462211256149",
     appId: "1:462211256149:web:a03ace3c70b306620169dc",
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
-
 export { db, storage };
 export default {
     name: "ClassPage",
@@ -866,6 +885,7 @@ export default {
         weeklyPlan,
         confirm_message2,
         Empty_error,
+        EducationalContentDialog,
     },
     props: ["year"],
     setup() {
@@ -873,10 +893,14 @@ export default {
         const showAddStudentDialog = () => {
             dialogStore.showAddStudentDialog();
         };
+
         const showSearchStudentDialog = () => {
             dialogStore.showSearchStudentDialog();
         };
-        return { showAddStudentDialog, showSearchStudentDialog };
+        return {
+            showAddStudentDialog,
+            showSearchStudentDialog,
+        };
     },
     data() {
         return {
@@ -889,6 +913,7 @@ export default {
             showDialog: false,
             showDialog2: false,
             isSortedAscending: true,
+            dialogq: false,
             showSnackbar: false,
             StudySchedule: {
                 // البيانات التي ترغب في تمريرها إلى المكون
@@ -997,6 +1022,13 @@ export default {
         },
     },
     methods: {
+        openDialogq() {
+            this.dialogq = true;
+        },
+        ...mapActions(usenotification, [
+            "send_Notification",
+            "get_notifications",
+        ]),
         ...mapActions(usenotification, ["send_Notification"]),
         updateSection(section) {
             this.activeButton = section;

@@ -159,18 +159,12 @@
                                         alt=""
                                         width="30px"
                                 /></v-tab>
-                                <!-- <v-tab value="five1">
-                                    <img
-                                        src="../assets/student/photo.svg"
-                                        alt=""
-                                        width="30px"
-                                /></v-tab>
                                 <v-tab value="se11">
                                     <img
                                         src="../assets/student/planning2.svg"
                                         alt=""
                                         width="30px"
-                                /></v-tab> -->
+                                /></v-tab>
 
                                 <v-tab value="seven1">
                                     <img
@@ -759,59 +753,197 @@
                                             </v-card>
                                         </v-tabs-window-item>
                                         <!-- 5555555555555555 -->
-                                        <v-tabs-window-item
-                                            value="five1"
-                                            style="border: none"
-                                        >
-                                            <v-card flat style="border: none">
-                                                <div class="title">
-                                                    صور الطالب
-                                                </div>
-                                                <v-row
-                                                    style="flex-wrap: nowrap"
-                                                >
-                                                    <v-col
-                                                        v-for="(
-                                                            photo, index
-                                                        ) in student.photos"
-                                                        :key="index"
-                                                        cols="12"
-                                                        md="4"
-                                                    >
-                                                        <v-card>
-                                                            <v-img
-                                                                :src="
-                                                                    photo.linkphoto
-                                                                "
-                                                                :alt="`Photo taken on ${photo.DatePhoto}`"
-                                                            ></v-img>
-                                                            <v-card-subtitle
-                                                                class="ma-2"
-                                                                >{{
-                                                                    photo.DatePhoto
-                                                                }}</v-card-subtitle
-                                                            >
-                                                        </v-card>
-                                                    </v-col>
-                                                </v-row>
-                                            </v-card>
-                                        </v-tabs-window-item>
-                                        <!-- <v-tabs-window-item value="seven1">
-                                            <v-card flat v-if="student.state">
+                                        <v-tabs-window-item value="seven1">
+                                            <v-card flat>
                                                 <div
                                                     class="title"
                                                     style="margin-bottom: 20px"
                                                 >
-                                                    ألاخصائيات
+                                                    الاختبارات
                                                 </div>
-                                                <p>dsadsadsad</p>
+                                                <div v-if="loading">
+                                                    تحميل...
+                                                </div>
+                                                <div v-else>
+                                                    <div
+                                                        v-for="(
+                                                            exam, index
+                                                        ) in exams"
+                                                        :key="index"
+                                                    >
+                                                        <v-card
+                                                            class="ma-2"
+                                                            outlined
+                                                        >
+                                                            <v-card-title>
+                                                                اختبار بتاريخ
+                                                                {{
+                                                                    exam.Date_Testing
+                                                                }}
+                                                                في الساعة
+                                                                {{
+                                                                    exam.Time_Testing
+                                                                }}
+                                                            </v-card-title>
+                                                            <v-card-subtitle>
+                                                                تفاصيل الأسئلة
+                                                            </v-card-subtitle>
+                                                            <v-card-text>
+                                                                <v-list>
+                                                                    <v-list-item-group
+                                                                        v-for="(
+                                                                            question,
+                                                                            qIndex
+                                                                        ) in exam.questions"
+                                                                        :key="
+                                                                            qIndex
+                                                                        "
+                                                                    >
+                                                                        <v-list-item>
+                                                                            <v-list-item-content>
+                                                                                <v-list-item-title
+                                                                                    >{{
+                                                                                        question.title
+                                                                                    }}</v-list-item-title
+                                                                                >
+                                                                                <v-list-item-subtitle
+                                                                                    >{{
+                                                                                        question.question
+                                                                                    }}</v-list-item-subtitle
+                                                                                >
+                                                                                <v-list-item-subtitle
+                                                                                    >الإجابة
+                                                                                    الصحيحة:
+                                                                                    {{
+                                                                                        question.correctAnswer
+                                                                                    }}</v-list-item-subtitle
+                                                                                >
+                                                                                <v-list-item-subtitle
+                                                                                    >الإجابة
+                                                                                    الخاطئة
+                                                                                    1:
+                                                                                    {{
+                                                                                        question.wrongAnswer1
+                                                                                    }}</v-list-item-subtitle
+                                                                                >
+                                                                                <v-list-item-subtitle
+                                                                                    >الإجابة
+                                                                                    الخاطئة
+                                                                                    2:
+                                                                                    {{
+                                                                                        question.wrongAnswer2
+                                                                                    }}</v-list-item-subtitle
+                                                                                >
+                                                                            </v-list-item-content>
+                                                                        </v-list-item>
+                                                                    </v-list-item-group>
+                                                                </v-list>
+                                                            </v-card-text>
+                                                        </v-card>
+                                                    </div>
+                                                </div>
                                             </v-card>
                                         </v-tabs-window-item>
                                         <v-tabs-window-item value="se11">
                                             <v-card flat v-if="student">
-                                                الخطط الاسبوعيه
+                                                <div
+                                                    class="title"
+                                                    style="margin-bottom: 20px"
+                                                >
+                                                    الخطط الأسبوعية
+                                                </div>
+                                                <div v-if="loading">
+                                                    تحميل...
+                                                </div>
+                                                <div v-else>
+                                                    <div
+                                                        v-if="
+                                                            studySchedules.length ===
+                                                            0
+                                                        "
+                                                    >
+                                                        لا توجد خطط أسبوعية
+                                                        متاحة.
+                                                    </div>
+                                                    <div
+                                                        v-for="(
+                                                            scheduleItem, index
+                                                        ) in studySchedules"
+                                                        :key="index"
+                                                    >
+                                                        <v-card
+                                                            class="ma-2"
+                                                            outlined
+                                                        >
+                                                            <v-card-title
+                                                                >جدول
+                                                                الأسبوع</v-card-title
+                                                            >
+                                                            <v-card-subtitle
+                                                                >التفاصيل</v-card-subtitle
+                                                            >
+                                                            <v-card-text>
+                                                                <div
+                                                                    v-for="(
+                                                                        schedule,
+                                                                        scheduleIndex
+                                                                    ) in scheduleItem.schedule"
+                                                                    :key="
+                                                                        scheduleIndex
+                                                                    "
+                                                                >
+                                                                    <v-card
+                                                                        class="mb-4"
+                                                                        outlined
+                                                                    >
+                                                                        <v-card-title
+                                                                            >{{
+                                                                                schedule.Subject_Name
+                                                                            }}</v-card-title
+                                                                        >
+                                                                        <v-card-subtitle
+                                                                            >اليوم:
+                                                                            {{
+                                                                                schedule.Subject_Name
+                                                                            }}</v-card-subtitle
+                                                                        >
+                                                                        <v-card-text>
+                                                                            <div>
+                                                                                <strong
+                                                                                    >مدرس
+                                                                                    المادة:</strong
+                                                                                >
+                                                                                {{
+                                                                                    schedule.Major_degree
+                                                                                }}
+                                                                            </div>
+                                                                            <div>
+                                                                                <strong
+                                                                                    >من
+                                                                                    الساعة:</strong
+                                                                                >
+                                                                                {{
+                                                                                    schedule.Minor_degree
+                                                                                }}
+                                                                            </div>
+                                                                            <div>
+                                                                                <strong
+                                                                                    >إلى
+                                                                                    الساعة:</strong
+                                                                                >
+                                                                                {{
+                                                                                    schedule.Student_degree
+                                                                                }}
+                                                                            </div>
+                                                                        </v-card-text>
+                                                                    </v-card>
+                                                                </div>
+                                                            </v-card-text>
+                                                        </v-card>
+                                                    </div>
+                                                </div>
                                             </v-card>
-                                        </v-tabs-window-item> -->
+                                        </v-tabs-window-item>
                                     </v-tabs-window>
                                 </v-card-text>
                             </v-card>
@@ -825,7 +957,14 @@
 
 <script>
 import { db } from "@/Firebase.js";
-import { doc, getDoc, getDocs } from "firebase/firestore";
+import {
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    collection,
+    where,
+} from "firebase/firestore";
 import Chart from "chart.js/auto";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -836,6 +975,8 @@ import { usenotification } from "../store/notification.js";
 export default {
     data() {
         return {
+            exams: [],
+            studySchedules: [],
             photos: [],
             loading1: false,
             isAuthenticated: false,
@@ -931,6 +1072,34 @@ export default {
                 // جلب بيانات الإشعارات من حقل Notifications
                 this.notifications = studentData.Notifications || [];
                 this.photos = studentData.photos || [];
+                this.exams = studentData.exams || [];
+
+                console.log("Exams Data:", this.exams); // تحقق من بيانات الامتحانات
+
+                // جلب بيانات الجدول الدراسي بناءً على بيانات الطالب
+                const studyScheduleQuery = query(
+                    collection(db, "studySchedule"),
+                    where("class", "==", studentData.class),
+                    where(
+                        "educational_level",
+                        "==",
+                        studentData.educational_level
+                    ),
+                    where("section", "==", studentData.section)
+                );
+
+                const scheduleSnapshot = await getDocs(studyScheduleQuery);
+                if (!scheduleSnapshot.empty) {
+                    this.studySchedules = scheduleSnapshot.docs.map((doc) =>
+                        doc.data()
+                    );
+                    console.log("Study Schedules Data:", this.studySchedules); // تحقق من بيانات الجدول الدراسي
+                } else {
+                    console.error(
+                        "No study schedules found for the given class, level, and section."
+                    );
+                    this.studySchedules = [];
+                }
             } else {
                 console.error("No document found for the given ID");
                 this.isAuthenticated = false;
@@ -939,7 +1108,7 @@ export default {
             console.error("Error fetching data:", error);
             this.isAuthenticated = false;
         } finally {
-            this.loading1 = false; // إنهاء حالة التحميل
+            this.loading = false; // إنهاء حالة التحميل
         }
     },
     beforeUnmount() {

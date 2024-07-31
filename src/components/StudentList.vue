@@ -3270,6 +3270,7 @@ export default {
                                     educational_level:
                                         this.form.educational_level,
                                     class: this.form.class,
+                                    natioal_id: this.form.student_id,
                                 }),
                             },
                             { merge: true }
@@ -3287,6 +3288,7 @@ export default {
                                     educational_level:
                                         this.form.educational_level,
                                     class: this.form.class,
+                                    natioal_id: this.form.student_id,
                                 },
                             ],
                         });

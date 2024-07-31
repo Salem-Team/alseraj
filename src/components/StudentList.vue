@@ -1362,6 +1362,12 @@
                                         </div>
                                         <div v-if="e1 === 5" ref="slide5">
                                             <div
+                                                v-if="
+                                                    user.roles.includes(
+                                                        'الاطلاع على الحسابات'
+                                                    ) ||
+                                                    user.roles.includes('الكل')
+                                                "
                                                 style="
                                                     display: flex;
                                                     justify-content: space-between;
@@ -2537,6 +2543,8 @@ import Chart from "chart.js/auto";
 import { mapActions } from "pinia";
 import { usenotification } from "../store/notification.js";
 import { useDialogStore } from "@/store/useDialogStore";
+import { mapState } from "pinia";
+import { useAuthStore } from "../store/userStore";
 export default {
     name: "StudentList",
     components: {
@@ -3023,7 +3031,6 @@ export default {
     async created() {
         await this.fetchStudents();
         this.years = new Date().getFullYear();
-        this.get_notifications("student_notification");
     },
     methods: {
         async loadStudents() {
@@ -3056,10 +3063,7 @@ export default {
         icon(student) {
             return student.state ? "mdi-eye-off" : "mdi-eye";
         },
-        ...mapActions(usenotification, [
-            "send_Notification",
-            "get_notifications",
-        ]),
+        ...mapActions(usenotification, ["send_Notification"]),
         getMonthlyDegrees(student, month) {
             const monthIndex = this.gradeOptions.indexOf(month);
             if (monthIndex === -1) return 0;
@@ -3216,44 +3220,37 @@ export default {
         async submit() {
             if (this.validateForm()) {
                 try {
-                    // التأكد من أن تاريخ الميلاد يتم تخزينه كسلسلة منسقة
                     const formattedBirthday = this.formatDate(
                         new Date(this.form.birthday)
                     );
 
-                    // إضافة الطالب إلى مجموعة "students" باستخدام `student_id` المخصص
-                    await setDoc(doc(db, "students", this.form.student_id), {
-                        student_name: this.form.student_name,
-                        class: this.form.class,
-                        gender: this.form.gender,
-                        section: this.form.section,
-                        birthday: formattedBirthday,
-                        Results: this.form.Results,
-                        payments: this.form.payments,
-                        Notifications: this.form.Notifications,
-                        photos: this.form.photos,
-                        educational_level: this.year,
-                        year: new Date().getFullYear(),
-                        National_id: this.form.parent_national_id, // إضافة National_id هنا
-                        state: true,
-                    });
-
-                    const newStudent = {
-                        id: this.form.student_id,
-                        student_name: this.form.student_name,
-                        class: this.form.class,
-                        gender: this.form.gender,
-                        section: this.form.section,
-                        birthday: formattedBirthday,
-                        Results: this.form.Results,
-                        payments: this.form.payments,
-                        Notifications: this.form.Notifications,
-                        photos: this.form.photos,
-                        year: new Date().getFullYear(),
-                        National_id: this.form.parent_national_id, // إضافة National_id هنا
+                    const studentData = {
+                        student_name: this.form.student_name || "",
+                        class: this.form.class || "",
+                        gender: this.form.gender || "",
+                        section: this.form.section || "",
+                        birthday: formattedBirthday || "",
+                        Results: this.form.Results || [],
+                        payments: this.form.payments || {},
+                        Notifications: this.form.Notifications || [],
+                        photos: this.form.photos || [],
+                        educational_level: this.form.educational_level || "",
+                        year:
+                            this.form.year ||
+                            new Date().getFullYear().toString(),
+                        National_id: this.form.parent_national_id || "",
                         state: true,
                     };
 
+                    await setDoc(
+                        doc(db, "students", this.form.student_id),
+                        studentData
+                    );
+
+                    const newStudent = {
+                        id: this.form.student_id,
+                        ...studentData,
+                    };
                     this.students.push(newStudent);
 
                     // تحقق من وجود مستند "Parents" بالرقم القومي
@@ -3265,37 +3262,91 @@ export default {
                     const parentDoc = await getDoc(parentDocRef);
 
                     if (parentDoc.exists()) {
-                        // إذا كان المستند موجوداً، فقط قم بإضافة اسم الطالب إلى قائمة Child
                         await setDoc(
                             parentDocRef,
                             {
                                 Child: arrayUnion({
                                     student_name: this.form.student_name,
-                                    educational_level: this.year,
+                                    educational_level:
+                                        this.form.educational_level,
                                     class: this.form.class,
                                 }),
                             },
                             { merge: true }
                         );
-
                         console.log(
                             "Updated existing parent document successfully"
                         );
                     } else {
-                        // إذا لم يكن المستند موجوداً، قم بإنشاء مستند جديد
                         await setDoc(parentDocRef, {
                             name: this.form.parent_name,
                             National_id: this.form.parent_national_id,
                             Child: [
                                 {
                                     student_name: this.form.student_name,
-                                    educational_level: this.year,
+                                    educational_level:
+                                        this.form.educational_level,
                                     class: this.form.class,
                                 },
                             ],
                         });
-
                         console.log("Created new parent document successfully");
+                    }
+
+                    // الحصول على مستند `class_rooms` بناءً على قيمة `grade`
+                    const classRoomsRef = collection(db, "class_rooms");
+                    const classRoomsSnapshot = await getDocs(classRoomsRef);
+                    let classRoomDoc = null;
+
+                    classRoomsSnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        if (data.grade === this.form.educational_level) {
+                            classRoomDoc = doc;
+                        }
+                    });
+
+                    if (classRoomDoc) {
+                        const classRoomRef = doc(
+                            db,
+                            "class_rooms",
+                            classRoomDoc.id
+                        );
+                        const classRoomData = classRoomDoc.data();
+                        const totalStudents =
+                            (classRoomData.total_students || 0) + 1;
+
+                        // تحديث عدد الطلاب الذكور والإناث
+                        const studentsGender =
+                            classRoomData.students_gender || {
+                                female: 0,
+                                male: 0,
+                            };
+                        if (this.form.gender === "ذكر") {
+                            studentsGender.male =
+                                (studentsGender.male || 0) + 1;
+                        } else if (this.form.gender === "أنثى") {
+                            studentsGender.female =
+                                (studentsGender.female || 0) + 1;
+                        }
+
+                        await setDoc(
+                            classRoomRef,
+                            {
+                                total_students: totalStudents,
+                                students_gender: studentsGender,
+                            },
+                            { merge: true }
+                        );
+
+                        console.log(
+                            "Class room updated with total students:",
+                            totalStudents
+                        );
+                    } else {
+                        console.error(
+                            "No matching class room found for grade:",
+                            this.form.educational_level
+                        );
                     }
 
                     this.dialog_addstudent = false;
@@ -3304,13 +3355,86 @@ export default {
                     this.dialogStore.hideAddStudentDialog();
                     this.$emit("close-dialog");
                     console.log("Added new student:", newStudent);
-                    // إعداد نص الرسالة وتفعيل Snackbar
+
                     this.confirmationText = "تم إضافة الطالب بنجاح";
                     this.showSnackbar = true;
                     await this.fetchStudents();
                 } catch (error) {
                     console.error("Error adding document:", error);
                 }
+            }
+        },
+
+        async deleteStudent(id) {
+            try {
+                const studentDoc = await getDoc(doc(db, "students", id));
+                const studentData = studentDoc.data();
+                const educationalLevel = studentData.educational_level;
+
+                await deleteDoc(doc(db, "students", id));
+                this.students = this.students.filter(
+                    (student) => student.id !== id
+                );
+
+                // الحصول على مستند `class_rooms` بناءً على قيمة `grade`
+                const classRoomsRef = collection(db, "class_rooms");
+                const classRoomsSnapshot = await getDocs(classRoomsRef);
+                let classRoomDoc = null;
+
+                classRoomsSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.grade === educationalLevel) {
+                        classRoomDoc = doc;
+                    }
+                });
+
+                if (classRoomDoc) {
+                    const classRoomRef = doc(
+                        db,
+                        "class_rooms",
+                        classRoomDoc.id
+                    );
+                    const classRoomData = classRoomDoc.data();
+                    const totalStudents =
+                        (classRoomData.total_students || 0) - 1;
+
+                    // تحديث عدد الطلاب الذكور والإناث
+                    const studentsGender = classRoomData.students_gender || {
+                        male: 0,
+                        female: 0,
+                    };
+                    if (studentData.gender === "ذكر") {
+                        studentsGender.male = (studentsGender.male || 0) - 1;
+                    } else if (studentData.gender === "أنثى") {
+                        studentsGender.female =
+                            (studentsGender.female || 0) - 1;
+                    }
+
+                    await setDoc(
+                        classRoomRef,
+                        {
+                            total_students: totalStudents,
+                            students_gender: studentsGender,
+                        },
+                        { merge: true }
+                    );
+
+                    console.log(
+                        "Class room updated with total students:",
+                        totalStudents
+                    );
+                } else {
+                    console.error(
+                        "No matching class room found for grade:",
+                        educationalLevel
+                    );
+                }
+
+                this.confirmationText = "تم مسح الطالب بنجاح";
+                this.showSnackbar = true;
+                console.log("Deleted student with id:", id);
+            } catch (error) {
+                console.error("Error deleting document:", error);
             }
         },
         formatDate(date) {
@@ -3346,20 +3470,7 @@ export default {
                 this.closeDeleteDialog();
             }
         },
-        async deleteStudent(id) {
-            try {
-                await deleteDoc(doc(db, "students", id));
-                this.students = this.students.filter(
-                    (student) => student.id !== id
-                );
-                // إعداد نص الرسالة وتفعيل Snackbar
-                this.confirmationText = "تم مسح الطالب بنجاح";
-                this.showSnackbar = true;
-                console.log("Deleted student with id:", id);
-            } catch (error) {
-                console.error("Error deleting document:", error);
-            }
-        },
+
         handleReset() {
             this.form = {
                 educational_level: this.year,
@@ -4428,6 +4539,7 @@ export default {
         },
     },
     computed: {
+        ...mapState(useAuthStore, ["user"]),
         // icon() {
         //     return this.isPressed ? "mdi-eye-off" : "mdi-eye";
         // },

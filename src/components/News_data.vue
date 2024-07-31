@@ -18,14 +18,18 @@
                 class="feat"
                 v-for="New in News"
                 :key="New.id"
-                width="100%"
-                max-width="25%"
+                width="24%"
                 @click.="news.New_Information(New)"
                 @click="dialog_6 = true"
             >
-                <!-- Image -->
-                <v-img :src="New.image" height="300" cover></v-img>
-
+                <v-lazy
+                    :min-height="400"
+                    :options="{ threshold: 0.5 }"
+                    transition="fade-transition"
+                >
+                    <!-- Image -->
+                    <v-img :src="New.image" height="300" cover></v-img>
+                </v-lazy>
                 <!-- Title -->
                 <v-card-text
                     class="card_title d-flex justify-center flex-wrap"
@@ -303,6 +307,20 @@ export default defineComponent({
     box-shadow: none;
     &:hover {
         background: #fff;
+    }
+}
+@media (max-width: 700px) {
+    .box {
+        flex-direction: column !important;
+    }
+    .feat {
+        width: 100% !important;
+    }
+}
+
+@media (min-width: 700px) and (max-width: 950px) {
+    .feat {
+        width: 47% !important;
     }
 }
 </style>

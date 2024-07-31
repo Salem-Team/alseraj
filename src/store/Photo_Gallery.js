@@ -10,17 +10,9 @@ import {
     query,
     Timestamp,
 } from "@firebase/firestore";
-import { useSecureDataStore } from "./secureData";
 import { initializeApp } from "@firebase/app";
 import { getFirestore } from "firebase/firestore";
-import {
-    getStorage,
-    ref,
-    deleteObject,
-    ref as storageRef,
-    uploadBytes,
-    getDownloadURL,
-} from "firebase/storage";
+import { getStorage, ref, deleteObject } from "firebase/storage";
 
 const firebaseConfig = {
     // Firebase configuration object
@@ -35,8 +27,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app);
 import { usenotification } from "../store/notification.js";
+import axios from "axios";
 // Define Pinia store for managing photo gallery
 export const usePhoto_Gallery = defineStore("Photo_Gallery", {
     state: () => ({
@@ -46,7 +38,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         dialog_6: false,
         photos_show: "",
         File_Name: "",
-        type: "trip",
+        type: "رحلات",
         types: "صورة",
         Photos: [],
         All_photos: [],
@@ -60,7 +52,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         progress: 0,
         Photo_Information: "",
         Id_Information: "",
-        Types: ["trip", "party", "news"],
+        Types: ["رحلات", "حفلات", "أخبار"],
         Photo: {
             File_type: "",
             image: null,
@@ -86,40 +78,53 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         ...mapActions(usenotification, ["send_Notification"]),
         // Action method to handle setting File_Name based on type
         handletypes() {
-            if (this.type === "trip") {
+            if (this.type === "رحلات") {
                 this.File_Name = "trip/";
-            } else if (this.type === "party") {
+            } else if (this.type === "حفلات") {
                 this.File_Name = "party/";
-            } else if (this.type === "news") {
+            } else if (this.type === "أخبار") {
                 this.File_Name = "news/";
             }
         },
 
         // Action method to upload an image to Firebase Storage
         async upload_Image(file) {
-            this.random = Math.random();
-            // Create a storage reference with the file name including type and random number
-            const storageReference = storageRef(
-                storage,
-                this.File_Name + this.random + file.name
-            );
-            // Upload the file bytes to the storage reference and get a snapshot of the upload
-            const snapshot = await uploadBytes(storageReference, file);
-            // Calculate the progress percentage
-            this.progress =
-                parseInt(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            // Log a message indicating the upload is complete, along with the snapshot details
-            console.log("Uploaded a blob or file!", snapshot);
+            if (!file) {
+                console.error("No file selected");
+                return;
+            }
+            console.log("start");
+            // Create a FormData object to hold the file data
+            const formData = new FormData();
+            formData.append("file", file); // Append the file with the key 'file'
 
-            // Return a promise that resolves with the download URL of the uploaded file
-            return getDownloadURL(snapshot.ref);
+            try {
+                console.log("wait");
+
+                const response = await axios.post(
+                    "http://localhost:3000/upload",
+                    formData,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+                console.log(
+                    "File uploaded successfully:",
+                    response.data.message
+                );
+                return response.data.message;
+            } catch (error) {
+                console.error("Error uploading file:", error);
+            }
+            console.log("end");
         },
 
         // Action method to add a photo to Firestore
         async Add_Photos() {
             try {
                 this.loading = true;
-                const secrureDataStore = useSecureDataStore();
                 if (this.Photo.image) {
                     // Step 1: Upload the image and get the download URL
                     const imageUrl = await this.upload_Image(this.Photo.image);
@@ -130,12 +135,9 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                     const docRef = await addDoc(collection(db, "Photos"), {
                         time: currentTime,
 
-                        image: secrureDataStore.encryptData(imageUrl, "12343a"),
-                        type: secrureDataStore.encryptData(this.type, "12343a"),
-                        File_type: secrureDataStore.encryptData(
-                            this.types,
-                            "12343a"
-                        ),
+                        image: imageUrl,
+                        type: this.type,
+                        File_type: this.types,
                     });
 
                     // Step 3: Update the newly added document with its own ID
@@ -348,6 +350,11 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                 }
             } else {
                 this.Photos = this.all;
+                if (this.Photos.length === 0) {
+                    this.empty = true;
+                } else {
+                    this.empty = false;
+                }
             }
         },
         // Action method to categorize photos into respective arrays based on type
@@ -357,11 +364,11 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
             this.news = [];
             this.Photos.forEach((Photo) => {
                 this.all.push(Photo);
-                if (Photo.type === "trip") {
+                if (Photo.type === "رحلات") {
                     this.trip.push(Photo);
-                } else if (Photo.type === "party") {
+                } else if (Photo.type === "حفلات") {
                     this.party.push(Photo);
-                } else if (Photo.type === "news") {
+                } else if (Photo.type === "أخبار") {
                     this.news.push(Photo);
                 }
             });

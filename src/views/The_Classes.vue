@@ -32,7 +32,12 @@
                 v-for="classroom in class_rooms"
                 :key="classroom.id"
             >
-                <div v-if="user.roles.includes(classroom.grade)">
+                <div
+                    v-if="
+                        user.roles.includes(classroom.grade) ||
+                        user.roles.includes('الكل')
+                    "
+                >
                     <div class="feat2">
                         <div class="title">
                             <div>{{ classroom.grade }}</div>
@@ -59,8 +64,7 @@
                                         <div>الطلاب</div>
                                         <div>
                                             <span>{{
-                                                classroom.students
-                                                    .total_students
+                                                classroom.total_students
                                             }}</span>
                                             طالب
                                         </div>
@@ -69,7 +73,7 @@
                                         <div>ذكر</div>
                                         <div>
                                             <span>{{
-                                                classroom.students.male
+                                                classroom.students_gender.male
                                             }}</span>
                                             طالب
                                         </div>
@@ -78,7 +82,7 @@
                                         <div>أنثى</div>
                                         <div>
                                             <span>{{
-                                                classroom.students.female
+                                                classroom.students_gender.female
                                             }}</span>
                                             طالبة
                                         </div>
@@ -88,7 +92,9 @@
                             <div
                                 class="box"
                                 v-if="
-                                    user.roles.includes('الاطلاع على الحسابات')
+                                    user.roles.includes(
+                                        'الاطلاع على الحسابات'
+                                    ) || user.roles.includes('الكل')
                                 "
                             >
                                 <div>
@@ -164,6 +170,18 @@ export default {
     computed: {
         ...mapState(useAuthStore, ["user"]),
     },
+    mounted() {
+        this.spliceRoles();
+    },
+    methods: {
+        spliceRoles() {
+            // Remove "مشرف" from each role
+            let splicedRoles = this.user.roles.map((role) =>
+                role.replace("مشرف ", "")
+            );
+            this.user.roles = splicedRoles;
+        },
+    },
     setup() {
         const route = useRoute();
         const router = useRouter(); // استخدام useRouter هنا
@@ -199,8 +217,8 @@ export default {
                 nextTick(() => {
                     class_rooms.value.forEach((classroom) => {
                         createChart("myChart_" + classroom.id, [
-                            classroom.students.male,
-                            classroom.students.female,
+                            classroom.male,
+                            classroom.female,
                         ]);
                         createChart_1("myChart_1_" + classroom.id, [
                             classroom.fees.paid_fees,

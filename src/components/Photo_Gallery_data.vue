@@ -26,27 +26,32 @@
                 class="card"
                 v-for="photo in Photos"
                 :key="photo.id"
-                width="400px"
-                max-width="25%"
+                width="24%"
                 @click.="photos.photo_Information(photo)"
                 @click="dialog_6 = true"
             >
-                <v-img
-                    v-if="photo.File_type == 'صورة'"
-                    :src="photo.image"
-                    height="200"
-                    cover
-                ></v-img>
-                <video
-                    v-if="photo.File_type == 'فيديو'"
-                    width="210"
-                    height="200"
-                    controls
+                <v-lazy
+                    :min-height="200"
+                    :options="{ threshold: 0.5 }"
+                    transition="fade-transition"
                 >
-                    <source :src="photo.video" type="video/mp4" />
+                    <v-img
+                        v-if="photo.File_type == 'صورة'"
+                        :src="photo.image"
+                        height="200"
+                        cover
+                    ></v-img>
+                    <video
+                        v-if="photo.File_type == 'فيديو'"
+                        width="210"
+                        height="200"
+                        controls
+                    >
+                        <source :src="photo.video" type="video/mp4" />
 
-                    Your browser does not support the video tag.
-                </video>
+                        Your browser does not support the video tag.
+                    </video>
+                </v-lazy>
             </v-card>
         </div>
         <!-- Display each photo -->
@@ -72,11 +77,12 @@
                     </div>
                     <div>
                         <v-carousel-item
-                            class="pa-5 text-center"
+                            class="pa-5"
                             v-if="photos.File_Information == 'فيديو'"
+                            height="400"
                             cover
                         >
-                            <video height="400" controls>
+                            <video width="400" height="400" controls>
                                 <source
                                     :src="photos.Video_Information"
                                     type="video/mp4"
@@ -354,6 +360,20 @@ export default defineComponent({
     box-shadow: none;
     &:hover {
         background: #fff;
+    }
+}
+@media (max-width: 700px) {
+    .box {
+        flex-direction: column !important;
+    }
+    .card {
+        width: 100% !important;
+    }
+}
+
+@media (min-width: 700px) and (max-width: 950px) {
+    .card {
+        width: 47% !important;
     }
 }
 </style>

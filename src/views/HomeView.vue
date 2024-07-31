@@ -1,7 +1,7 @@
 <template>
     <section class="parallax">
         <h1 id="text">مدرسة السراج المنير</h1>
-        <img src="../assets/m_3.png" id="street" />
+        <img class="img_1" src="../assets/m_3.png" id="street" />
     </section>
     <div visible>
         <Photo_Gallery_data />
@@ -221,6 +221,25 @@ form {
     }
     to {
         opacity: 1;
+    }
+}
+@media (max-width: 700px) {
+    .parallax {
+        height: 40vh !important;
+        #text {
+            font-size: 3rem;
+            top: 20%;
+        }
+    }
+}
+
+@media (min-width: 700px) and (max-width: 950px) {
+    .parallax {
+        height: 70vh !important;
+        #text {
+            font-size: 3rem;
+            top: 20%;
+        }
     }
 }
 </style>

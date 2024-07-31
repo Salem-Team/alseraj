@@ -343,54 +343,63 @@
                                     v-for="photo in Photos"
                                     :key="photo.id"
                                 >
-                                    <img
-                                        @click="dialog_6 = true"
-                                        v-if="photo.File_type == 'صورة'"
-                                        :src="photo.image"
-                                        alt=""
-                                        @click.prevent="
-                                            photos.photo_Information(photo)
-                                        "
-                                        loading="lazy"
-                                    />
-                                    <video
-                                        @click="dialog_6 = true"
-                                        v-else
-                                        controls
-                                        loading="lazy"
-                                    >
-                                        <source
-                                            :src="photo.video"
-                                            type="video/mp4"
+                                    <div class="cards">
+                                        <img
+                                            @click="dialog_6 = true"
+                                            v-if="photo.File_type == 'صورة'"
+                                            :src="photo.image"
+                                            alt=""
+                                            @click.prevent="
+                                                photos.photo_Information(photo)
+                                            "
+                                            loading="lazy"
                                         />
+                                        <video
+                                            @click="dialog_6 = true"
+                                            v-else
+                                            controls
+                                            loading="lazy"
+                                        >
+                                            <source
+                                                :src="photo.video"
+                                                type="video/mp4"
+                                            />
 
-                                        Your browser does not support the video
-                                        tag.
-                                    </video>
-                                    <div class="caption">
-                                        <div class="time">
-                                            <font-awesome-icon
-                                                :icon="['fas', 'clock']"
-                                            />
-                                            <div>
-                                                {{
-                                                    photo.time
-                                                        .toDate()
-                                                        .toLocaleString()
-                                                }}
+                                            Your browser does not support the
+                                            video tag.
+                                        </video>
+                                        <div class="caption">
+                                            <div class="time">
+                                                <font-awesome-icon
+                                                    :icon="['fas', 'clock']"
+                                                />
+                                                <div>
+                                                    {{
+                                                        photo.time
+                                                            .toDate()
+                                                            .toLocaleString()
+                                                    }}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="delete">
-                                            <font-awesome-icon
-                                                v-if="photo.File_type == 'صورة'"
-                                                @click="photos.dialog_3 = true"
-                                                :icon="['fas', 'trash']"
-                                            />
-                                            <font-awesome-icon
-                                                v-else
-                                                @click="photos.dialog_4 = true"
-                                                :icon="['fas', 'trash']"
-                                            />
+                                            <div class="delete">
+                                                <font-awesome-icon
+                                                    v-if="
+                                                        photo.File_type ==
+                                                        'صورة'
+                                                    "
+                                                    @click="
+                                                        photos.dialog_3 = true
+                                                    "
+                                                    :icon="['fas', 'trash']"
+                                                />
+                                                <font-awesome-icon
+                                                    v-else
+                                                    @click="
+                                                        photos.dialog_4 = true
+                                                    "
+                                                    :icon="['fas', 'trash']"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -414,6 +423,7 @@
                                         :show-arrows="false"
                                         hide-delimiter-background
                                         color="var(--main-color)"
+                                        style="overflow: auto"
                                     >
                                         <div>
                                             <v-carousel-item
@@ -565,7 +575,7 @@
                                 style="width: 100%"
                                 v-model="photos.type"
                                 :items="photos.Types"
-                                label="أختر نوع الصورة"
+                                :label="`اختر نوع ال${photos.types}`"
                                 variant="outlined"
                                 @blur="photos.handletypes"
                                 @click="photos.handletypes"

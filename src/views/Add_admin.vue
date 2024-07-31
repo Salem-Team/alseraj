@@ -99,7 +99,7 @@
                             src="../assets/add_admin/followers.svg"
                             alt=""
                             @click="admin.dialog = true"
-                            class="pluse"
+                            class="pluse icon"
                         />
                     </div>
                 </div>
@@ -384,7 +384,7 @@
                                 <div>
                                     <div class="name">{{ user.name }}</div>
                                 </div>
-                                <div>
+                                <div class="icon">
                                     <font-awesome-icon
                                         :icon="['fas', 'user-pen']"
                                         @click="admin.user_Information(user)"
@@ -488,6 +488,7 @@ import { useadmin } from "@/store/admin.js";
 import Offline_error from "@/components/Offline_error.vue";
 import Empty_error from "@/components/Empty_error.vue";
 import confirm_message from "@/components/confirm_message.vue";
+import { gsap } from "gsap";
 export default {
     inject: ["Emitter"],
     components: {
@@ -569,7 +570,19 @@ export default {
             );
         },
     },
-
+    mounted() {
+        gsap.fromTo(
+            ".icon",
+            { y: 3 },
+            {
+                duration: 1,
+                ease: "power3.out",
+                y: -1,
+                repeat: -1,
+                yoyo: true,
+            }
+        );
+    },
     methods: {
         // Toggle all items
         toggleAll() {

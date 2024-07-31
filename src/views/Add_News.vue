@@ -97,7 +97,7 @@
                             src="../assets/news/plus.svg"
                             alt=""
                             @click="dialog = true"
-                            class="pluse"
+                            class="pluse icon"
                         />
                     </div>
                 </div>
@@ -306,30 +306,25 @@
                 >
                     <div class="feat" v-for="New in News" :key="New.id">
                         <div class="Top">
-                            <v-lazy
-                                :min-height="200"
-                                :options="{ threshold: 0.5 }"
-                                transition="fade-transition"
-                            >
-                                <font-awesome-icon
-                                    :icon="['fas', 'pen-to-square']"
-                                    @click="news.New_Information(New)"
-                                    @click.="dialog_1 = true"
-                                />
-                                <font-awesome-icon
-                                    :icon="['fas', 'trash']"
-                                    @click.="news.New_Information(New)"
-                                    @click="news.dialog_3 = true"
-                                />
-                                <v-img
-                                    :src="New.image"
-                                    width="100%"
-                                    height="300"
-                                    @click.="news.New_Information(New)"
-                                    @click="dialog_6 = true"
-                                    cover
-                                ></v-img>
-                            </v-lazy>
+                            <font-awesome-icon
+                                :icon="['fas', 'pen-to-square']"
+                                @click="news.New_Information(New)"
+                                @click.="dialog_1 = true"
+                            />
+                            <font-awesome-icon
+                                :icon="['fas', 'trash']"
+                                @click.="news.New_Information(New)"
+                                @click="news.dialog_3 = true"
+                            />
+                            <v-img
+                                :src="New.image"
+                                width="100%"
+                                height="300"
+                                @click.="news.New_Information(New)"
+                                @click="dialog_6 = true"
+                                loading="lazy"
+                                cover
+                            ></v-img>
                         </div>
                         <div class="Bottom">
                             <div class="title">{{ New.title }}</div>
@@ -462,10 +457,22 @@ import CKEditor from "@ckeditor/ckeditor5-vue";
 import Offline_error from "@/components/Offline_error.vue";
 import Empty_error from "@/components/Empty_error.vue";
 import confirm_message from "@/components/confirm_message.vue";
+import { gsap } from "gsap";
 export default defineComponent({
     inject: ["Emitter"],
 
     mounted() {
+        gsap.fromTo(
+            ".icon",
+            { y: 3 },
+            {
+                duration: 1,
+                ease: "power3.out",
+                y: -1,
+                repeat: -1,
+                yoyo: true,
+            }
+        );
         this.editor.defaultConfig = {
             toolbar: {
                 items: [
@@ -496,6 +503,7 @@ export default defineComponent({
             },
         };
     },
+
     methods: {
         updateCharCount2() {
             this.charCount = this.news.Description_Information.length;

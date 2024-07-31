@@ -45,9 +45,10 @@
 
                 <!-- Description -->
                 <v-card-text>
-                    <p style="color: var(--therd-color) !important">
-                        {{ New.description }}
-                    </p>
+                    <p
+                        v-html="New.description"
+                        style="color: var(--therd-color) !important"
+                    ></p>
                 </v-card-text>
             </v-card>
             <!-- Display each photo -->

@@ -1,14 +1,29 @@
-import { collection, getDocs } from "firebase/firestore";
+import { Query, collection, getDocs, where } from "firebase/firestore";
 import { defineStore } from "pinia";
 import { db } from "../Firebase.js"; // تأكد من أن المسار صحيح
+import Cookies from "js-cookie";
 
 export const useStudentStore = defineStore("student", {
     actions: {
         async getStudent(subject) {
             try {
+                const userCookies = Cookies.get("user");
+                if (!userCookies) return;
+                console.log("userCookies=.......>>", userCookies);
                 const studentCollection = collection(db, "students");
-                const querySnapshot = await getDocs(studentCollection);
-                console.log("Query started");
+                const q = Query(
+                    studentCollection,
+                    where("National_id", "==", userCookies.National_id)
+                );
+
+                // Execute the query
+                const querySnapshot = await getDocs(q);
+
+                // Iterate through the results
+                // querySnapshot.forEach((doc) => {
+                //     console.log(doc.id, " => ", doc.data());
+                //     console.log("Query started");
+                // });
 
                 // Client-side filtering
                 const filteredDocs = querySnapshot.docs.filter((doc) => {

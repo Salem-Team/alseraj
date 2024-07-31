@@ -1,19 +1,5 @@
 <template>
     <div class="visible">
-        <svg
-            style="
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 245px;
-            "
-            v-if="loading1"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 200 200"
-        >
-            <!-- الرموز والدوائر للرسم التوضيحي -->
-        </svg>
         <div class="right">
             <div>
                 <v-breadcrumbs>
@@ -25,18 +11,99 @@
                 </v-breadcrumbs>
             </div>
         </div>
-
+        <div v-if="class_rooms.length === 0">
+            <svg
+                style="
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 245px;
+                "
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 200 200"
+            >
+                <radialGradient
+                    id="a12"
+                    cx=".66"
+                    fx=".66"
+                    cy=".3125"
+                    fy=".3125"
+                    gradientTransform="scale(1.5)"
+                >
+                    <stop offset="0" stop-color="#336699"></stop>
+                    <stop
+                        offset=".3"
+                        stop-color="#336699"
+                        stop-opacity=".9"
+                    ></stop>
+                    <stop
+                        offset=".6"
+                        stop-color="#336699"
+                        stop-opacity=".6"
+                    ></stop>
+                    <stop
+                        offset=".8"
+                        stop-color="#336699"
+                        stop-opacity=".3"
+                    ></stop>
+                    <stop
+                        offset="1"
+                        stop-color="#336699"
+                        stop-opacity="0"
+                    ></stop>
+                </radialGradient>
+                <circle
+                    transform-origin="center"
+                    fill="none"
+                    stroke="url(#a12)"
+                    stroke-width="15"
+                    stroke-linecap="round"
+                    stroke-dasharray="200 1000"
+                    stroke-dashoffset="0"
+                    cx="100"
+                    cy="100"
+                    r="70"
+                >
+                    <animateTransform
+                        type="rotate"
+                        attributeName="transform"
+                        calcMode="spline"
+                        dur="2"
+                        values="360;0"
+                        keyTimes="0;1"
+                        keySplines="0 0 1 1"
+                        repeatCount="indefinite"
+                    ></animateTransform>
+                </circle>
+                <circle
+                    transform-origin="center"
+                    fill="none"
+                    opacity=".2"
+                    stroke="#336699"
+                    stroke-width="15"
+                    stroke-linecap="round"
+                    cx="100"
+                    cy="100"
+                    r="70"
+                ></circle>
+            </svg>
+        </div>
         <v-container>
             <div
                 class="feat"
                 v-for="classroom in class_rooms"
                 :key="classroom.id"
             >
-                <div v-if="user.roles.includes(classroom.grade)">
+                <div
+                    v-if="
+                        user.roles.includes(classroom.grade) ||
+                        user.roles.includes('الكل')
+                    "
+                >
                     <div class="feat2">
                         <div class="title">
                             <div>{{ classroom.grade }}</div>
-                            <!-- تحديث الزرار لاستخدام goToClassroom -->
                             <div
                                 class="button"
                                 @click="goToClassroom(classroom.grade)"
@@ -59,8 +126,7 @@
                                         <div>الطلاب</div>
                                         <div>
                                             <span>{{
-                                                classroom.students
-                                                    .total_students
+                                                classroom.total_students
                                             }}</span>
                                             طالب
                                         </div>
@@ -69,7 +135,7 @@
                                         <div>ذكر</div>
                                         <div>
                                             <span>{{
-                                                classroom.students.male
+                                                classroom.students_gender.male
                                             }}</span>
                                             طالب
                                         </div>
@@ -78,9 +144,37 @@
                                         <div>أنثى</div>
                                         <div>
                                             <span>{{
-                                                classroom.students.female
+                                                classroom.students_gender.female
                                             }}</span>
                                             طالبة
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="box">
+                                <div>
+                                    <canvas
+                                        :id="'myChart_1_' + classroom.id"
+                                    ></canvas>
+                                </div>
+
+                                <ul>
+                                    <li>
+                                        <div>عربي</div>
+                                        <div>
+                                            <span>{{
+                                                classroom.sections.arabic
+                                            }}</span>
+                                            طالب
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div>لغات</div>
+                                        <div>
+                                            <span>{{
+                                                classroom.sections.english
+                                            }}</span>
+                                            طالب
                                         </div>
                                     </li>
                                 </ul>
@@ -88,12 +182,14 @@
                             <div
                                 class="box"
                                 v-if="
-                                    user.roles.includes('الاطلاع على الحسابات')
+                                    user.roles.includes(
+                                        'الاطلاع على الحسابات'
+                                    ) || user.roles.includes('الكل')
                                 "
                             >
                                 <div>
                                     <canvas
-                                        :id="'myChart_1_' + classroom.id"
+                                        :id="'myChart_2_' + classroom.id"
                                     ></canvas>
                                 </div>
                                 <ul>
@@ -129,6 +225,14 @@
                                     </li>
                                 </ul>
                             </div>
+
+                            <div class="box big">
+                                <div>
+                                    <canvas
+                                        :id="'myChart_3_' + classroom.id"
+                                    ></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -140,8 +244,9 @@
 <script>
 import { ref, watch, onMounted, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import Chart from "chart.js/auto";
+import { Chart } from "chart.js/auto";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
+
 import { initializeApp } from "firebase/app";
 
 // Firebase configuration
@@ -164,12 +269,24 @@ export default {
     computed: {
         ...mapState(useAuthStore, ["user"]),
     },
+    mounted() {
+        this.spliceRoles();
+    },
+
+    methods: {
+        spliceRoles() {
+            // Remove "مشرف" from each role
+            let splicedRoles = this.user.roles.map((role) =>
+                role.replace("مشرف ", "")
+            );
+            this.user.roles = splicedRoles;
+        },
+    },
     setup() {
         const route = useRoute();
         const router = useRouter(); // استخدام useRouter هنا
         const classId = ref(route.params.id);
         const class_rooms = ref([]);
-        const loading1 = ref(false);
         const sortDataByRanking = (data) => {
             return data.sort((a, b) => a.Ranking - b.Ranking);
         };
@@ -183,32 +300,46 @@ export default {
 
         const getData = async () => {
             try {
-                loading1.value = true;
-
                 const querySnapshot = await getDocs(
                     collection(db, "class_rooms")
                 );
                 let fetchedData = querySnapshot.docs.map((doc) => {
                     return { id: doc.id, ...doc.data() };
                 });
-
                 // ترتيب البيانات حسب Ranking
                 fetchedData = sortDataByRanking(fetchedData);
                 class_rooms.value = fetchedData;
 
                 nextTick(() => {
                     class_rooms.value.forEach((classroom) => {
-                        createChart("myChart_" + classroom.id, [
-                            classroom.students.male,
-                            classroom.students.female,
-                        ]);
-                        createChart_1("myChart_1_" + classroom.id, [
-                            classroom.fees.paid_fees,
-                            classroom.fees.remaining_fees,
-                        ]);
+                        if (
+                            classroom &&
+                            classroom.sections &&
+                            classroom.fees &&
+                            classroom.results
+                        ) {
+                            createChart("myChart_" + classroom.id, [
+                                classroom.students_gender.male,
+                                classroom.students_gender.female,
+                            ]);
+                            createChart_1("myChart_1_" + classroom.id, [
+                                classroom.sections.arabic,
+                                classroom.sections.english,
+                            ]);
+                            createChart_2("myChart_2_" + classroom.id, [
+                                classroom.fees.paid_fees,
+                                classroom.fees.remaining_fees,
+                            ]);
+                            createChart_3("myChart_3_" + classroom.id, [
+                                classroom.results,
+                            ]);
+                        } else {
+                            console.log(
+                                `Data missing for classroom ${classroom.id}`
+                            );
+                        }
                     });
                 });
-                loading1.value = false;
             } catch (error) {
                 console.error("Error fetching documents: ", error);
             }
@@ -224,7 +355,7 @@ export default {
                             {
                                 label: "الطلاب",
                                 data: data,
-                                backgroundColor: ["#336699", "#d8588c"],
+                                backgroundColor: ["#a34a6e", "#d8588c"],
                                 hoverOffset: 4,
                             },
                         ],
@@ -241,7 +372,26 @@ export default {
                     data: {
                         datasets: [
                             {
-                                label: "المصروفات",
+                                label: "القسم",
+                                data: data,
+                                backgroundColor: ["#336699", "#72a8dd"],
+                                hoverOffset: 4,
+                            },
+                        ],
+                    },
+                });
+            }
+        };
+
+        const createChart_2 = (id, data) => {
+            const ctx = document.getElementById(id);
+            if (ctx) {
+                new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        datasets: [
+                            {
+                                label: "القسم",
                                 data: data,
                                 backgroundColor: ["#336699", "#d8588c"],
                                 hoverOffset: 4,
@@ -249,6 +399,157 @@ export default {
                         ],
                     },
                 });
+            }
+        };
+
+        const createChart_3 = (id, results) => {
+            const canvas = document.getElementById(id);
+
+            if (canvas) {
+                const ctx = canvas.getContext("2d");
+                if (ctx) {
+                    const labels = [
+                        "شهر أكتوبر",
+                        "شهر نوفمبر",
+                        "الترم الأول",
+                        "شهر فبراير",
+                        "شهر مارس",
+                        "الترم الثاني",
+                    ];
+
+                    const data = {
+                        labels: labels,
+                        datasets: [
+                            {
+                                data: labels.map(
+                                    (label) => results[0][label] || 0
+                                ),
+                                borderColor: "rgba(255, 99, 132, 1)",
+                                backgroundColor: "rgba(255, 99, 132, 0.2)",
+                                stack: "combined",
+                                type: "bar",
+                            },
+                        ],
+                    };
+
+                    const config = {
+                        type: "line",
+                        data: data,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: false,
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        title: () => "",
+                                        label: () => "",
+                                    },
+                                },
+                                legend: {
+                                    display: false,
+                                },
+                            },
+                            scales: {
+                                y: {
+                                    stacked: true,
+                                },
+                                x: {
+                                    stacked: true,
+                                },
+                            },
+                        },
+                    };
+
+                    const actions = [
+                        // عمليات مختلفة للرسم البياني
+                        {
+                            name: "Randomize",
+                            handler(chart) {
+                                chart.data.datasets.forEach((dataset) => {
+                                    dataset.data = labels.map(() =>
+                                        Math.floor(Math.random() * 501)
+                                    );
+                                });
+                                chart.update();
+                            },
+                        },
+                        {
+                            name: "Add Dataset",
+                            handler(chart) {
+                                const newDataset = {
+                                    backgroundColor: `rgba(${Math.floor(
+                                        Math.random() * 255
+                                    )}, ${Math.floor(
+                                        Math.random() * 255
+                                    )}, ${Math.floor(
+                                        Math.random() * 255
+                                    )}, 0.2)`,
+                                    borderColor: `rgba(${Math.floor(
+                                        Math.random() * 255
+                                    )}, ${Math.floor(
+                                        Math.random() * 255
+                                    )}, ${Math.floor(Math.random() * 255)}, 1)`,
+                                    borderWidth: 1,
+                                    stack: "combined",
+                                    data: labels.map(() =>
+                                        Math.floor(Math.random() * 501)
+                                    ),
+                                };
+                                chart.data.datasets.push(newDataset);
+                                chart.update();
+                            },
+                        },
+                        {
+                            name: "Add Data",
+                            handler(chart) {
+                                const data = chart.data;
+                                if (data.datasets.length > 0) {
+                                    data.labels.push(
+                                        `Label ${data.labels.length + 1}`
+                                    );
+
+                                    data.datasets.forEach((dataset) => {
+                                        dataset.data.push(
+                                            Math.floor(Math.random() * 501)
+                                        );
+                                    });
+
+                                    chart.update();
+                                }
+                            },
+                        },
+                        {
+                            name: "Remove Dataset",
+                            handler(chart) {
+                                chart.data.datasets.pop();
+                                chart.update();
+                            },
+                        },
+                        {
+                            name: "Remove Data",
+                            handler(chart) {
+                                chart.data.labels.pop();
+
+                                chart.data.datasets.forEach((dataset) => {
+                                    dataset.data.pop();
+                                });
+
+                                chart.update();
+                            },
+                        },
+                    ];
+
+                    const chart = new Chart(ctx, config);
+
+                    return { chart, actions };
+                } else {
+                    console.error(`Canvas context not found for id: ${id}`);
+                }
+            } else {
+                console.error(`Canvas element with id ${id} not found.`);
             }
         };
 
@@ -261,7 +562,7 @@ export default {
         return {
             classId,
             class_rooms,
-            loading1,
+
             goToClassroom,
         };
     },
@@ -434,8 +735,9 @@ img.pluse {
         justify-content: space-between;
         gap: 10px;
         margin-top: 40px;
+        flex-wrap: wrap;
         .box {
-            width: 48%;
+            width: 32%;
             max-width: 100%;
             flex-grow: 1;
             display: flex;
@@ -447,24 +749,37 @@ img.pluse {
             flex-direction: column;
             gap: 10px;
             justify-content: space-between;
+            &.big {
+                width: 100%;
+                & > div {
+                    height: 300px;
+                    canvas {
+                        height: 300px !important;
+                    }
+                }
+            }
             & > div {
                 height: 100px;
-            }
-            ul {
-                width: 100%;
-                list-style: none;
                 position: relative;
-                margin-top: 20px;
+                margin-bottom: 20px;
+                width: 100%;
+                display: flex;
+                justify-content: center;
                 &::before {
                     content: "";
                     position: absolute;
-                    top: -20px;
+                    bottom: -20px;
                     left: 50%;
                     height: 4px;
                     width: 100%;
                     background: var(--secound-color);
                     transform: translateX(-50%);
                 }
+            }
+            ul {
+                width: 100%;
+                list-style: none;
+
                 li {
                     position: relative;
                     margin-right: 20px;
@@ -520,6 +835,18 @@ img.pluse {
             }
         }
     }
+}
+.empty {
+    background: var(--secound-color);
+    margin-top: 10px;
+    width: 90%;
+    margin: 10px auto;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    color: var(--therd-color);
+    font-size: 19px;
 }
 @media (max-width: 599px) {
     .feat .title {

@@ -94,7 +94,7 @@
                     </div>
                     <div class="left">
                         <img
-                            src="../assets/news/plus.png"
+                            src="../assets/news/plus.svg"
                             alt=""
                             @click="dialog = true"
                             class="pluse"
@@ -144,23 +144,12 @@
                                 @input="news.upload_Image"
                             >
                             </v-file-input>
-                            <!-- Show progress bar if New.image is truthy (assuming New is a data property) -->
-                            <v-progress-linear
-                                v-if="New.image"
-                                :value="news.progress"
-                                color="blue-grey"
-                                height="25"
-                            >
-                                <template v-slot:default="{ value }">
-                                    <strong>{{ Math.ceil(value) }}%</strong>
-                                </template>
-                            </v-progress-linear>
-                            <br />
                             <p>وصف قصير</p>
                             <ckeditor
                                 v-model="New.description"
                                 id="Description"
                                 :editor="editor"
+                                :config="editorConfig"
                                 @input="updateCharCount"
                                 ref="ckeditor"
                             ></ckeditor>
@@ -275,6 +264,7 @@
                                 v-model="news.Description_Information"
                                 id="Description"
                                 :editor="editor"
+                                :config="editorConfig"
                                 @input="updateCharCount2"
                                 ref="ckeditor"
                             ></ckeditor>
@@ -316,24 +306,30 @@
                 >
                     <div class="feat" v-for="New in News" :key="New.id">
                         <div class="Top">
-                            <font-awesome-icon
-                                :icon="['fas', 'pen-to-square']"
-                                @click="news.New_Information(New)"
-                                @click.="dialog_1 = true"
-                            />
-                            <font-awesome-icon
-                                :icon="['fas', 'trash']"
-                                @click.="news.New_Information(New)"
-                                @click="news.dialog_3 = true"
-                            />
-                            <v-img
-                                :src="New.image"
-                                width="100%"
-                                height="300"
-                                @click.="news.New_Information(New)"
-                                @click="dialog_6 = true"
-                                cover
-                            ></v-img>
+                            <v-lazy
+                                :min-height="200"
+                                :options="{ threshold: 0.5 }"
+                                transition="fade-transition"
+                            >
+                                <font-awesome-icon
+                                    :icon="['fas', 'pen-to-square']"
+                                    @click="news.New_Information(New)"
+                                    @click.="dialog_1 = true"
+                                />
+                                <font-awesome-icon
+                                    :icon="['fas', 'trash']"
+                                    @click.="news.New_Information(New)"
+                                    @click="news.dialog_3 = true"
+                                />
+                                <v-img
+                                    :src="New.image"
+                                    width="100%"
+                                    height="300"
+                                    @click.="news.New_Information(New)"
+                                    @click="dialog_6 = true"
+                                    cover
+                                ></v-img>
+                            </v-lazy>
                         </div>
                         <div class="Bottom">
                             <div class="title">{{ New.title }}</div>
@@ -343,9 +339,10 @@
                                     {{ New.time.toDate().toLocaleString() }}
                                 </div>
                             </div>
-                            <div class="description">
-                                {{ New.description }}
-                            </div>
+                            <div
+                                class="description"
+                                v-html="New.description"
+                            ></div>
                         </div>
                     </div>
                     <!-- Display each photo -->
@@ -448,12 +445,12 @@
     <confirm_message
         v-if="snackbar === true"
         :text="text10"
-        :snackbar1="snackbar"
+        v-model="snackbar"
     />
     <confirm_message
         v-if="snackbar2 === true"
         :text="text11"
-        :snackbar1="snackbar2"
+        v-model="snackbar2"
     />
 </template>
 <script>
@@ -467,6 +464,7 @@ import Empty_error from "@/components/Empty_error.vue";
 import confirm_message from "@/components/confirm_message.vue";
 export default defineComponent({
     inject: ["Emitter"],
+
     mounted() {
         this.editor.defaultConfig = {
             toolbar: {
@@ -490,6 +488,12 @@ export default defineComponent({
             editor: ClassicEditor,
             charCount: 0,
             maxChars: 150,
+            editorConfig: {
+                language: {
+                    ui: "ar",
+                    content: "ar",
+                },
+            },
         };
     },
     methods: {
@@ -661,7 +665,6 @@ form {
 }
 .box {
     flex-wrap: wrap;
-    gap: 10px;
 }
 .card_title {
     background: var(--secound-color);
@@ -713,7 +716,6 @@ form {
     flex-wrap: wrap;
     padding: 0;
     justify-content: flex-start !important;
-    flex-direction: column;
     gap: 40px;
 }
 .card {
@@ -727,15 +729,13 @@ form {
     font-weight: bold;
     padding: 20px;
     text-align: center;
-    width: 100%;
 }
 .feat {
-    width: 100%;
+    width: 24% !important;
     box-shadow: 0 0 10px #ddd;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
-    max-width: 33%;
     & > div {
         width: 100%;
         position: relative;
@@ -921,25 +921,6 @@ form {
         }
     }
 }
-@media (max-width: 599px) {
-}
-@media (min-width: 600px) and (max-width: 768px) {
-}
-@media (min-width: 769px) {
-    .v-container {
-        flex-direction: row;
-        gap: 15px;
-        align-items: stretch !important;
-    }
-    .card {
-        width: 32%;
-    }
-    .feat {
-        width: 32%;
-        justify-content: flex-start;
-    }
-}
-
 img.pluse {
     width: 40px;
     cursor: pointer;
@@ -986,6 +967,20 @@ img.pluse {
     box-shadow: none;
     &:hover {
         background: #fff;
+    }
+}
+@media (max-width: 700px) {
+    .box {
+        flex-direction: column !important;
+    }
+    .feat {
+        width: 100% !important;
+    }
+}
+
+@media (min-width: 700px) and (max-width: 950px) {
+    .feat {
+        width: 47% !important;
     }
 }
 </style>

@@ -89,7 +89,11 @@
                         @click="teacher.dialog = false"
                     ></v-btn>
                 </div>
-                <form ref="form" @submit.prevent class="ma-auto">
+                <form
+                    ref="form"
+                    @submit.prevent="add_teacher()"
+                    class="ma-auto"
+                >
                     <v-text-field
                         v-model="user.name"
                         :rules="[(v) => !!v || 'الاسم مطلوب']"
@@ -166,7 +170,6 @@
                         type="submit"
                         :loading="loading"
                         :disabled="loading"
-                        @click="add_teacher()"
                         style="
                             width: 100%;
                             padding: 20px;
@@ -194,7 +197,11 @@
                         @click="teacher.dialog_1 = false"
                     ></v-btn>
                 </div>
-                <form ref="form" @submit.prevent class="ma-auto">
+                <form
+                    ref="form"
+                    @submit.prevent="update_teacher(user.id)"
+                    class="ma-auto"
+                >
                     <v-text-field
                         v-model="user.name"
                         :rules="[(v) => !!v || 'الاسم مطلوب']"
@@ -270,7 +277,6 @@
                         type="submit"
                         :loading="loading"
                         :disabled="loading"
-                        @click="update_teacher(user.id)"
                         class="d-flex align-center mt-4"
                         style="
                             width: 100%;
@@ -372,7 +378,7 @@
                         </div>
                     </div>
                     <div class="body">
-                        <div>الصلاحيات</div>
+                        <div>يدرس المواد الدراسية</div>
                         <ul v-for="index in sub.subject" :key="index">
                             <li>{{ index }}</li>
                         </ul>

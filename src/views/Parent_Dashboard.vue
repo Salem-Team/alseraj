@@ -92,7 +92,7 @@
                     <v-breadcrumbs>
                         <v-breadcrumbs-item>
                             <img
-                                src="../assets/profile/user.png"
+                                src="../assets/profile/user.svg"
                                 alt=""
                                 class="pluse"
                             />
@@ -102,12 +102,12 @@
                 </div>
                 <div class="left">
                     <img
-                        src="../assets/profile/edit-info.png"
+                        src="../assets/profile/edit-info.svg"
                         alt=""
                         class="pluse pluse_1"
                     />
                     <img
-                        src="../assets/profile/logout.png"
+                        src="../assets/profile/logout.svg"
                         alt=""
                         class="pluse pluse_1"
                     />
@@ -121,7 +121,7 @@
                 <!-- <div class="form">
                     <div>
                         <img
-                            src="../assets/profile/email.png"
+                            src="../assets/profile/email.svg"
                             alt=""
                             class="pluse"
                         />
@@ -129,7 +129,7 @@
                     </div>
                     <div>
                         <img
-                            src="../assets/profile/call.png"
+                            src="../assets/profile/call.svg"
                             alt=""
                             class="pluse"
                         />
@@ -139,7 +139,7 @@
                 <div class="children">
                     <div class="title">
                         <img
-                            src="../assets/profile/children.png"
+                            src="../assets/profile/children.svg"
                             alt=""
                             class="pluse"
                         />
@@ -154,7 +154,7 @@
                             <div class="head">
                                 <div class="name">{{ child.name }}</div>
                                 <img
-                                    src="../assets/profile/information.png"
+                                    src="../assets/profile/information.svg"
                                     alt=""
                                     class="pluse"
                                     @click="goToChildDetails(child.id)"

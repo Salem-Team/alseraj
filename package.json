@@ -11,8 +11,9 @@
         "format": "prettier --write src/**/*.{js,vue}"
     },
     "dependencies": {
-        "@ckeditor/ckeditor5-build-classic": "^42.0.1",
+        "@ckeditor/ckeditor5-build-classic": "^42.0.2",
         "@ckeditor/ckeditor5-vue": "^6.0.0",
+        "@ffmpeg/ffmpeg": "^0.12.10",
         "@fortawesome/fontawesome-free": "^6.5.2",
         "@fortawesome/fontawesome-svg-core": "^6.5.2",
         "@fortawesome/free-brands-svg-icons": "^6.5.2",
@@ -39,6 +40,7 @@
         "jspdf-autotable": "^3.8.2",
         "mitt": "^3.0.1",
         "ng2-charts": "^6.0.1",
+        "notiwind": "^2.0.2",
         "pinia": "^2.1.7",
         "primevue": "^4.0.0",
         "quill": "^2.0.2",

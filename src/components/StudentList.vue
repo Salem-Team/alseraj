@@ -169,8 +169,16 @@
                                 </v-col>
                             </v-row>
                             <v-row style="gap: 0px">
-                                <v-col cols="2">
+                                <v-col
+                                    cols="2"
+                                    v-for="(grade, index) in gradeOptions"
+                                    :key="index"
+                                >
                                     <v-card
+                                        :class="{
+                                            'active-card':
+                                                gradeSortActive === grade,
+                                        }"
                                         style="
                                             display: flex;
                                             justify-content: center;
@@ -185,128 +193,13 @@
                                             {{
                                                 parseFloat(
                                                     percentageTotalDegrees(
-                                                        student
+                                                        student,
+                                                        index
                                                     ).toFixed(1)
                                                 )
                                             }}%
                                         </h3>
-                                        <p>شهر أكتوبر</p>
-                                    </v-card> </v-col
-                                ><v-col cols="2">
-                                    <v-card
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>
-                                            {{
-                                                parseFloat(
-                                                    percentageTotalDegrees2(
-                                                        student
-                                                    ).toFixed(1)
-                                                )
-                                            }}%
-                                        </h3>
-                                        <p>شهر نوفمبر</p>
-                                    </v-card> </v-col
-                                ><v-col cols="2">
-                                    <v-card
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>
-                                            {{
-                                                parseFloat(
-                                                    percentageTotalDegrees3(
-                                                        student
-                                                    ).toFixed(1)
-                                                )
-                                            }}%
-                                        </h3>
-                                        <p>امتحان الترم الاول</p>
-                                    </v-card> </v-col
-                                ><v-col cols="2">
-                                    <v-card
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>
-                                            {{
-                                                parseFloat(
-                                                    percentageTotalDegrees4(
-                                                        student
-                                                    ).toFixed(1)
-                                                )
-                                            }}%
-                                        </h3>
-                                        <p>شهر فبراير</p>
-                                    </v-card> </v-col
-                                ><v-col cols="2">
-                                    <v-card
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>
-                                            {{
-                                                parseFloat(
-                                                    percentageTotalDegrees5(
-                                                        student
-                                                    ).toFixed(1)
-                                                )
-                                            }}%
-                                        </h3>
-                                        <p>شهر مارس</p>
-                                    </v-card>
-                                </v-col>
-                                <v-col cols="2">
-                                    <v-card
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>
-                                            {{
-                                                parseFloat(
-                                                    percentageTotalDegrees6(
-                                                        student
-                                                    ).toFixed(1)
-                                                )
-                                            }}%
-                                        </h3>
-                                        <p>امتحان الترم الثاني</p>
+                                        <p>{{ grade }}</p>
                                     </v-card>
                                 </v-col>
                             </v-row>
@@ -344,37 +237,44 @@
                                         </h3>
                                     </div>
                                     <div>
-                                        <v-progress-linear
-                                            v-model="progress"
-                                            height="25"
-                                            color="blue"
-                                            reverse
-                                        >
-                                            <template
-                                                v-slot:default="{ value }"
+                                        <div class="progress-container">
+                                            <progress
+                                                :value="
+                                                    calculatePaymentProgress(
+                                                        student.payments
+                                                            .paid_Up,
+                                                        student.payments
+                                                            .Expenses
+                                                    )
+                                                "
+                                                max="100"
+                                                class="progress-bar"
+                                            ></progress>
+                                            <div
+                                                class="progress-label2"
+                                                :style="{
+                                                    right: calculateLabelPosition(
+                                                        student.payments
+                                                            .paid_Up,
+                                                        student.payments
+                                                            .Expenses
+                                                    ),
+                                                }"
                                             >
-                                                <div
-                                                    :style="{
-                                                        color: 'white',
-                                                        position: 'absolute',
-                                                        right: `calc(${value}% - 5%)`,
-                                                        transform:
-                                                            'translateX(-50%)',
-                                                        marginTop: '-70px',
-                                                    }"
-                                                    class="progress-label"
-                                                >
-                                                    <div
-                                                        class="label-container"
-                                                    >
-                                                        {{ Math.ceil(value) }}%
-                                                        <div
-                                                            class="arrow-down"
-                                                        ></div>
-                                                    </div>
+                                                <div class="label-box">
+                                                    {{
+                                                        Math.ceil(
+                                                            calculatePaymentProgress(
+                                                                student.payments
+                                                                    .paid_Up,
+                                                                student.payments
+                                                                    .Expenses
+                                                            )
+                                                        )
+                                                    }}%
                                                 </div>
-                                            </template>
-                                        </v-progress-linear>
+                                            </div>
+                                        </div>
                                         <div
                                             style="
                                                 display: flex;
@@ -1410,12 +1310,18 @@
                                                                                 text-align: center;
                                                                             "
                                                                             required
+                                                                            @input="
+                                                                                changesMade2 = true
+                                                                            "
                                                                         ></v-text-field>
                                                                     </td>
                                                                     <td>
                                                                         <v-text-field
                                                                             v-model="
                                                                                 degree.Behavior_assessment
+                                                                            "
+                                                                            @input="
+                                                                                changesMade2 = true
                                                                             "
                                                                             style="
                                                                                 text-align: center;
@@ -1441,6 +1347,9 @@
                                                                             style="
                                                                                 text-align: center;
                                                                             "
+                                                                            @input="
+                                                                                changesMade2 = true
+                                                                            "
                                                                             required
                                                                         ></v-text-field>
                                                                     </td>
@@ -1453,6 +1362,12 @@
                                         </div>
                                         <div v-if="e1 === 5" ref="slide5">
                                             <div
+                                                v-if="
+                                                    user.roles.includes(
+                                                        'الاطلاع على الحسابات'
+                                                    ) ||
+                                                    user.roles.includes('الكل')
+                                                "
                                                 style="
                                                     display: flex;
                                                     justify-content: space-between;
@@ -2171,7 +2086,6 @@
                                                 <div
                                                     style="
                                                         display: flex;
-
                                                         align-items: center;
                                                     "
                                                 >
@@ -2213,7 +2127,6 @@
                                                     :key="index"
                                                     cols="12"
                                                     md="4"
-                                                    v-else
                                                 >
                                                     <v-card
                                                         class="pa-3 mb-3 notification-card"
@@ -2247,6 +2160,17 @@
                                                                 aspect-ratio="1"
                                                                 class="mb-2"
                                                             ></v-img>
+                                                            <p
+                                                                style="
+                                                                    color: grey;
+                                                                    font-size: 0.9em;
+                                                                "
+                                                            >
+                                                                {{
+                                                                    photo.DatePhoto
+                                                                }}
+                                                            </p>
+                                                            <!-- عرض وقت الصورة -->
                                                         </v-card-text>
                                                     </v-card>
                                                 </v-col>
@@ -2385,15 +2309,6 @@
                                                         required
                                                         label="اسم الطالب"
                                                     ></v-text-field>
-                                                    <v-text-field
-                                                        v-model="form.phone"
-                                                        style="width: 50%"
-                                                        :error-messages="
-                                                            errors.phone
-                                                        "
-                                                        required
-                                                        label="رقم التليفون"
-                                                    ></v-text-field>
 
                                                     <v-select
                                                         :items="[
@@ -2490,14 +2405,6 @@
                                                             v-bind="attrs"
                                                             v-on="on"
                                                         ></v-text-field>
-                                                        <v-text-field
-                                                            v-model="
-                                                                form.password
-                                                            "
-                                                            label="الباسوورد"
-                                                            type="password"
-                                                            required
-                                                        ></v-text-field>
                                                     </template>
                                                     <v-card>
                                                         <v-date-picker
@@ -2584,7 +2491,12 @@
                 </v-dialog>
             </v-col>
         </v-row>
-        <confirm_message :text="confirmationText" v-model="showSnackbar" />
+        <confirm_message2
+            v-model="showSnackbar"
+            :text="confirmationText"
+            :snackbar="showSnackbar"
+            @close-snackbar="showSnackbar = false"
+        />
     </v-container>
 </template>
 
@@ -2622,19 +2534,21 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 const storage = getStorage(app);
-import confirm_message from "@/components/confirm_message.vue";
+import confirm_message2 from "@/components/confirm_message2.vue";
 
 export { db, storage };
 import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 import Chart from "chart.js/auto";
-import { useDialogStore } from "@/store/useDialogStore";
 import { mapActions } from "pinia";
 import { usenotification } from "../store/notification.js";
+import { useDialogStore } from "@/store/useDialogStore";
+import { mapState } from "pinia";
+import { useAuthStore } from "../store/userStore";
 export default {
     name: "StudentList",
     components: {
-        confirm_message,
+        confirm_message2,
         Empty_error,
     },
     props: {
@@ -2731,7 +2645,6 @@ export default {
                 birthday: null,
                 parent_name: "",
                 national_id: "",
-                phone: "",
 
                 Guardian: [
                     { Guardian_name: "" },
@@ -2987,10 +2900,10 @@ export default {
                     },
                 ],
                 payments: {
-                    Expenses: 0,
+                    Expenses: 1000,
                     payment_System: "",
                     Installment_System: "",
-                    paid_Up: 0,
+                    paid_Up: 100,
                     Residual: 0,
                 },
                 Notifications: [],
@@ -3084,7 +2997,7 @@ export default {
             selectedStudent: "",
             dialogStudentDetails: false,
             changesMade: false,
-            changesMade2: true,
+            changesMade2: false,
             changesMade3: false,
             interval: null,
             value: 0,
@@ -3118,7 +3031,6 @@ export default {
     async created() {
         await this.fetchStudents();
         this.years = new Date().getFullYear();
-        this.get_notifications("student_notification");
     },
     methods: {
         async loadStudents() {
@@ -3151,10 +3063,7 @@ export default {
         icon(student) {
             return student.state ? "mdi-eye-off" : "mdi-eye";
         },
-        ...mapActions(usenotification, [
-            "send_Notification",
-            "get_notifications",
-        ]),
+        ...mapActions(usenotification, ["send_Notification"]),
         getMonthlyDegrees(student, month) {
             const monthIndex = this.gradeOptions.indexOf(month);
             if (monthIndex === -1) return 0;
@@ -3167,88 +3076,18 @@ export default {
             const maxDegrees = degrees.length * 100;
             return (total / maxDegrees) * 100;
         },
-        totalDegrees(student) {
-            const degrees = student.Results[1].Monthly[0].Degrees; // Assuming the first month is the desired one
+        totalDegrees(student, monthIndex) {
+            const degrees = student.Results[1].Monthly[monthIndex].Degrees;
             let total = 0;
             degrees.forEach((degree) => {
                 total += Number(degree.Student_degree); // Ensuring the degree is a number
             });
             return total;
         },
-        percentageTotalDegrees(student) {
-            const totalDegrees = this.totalDegrees(student);
+        percentageTotalDegrees(student, monthIndex) {
+            const totalDegrees = this.totalDegrees(student, monthIndex);
             const maxDegrees =
-                student.Results[1].Monthly[0].Degrees.length * 100; // Assuming each subject has a max of 100
-            return (totalDegrees / maxDegrees) * 100;
-        },
-        totalDegrees2(student) {
-            const degrees = student.Results[1].Monthly[1].Degrees; // Assuming the first month is the desired one
-            let total = 0;
-            degrees.forEach((degree) => {
-                total += Number(degree.Student_degree); // Ensuring the degree is a number
-            });
-            return total;
-        },
-        percentageTotalDegrees2(student) {
-            const totalDegrees = this.totalDegrees2(student);
-            const maxDegrees =
-                student.Results[1].Monthly[1].Degrees.length * 100; // Assuming each subject has a max of 100
-            return (totalDegrees / maxDegrees) * 100;
-        },
-        totalDegrees3(student) {
-            const degrees = student.Results[1].Monthly[2].Degrees; // Assuming the first month is the desired one
-            let total = 0;
-            degrees.forEach((degree) => {
-                total += Number(degree.Student_degree); // Ensuring the degree is a number
-            });
-            return total;
-        },
-        percentageTotalDegrees3(student) {
-            const totalDegrees = this.totalDegrees3(student);
-            const maxDegrees =
-                student.Results[1].Monthly[2].Degrees.length * 100; // Assuming each subject has a max of 100
-            return (totalDegrees / maxDegrees) * 100;
-        },
-        totalDegrees4(student) {
-            const degrees = student.Results[1].Monthly[3].Degrees; // Assuming the first month is the desired one
-            let total = 0;
-            degrees.forEach((degree) => {
-                total += Number(degree.Student_degree); // Ensuring the degree is a number
-            });
-            return total;
-        },
-        percentageTotalDegrees4(student) {
-            const totalDegrees = this.totalDegrees4(student);
-            const maxDegrees =
-                student.Results[1].Monthly[3].Degrees.length * 100; // Assuming each subject has a max of 100
-            return (totalDegrees / maxDegrees) * 100;
-        },
-        totalDegrees5(student) {
-            const degrees = student.Results[1].Monthly[4].Degrees; // Assuming the first month is the desired one
-            let total = 0;
-            degrees.forEach((degree) => {
-                total += Number(degree.Student_degree); // Ensuring the degree is a number
-            });
-            return total;
-        },
-        percentageTotalDegrees5(student) {
-            const totalDegrees = this.totalDegrees5(student);
-            const maxDegrees =
-                student.Results[1].Monthly[4].Degrees.length * 100; // Assuming each subject has a max of 100
-            return (totalDegrees / maxDegrees) * 100;
-        },
-        totalDegrees6(student) {
-            const degrees = student.Results[1].Monthly[5].Degrees; // Assuming the first month is the desired one
-            let total = 0;
-            degrees.forEach((degree) => {
-                total += Number(degree.Student_degree); // Ensuring the degree is a number
-            });
-            return total;
-        },
-        percentageTotalDegrees6(student) {
-            const totalDegrees = this.totalDegrees6(student);
-            const maxDegrees =
-                student.Results[1].Monthly[5].Degrees.length * 100; // Assuming each subject has a max of 100
+                student.Results[1].Monthly[monthIndex].Degrees.length * 100; // Assuming each subject has a max of 100
             return (totalDegrees / maxDegrees) * 100;
         },
         async updateField(section, index, field, value) {
@@ -3292,6 +3131,9 @@ export default {
                 );
             }
         },
+        handleCloseSnackbar() {
+            this.showSnackbar = false; // تحديث حالة الرسالة في المكون الأم
+        },
         async saveChanges() {
             try {
                 const studentDoc = doc(db, "students", this.selectedStudent.id);
@@ -3308,6 +3150,8 @@ export default {
                     console.log("Document updated successfully");
                 }
                 // Reset changesMade and original data
+                this.confirmationText = "تم تعديل بيانات الطالب بنجاح";
+                this.showSnackbar = true;
                 this.changesMade = false;
                 this.originalStudentData = {};
             } catch (error) {
@@ -3321,8 +3165,31 @@ export default {
         saveChanges2() {
             this.updateMonthlyDegrees(this.selectedMonthlyDegrees); // Example to update Firebase
             this.changesMade2 = false;
+            this.confirmationText = "تم التعديل بنجاح ";
+            this.showSnackbar = true;
         },
-
+        calculatePaymentProgress(paid_Up, Expenses) {
+            if (Expenses === 0) {
+                return 0; // لتجنب القسمة على الصفر
+            }
+            return (paid_Up / Expenses) * 100;
+        },
+        calculateLabelPosition(paid_Up, Expenses) {
+            const progress = this.calculatePaymentProgress(paid_Up, Expenses);
+            return `calc(${progress}% - 50px)`; // تعديلات صغيرة على القيمة لضبط الموقع
+        },
+        // getMonthlyDegrees(student, month) {
+        //     const monthIndex = this.gradeOptions.indexOf(month);
+        //     if (monthIndex === -1) return 0;
+        //     const degrees =
+        //         student.Results[1].Monthly[monthIndex]?.Degrees || [];
+        //     let total = 0;
+        //     degrees.forEach((degree) => {
+        //         total += Number(degree.Student_degree);
+        //     });
+        //     const maxDegrees = degrees.length * 100;
+        //     return (total / maxDegrees) * 100;
+        // },
         async fetchStudents() {
             try {
                 const q = query(
@@ -3353,48 +3220,37 @@ export default {
         async submit() {
             if (this.validateForm()) {
                 try {
-                    // التأكد من أن تاريخ الميلاد يتم تخزينه كسلسلة منسقة
                     const formattedBirthday = this.formatDate(
                         new Date(this.form.birthday)
                     );
 
-                    // إضافة الطالب إلى مجموعة "students" باستخدام `student_id` المخصص
-                    await setDoc(doc(db, "students", this.form.student_id), {
-                        student_name: this.form.student_name,
-                        class: this.form.class,
-                        gender: this.form.gender,
-                        section: this.form.section,
-                        birthday: formattedBirthday,
-                        Results: this.form.Results,
-                        payments: this.form.payments,
-                        Notifications: this.form.Notifications,
-                        photos: this.form.photos,
-                        educational_level: this.year,
-                        year: new Date().getFullYear(),
-                        National_id: this.form.parent_national_id, // إضافة National_id هنا
+                    const studentData = {
+                        student_name: this.form.student_name || "",
+                        class: this.form.class || "",
+                        gender: this.form.gender || "",
+                        section: this.form.section || "",
+                        birthday: formattedBirthday || "",
+                        Results: this.form.Results || [],
+                        payments: this.form.payments || {},
+                        Notifications: this.form.Notifications || [],
+                        photos: this.form.photos || [],
+                        educational_level: this.form.educational_level || "",
+                        year:
+                            this.form.year ||
+                            new Date().getFullYear().toString(),
+                        National_id: this.form.parent_national_id || "",
                         state: true,
-                        password: this.form.password, // إضافة الباسوورد هنا
-                        phone: this.form.phone,
-                    });
+                    };
+
+                    await setDoc(
+                        doc(db, "students", this.form.student_id),
+                        studentData
+                    );
 
                     const newStudent = {
                         id: this.form.student_id,
-                        student_name: this.form.student_name,
-                        class: this.form.class,
-                        gender: this.form.gender,
-                        section: this.form.section,
-                        birthday: formattedBirthday,
-                        Results: this.form.Results,
-                        payments: this.form.payments,
-                        Notifications: this.form.Notifications,
-                        photos: this.form.photos,
-                        year: new Date().getFullYear(),
-                        National_id: this.form.parent_national_id, // إضافة National_id هنا
-                        state: true,
-                        password: this.form.password, // إضافة الباسوورد هنا
-                        phone: this.form.phone,
+                        ...studentData,
                     };
-
                     this.students.push(newStudent);
 
                     // تحقق من وجود مستند "Parents" بالرقم القومي
@@ -3406,39 +3262,93 @@ export default {
                     const parentDoc = await getDoc(parentDocRef);
 
                     if (parentDoc.exists()) {
-                        // إذا كان المستند موجوداً، فقط قم بإضافة اسم الطالب إلى قائمة Child
                         await setDoc(
                             parentDocRef,
                             {
                                 Child: arrayUnion({
                                     student_name: this.form.student_name,
-                                    educational_level: this.year,
+                                    educational_level:
+                                        this.form.educational_level,
                                     class: this.form.class,
                                     natioal_id: this.form.student_id,
                                 }),
                             },
                             { merge: true }
                         );
-
                         console.log(
                             "Updated existing parent document successfully"
                         );
                     } else {
-                        // إذا لم يكن المستند موجوداً، قم بإنشاء مستند جديد
                         await setDoc(parentDocRef, {
                             name: this.form.parent_name,
                             National_id: this.form.parent_national_id,
                             Child: [
                                 {
                                     student_name: this.form.student_name,
-                                    educational_level: this.year,
+                                    educational_level:
+                                        this.form.educational_level,
                                     class: this.form.class,
                                     natioal_id: this.form.student_id,
                                 },
                             ],
                         });
-
                         console.log("Created new parent document successfully");
+                    }
+
+                    // الحصول على مستند `class_rooms` بناءً على قيمة `grade`
+                    const classRoomsRef = collection(db, "class_rooms");
+                    const classRoomsSnapshot = await getDocs(classRoomsRef);
+                    let classRoomDoc = null;
+
+                    classRoomsSnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        if (data.grade === this.form.educational_level) {
+                            classRoomDoc = doc;
+                        }
+                    });
+
+                    if (classRoomDoc) {
+                        const classRoomRef = doc(
+                            db,
+                            "class_rooms",
+                            classRoomDoc.id
+                        );
+                        const classRoomData = classRoomDoc.data();
+                        const totalStudents =
+                            (classRoomData.total_students || 0) + 1;
+
+                        // تحديث عدد الطلاب الذكور والإناث
+                        const studentsGender =
+                            classRoomData.students_gender || {
+                                female: 0,
+                                male: 0,
+                            };
+                        if (this.form.gender === "ذكر") {
+                            studentsGender.male =
+                                (studentsGender.male || 0) + 1;
+                        } else if (this.form.gender === "أنثى") {
+                            studentsGender.female =
+                                (studentsGender.female || 0) + 1;
+                        }
+
+                        await setDoc(
+                            classRoomRef,
+                            {
+                                total_students: totalStudents,
+                                students_gender: studentsGender,
+                            },
+                            { merge: true }
+                        );
+
+                        console.log(
+                            "Class room updated with total students:",
+                            totalStudents
+                        );
+                    } else {
+                        console.error(
+                            "No matching class room found for grade:",
+                            this.form.educational_level
+                        );
                     }
 
                     this.dialog_addstudent = false;
@@ -3447,13 +3357,86 @@ export default {
                     this.dialogStore.hideAddStudentDialog();
                     this.$emit("close-dialog");
                     console.log("Added new student:", newStudent);
-                    // إعداد نص الرسالة وتفعيل Snackbar
+
                     this.confirmationText = "تم إضافة الطالب بنجاح";
                     this.showSnackbar = true;
                     await this.fetchStudents();
                 } catch (error) {
                     console.error("Error adding document:", error);
                 }
+            }
+        },
+
+        async deleteStudent(id) {
+            try {
+                const studentDoc = await getDoc(doc(db, "students", id));
+                const studentData = studentDoc.data();
+                const educationalLevel = studentData.educational_level;
+
+                await deleteDoc(doc(db, "students", id));
+                this.students = this.students.filter(
+                    (student) => student.id !== id
+                );
+
+                // الحصول على مستند `class_rooms` بناءً على قيمة `grade`
+                const classRoomsRef = collection(db, "class_rooms");
+                const classRoomsSnapshot = await getDocs(classRoomsRef);
+                let classRoomDoc = null;
+
+                classRoomsSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.grade === educationalLevel) {
+                        classRoomDoc = doc;
+                    }
+                });
+
+                if (classRoomDoc) {
+                    const classRoomRef = doc(
+                        db,
+                        "class_rooms",
+                        classRoomDoc.id
+                    );
+                    const classRoomData = classRoomDoc.data();
+                    const totalStudents =
+                        (classRoomData.total_students || 0) - 1;
+
+                    // تحديث عدد الطلاب الذكور والإناث
+                    const studentsGender = classRoomData.students_gender || {
+                        male: 0,
+                        female: 0,
+                    };
+                    if (studentData.gender === "ذكر") {
+                        studentsGender.male = (studentsGender.male || 0) - 1;
+                    } else if (studentData.gender === "أنثى") {
+                        studentsGender.female =
+                            (studentsGender.female || 0) - 1;
+                    }
+
+                    await setDoc(
+                        classRoomRef,
+                        {
+                            total_students: totalStudents,
+                            students_gender: studentsGender,
+                        },
+                        { merge: true }
+                    );
+
+                    console.log(
+                        "Class room updated with total students:",
+                        totalStudents
+                    );
+                } else {
+                    console.error(
+                        "No matching class room found for grade:",
+                        educationalLevel
+                    );
+                }
+
+                this.confirmationText = "تم مسح الطالب بنجاح";
+                this.showSnackbar = true;
+                console.log("Deleted student with id:", id);
+            } catch (error) {
+                console.error("Error deleting document:", error);
             }
         },
         formatDate(date) {
@@ -3489,20 +3472,7 @@ export default {
                 this.closeDeleteDialog();
             }
         },
-        async deleteStudent(id) {
-            try {
-                await deleteDoc(doc(db, "students", id));
-                this.students = this.students.filter(
-                    (student) => student.id !== id
-                );
-                // إعداد نص الرسالة وتفعيل Snackbar
-                this.confirmationText = "تم مسح الطالب بنجاح";
-                this.showSnackbar = true;
-                console.log("Deleted student with id:", id);
-            } catch (error) {
-                console.error("Error deleting document:", error);
-            }
-        },
+
         handleReset() {
             this.form = {
                 educational_level: this.year,
@@ -3781,10 +3751,10 @@ export default {
             let isValid = true;
             // Clear previous error messages
             // Validation rules
-            // if (!this.form.student_information[0].student_name) {
-            //     this.errors.student_name.push("اسم الطالب مطلوب.");
-            //     isValid = false;
-            // }
+            if (!this.form.student_name) {
+                this.errors.student_name.push("اسم الطالب مطلوب.");
+                isValid = false;
+            }
             // if (!this.form.student_information[1].class) {
             //     this.errors.class.push("الفصل مطلوب.");
             // }
@@ -3872,7 +3842,7 @@ export default {
         // 44444444444444444444444444444444444444444
         async loadParentDetails(National_id) {
             if (!National_id) {
-                console.error("No National_id provided");
+                // console.error("No National_id provided");
                 return;
             }
 
@@ -4177,11 +4147,6 @@ export default {
                         theDescription: this.AddNotice.theDescription,
                         NotificationType: this.AddNotice.NotificationType,
                     };
-                    this.send_Notification(
-                        this.AddNotice.NoticeTitle,
-                        this.AddNotice.theDescription,
-                        "student_notification"
-                    );
                     // إعداد نص الرسالة وتفعيل Snackbar
                     this.confirmationText = "تم  اضافه الاشعار بنجاح";
                     this.showSnackbar = true;
@@ -4247,20 +4212,27 @@ export default {
                             studentData
                         );
 
+                        // الحصول على الوقت الحالي بصيغة مناسبة
+                        const photoTime = new Date().toLocaleString("ar-EG", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                        });
+
                         studentData.photos.push({
-                            DatePhoto: this.AddPhoto.Date,
+                            DatePhoto: photoTime,
                             linkphoto: downloadURL,
                         });
                         await updateDoc(studentRef, studentData);
                         this.dialogAddPhoto = false;
 
-                        studentData.photos = {
-                            DatePhoto: "",
-                            linkphoto: null,
-                        };
+                        // إعادة تعيين النموذج بعد الإضافة
                         this.AddPhoto = {
                             Date: "",
-                            link: null,
+                            file: null,
                         };
                         // إعداد نص الرسالة وتفعيل Snackbar
                         this.confirmationText = "تم  اضافه الصوره بنجاح";
@@ -4483,8 +4455,8 @@ export default {
                 "شهر نوفمبر",
                 "شهر ديسمبر",
                 "الترم الأول",
-                "شهر نوفمبر",
-                "الترم الأول",
+                "شهر فبراير",
+                "شهر مارس",
             ];
             return monthNames[month - 1] || month;
         },
@@ -4503,7 +4475,8 @@ export default {
                     "payments.paid_Up": student.payments.paid_Up ?? 0,
                     "payments.Residual": this.getResidual(student.id),
                 };
-
+                this.confirmationText = "تم التعديل بنجاح ";
+                this.showSnackbar = true;
                 updateDoc(studentRef, updateData)
                     .then(() => {
                         console.log("Document successfully updated!");
@@ -4560,13 +4533,6 @@ export default {
             this.formattedDate = this.formatDate(newVal);
         },
 
-        selectedMonthlyDegrees: {
-            handler() {
-                // Save changes to Firebase
-                this.changesMade2 = true;
-            },
-            deep: true,
-        },
         "form.payments.Expenses"() {
             this.updateResidual();
         },
@@ -4575,6 +4541,7 @@ export default {
         },
     },
     computed: {
+        ...mapState(useAuthStore, ["user"]),
         // icon() {
         //     return this.isPressed ? "mdi-eye-off" : "mdi-eye";
         // },
@@ -4648,6 +4615,7 @@ export default {
             }
             this.value += 10;
         }, 100);
+
         this.students = this.$parent.students_class;
         // مثال لاستدعاء الدالة
         this.loadParentDetails(this.form.parent_national_id);
@@ -5222,7 +5190,7 @@ th {
 .v-row {
     margin: 10px;
     display: flex;
-    gap: 10px;
+    // gap: 10px;
     align-items: center;
     & > div {
         width: 48%;
@@ -5376,6 +5344,49 @@ th {
         }
     }
 }
+.student-progress {
+    margin-bottom: 20px;
+}
+
+.progress-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 32px;
+    background: #e3f1fd;
+}
+
+.progress-label2 {
+    position: absolute;
+    top: -95%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    white-space: nowrap;
+}
+.label-box {
+    position: relative;
+    background-color: #007bff;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.label-box::after {
+    content: "";
+    position: absolute;
+    bottom: -10px; /* وضع السهم أسفل المربع */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #007bff; /* نفس لون خلفية المربع */
+}
 .custom-icon {
     font-size: 36px; /* يمكنك تعديل الحجم هنا */
 }
@@ -5383,7 +5394,10 @@ th {
 .animated-icon {
     transition: transform 0.3s ease-in-out;
 }
-
+.active-card {
+    background-color: rgb(12, 55, 100) !important;
+    color: #fff !important;
+}
 .animated-icon:hover {
     transform: scale(1.2); /* تكبير الأيقونة عند التمرير فوقها */
 }

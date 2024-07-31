@@ -149,6 +149,7 @@
                                 v-model="New.description"
                                 id="Description"
                                 :editor="editor"
+                                :config="editorConfig"
                                 @input="updateCharCount"
                                 ref="ckeditor"
                             ></ckeditor>
@@ -263,6 +264,7 @@
                                 v-model="news.Description_Information"
                                 id="Description"
                                 :editor="editor"
+                                :config="editorConfig"
                                 @input="updateCharCount2"
                                 ref="ckeditor"
                             ></ckeditor>
@@ -337,9 +339,10 @@
                                     {{ New.time.toDate().toLocaleString() }}
                                 </div>
                             </div>
-                            <div class="description">
-                                {{ New.description }}
-                            </div>
+                            <div
+                                class="description"
+                                v-html="New.description"
+                            ></div>
                         </div>
                     </div>
                     <!-- Display each photo -->
@@ -461,6 +464,7 @@ import Empty_error from "@/components/Empty_error.vue";
 import confirm_message from "@/components/confirm_message.vue";
 export default defineComponent({
     inject: ["Emitter"],
+
     mounted() {
         this.editor.defaultConfig = {
             toolbar: {
@@ -484,6 +488,12 @@ export default defineComponent({
             editor: ClassicEditor,
             charCount: 0,
             maxChars: 150,
+            editorConfig: {
+                language: {
+                    ui: "ar",
+                    content: "ar",
+                },
+            },
         };
     },
     methods: {

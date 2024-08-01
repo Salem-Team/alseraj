@@ -13,6 +13,9 @@
                 >
             </div>
             <div>
+                <router-link class="a" to="/profile">الملف</router-link>
+            </div>
+            <div>
                 <router-link
                     class="a"
                     to="/Parent_Dashboard"

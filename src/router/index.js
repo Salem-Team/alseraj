@@ -7,8 +7,7 @@ import HomeView from "../views/HomeView.vue";
 import UserLogin from "../views/USerLogin.vue";
 import Parent_Dashboard from "../views/Parent_Dashboard.vue";
 import Student_Dashboard from "../views/Student_Dashboard.vue";
-import admin_Dashboard from "../views/admin_Dashboard.vue";
-import Edit_profile from "../views/Edit_profile.vue";
+import profile_view from "../views/profile_view.vue";
 import Top_Board from "../views/Top_Board.vue";
 import Add_News from "../views/Add_News.vue";
 import Add_job from "../views/Add_job.vue";
@@ -61,16 +60,10 @@ const routes = [
         meta: { requiresAuth: true, requiredAuthority: "admin" },
     },
     {
-        path: "/admin_dashboard",
-        name: "admin_Dashboard",
-        component: admin_Dashboard,
-        meta: { requiresAuth: true, requiredAuthority: "admin" },
-    },
-    {
-        path: "/Edit_profile",
-        name: "Edit_profile",
-        component: Edit_profile,
-        meta: { requiresAuth: true, requiredAuthority: "admin" },
+        path: "/profile",
+        name: "profile_view",
+        component: profile_view,
+        meta: { requiresAuth: true },
     },
     {
         path: "/Photo_Gallery",

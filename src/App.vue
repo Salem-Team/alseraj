@@ -13,7 +13,12 @@
                 >
             </div>
             <div>
-                <router-link class="a" to="/profile">الملف</router-link>
+                <router-link
+                    class="a"
+                    to="/profile"
+                    v-if="user.National_id !== '' || user.id !== ''"
+                    >الملف</router-link
+                >
             </div>
             <div>
                 <router-link

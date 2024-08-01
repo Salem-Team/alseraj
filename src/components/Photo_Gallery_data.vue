@@ -26,7 +26,7 @@
                 class="card"
                 v-for="photo in Photos"
                 :key="photo.id"
-                width="24%"
+                width="30%"
                 @click.="photos.photo_Information(photo)"
                 @click="dialog_6 = true"
             >
@@ -214,6 +214,8 @@ export default defineComponent({
 .box {
     flex-wrap: wrap !important; /* Wrap items inside container */
     gap: 10px !important; /* Gap between items */
+    width: 90% !important;
+    margin: 0 auto !important;
 }
 .v-btn--variant-outlined {
     border: none;

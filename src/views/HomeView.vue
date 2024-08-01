@@ -16,21 +16,23 @@
             style="width: 100% !important; margin: auto; padding: 0px"
         >
             <div
-                class="d-flex w-100 align-center px-4"
+                class="c_footer px-4 w-100 d-flex align-center"
                 style="background: var(--main-color); color: white"
             >
-                <strong>تواصل معنا من خلال مواقع التواصل الاجتماعي</strong>
+                <strong class="c_footer"
+                    >تواصل معنا من خلال مواقع التواصل الاجتماعي</strong
+                >
 
                 <v-spacer></v-spacer>
-
-                <v-btn
-                    v-for="icon in icons"
-                    :key="icon"
-                    :icon="icon"
-                    class="mx-4"
-                    size="small"
-                    variant="plain"
-                ></v-btn>
+                <div class="icons mx-4 d-flex align-center">
+                    <v-btn
+                        v-for="icon in icons"
+                        :key="icon"
+                        :icon="icon"
+                        size="small"
+                        variant="plain"
+                    ></v-btn>
+                </div>
             </div>
 
             <div
@@ -224,6 +226,13 @@ form {
     }
 }
 @media (max-width: 700px) {
+    .c_footer {
+        flex-direction: column !important;
+    }
+    .icons {
+        flex-direction: row !important;
+    }
+
     .parallax {
         height: 40vh !important;
         #text {

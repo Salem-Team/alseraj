@@ -127,7 +127,7 @@
                                         <div>الطلاب</div>
                                         <div>
                                             <span>{{
-                                                classroom.total_students
+                                                classroom.total_students || 0
                                             }}</span>
                                             طالب
                                         </div>
@@ -136,7 +136,8 @@
                                         <div>ذكر</div>
                                         <div>
                                             <span>{{
-                                                classroom.students_gender.male
+                                                classroom.students_gender
+                                                    .male || 0
                                             }}</span>
                                             طالب
                                         </div>
@@ -145,7 +146,8 @@
                                         <div>أنثى</div>
                                         <div>
                                             <span>{{
-                                                classroom.students_gender.female
+                                                classroom.students_gender
+                                                    .female || 0
                                             }}</span>
                                             طالبة
                                         </div>
@@ -164,7 +166,7 @@
                                         <div>عربي</div>
                                         <div>
                                             <span>{{
-                                                classroom.sections.arabic
+                                                classroom.sections.arabic || 0
                                             }}</span>
                                             طالب
                                         </div>
@@ -173,7 +175,7 @@
                                         <div>لغات</div>
                                         <div>
                                             <span>{{
-                                                classroom.sections.english
+                                                classroom.sections.english || 0
                                             }}</span>
                                             طالب
                                         </div>
@@ -201,7 +203,7 @@
                                         <div>المصروفات المستحقة</div>
                                         <div>
                                             <span>{{
-                                                classroom.fees.due_fees
+                                                classroom.fees.due_fees || 0
                                             }}</span>
                                             جنية
                                         </div>
@@ -210,7 +212,7 @@
                                         <div>المصروفات المدفوعة</div>
                                         <div>
                                             <span>{{
-                                                classroom.fees.paid_fees
+                                                classroom.fees.paid_fees || 0
                                             }}</span>
                                             جنية
                                         </div>
@@ -219,7 +221,8 @@
                                         <div>المصروفات المتبقية</div>
                                         <div>
                                             <span>{{
-                                                classroom.fees.remaining_fees
+                                                classroom.fees.remaining_fees ||
+                                                0
                                             }}</span>
                                             جنية
                                         </div>
@@ -233,6 +236,12 @@
                                         :id="'myChart_3_' + classroom.id"
                                     ></canvas>
                                 </div>
+                                <ul>
+                                    <li>
+                                        <div>إجمالي درجات الطلاب</div>
+                                        <div></div>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -321,19 +330,19 @@ export default {
                             classroom.results
                         ) {
                             createChart("myChart_" + classroom.id, [
-                                classroom.students_gender.male,
-                                classroom.students_gender.female,
+                                classroom.students_gender.male || 0,
+                                classroom.students_gender.female || 0,
                             ]);
                             createChart_1("myChart_1_" + classroom.id, [
-                                classroom.sections.arabic,
-                                classroom.sections.english,
+                                classroom.sections.arabic || 0,
+                                classroom.sections.english || 0,
                             ]);
                             createChart_2("myChart_2_" + classroom.id, [
-                                classroom.fees.paid_fees,
-                                classroom.fees.remaining_fees,
+                                classroom.fees.paid_fees || 0,
+                                classroom.fees.remaining_fees || 0,
                             ]);
                             createChart_3("myChart_3_" + classroom.id, [
-                                classroom.results,
+                                classroom.results || 0,
                             ]);
                             // Animate card when the component mounts
                             gsap.fromTo(
@@ -372,9 +381,9 @@ export default {
                     data: {
                         datasets: [
                             {
-                                label: "الطلاب",
+                                label: "الجنس",
                                 data: data,
-                                backgroundColor: ["#a34a6e", "#d8588c"],
+                                backgroundColor: ["#7a7a7a7a", "#d8588cc4"],
                                 hoverOffset: 4,
                             },
                         ],
@@ -444,7 +453,7 @@ export default {
                                     (label) => results[0][label] || 0
                                 ),
                                 borderColor: "rgba(255, 99, 132, 1)",
-                                backgroundColor: "rgba(255, 99, 132, 0.2)",
+                                backgroundColor: "#d8588c",
                                 stack: "combined",
                                 type: "bar",
                             },
@@ -767,7 +776,29 @@ img.pluse {
             padding: 10px;
             flex-direction: column;
             gap: 10px;
-            justify-content: space-between;
+            justify-content: start;
+            &:first-child {
+                ul li {
+                    &:not(.li)::before {
+                        background: #7a7a7a7a;
+                    }
+
+                    &:last-of-type:not(.li) {
+                        &::before {
+                            background: #d8588cc4;
+                        }
+                    }
+                }
+            }
+            &:nth-child(2) {
+                ul li {
+                    &:last-of-type:not(.li) {
+                        &::before {
+                            background: #72a8dd;
+                        }
+                    }
+                }
+            }
             &.big {
                 width: 100%;
                 & > div {
@@ -808,6 +839,7 @@ img.pluse {
                     gap: 10px;
                     & > div {
                         font-weight: bold;
+                        font-size: 16px;
                     }
                     & > div:last-child {
                         color: var(--therd-color);

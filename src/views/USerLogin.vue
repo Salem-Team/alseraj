@@ -90,8 +90,10 @@ export default {
                         ) {
                             authenticatedUser = {
                                 id: doc.id,
+                                National_id: doc.data().National_id,
                                 name: doc.data().name,
                                 userType: "parent",
+                                password: doc.data().parent_pass,
                             };
                         }
                     });
@@ -138,12 +140,14 @@ export default {
                     querySnapshot.forEach((doc) => {
                         if (
                             doc.id === this.National_id &&
-                            doc.data().password === this.password
+                            doc.data().student_pass === this.password
                         ) {
                             authenticatedUser = {
                                 id: doc.id,
+                                National_id: doc.data().National_id,
                                 name: doc.data().student_name,
                                 userType: "student",
+                                password: doc.data().student_pass,
                             };
                         }
                     });
@@ -162,9 +166,11 @@ export default {
                     await this.login(
                         authenticatedUser.id,
                         authenticatedUser.email || "",
+                        authenticatedUser.National_id || "",
                         authenticatedUser.userType,
                         authenticatedUser.roles || [],
-                        authenticatedUser.name
+                        authenticatedUser.name,
+                        authenticatedUser.password
                     );
 
                     // Redirect based on user type
@@ -196,7 +202,7 @@ export default {
                 this.National_id = "1210987654321";
                 this.password = "123456";
             } else if (newValue === "student") {
-                this.National_id = "1233214569585202";
+                this.National_id = "111";
                 this.password = "111";
             }
         },

@@ -168,6 +168,12 @@
 
                                 <v-tab value="seven1">
                                     <img
+                                        src="../assets/student/depositphotos_193076800-stock-illustration-girl-student-gets-ready-for.jpg"
+                                        alt=""
+                                        width="30px"
+                                /></v-tab>
+                                <v-tab value="seven2">
+                                    <img
                                         src="../assets/student/analysis.svg"
                                         alt=""
                                         width="30px"
@@ -844,6 +850,19 @@
                                                 </div>
                                             </v-card>
                                         </v-tabs-window-item>
+                                        <v-tabs-window-item value="seven2">
+                                            <v-card flat>
+                                                <div
+                                                    class="title"
+                                                    style="margin-bottom: 20px"
+                                                >
+                                                    الدرجات الشهريه
+                                                </div>
+                                                <student-chart
+                                                    :studentId="studentId"
+                                                />
+                                            </v-card>
+                                        </v-tabs-window-item>
                                         <v-tabs-window-item value="se11">
                                             <v-card flat v-if="student">
                                                 <div
@@ -971,10 +990,13 @@ import "jspdf-autotable";
 import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 import { mapActions } from "pinia";
 import { usenotification } from "../store/notification.js";
+import studentChart from "@/components/student/student_chart.vue";
 
 export default {
+    components: { studentChart },
     data() {
         return {
+            studentId: this.$route.params.id,
             exams: [],
             studySchedules: [],
             photos: [],

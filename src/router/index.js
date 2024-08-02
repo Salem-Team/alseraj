@@ -17,7 +17,6 @@ import Photos_more from "../views/Photos_more.vue";
 import Photo_Gallery from "../views/Photo_Gallery.vue";
 import Add_admin from "../views/Add_admin.vue";
 import Add_teacher from "../views/Add_teachers.vue";
-import student_charts from "../views/student_charts.vue";
 import ChildDetails from "../views/ChildDetails.vue";
 
 const routes = [
@@ -97,12 +96,7 @@ const routes = [
         component: Add_admin,
         meta: { requiresAuth: true, requiredAuthority: "admin" },
     },
-    {
-        path: "/student-charts",
-        name: "student_charts",
-        component: student_charts,
-        meta: { requiresAuth: true, requiredAuthority: "parent" },
-    },
+
     {
         path: "/Add_teacher",
         name: "Add_teacher",

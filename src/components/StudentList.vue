@@ -456,7 +456,7 @@
                                                         "
                                                         label="الجنس"
                                                         required
-                                                        :items="['انثي', 'ذكر']"
+                                                        :items="['أنثى', 'ذكر']"
                                                         variant="outlined"
                                                         @blur="markChanges"
                                                     ></v-select>
@@ -3033,6 +3033,10 @@ export default {
         this.years = new Date().getFullYear();
     },
     methods: {
+        getResidual(studentId) {
+            const student = this.students.find((s) => s.id === studentId);
+            return student.payments.Expenses - student.payments.paid_Up;
+        },
         async loadStudents() {
             try {
                 const studentsSnapshot = await getDocs(
@@ -3102,6 +3106,151 @@ export default {
             // Call updateFirebaseField to update Firestore
             await this.updateFirebaseField();
         },
+        async saveChanges() {
+            try {
+                // الحصول على بيانات الطالب الأصلية
+                const studentDocRef = doc(
+                    db,
+                    "students",
+                    this.selectedStudent.id
+                );
+                const studentDoc = await getDoc(studentDocRef);
+                const originalStudentData = studentDoc.data();
+
+                // تحقق من وجود تغييرات
+                if (this.changesMade) {
+                    // تحديث مستند الطالب
+                    await updateDoc(studentDocRef, {
+                        student_name: this.selectedStudent.student_name,
+                        class: this.selectedStudent.class,
+                        gender: this.selectedStudent.gender,
+                        section: this.selectedStudent.section,
+                        birthday: this.selectedStudent.birthday,
+                    });
+
+                    // تحديث بيانات الفصل بناءً على التغييرات
+                    await this.updateClassRoomData(
+                        originalStudentData,
+                        this.selectedStudent
+                    );
+
+                    console.log("Document updated successfully");
+                }
+
+                // إعادة تعيين التغييرات والبيانات الأصلية
+                this.confirmationText = "تم تعديل بيانات الطالب بنجاح";
+                this.showSnackbar = true;
+                this.changesMade = false;
+                this.originalStudentData = {};
+            } catch (error) {
+                console.error("Error updating document:", error);
+            }
+        },
+
+        async updateClassRoomData(originalData, updatedData) {
+            try {
+                // الحصول على بيانات الفصل بناءً على المستوى التعليمي
+                const classRoomsRef = collection(db, "class_rooms");
+                const classRoomsSnapshot = await getDocs(classRoomsRef);
+                let classRoomDoc = null;
+
+                classRoomsSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.grade === updatedData.educational_level) {
+                        classRoomDoc = doc;
+                    }
+                });
+
+                if (classRoomDoc) {
+                    const classRoomRef = doc(
+                        db,
+                        "class_rooms",
+                        classRoomDoc.id
+                    );
+                    const classRoomData = classRoomDoc.data();
+
+                    // تحديث عدد الطلاب والجنس إذا لزم الأمر
+                    const totalStudents = classRoomData.total_students || 0;
+                    const studentsGender = classRoomData.students_gender || {
+                        male: 0,
+                        female: 0,
+                    };
+                    const sections = classRoomData.sections || {
+                        arabic: 0,
+                        english: 0,
+                    };
+
+                    // تعديل عدد الطلاب حسب الجنس إذا تغير
+                    if (originalData.gender !== updatedData.gender) {
+                        // تقليل عدد الطلاب من الجنس القديم
+                        if (originalData.gender === "ذكر") {
+                            studentsGender.male =
+                                (studentsGender.male || 0) - 1;
+                        } else if (originalData.gender === "أنثى") {
+                            studentsGender.female =
+                                (studentsGender.female || 0) - 1;
+                        }
+
+                        // زيادة عدد الطلاب للجنس الجديد
+                        if (updatedData.gender === "ذكر") {
+                            studentsGender.male =
+                                (studentsGender.male || 0) + 1;
+                        } else if (updatedData.gender === "أنثى") {
+                            studentsGender.female =
+                                (studentsGender.female || 0) + 1;
+                        }
+                    }
+
+                    // تعديل عدد الطلاب في الأقسام إذا تغير القسم
+                    if (originalData.section !== updatedData.section) {
+                        // تقليل عدد الطلاب من القسم القديم
+                        if (originalData.section === "عربي") {
+                            sections.arabic = (sections.arabic || 0) - 1;
+                        } else if (originalData.section === "لغات") {
+                            sections.english = (sections.english || 0) - 1;
+                        }
+
+                        // زيادة عدد الطلاب للقسم الجديد
+                        if (updatedData.section === "عربي") {
+                            sections.arabic = (sections.arabic || 0) + 1;
+                        } else if (updatedData.section === "لغات") {
+                            sections.english = (sections.english || 0) + 1;
+                        }
+                    }
+
+                    // تحديث إجمالي عدد الطلاب
+                    await setDoc(
+                        classRoomRef,
+                        {
+                            total_students: totalStudents,
+                            students_gender: studentsGender,
+                            sections: sections,
+                        },
+                        { merge: true }
+                    );
+
+                    console.log("Class room updated with new data");
+                } else {
+                    console.error(
+                        "No matching class room found for grade:",
+                        updatedData.educational_level
+                    );
+                }
+            } catch (error) {
+                console.error("Error updating class room data:", error);
+            }
+        },
+
+        markChanges() {
+            // Mark changes only, without updating Firebase
+            if (!this.changesMade) {
+                this.changesMade = true;
+                // Optionally, you can also store the original data for comparison
+                this.originalStudentData = JSON.parse(
+                    JSON.stringify(this.selectedStudent)
+                );
+            }
+        },
 
         async updateFirebaseField() {
             try {
@@ -3121,53 +3270,119 @@ export default {
                 console.error("Error updating document:", error);
             }
         },
-        markChanges() {
-            // Mark changes only, without updating Firebase
-            if (!this.changesMade) {
-                this.changesMade = true;
-                // Optionally, you can also store the original data for comparison
-                this.originalStudentData = JSON.parse(
-                    JSON.stringify(this.selectedStudent)
-                );
-            }
-        },
+
         handleCloseSnackbar() {
             this.showSnackbar = false; // تحديث حالة الرسالة في المكون الأم
         },
-        async saveChanges() {
-            try {
-                const studentDoc = doc(db, "students", this.selectedStudent.id);
-                // Update only if changes were marked
 
-                if (this.changesMade) {
-                    await updateDoc(studentDoc, {
-                        student_name: this.selectedStudent.student_name,
-                        class: this.selectedStudent.class,
-                        gender: this.selectedStudent.gender,
-                        section: this.selectedStudent.section,
-                        birthday: this.selectedStudent.birthday,
-                    });
-                    console.log("Document updated successfully");
-                }
-                // Reset changesMade and original data
-                this.confirmationText = "تم تعديل بيانات الطالب بنجاح";
-                this.showSnackbar = true;
-                this.changesMade = false;
-                this.originalStudentData = {};
-            } catch (error) {
-                console.error("Error updating document:", error);
-            }
-        },
         selectMonth(month) {
             this.selectedMonth = month;
             // Fetch the data for the selected month
         },
-        saveChanges2() {
-            this.updateMonthlyDegrees(this.selectedMonthlyDegrees); // Example to update Firebase
-            this.changesMade2 = false;
-            this.confirmationText = "تم التعديل بنجاح ";
-            this.showSnackbar = true;
+        async saveChanges2() {
+            try {
+                // حساب درجات جميع الطلاب لكل شهر
+                let monthlyTotals = {
+                    "شهر أكتوبر": 0,
+                    "شهر نوفمبر": 0,
+                    "الترم الأول": 0,
+                    "شهر فبراير": 0,
+                    "شهر مارس": 0,
+                    "الترم الثاني": 0,
+                };
+
+                // جمع درجات كل طالب لكل شهر
+                this.sortedStudents.forEach((student) => {
+                    student.Results[1].Monthly.forEach((month) => {
+                        if (month.Certificate_title in monthlyTotals) {
+                            // جمع الدرجات النهائية لكل مادة في الشهر المحدد
+                            month.Degrees.forEach((subject) => {
+                                monthlyTotals[month.Certificate_title] +=
+                                    Number(subject.Student_degree) || 0;
+                            });
+                        }
+                    });
+                });
+
+                // تحديث مجموعة class_rooms بحقول الدرجات
+                const classRoomsRef = collection(db, "class_rooms");
+                const classRoomsSnapshot = await getDocs(classRoomsRef);
+                let classRoomDoc = null;
+
+                classRoomsSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // يمكنك تعديل الشرط هنا إذا كان لديك معايير أخرى لتحديد الفصل الدراسي
+                    if (data.grade === this.form.educational_level) {
+                        classRoomDoc = doc;
+                    }
+                });
+
+                if (classRoomDoc) {
+                    const classRoomRef = doc(
+                        db,
+                        "class_rooms",
+                        classRoomDoc.id
+                    );
+                    await updateDoc(classRoomRef, {
+                        "results.الترم الأول": monthlyTotals["الترم الأول"],
+                        "results.الترم الثاني": monthlyTotals["الترم الثاني"],
+                        "results.شهر أكتوبر": monthlyTotals["شهر أكتوبر"],
+                        "results.شهر نوفمبر": monthlyTotals["شهر نوفمبر"],
+                        "results.شهر فبراير": monthlyTotals["شهر فبراير"],
+                        "results.شهر مارس": monthlyTotals["شهر مارس"],
+                    });
+                    console.log("Class room results updated successfully");
+                } else {
+                    console.error(
+                        "No matching class room found for the selected grade"
+                    );
+                }
+
+                this.updateMonthlyDegrees(this.selectedMonthlyDegrees); // Example to update Firebase
+                this.changesMade2 = false;
+                this.confirmationText = "تم التعديل بنجاح ";
+                this.showSnackbar = true;
+            } catch (error) {
+                console.error("Error updating class room results: ", error);
+            }
         },
+
+        async updateMonthlyDegrees(degrees) {
+            if (!this.selectedStudent) {
+                console.error("Error: selectedStudent is null");
+                return;
+            }
+
+            try {
+                const studentRef = doc(db, "students", this.selectedStudent.id);
+
+                // Clone the current results to avoid mutating the original data
+                const updatedResults = [...this.selectedStudent.Results];
+
+                // Map through Monthly results to find and update the selected month
+                const updatedMonthly = updatedResults[1].Monthly.map(
+                    (month) => {
+                        if (month.Certificate_title === this.selectedMonth) {
+                            return { ...month, Degrees: degrees };
+                        }
+                        return month;
+                    }
+                );
+
+                // Update the Monthly field in updatedResults
+                updatedResults[1].Monthly = updatedMonthly;
+
+                // Update Firestore document with updatedResults
+                await updateDoc(studentRef, {
+                    Results: updatedResults,
+                });
+
+                console.log("Monthly degrees updated successfully");
+            } catch (error) {
+                console.error("Error updating monthly degrees:", error);
+            }
+        },
+
         calculatePaymentProgress(paid_Up, Expenses) {
             if (Expenses === 0) {
                 return 0; // لتجنب القسمة على الصفر
@@ -3295,7 +3510,7 @@ export default {
                         console.log("Created new parent document successfully");
                     }
 
-                    // الحصول على مستند `class_rooms` بناءً على قيمة `grade`
+                    // الحصول على مستند `class_rooms` بناءً على قيمة `grade` و `section`
                     const classRoomsRef = collection(db, "class_rooms");
                     const classRoomsSnapshot = await getDocs(classRoomsRef);
                     let classRoomDoc = null;
@@ -3331,11 +3546,24 @@ export default {
                                 (studentsGender.female || 0) + 1;
                         }
 
+                        // تحديث عدد الطلاب في القسم
+                        const sections = classRoomData.sections || {
+                            arabic: 0,
+                            english: 0,
+                        };
+                        if (this.form.section === "عربي") {
+                            sections.arabic = (sections.arabic || 0) + 1;
+                        } else if (this.form.section === "لغات") {
+                            sections.english = (sections.english || 0) + 1;
+                        }
+
+                        // تحديث البيانات في قاعدة البيانات
                         await setDoc(
                             classRoomRef,
                             {
                                 total_students: totalStudents,
                                 students_gender: studentsGender,
+                                sections: sections,
                             },
                             { merge: true }
                         );
@@ -3366,12 +3594,12 @@ export default {
                 }
             }
         },
-
         async deleteStudent(id) {
             try {
                 const studentDoc = await getDoc(doc(db, "students", id));
                 const studentData = studentDoc.data();
                 const educationalLevel = studentData.educational_level;
+                const section = studentData.section; // احصل على القسم
 
                 await deleteDoc(doc(db, "students", id));
                 this.students = this.students.filter(
@@ -3407,9 +3635,20 @@ export default {
                     };
                     if (studentData.gender === "ذكر") {
                         studentsGender.male = (studentsGender.male || 0) - 1;
-                    } else if (studentData.gender === "أنثى") {
+                    } else if (studentData.gender === "انثى") {
                         studentsGender.female =
                             (studentsGender.female || 0) - 1;
+                    }
+
+                    // تحديث عدد الطلاب في القسم
+                    const sections = classRoomData.sections || {
+                        arabic: 0,
+                        english: 0,
+                    };
+                    if (section === "عربي") {
+                        sections.arabic = (sections.arabic || 0) - 1;
+                    } else if (section === "لغات") {
+                        sections.english = (sections.english || 0) - 1;
                     }
 
                     await setDoc(
@@ -3417,6 +3656,7 @@ export default {
                         {
                             total_students: totalStudents,
                             students_gender: studentsGender,
+                            sections: sections,
                         },
                         { merge: true }
                     );
@@ -4315,41 +4555,7 @@ export default {
                 }
             }
         },
-        async updateMonthlyDegrees(degrees) {
-            if (!this.selectedStudent) {
-                this.console.error("Error: selectedStudent is null");
-                return;
-            }
 
-            try {
-                const studentRef = doc(db, "students", this.selectedStudent.id);
-
-                // Clone the current results to avoid mutating the original data
-                const updatedResults = [...this.selectedStudent.Results];
-
-                // Map through Monthly results to find and update the selected month
-                const updatedMonthly = updatedResults[1].Monthly.map(
-                    (month) => {
-                        if (month.Certificate_title === this.selectedMonth) {
-                            return { ...month, Degrees: degrees };
-                        }
-                        return month;
-                    }
-                );
-
-                // Update the Monthly field in updatedResults
-                updatedResults[1].Monthly = updatedMonthly;
-
-                // Update Firestore document with updatedResults
-                await updateDoc(studentRef, {
-                    Results: updatedResults,
-                });
-
-                console.log("Monthly degrees updated successfully");
-            } catch (error) {
-                console.error("Error updating monthly degrees:", error);
-            }
-        },
         handleInput() {
             // Track changes
             this.changesMade3 = true;
@@ -4423,10 +4629,7 @@ export default {
                     console.error("Error updating document: ", error);
                 });
         },
-        getResidual(studentId) {
-            const student = this.students.find((s) => s.id === studentId);
-            return student.payments.Expenses - student.payments.paid_Up;
-        },
+
         numberOfMonths(installmentPlan) {
             const monthsMap = {
                 شهر: 1,
@@ -4463,29 +4666,73 @@ export default {
         setChangesMade(status) {
             this.changesMade3 = status;
         },
-        saveChanges3() {
-            this.sortedStudents.forEach((student) => {
-                const studentRef = doc(db, "students", student.id);
-                const updateData = {
-                    "payments.Expenses": student.payments.Expenses ?? 0,
-                    "payments.payment_System":
-                        student.payments.payment_System ?? "",
-                    "payments.Installment_System":
-                        student.payments.Installment_System ?? "",
-                    "payments.paid_Up": student.payments.paid_Up ?? 0,
-                    "payments.Residual": this.getResidual(student.id),
-                };
-                this.confirmationText = "تم التعديل بنجاح ";
-                this.showSnackbar = true;
-                updateDoc(studentRef, updateData)
-                    .then(() => {
-                        console.log("Document successfully updated!");
-                        this.changesMade3 = false; // Reset the flag after saving
-                    })
-                    .catch((error) => {
-                        console.error("Error updating document: ", error);
+        async saveChanges3() {
+            try {
+                let totalExpenses = 0;
+                let totalPaid = 0;
+
+                // جمع مصروفات جميع الطلاب
+                this.sortedStudents.forEach((student) => {
+                    totalExpenses += +student.payments.Expenses ?? 0;
+                    totalPaid += +student.payments.paid_Up ?? 0;
+
+                    const studentRef = doc(db, "students", student.id);
+                    const updateData = {
+                        "payments.Expenses": student.payments.Expenses ?? 0,
+                        "payments.payment_System":
+                            student.payments.payment_System ?? "",
+                        "payments.Installment_System":
+                            student.payments.Installment_System ?? "",
+                        "payments.paid_Up": student.payments.paid_Up ?? 0,
+                        "payments.Residual": student.payments.Residual ?? 0,
+                    };
+
+                    updateDoc(studentRef, updateData)
+                        .then(() => {
+                            console.log("Document successfully updated!");
+                            this.changesMade3 = false; // Reset the flag after saving
+                        })
+                        .catch((error) => {
+                            console.error("Error updating document: ", error);
+                        });
+                });
+
+                // تحديث حقل remaining_fees في مجموعة class_rooms
+                const classRoomsRef = collection(db, "class_rooms");
+                const classRoomsSnapshot = await getDocs(classRoomsRef);
+                let classRoomDoc = null;
+
+                classRoomsSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    // يمكنك تعديل الشرط هنا إذا كان لديك معايير أخرى لتحديد الفصل الدراسي
+                    if (data.grade === this.form.educational_level) {
+                        classRoomDoc = doc;
+                    }
+                });
+
+                if (classRoomDoc) {
+                    const classRoomRef = doc(
+                        db,
+                        "class_rooms",
+                        classRoomDoc.id
+                    );
+                    await updateDoc(classRoomRef, {
+                        "fees.due_fees": +totalExpenses,
+                        "fees.paid_fees": +totalPaid,
+                        "fees.remaining_fees": +totalExpenses - +totalPaid,
                     });
-            });
+                    console.log(+totalExpenses - +totalPaid);
+                } else {
+                    console.error(
+                        "No matching class room found for the selected grade"
+                    );
+                }
+
+                this.confirmationText = "تم التعديل بنجاح";
+                this.showSnackbar = true;
+            } catch (error) {
+                console.error("Error updating class room fees: ", error);
+            }
         },
         updateResidual() {
             const expenses = this.form.payments.Expenses || 0;

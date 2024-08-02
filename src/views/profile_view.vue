@@ -316,7 +316,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .popup .title {
     padding: 20px 20px 0 !important;
     font-size: 23px;

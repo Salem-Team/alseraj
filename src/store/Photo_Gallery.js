@@ -143,11 +143,8 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                         },
                     }
                 );
-                console.log(
-                    "File uploaded successfully:",
-                    response.data.message
-                );
-                return response.data.message;
+                console.log("File uploaded successfully:", response);
+                return response.data;
             } catch (error) {
                 console.error(
                     "Error uploading file:",

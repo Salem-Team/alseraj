@@ -47,7 +47,7 @@ function multerFilter(req, file, cb) {
 const upload = multer({ storage: storage, fileFilter: multerFilter });
 
 const corsOptions = {
-    origin: "*",
+    origin: "https://alseraj.vercel.app",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,

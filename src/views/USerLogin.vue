@@ -78,8 +78,8 @@ export default {
     watch: {
         userType(newValue) {
             if (newValue === "parent") {
-                this.National_id = "1234567891011";
-                this.password = "123456";
+                this.National_id = "741";
+                this.password = "123";
             } else if (newValue === "admin") {
                 this.National_id = "1210987654321";
                 this.password = "123456";
@@ -102,7 +102,7 @@ export default {
                     querySnapshot.forEach((doc) => {
                         if (
                             doc.id === this.National_id &&
-                            doc.data().password === this.password
+                            doc.data().parent_pass === this.password
                         ) {
                             authenticatedUser = {
                                 id: doc.id,
@@ -111,6 +111,7 @@ export default {
                                 userType: "parent",
                                 email: "",
                                 roles: "",
+                                password: doc.data().parent_pass,
                             };
                         }
                     });
@@ -142,6 +143,7 @@ export default {
                                 userType: doc.data().userType,
                                 National_id: decryptedNational_id,
                                 roles: doc.data().roles,
+                                password: doc.data().password,
                             };
                         }
                     });
@@ -158,11 +160,12 @@ export default {
                         ) {
                             authenticatedUser = {
                                 id: doc.id,
-                                email: "",
+                                email: doc.data().email,
                                 name: doc.data().student_name,
                                 userType: "student",
                                 National_id: doc.id,
                                 roles: "",
+                                password: doc.data().password,
                             };
                         }
                     });
@@ -180,15 +183,17 @@ export default {
                 await this.login(
                     authenticatedUser.id,
                     authenticatedUser.email,
+                    authenticatedUser.National_id,
                     authenticatedUser.userType,
                     authenticatedUser.roles,
-                    authenticatedUser.name
+                    authenticatedUser.name,
+                    authenticatedUser.password
                 );
                 if (!this.error) {
                     if (authenticatedUser.userType === "parent") {
                         this.$router.push({ name: "Parent_Dashboard" });
                     } else if (authenticatedUser.userType === "admin") {
-                        this.$router.push({ name: "admin_Dashboard" });
+                        this.$router.push({ name: "profile_view" });
                     } else {
                         // تأكد من تمرير المعلمة id بشكل صحيح
                         this.$router.push({

@@ -26,7 +26,7 @@
                 class="card"
                 v-for="photo in Photos"
                 :key="photo.id"
-                width="24%"
+                width="30%"
                 @click.="photos.photo_Information(photo)"
                 @click="dialog_6 = true"
             >
@@ -35,22 +35,24 @@
                     :options="{ threshold: 0.5 }"
                     transition="fade-transition"
                 >
-                    <v-img
-                        v-if="photo.File_type == 'صورة'"
-                        :src="photo.image"
-                        height="200"
-                        cover
-                    ></v-img>
-                    <video
-                        v-if="photo.File_type == 'فيديو'"
-                        width="210"
-                        height="200"
-                        controls
-                    >
-                        <source :src="photo.video" type="video/mp4" />
+                    <div class="cards">
+                        <v-img
+                            v-if="photo.File_type == 'صورة'"
+                            :src="photo.image"
+                            height="200"
+                            cover
+                        ></v-img>
+                        <video
+                            v-if="photo.File_type == 'فيديو'"
+                            width="210"
+                            height="200"
+                            controls
+                        >
+                            <source :src="photo.video" type="video/mp4" />
 
-                        Your browser does not support the video tag.
-                    </video>
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
                 </v-lazy>
             </v-card>
         </div>
@@ -137,6 +139,7 @@ import { storeToRefs } from "pinia";
 import { defineComponent } from "vue";
 import { usePhoto_Gallery } from "@/store/Photo_Gallery.js";
 import Empty_error from "@/components/Empty_error.vue";
+import { gsap } from "gsap";
 export default defineComponent({
     inject: ["Emitter"],
     components: {
@@ -145,9 +148,6 @@ export default defineComponent({
     setup() {
         // Access the Photo Gallery store
         const photos = usePhoto_Gallery();
-
-        // Initialize or fetch data on component setup
-        photos.Get_splice(); // Retrieve initial set of photos
 
         // Destructure reactive references and methods from Photo Gallery store
         const {
@@ -184,6 +184,28 @@ export default defineComponent({
             photo_Information,
         };
     },
+    mounted() {
+        // Initialize or fetch data on component setup
+        this.photos.Get_splice(); // Retrieve initial set of photos
+
+        // GSAP animation for cards
+        gsap.fromTo(
+            ".cards",
+            {
+                opacity: 0,
+                x: 50,
+                stagger: 0.2, // Stagger animation for each card
+                ease: "power3.out", // Easing function
+            },
+            {
+                opacity: 1,
+                x: 0,
+                duration: 1.5,
+                stagger: 0.2,
+                ease: "power3.out",
+            }
+        );
+    },
 });
 </script>
 
@@ -192,6 +214,8 @@ export default defineComponent({
 .box {
     flex-wrap: wrap !important; /* Wrap items inside container */
     gap: 10px !important; /* Gap between items */
+    width: 90% !important;
+    margin: 0 auto !important;
 }
 .v-btn--variant-outlined {
     border: none;

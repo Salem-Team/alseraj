@@ -92,19 +92,29 @@ export const useAuthStore = defineStore("auth", {
                 // Handle cases where the cookie does not exist or is empty
                 this.user = {
                     id: "",
+                    email: "",
                     National_id: "",
                     password: "",
                     userType: "",
                     roles: [],
+                    name: "",
                 };
             }
         },
-        async login(id, National_id, userType, roles, name) {
+        async login(id, email, National_id, userType, roles, name, password) {
             this.loading = true;
             try {
                 // تحقق من البريد الإلكتروني وكلمة المرور
 
-                this.user = { id, National_id, userType, roles, name };
+                this.user = {
+                    id,
+                    email,
+                    National_id,
+                    userType,
+                    roles,
+                    name,
+                    password,
+                };
                 this.error = null;
                 // تخزين بيانات المستخدم في الكوكيز
                 Cookies.set("user", JSON.stringify(this.user), {
@@ -117,15 +127,17 @@ export const useAuthStore = defineStore("auth", {
             }
         },
         logout() {
-            (this.user = {
+            this.user = {
                 id: "",
+                email: "",
                 National_id: "",
                 password: "",
                 userType: "",
                 roles: [],
-            }),
-                // إزالة بيانات المستخدم من الكوكيز
-                Cookies.remove("user");
+                name: "",
+            };
+            // إزالة بيانات المستخدم من الكوكيز
+            Cookies.remove("user");
         },
         // لإخفاء الخطأ بعد 5 ثوانٍ
         clearError() {

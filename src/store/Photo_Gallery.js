@@ -62,13 +62,13 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         loading: false,
         loading1: false,
         empty: false,
-        empty1: false,
-        empty2: false,
-        empty3: false,
         text0: "لا يوجد صور",
-        text1: "لا يوجد صور حفلات",
+        empty1: false,
+        text1: "لا يوجد صور رحلات",
+        empty2: false,
         text2: "لا يوجد صور أخبار",
-        text3: "لا يوجد صور رحلات",
+        empty3: false,
+        text3: "لا يوجد صور حفلات",
         snackbar: false,
         snackbar2: false,
         text10: " تم الاضافة بنجاح",
@@ -88,21 +88,54 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         },
 
         // Action method to upload an image to Firebase Storage
-        async upload_Image(file) {
+        // async upload_Image(file) {
+        //     if (!file) {
+        //         console.error("No file selected");
+        //         return;
+        //     }
+        //     console.log("start");
+        //     // Create a FormData object to hold the file data
+        //     const formData = new FormData();
+        //     formData.append("file", file); // Append the file with the key 'file'
+
+        //     try {
+        //         console.log("wait");
+
+        //         const response = await axios.post(
+        //             "http://localhost:3000/upload",
+        //             formData,
+        //             {
+        //                 headers: {
+        //                     "Content-Type": "multipart/form-data",
+        //                 },
+        //             }
+        //         );
+        //         console.log(
+        //             "File uploaded successfully:",
+        //             response.data.message
+        //         );
+        //         return response.data.message;
+        //     } catch (error) {
+        //         console.error("Error uploading file:", error);
+        //     }
+        //     console.log("end");
+        // },
+        async uploadImage(file) {
             if (!file) {
                 console.error("No file selected");
                 return;
             }
-            console.log("start");
-            // Create a FormData object to hold the file data
+            console.log("Upload started");
+
+            // إنشاء كائن FormData لحفظ بيانات الملف
             const formData = new FormData();
-            formData.append("file", file); // Append the file with the key 'file'
+            formData.append("file", file); // إضافة الملف باستخدام المفتاح 'file'
 
             try {
-                console.log("wait");
+                console.log("Waiting for response");
 
                 const response = await axios.post(
-                    "http://localhost:3000/upload",
+                    "/upload", // استخدم المسار النسبي لأن baseURL قد تم تعيينه
                     formData,
                     {
                         headers: {
@@ -110,15 +143,15 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                         },
                     }
                 );
-                console.log(
-                    "File uploaded successfully:",
-                    response.data.message
-                );
-                return response.data.message;
+                console.log("File uploaded successfully:", response);
+                return response.data;
             } catch (error) {
-                console.error("Error uploading file:", error);
+                console.error(
+                    "Error uploading file:",
+                    error.response ? error.response.data : error.message
+                );
             }
-            console.log("end");
+            console.log("Upload finished");
         },
 
         // Action method to add a photo to Firestore
@@ -127,15 +160,13 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                 this.loading = true;
                 if (this.Photo.image) {
                     // Step 1: Upload the image and get the download URL
-                    const imageUrl = await this.upload_Image(this.Photo.image);
-                    console.log("this.Photo.image", this.Photo.image);
+                    const imageUrl = await this.uploadImage(this.Photo.image); // Use uploadImage here
                     // Get current local time
                     const currentTime = Timestamp.now();
 
                     // Step 2: Add a document to the "Photos" collection in Firestore
                     const docRef = await addDoc(collection(db, "Photos"), {
                         time: currentTime,
-
                         image: imageUrl,
                         type: this.type,
                         File_type: this.types,
@@ -331,16 +362,16 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
             if (this.photos_show === "trip" || this.tab === "trip") {
                 this.Photos = this.trip;
                 if (this.Photos.length === 0) {
-                    this.empty3 = true;
+                    this.empty1 = true;
                 } else {
-                    this.empty3 = false;
+                    this.empty1 = false;
                 }
             } else if (this.photos_show === "party" || this.tab === "party") {
                 this.Photos = this.party;
                 if (this.Photos.length === 0) {
-                    this.empty1 = true;
+                    this.empty3 = true;
                 } else {
-                    this.empty1 = false;
+                    this.empty3 = false;
                 }
             } else if (this.photos_show === "news" || this.tab === "news") {
                 this.Photos = this.news;

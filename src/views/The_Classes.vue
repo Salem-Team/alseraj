@@ -95,144 +95,143 @@
                 v-for="classroom in class_rooms"
                 :key="classroom.id"
             >
-                <div
-                    v-if="
-                        user.roles.includes(classroom.grade) ||
-                        user.roles.includes('الكل')
-                    "
-                >
-                    <div class="feat2">
-                        <div class="title">
-                            <div>{{ classroom.grade }}</div>
-                            <div
-                                class="button"
-                                @click="goToClassroom(classroom.grade)"
-                            >
-                                الطلاب
-                            </div>
+                <div class="feat2">
+                    <div class="title">
+                        <div>{{ classroom.grade }}</div>
+                        <div
+                            class="button"
+                            @click="goToClassroom(classroom.grade)"
+                        >
+                            الطلاب
                         </div>
-                        <div class="charts">
-                            <div class="box">
-                                <div>
-                                    <canvas
-                                        :id="'myChart_' + classroom.id"
-                                    ></canvas>
-                                </div>
-                                <ul>
-                                    <li class="li">
-                                        <font-awesome-icon
-                                            :icon="['fas', 'graduation-cap']"
-                                        />
-                                        <div>الطلاب</div>
-                                        <div>
-                                            <span>{{
-                                                classroom.total_students
-                                            }}</span>
-                                            طالب
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div>ذكر</div>
-                                        <div>
-                                            <span>{{
-                                                classroom.students_gender.male
-                                            }}</span>
-                                            طالب
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div>أنثى</div>
-                                        <div>
-                                            <span>{{
-                                                classroom.students_gender.female
-                                            }}</span>
-                                            طالبة
-                                        </div>
-                                    </li>
-                                </ul>
+                    </div>
+                    <div class="charts">
+                        <div class="box">
+                            <div>
+                                <canvas
+                                    :id="'myChart_' + classroom.id"
+                                ></canvas>
                             </div>
-                            <div class="box">
-                                <div>
-                                    <canvas
-                                        :id="'myChart_1_' + classroom.id"
-                                    ></canvas>
-                                </div>
-
-                                <ul>
-                                    <li>
-                                        <div>عربي</div>
-                                        <div>
-                                            <span>{{
-                                                classroom.sections.arabic
-                                            }}</span>
-                                            طالب
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div>لغات</div>
-                                        <div>
-                                            <span>{{
-                                                classroom.sections.english
-                                            }}</span>
-                                            طالب
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div
-                                class="box"
-                                v-if="
-                                    user.roles.includes(
-                                        'الاطلاع على الحسابات'
-                                    ) || user.roles.includes('الكل')
-                                "
-                            >
-                                <div>
-                                    <canvas
-                                        :id="'myChart_2_' + classroom.id"
-                                    ></canvas>
-                                </div>
-                                <ul>
-                                    <li class="li">
-                                        <font-awesome-icon
-                                            :icon="['fas', 'money-bills']"
-                                        />
-                                        <div>المصروفات المستحقة</div>
-                                        <div>
-                                            <span>{{
-                                                classroom.fees.due_fees
-                                            }}</span>
-                                            جنية
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div>المصروفات المدفوعة</div>
-                                        <div>
-                                            <span>{{
-                                                classroom.fees.paid_fees
-                                            }}</span>
-                                            جنية
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div>المصروفات المتبقية</div>
-                                        <div>
-                                            <span>{{
-                                                classroom.fees.remaining_fees
-                                            }}</span>
-                                            جنية
-                                        </div>
-                                    </li>
-                                </ul>
+                            <ul>
+                                <li class="li">
+                                    <font-awesome-icon
+                                        :icon="['fas', 'graduation-cap']"
+                                    />
+                                    <div>الطلاب</div>
+                                    <div>
+                                        <span>{{
+                                            classroom.total_students || 0
+                                        }}</span>
+                                        طالب
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>ذكر</div>
+                                    <div>
+                                        <span>{{
+                                            classroom.students_gender.male || 0
+                                        }}</span>
+                                        طالب
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>أنثى</div>
+                                    <div>
+                                        <span>{{
+                                            classroom.students_gender.female ||
+                                            0
+                                        }}</span>
+                                        طالبة
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="box">
+                            <div>
+                                <canvas
+                                    :id="'myChart_1_' + classroom.id"
+                                ></canvas>
                             </div>
 
-                            <div class="box big">
-                                <div>
-                                    <canvas
-                                        :id="'myChart_3_' + classroom.id"
-                                    ></canvas>
-                                </div>
+                            <ul>
+                                <li>
+                                    <div>عربي</div>
+                                    <div>
+                                        <span>{{
+                                            classroom.sections.arabic || 0
+                                        }}</span>
+                                        طالب
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>لغات</div>
+                                    <div>
+                                        <span>{{
+                                            classroom.sections.english || 0
+                                        }}</span>
+                                        طالب
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div
+                            class="box"
+                            v-if="
+                                user.roles.includes('الاطلاع على الحسابات') ||
+                                user.roles.includes('الكل')
+                            "
+                        >
+                            <div>
+                                <canvas
+                                    :id="'myChart_2_' + classroom.id"
+                                ></canvas>
                             </div>
+                            <ul>
+                                <li class="li">
+                                    <font-awesome-icon
+                                        :icon="['fas', 'money-bills']"
+                                    />
+                                    <div>المصروفات المستحقة</div>
+                                    <div>
+                                        <span>{{
+                                            classroom.fees.due_fees || 0
+                                        }}</span>
+                                        جنية
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>المصروفات المدفوعة</div>
+                                    <div>
+                                        <span>{{
+                                            classroom.fees.paid_fees || 0
+                                        }}</span>
+                                        جنية
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>المصروفات المتبقية</div>
+                                    <div>
+                                        <span>{{
+                                            classroom.fees.remaining_fees || 0
+                                        }}</span>
+                                        جنية
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="box big">
+                            <div>
+                                <canvas
+                                    :id="'myChart_3_' + classroom.id"
+                                ></canvas>
+                            </div>
+                            <ul>
+                                <li>
+                                    <div>إجمالي درجات الطلاب</div>
+                                    <div></div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -262,6 +261,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+import { gsap } from "gsap";
 import { mapState } from "pinia";
 import { useAuthStore } from "../store/userStore";
 export default {
@@ -319,20 +319,37 @@ export default {
                             classroom.results
                         ) {
                             createChart("myChart_" + classroom.id, [
-                                classroom.students_gender.male,
-                                classroom.students_gender.female,
+                                classroom.students_gender.male || 0,
+                                classroom.students_gender.female || 0,
                             ]);
                             createChart_1("myChart_1_" + classroom.id, [
-                                classroom.sections.arabic,
-                                classroom.sections.english,
+                                classroom.sections.arabic || 0,
+                                classroom.sections.english || 0,
                             ]);
                             createChart_2("myChart_2_" + classroom.id, [
-                                classroom.fees.paid_fees,
-                                classroom.fees.remaining_fees,
+                                classroom.fees.paid_fees || 0,
+                                classroom.fees.remaining_fees || 0,
                             ]);
                             createChart_3("myChart_3_" + classroom.id, [
-                                classroom.results,
+                                classroom.results || 0,
                             ]);
+                            // Animate card when the component mounts
+                            gsap.fromTo(
+                                ".feat",
+                                {
+                                    opacity: 0,
+                                    y: 100,
+                                    stagger: 0.2, // Stagger animation for each card
+                                    ease: "power3.out", // Easing function
+                                },
+                                {
+                                    opacity: 1,
+                                    y: 0,
+                                    duration: 3,
+                                    stagger: 0.2,
+                                    ease: "power3.out",
+                                }
+                            );
                         } else {
                             console.log(
                                 `Data missing for classroom ${classroom.id}`
@@ -353,9 +370,9 @@ export default {
                     data: {
                         datasets: [
                             {
-                                label: "الطلاب",
+                                label: "الجنس",
                                 data: data,
-                                backgroundColor: ["#a34a6e", "#d8588c"],
+                                backgroundColor: ["#7a7a7a7a", "#d8588cc4"],
                                 hoverOffset: 4,
                             },
                         ],
@@ -425,7 +442,7 @@ export default {
                                     (label) => results[0][label] || 0
                                 ),
                                 borderColor: "rgba(255, 99, 132, 1)",
-                                backgroundColor: "rgba(255, 99, 132, 0.2)",
+                                backgroundColor: "#d8588c",
                                 stack: "combined",
                                 type: "bar",
                             },
@@ -748,7 +765,29 @@ img.pluse {
             padding: 10px;
             flex-direction: column;
             gap: 10px;
-            justify-content: space-between;
+            justify-content: start;
+            &:first-child {
+                ul li {
+                    &:not(.li)::before {
+                        background: #7a7a7a7a;
+                    }
+
+                    &:last-of-type:not(.li) {
+                        &::before {
+                            background: #d8588cc4;
+                        }
+                    }
+                }
+            }
+            &:nth-child(2) {
+                ul li {
+                    &:last-of-type:not(.li) {
+                        &::before {
+                            background: #72a8dd;
+                        }
+                    }
+                }
+            }
             &.big {
                 width: 100%;
                 & > div {
@@ -789,6 +828,7 @@ img.pluse {
                     gap: 10px;
                     & > div {
                         font-weight: bold;
+                        font-size: 16px;
                     }
                     & > div:last-child {
                         color: var(--therd-color);
@@ -865,6 +905,20 @@ img.pluse {
     }
 }
 @media (min-width: 600px) and (max-width: 768px) {
+    .feat .title {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+        .button {
+            width: 100% !important;
+        }
+    }
+    .feat .charts {
+        flex-direction: column;
+        & .box {
+            width: 100%;
+        }
+    }
 }
 @media (min-width: 769px) {
     .v-container {

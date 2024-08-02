@@ -90,8 +90,7 @@ app.post("/upload", upload.single("file"), (req, res) => {
             .then((result) => {
                 console.log("Upload success:", result);
                 return res.status(200).json({
-                    message: "Upload successful",
-                    data: result,
+                    data: result.secure_url,
                 });
             })
             .catch((error) => {
@@ -113,8 +112,7 @@ app.post("/upload", upload.single("file"), (req, res) => {
             .then((result) => {
                 console.log("Upload success:", result);
                 return res.status(200).json({
-                    message: "Upload successful",
-                    data: result,
+                    data: result.secure_url,
                 });
             })
             .catch((error) => {
@@ -138,8 +136,7 @@ app.post("/upload", upload.single("file"), (req, res) => {
             .then((result) => {
                 console.log("Upload success:", result);
                 return res.status(200).json({
-                    message: "Upload successful",
-                    data: result,
+                    data: result.secure_url,
                 });
             })
             .catch((error) => {

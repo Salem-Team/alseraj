@@ -12,7 +12,7 @@
                     ></v-select>
                     <v-text-field
                         v-model="National_id"
-                        label="National_id"
+                        label="National ID"
                         type="text"
                         required
                     ></v-text-field>
@@ -31,9 +31,9 @@
                     >
                         Login
                     </v-btn>
-                    <v-alert v-if="error" type="error" class="mt-2">{{
-                        error
-                    }}</v-alert>
+                    <v-alert v-if="error" type="error" class="mt-2">
+                        {{ error }}
+                    </v-alert>
                 </v-form>
             </v-card-text>
         </v-card>
@@ -44,11 +44,10 @@
 import { mapState, mapActions } from "pinia";
 import { useAuthStore } from "../store/userStore";
 import { initializeApp } from "@firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getDocs, collection } from "@firebase/firestore";
-//import { useSecureDataStore } from "./secureData";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { useSecureDataStore } from "@/store/secureData.js";
+
 const firebaseConfig = {
-    // Firebase configuration object
     apiKey: "AIzaSyBdk3sqIHjXvB2C-O-lvkRgMFpg8pemkno",
     authDomain: "alseraj--almoner.firebaseapp.com",
     projectId: "alseraj--almoner",
@@ -56,38 +55,23 @@ const firebaseConfig = {
     messagingSenderId: "462211256149",
     appId: "1:462211256149:web:a03ace3c70b306620169dc",
 };
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-import { useSecureDataStore } from "@/store/secureData.js";
+
 export default {
     data() {
         return {
             National_id: "",
             password: "",
             userType: "",
-            id: "",
-            roles: [],
             userTypes: ["parent", "admin", "student"],
-            user: [],
+            error: "",
         };
     },
     computed: {
-        ...mapState(useAuthStore, ["loading", "error", "user_data"]),
-    },
-    watch: {
-        userType(newValue) {
-            if (newValue === "parent") {
-                this.National_id = "741";
-                this.password = "123";
-            } else if (newValue === "admin") {
-                this.National_id = "1210987654321";
-                this.password = "123456";
-            } else if (newValue === "student") {
-                this.National_id = "1233214569585202";
-                this.password = "111";
-            }
-        },
+        ...mapState(useAuthStore, ["loading"]),
     },
     methods: {
         ...mapActions(useAuthStore, ["login"]),
@@ -106,17 +90,14 @@ export default {
                         ) {
                             authenticatedUser = {
                                 id: doc.id,
-                                National_id: doc.data().National_id,
                                 name: doc.data().name,
                                 userType: "parent",
-                                email: "",
-                                roles: "",
-                                password: doc.data().parent_pass,
                             };
                         }
                     });
                     return authenticatedUser;
                 }
+
                 if (this.userType === "admin") {
                     const querySnapshot = await getDocs(
                         collection(db, "users")
@@ -149,6 +130,7 @@ export default {
                     });
                     return authenticatedUser;
                 }
+
                 if (this.userType === "student") {
                     const querySnapshot = await getDocs(
                         collection(db, "students")
@@ -160,12 +142,8 @@ export default {
                         ) {
                             authenticatedUser = {
                                 id: doc.id,
-                                email: doc.data().email,
                                 name: doc.data().student_name,
                                 userType: "student",
-                                National_id: doc.id,
-                                roles: "",
-                                password: doc.data().password,
                             };
                         }
                     });
@@ -173,40 +151,53 @@ export default {
                 }
             } catch (error) {
                 console.error("Error fetching users:", error);
-                throw error; // Optionally rethrow the error for higher-level error handling
+                this.error = "An error occurred while fetching user data.";
             }
         },
         async handleLogin() {
-            let authenticatedUser = await this.Check_User();
-            if (authenticatedUser) {
-                // Call your login method or perform necessary actions
-                await this.login(
-                    authenticatedUser.id,
-                    authenticatedUser.email,
-                    authenticatedUser.National_id,
-                    authenticatedUser.userType,
-                    authenticatedUser.roles,
-                    authenticatedUser.name,
-                    authenticatedUser.password
-                );
-                if (!this.error) {
+            this.error = ""; // Clear previous error
+            try {
+                const authenticatedUser = await this.Check_User();
+                if (authenticatedUser && authenticatedUser.id) {
+                    await this.login(
+                        authenticatedUser.id,
+                        authenticatedUser.email || "",
+                        authenticatedUser.userType,
+                        authenticatedUser.roles || [],
+                        authenticatedUser.name
+                    );
+
+                    // Redirect based on user type
                     if (authenticatedUser.userType === "parent") {
                         this.$router.push({ name: "Parent_Dashboard" });
                     } else if (authenticatedUser.userType === "admin") {
                         this.$router.push({ name: "profile_view" });
                     } else {
-                        // تأكد من تمرير المعلمة id بشكل صحيح
                         this.$router.push({
                             name: "Student_Dashboard",
                             params: { id: authenticatedUser.id },
                         });
                     }
+                } else {
+                    this.error = "Invalid National ID or Password.";
                 }
-            } else {
-                // Handle invalid credentials
-                console.log("Invalid email or password.");
-                // Set an error message or handle the UI accordingly
-                this.error = true; // Assuming error handling mechanism
+            } catch (error) {
+                console.error("Login error:", error);
+                this.error = "An error occurred during login.";
+            }
+        },
+    },
+    watch: {
+        userType(newValue) {
+            if (newValue === "parent") {
+                this.National_id = "852";
+                this.password = "111";
+            } else if (newValue === "admin") {
+                this.National_id = "1210987654321";
+                this.password = "123456";
+            } else if (newValue === "student") {
+                this.National_id = "1233214569585202";
+                this.password = "111";
             }
         },
     },

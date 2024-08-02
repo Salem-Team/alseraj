@@ -2458,7 +2458,7 @@
                                     </v-tabs-window-item>
 
                                     <v-tabs-window-item value="parent">
-                                        <form @submit.prevent="submitParent">
+                                        <form @submit.prevent="submit">
                                             <div style="padding: 20px">
                                                 <v-text-field
                                                     v-model="form.parent_name"
@@ -2480,6 +2480,28 @@
                                                     "
                                                     required
                                                     label="الرقم القومي"
+                                                ></v-text-field>
+
+                                                <v-text-field
+                                                    v-model="form.parent_pass"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.parent_pass
+                                                    "
+                                                    required
+                                                    label="كلمة مرور ولي الأمر"
+                                                    type="password"
+                                                ></v-text-field>
+
+                                                <v-text-field
+                                                    v-model="form.student_pass"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.student_pass
+                                                    "
+                                                    required
+                                                    label="كلمة مرور الطالب"
+                                                    type="password"
                                                 ></v-text-field>
                                             </div>
                                         </form>
@@ -2645,7 +2667,8 @@ export default {
                 birthday: null,
                 parent_name: "",
                 national_id: "",
-
+                student_pass: "", // حقل كلمة مرور الطالب
+                parent_pass: "", // حقل كلمة مرور ولي الأمر
                 Guardian: [
                     { Guardian_name: "" },
                     { Guardian_phone: "" },
@@ -2907,7 +2930,6 @@ export default {
                     Residual: 0,
                 },
                 Notifications: [],
-
                 photos: [],
             },
             loading1: true, // خاصية لتحميل البيانات
@@ -3455,6 +3477,7 @@ export default {
                             new Date().getFullYear().toString(),
                         National_id: this.form.parent_national_id || "",
                         state: true,
+                        student_pass: this.form.student_pass || "", // إضافة كلمة مرور الطالب
                     };
 
                     await setDoc(
@@ -3506,6 +3529,7 @@ export default {
                                     natioal_id: this.form.student_id,
                                 },
                             ],
+                            parent_pass: this.form.parent_pass || "", // إضافة كلمة مرور ولي الأمر
                         });
                         console.log("Created new parent document successfully");
                     }

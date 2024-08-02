@@ -304,9 +304,6 @@
                                                                         student.student_name
                                                                     }}
                                                                 </div>
-                                                                <img
-                                                                    src="../assets/profile/information.svg"
-                                                                />
                                                             </div>
                                                             <div
                                                                 class="class"

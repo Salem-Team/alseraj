@@ -118,29 +118,12 @@
                     مرحبًا {{ user.name }}، نشكرك على ثقتك في معهد السراج المنير
                     الأزهري، نتطلع سويًا لتحقيق مستقبل مشرق لأبنائنا.
                 </div>
-                <!-- <div class="form">
-                    <div>
-                        <img
-                            src="../assets/profile/email.svg"
-                            alt=""
-                            class="pluse"
-                        />
-                        <input type="email" value="example@gmail.com" />
-                    </div>
-                    <div>
-                        <img
-                            src="../assets/profile/call.svg"
-                            alt=""
-                            class="pluse"
-                        />
-                        <input type="text" value="01099877866" />
-                    </div>
-                </div> -->
+
                 <div class="children">
                     <div class="title">
                         <img
                             src="../assets/profile/children.svg"
-                            alt=""
+                            alt="children icon"
                             class="pluse"
                         />
                         <div>الأبناء</div>
@@ -148,22 +131,24 @@
                     <div class="body">
                         <div
                             class="box"
-                            v-for="child in children"
-                            :key="child.id"
+                            v-for="(child, index) in children"
+                            :key="index"
                         >
                             <div class="head">
-                                <div class="name">{{ child.name }}</div>
+                                <div class="name">{{ child.student_name }}</div>
                                 <img
                                     src="../assets/profile/information.svg"
-                                    alt=""
+                                    alt="information icon"
                                     class="pluse"
-                                    @click="goToChildDetails(child.id)"
+                                    @click="goToChildDetails(child.natioal_id)"
                                 />
                             </div>
-                            <div class="grad">{{ child.gradeLevel }}</div>
+                            <div class="grad">
+                                {{ child.educational_level }}
+                            </div>
                             <div class="class">
                                 <div>فصل</div>
-                                <div>3/1</div>
+                                <div>{{ child.class }}</div>
                             </div>
                         </div>
                     </div>
@@ -284,20 +269,17 @@
 import { mapState, mapActions } from "pinia";
 import { useAuthStore } from "../store/userStore";
 import { usenotification } from "../store/notification.js";
+import { db } from "../Firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+
 export default {
     data: () => ({
-        items: ["بياناتك الشخصيه", "اطفالى"],
-        children: [
-            {
-                id: 1,
-                name: "محمد محمود علي",
-                gradeLevel: "مرحلة رياض الأطفال الأولي",
-            },
-        ],
+        items: ["بياناتك الشخصية", "أطفالي"],
+        children: [],
         parent: {
-            name: "على احمد عبدالله",
-            email: "parent@gmail.com",
-            phoneNumber: "0105245841",
+            name: "",
+            email: "",
+            phoneNumber: "",
         },
         editedParent: {},
         editingMode: false,
@@ -308,16 +290,90 @@ export default {
     mounted() {
         this.get_notifications("parent_notification");
         this.get_notifications("student_notification");
+        this.loadParentData();
+        this.loadChildrenData();
+        console.log("User data in mounted:", this.user); // Debug log
+        if (this.user && this.user.id) {
+            this.loadParentData();
+        } else {
+            console.error("User ID is missing in Parent_Dashboard");
+        }
     },
     methods: {
         ...mapActions(usenotification, ["get_notifications"]),
         ...mapActions(useAuthStore, ["logout"]),
+        async loadParentData() {
+            try {
+                const userId = this.user.id;
+                console.log("userId:", userId); // تسجيل قيمة userId
+
+                // تحقق مما إذا كان userId مُعَرّفًا
+                if (!userId) {
+                    console.error("المعرف غير مُعَرّف أو فارغ.");
+                    return;
+                }
+
+                const parentDocRef = collection(db, "parents");
+                const q = query(
+                    parentDocRef,
+                    where("National_id", "==", userId)
+                );
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    console.warn("لم يتم العثور على بيانات للوالد.");
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    this.parent = doc.data();
+                });
+            } catch (error) {
+                console.error(
+                    "حدث خطأ أثناء تحميل بيانات الوالد:",
+                    error.message
+                );
+            }
+        },
+        async loadChildrenData() {
+            try {
+                const userId = this.user.id;
+                console.log("userId:", userId); // التحقق من قيمة userId
+                if (!userId) {
+                    console.error("المعرف غير معرف.");
+                    return;
+                }
+
+                const parentDocRef = collection(db, "parents");
+                const q = query(
+                    parentDocRef,
+                    where("National_id", "==", userId)
+                );
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    console.warn("لم يتم العثور على بيانات للأطفال.");
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const parentData = doc.data();
+                    this.children = parentData.Child || [];
+                    console.log("children:", this.children); // التحقق من قيمة children
+                });
+            } catch (error) {
+                console.error(
+                    "حدث خطأ أثناء تحميل بيانات الأطفال:",
+                    error.message
+                );
+            }
+        },
         Edit() {
             this.$router.push({ name: "Edit_profile" });
         },
         async My_Logout() {
             try {
-                this.logout();
+                await this.logout();
                 this.$router.push({ name: "home" });
             } catch (error) {
                 console.error("حدث خطأ أثناء تسجيل الخروج:", error.message);

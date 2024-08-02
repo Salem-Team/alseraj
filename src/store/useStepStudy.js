@@ -8,7 +8,7 @@ export const useStepStudy = defineStore("stepStudy", {
             stepStudy: [
                 {
                     name: "رياض الأطفال",
-                    grades: ["الصف الأول", "الصف الثاني"],
+                    grades: ["الصف الأول", "مرحلة رياض الأطفال الثانية"],
                 },
                 {
                     name: "المرحلة الابتدائية",

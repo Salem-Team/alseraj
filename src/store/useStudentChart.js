@@ -18,7 +18,7 @@ export const useStudentStore = defineStore("student", {
                 const studentCollection = collection(db, "students");
                 const q = query(
                     studentCollection,
-                    where("document.id", "==", nationalId),
+                    where("National_id", "==", nationalId),
                     limit(1)
                 );
 

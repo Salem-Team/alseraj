@@ -124,6 +124,7 @@ export default {
                                 userType: doc.data().userType,
                                 National_id: decryptedNational_id,
                                 roles: doc.data().roles,
+                                password: doc.data().password,
                             };
                         }
                     });
@@ -170,7 +171,7 @@ export default {
                     if (authenticatedUser.userType === "parent") {
                         this.$router.push({ name: "Parent_Dashboard" });
                     } else if (authenticatedUser.userType === "admin") {
-                        this.$router.push({ name: "admin_Dashboard" });
+                        this.$router.push({ name: "profile_view" });
                     } else {
                         this.$router.push({
                             name: "Student_Dashboard",

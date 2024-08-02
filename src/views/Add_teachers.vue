@@ -442,7 +442,7 @@
 
 <script scoped>
 // index.js (أو أي ملف مكون تستخدمه)
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useTeacher } from "@/store/teacher.js";
 import { useStepStudy } from "@/store/useStepStudy.js";
@@ -479,6 +479,9 @@ export default {
             teacher.dialog = true;
             emptyData();
         };
+        onMounted(() => {
+            stepStudy.fetchAllClassRooms();
+        });
         stepStudy.fetchAllClassRooms();
         function updateGrades() {
             subjects.value = [];

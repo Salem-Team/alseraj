@@ -1,6 +1,122 @@
 <template>
-    <v-container>
-        <v-card>
+    <v-container class="mt-0">
+        <!-- بيانات الطالب -->
+        <div class="visible">
+            <svg
+                style="
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 245px;
+                "
+                v-if="loading1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 200 200"
+            >
+                <radialGradient
+                    id="a12"
+                    cx=".66"
+                    fx=".66"
+                    cy=".3125"
+                    fy=".3125"
+                    gradientTransform="scale(1.5)"
+                >
+                    <stop offset="0" stop-color="#336699"></stop>
+                    <stop
+                        offset=".3"
+                        stop-color="#336699"
+                        stop-opacity=".9"
+                    ></stop>
+                    <stop
+                        offset=".6"
+                        stop-color="#336699"
+                        stop-opacity=".6"
+                    ></stop>
+                    <stop
+                        offset=".8"
+                        stop-color="#336699"
+                        stop-opacity=".3"
+                    ></stop>
+                    <stop
+                        offset="1"
+                        stop-color="#336699"
+                        stop-opacity="0"
+                    ></stop>
+                </radialGradient>
+                <circle
+                    transform-origin="center"
+                    fill="none"
+                    stroke="url(#a12)"
+                    stroke-width="15"
+                    stroke-linecap="round"
+                    stroke-dasharray="200 1000"
+                    stroke-dashoffset="0"
+                    cx="100"
+                    cy="100"
+                    r="70"
+                >
+                    <animateTransform
+                        type="rotate"
+                        attributeName="transform"
+                        calcMode="spline"
+                        dur="2"
+                        values="360;0"
+                        keyTimes="0;1"
+                        keySplines="0 0 1 1"
+                        repeatCount="indefinite"
+                    ></animateTransform>
+                </circle>
+                <circle
+                    transform-origin="center"
+                    fill="none"
+                    opacity=".2"
+                    stroke="#336699"
+                    stroke-width="15"
+                    stroke-linecap="round"
+                    cx="100"
+                    cy="100"
+                    r="70"
+                ></circle>
+            </svg>
+            <!-- <div class="right">
+                <div>
+                    <v-breadcrumbs>
+                        <v-breadcrumbs-item>
+                            <img
+                                src="../assets/profile/user.svg"
+                                alt=""
+                                class="pluse"
+                            />
+                            <div>الملف الشخصي</div>
+                        </v-breadcrumbs-item>
+                    </v-breadcrumbs>
+                    <div class="hello_text mb-8">
+                        مرحبًا {{ student.student_name }}، نشكرك على ثقتك في
+                        معهد السراج المنير الأزهري، نتطلع سويًا لتحقيق المستقبل
+                        المشرق .
+                    </div>
+                </div>
+                <div class="left">
+                    <img
+                        src="../assets/profile/edit-info.svg"
+                        alt=""
+                        class="pluse pluse_1 ml-2"
+                    />
+                    <img
+                        src="../assets/profile/logout.svg"
+                        alt=""
+                        class="pluse pluse_1 ml-5"
+                    />
+                </div>
+            </div> -->
+        </div>
+        <!-- Loading  تحميل -->
+
+        <v-card
+            variant="flat"
+            style="border: none; background: #fff; margin: 22px"
+        >
             <v-tabs v-model="tab_2">
                 <v-tab value="one">الطالب</v-tab>
                 <v-tab value="two">ولي الأمر</v-tab>
@@ -9,8 +125,15 @@
             <v-card-text>
                 <v-tabs-window v-model="tab_2">
                     <v-tabs-window-item value="one">
-                        <v-card>
-                            <v-tabs v-model="tab_5">
+                        <v-card
+                            variant="flat"
+                            style="border: none; background: #fff"
+                        >
+                            <!--....................... -->
+                            <v-tabs
+                                v-model="tab_5"
+                                style="border: 0; background: #fff"
+                            >
                                 <v-tab value="one1"
                                     ><img
                                         src="../assets/student/graduated.svg"
@@ -33,393 +156,795 @@
                                 </v-tab>
                                 <v-tab value="four1">
                                     <img
-                                        src="../assets/student/photo.svg"
+                                        src="../assets/student/notification-bell.svg"
                                         alt=""
                                         width="30px"
-                                    />
-                                </v-tab>
+                                /></v-tab>
+                                <v-tab value="se11">
+                                    <img
+                                        src="../assets/student/planning2.svg"
+                                        alt=""
+                                        width="30px"
+                                /></v-tab>
+
+                                <v-tab value="seven1">
+                                    <img
+                                        src="../assets/student/analysis.svg"
+                                        alt=""
+                                        width="30px"
+                                /></v-tab>
                             </v-tabs>
-
-                            <v-card-text>
-                                <v-tabs-window v-model="tab_5">
-                                    <v-tabs-window-item value="one1">
-                                        <div class="title">معلومات الطالب</div>
-                                        <div class="box">
-                                            <div class="feat">
-                                                <div class="name">
-                                                    محمد علي عماد
-                                                </div>
-                                                <div class="gender">ذكر</div>
-                                            </div>
-                                            <div class="feat">
-                                                <div class="educational_level">
-                                                    مرحلة رياض الأطفال الأولي
-                                                </div>
-                                            </div>
-                                            <div class="feat">
-                                                <div class="Class">
-                                                    <div>فصل</div>
-                                                    <div>3/1</div>
-                                                </div>
-                                                <div class="section">لغات</div>
-                                            </div>
-                                        </div>
-                                    </v-tabs-window-item>
-
-                                    <v-tabs-window-item
-                                        value="two1"
-                                        class="weekly"
-                                    >
-                                        <div class="title">
-                                            التطبيقات الأسبوعية
-                                        </div>
-                                        <div class="contain">
-                                            <div class="feat">
-                                                <div class="header">
-                                                    <div>
-                                                        <div class="sub">
-                                                            علوم
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-center">
-                                                        <v-progress-circular
-                                                            :model-value="80"
-                                                            :rotate="360"
-                                                            :size="80"
-                                                            :width="15"
-                                                            color="var(--main-color)"
-                                                        >
-                                                            <template
-                                                                v-slot:default
-                                                            >
-                                                                80 %
-                                                            </template>
-                                                        </v-progress-circular>
-                                                    </div>
-                                                </div>
-                                                <div class="table">
-                                                    <div class="Row">
-                                                        <div>درجة الطالب</div>
-                                                        <div>80</div>
-                                                    </div>
-                                                    <div class="Row">
-                                                        <div>
-                                                            الدرجة النهائية
-                                                        </div>
-                                                        <div>100</div>
-                                                    </div>
-                                                    <div class="Row">
-                                                        <div>
-                                                            تاريخ الإمتحان
-                                                        </div>
-                                                        <div>100</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="feat">
-                                                <div class="header">
-                                                    <div>
-                                                        <div class="sub">
-                                                            علوم
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-center">
-                                                        <v-progress-circular
-                                                            :model-value="90"
-                                                            :rotate="360"
-                                                            :size="80"
-                                                            :width="15"
-                                                            color="var(--main-color)"
-                                                        >
-                                                            <template
-                                                                v-slot:default
-                                                            >
-                                                                90 %
-                                                            </template>
-                                                        </v-progress-circular>
-                                                    </div>
-                                                </div>
-                                                <div class="table">
-                                                    <div class="Row">
-                                                        <div>درجة الطالب</div>
-                                                        <div>90</div>
-                                                    </div>
-                                                    <div class="Row">
-                                                        <div>
-                                                            الدرجة النهائية
-                                                        </div>
-                                                        <div>100</div>
-                                                    </div>
-                                                    <div class="Row">
-                                                        <div>
-                                                            تاريخ الإمتحان
-                                                        </div>
-                                                        <div>100</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- <h2 class="ma-2">التطبيقات الأسبوعية</h2> -->
-                                        <!-- <v-card flat>
-                                            <v-list>
-                                                <v-list-item>
-                                                    <v-table>
-                                                        <thead>
-                                                            <tr>
-                                                                <th>المادة</th>
-                                                                <th>
-                                                                    الدرجة
-                                                                    الكبرى
-                                                                </th>
-                                                                <th>
-                                                                    درجة الطالب
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr
-                                                                v-for="(
-                                                                    result,
-                                                                    index
-                                                                ) in student
-                                                                    .Results
-                                                                    .weeklyResults"
-                                                                :key="index"
-                                                            >
-                                                                <td>
-                                                                    {{
-                                                                        result.Subject_Name
-                                                                    }}
-                                                                </td>
-                                                                <td>
-                                                                    {{
-                                                                        result.Major_degree
-                                                                    }}
-                                                                </td>
-                                                                <td>
-                                                                    {{
-                                                                        result.Student_degree
-                                                                    }}
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </v-table>
-                                                </v-list-item>
-                                            </v-list>
-                                        </v-card> -->
-                                    </v-tabs-window-item>
-
-                                    <v-tabs-window-item
-                                        value="three1"
-                                        style="width: 100% !important"
-                                        class="monthly"
-                                    >
-                                        <div v-if="student.state">
-                                            <div
-                                                class="title"
-                                                style="border: none"
-                                            >
-                                                النتائج الشهرية
-                                            </div>
-                                            <div class="header">
-                                                <v-select
-                                                    v-model="selectedMonth"
-                                                    label="أختر الشهر"
-                                                    :items="[
-                                                        'شهر أكتوبر',
-                                                        'شهر نوفمبر',
-                                                        'الترم الأول',
-                                                        'شهر فبراير',
-                                                        'شهر مارس',
-                                                        'الترم الثاني',
-                                                    ]"
-                                                ></v-select>
-                                                <div
-                                                    class="download"
-                                                    @click="downloadPDF"
+                            <v-card
+                                variant="flat"
+                                style="background: #fff; border: none"
+                            >
+                                <v-card-text>
+                                    <v-tabs-window v-model="tab_5">
+                                        <v-tabs-window-item
+                                            value="one1"
+                                            style="background-color: #fff"
+                                        >
+                                            <div class="visible">
+                                                <svg
+                                                    style="
+                                                        position: fixed;
+                                                        top: 50%;
+                                                        left: 50%;
+                                                        transform: translate(
+                                                            -50%,
+                                                            -50%
+                                                        );
+                                                        width: 245px;
+                                                    "
+                                                    v-if="loading1"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 200 200"
                                                 >
-                                                    <img
-                                                        src="../assets/student/download-pdf.svg"
-                                                        alt=""
-                                                    />
-                                                    <div>تحميل الشهادة</div>
-                                                </div>
-                                            </div>
-                                            <div class="Certificate">
-                                                <div class="head">
-                                                    <div
-                                                        class="right"
-                                                        style="border: none"
+                                                    <radialGradient
+                                                        id="a12"
+                                                        cx=".66"
+                                                        fx=".66"
+                                                        cy=".3125"
+                                                        fy=".3125"
+                                                        gradientTransform="scale(1.5)"
                                                     >
-                                                        <div>
-                                                            الإسم :
-                                                            {{
-                                                                student.student_name
-                                                            }}
-                                                        </div>
-                                                        <div>
-                                                            المرحلة الدراسية :
-                                                            {{
-                                                                student.educational_level
-                                                            }}
-                                                        </div>
-                                                        <div>
-                                                            السنة الدراسية :
-                                                            {{ student.year }}
-                                                        </div>
-                                                        <div>
-                                                            الفصل :
-                                                            {{
-                                                                student?.section
-                                                            }}
-                                                        </div>
-                                                    </div>
-                                                    <div
-                                                        class="left"
-                                                        style="border: none"
+                                                        <stop
+                                                            offset="0"
+                                                            stop-color="#336699"
+                                                        ></stop>
+                                                        <stop
+                                                            offset=".3"
+                                                            stop-color="#336699"
+                                                            stop-opacity=".9"
+                                                        ></stop>
+                                                        <stop
+                                                            offset=".6"
+                                                            stop-color="#336699"
+                                                            stop-opacity=".6"
+                                                        ></stop>
+                                                        <stop
+                                                            offset=".8"
+                                                            stop-color="#336699"
+                                                            stop-opacity=".3"
+                                                        ></stop>
+                                                        <stop
+                                                            offset="1"
+                                                            stop-color="#336699"
+                                                            stop-opacity="0"
+                                                        ></stop>
+                                                    </radialGradient>
+                                                    <circle
+                                                        transform-origin="center"
+                                                        fill="none"
+                                                        stroke="url(#a12)"
+                                                        stroke-width="15"
+                                                        stroke-linecap="round"
+                                                        stroke-dasharray="200 1000"
+                                                        stroke-dashoffset="0"
+                                                        cx="100"
+                                                        cy="100"
+                                                        r="70"
                                                     >
-                                                        <img
-                                                            src="../assets/images.jpeg"
-                                                            alt="School Logo"
-                                                        />
-                                                        <p
-                                                            class="ma-2 text-center"
-                                                        >
-                                                            معهد السراج المنير
-                                                            الأزهري
-                                                        </p>
+                                                        <animateTransform
+                                                            type="rotate"
+                                                            attributeName="transform"
+                                                            calcMode="spline"
+                                                            dur="2"
+                                                            values="360;0"
+                                                            keyTimes="0;1"
+                                                            keySplines="0 0 1 1"
+                                                            repeatCount="indefinite"
+                                                        ></animateTransform>
+                                                    </circle>
+                                                    <circle
+                                                        transform-origin="center"
+                                                        fill="none"
+                                                        opacity=".2"
+                                                        stroke="#336699"
+                                                        stroke-width="15"
+                                                        stroke-linecap="round"
+                                                        cx="100"
+                                                        cy="100"
+                                                        r="70"
+                                                    ></circle>
+                                                </svg>
+                                                <div class="right">
+                                                    <div>
+                                                        <v-breadcrumbs>
+                                                            <v-breadcrumbs-item>
+                                                                <div>
+                                                                    بياناتك
+                                                                    الشخصيه
+                                                                </div>
+                                                            </v-breadcrumbs-item>
+                                                        </v-breadcrumbs>
                                                     </div>
                                                 </div>
-                                                <div class="body">
-                                                    <table>
-                                                        <thead>
-                                                            <tr>
-                                                                <th>المادة</th>
-                                                                <th>المدرس</th>
-                                                                <th>
-                                                                    تقييم السلوك
-                                                                </th>
-                                                                <th>
-                                                                    الدرجة
-                                                                    الصغرى
-                                                                </th>
-                                                                <th>
-                                                                    درجة الطالب
-                                                                </th>
-                                                                <th>
-                                                                    الدرجة
-                                                                    الكبرى
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <template
-                                                                v-if="
-                                                                    filteredResults.length >
-                                                                    0
+
+                                                <div
+                                                    class="children"
+                                                    style="background: #fff"
+                                                >
+                                                    <div
+                                                        class="body"
+                                                        style="background: #fff"
+                                                        v-if="isAuthenticated"
+                                                    >
+                                                        <div class="box">
+                                                            <div class="head">
+                                                                <div
+                                                                    class="name"
+                                                                >
+                                                                    {{
+                                                                        student.student_name
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                            <div
+                                                                class="class"
+                                                                style="
+                                                                    color: var(
+                                                                        --therd-color
+                                                                    );
                                                                 "
                                                             >
+                                                                <div>
+                                                                    {{
+                                                                        student.educational_level
+                                                                    }}
+                                                                </div>
+                                                                <div>
+                                                                    {{
+                                                                        student.gender
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                            <div
+                                                                class="class"
+                                                                style="
+                                                                    color: var(
+                                                                        --therd-color
+                                                                    );
+                                                                "
+                                                            >
+                                                                <div>
+                                                                    {{
+                                                                        student.section
+                                                                    }}
+                                                                </div>
+                                                                <div>
+                                                                    {{
+                                                                        student.class
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                            <div
+                                                                class="class"
+                                                                style="
+                                                                    color: var(
+                                                                        --therd-color
+                                                                    );
+                                                                "
+                                                            >
+                                                                <div>
+                                                                    الرقم القومى
+                                                                </div>
+                                                                <div>
+                                                                    {{
+                                                                        student.National_id
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="class">
+                                                                <div>
+                                                                    تاريخ
+                                                                    الميلاد
+                                                                </div>
+                                                                <div>
+                                                                    {{
+                                                                        student.birthday
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="class">
+                                                                <div>
+                                                                    رقم الهاتف
+                                                                </div>
+                                                                <div>
+                                                                    {{
+                                                                        student.phone
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </v-tabs-window-item>
+                                        <v-tabs-window-item
+                                            value="two1"
+                                            class="weekly"
+                                        >
+                                            <div class="title">
+                                                التطبيقات الأسبوعية
+                                            </div>
+                                            <div
+                                                class="contain d-flex w-100"
+                                                v-for="(
+                                                    result, resultIndex
+                                                ) in student.Results"
+                                                :key="resultIndex"
+                                            >
+                                                <div
+                                                    class="feat"
+                                                    v-for="(
+                                                        subject, index
+                                                    ) in result.weekly"
+                                                    :key="index"
+                                                >
+                                                    <div class="header">
+                                                        <div>
+                                                            <div class="sub">
+                                                                {{
+                                                                    subject?.Subject_Name
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="text-center"
+                                                        >
+                                                            <v-progress-circular
+                                                                :model-value="
+                                                                    subject?.Student_degree
+                                                                "
+                                                                :rotate="360"
+                                                                :size="80"
+                                                                :width="15"
+                                                                color="var(--main-color)"
+                                                            >
                                                                 <template
-                                                                    v-for="(
-                                                                        monthly,
-                                                                        index
-                                                                    ) in filteredResults"
-                                                                    :key="index"
+                                                                    v-slot:default
+                                                                >
+                                                                    {{
+                                                                        subject?.Student_degree
+                                                                    }}
+                                                                    %
+                                                                </template>
+                                                            </v-progress-circular>
+                                                        </div>
+                                                    </div>
+                                                    <div class="table">
+                                                        <div class="Row">
+                                                            <div>
+                                                                درجة الطالب
+                                                            </div>
+                                                            <div>
+                                                                {{
+                                                                    subject?.Student_degree
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="Row">
+                                                            <div>
+                                                                الدرجة النهائية
+                                                            </div>
+                                                            <div>
+                                                                {{
+                                                                    subject?.Major_degree
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="Row">
+                                                            <div>
+                                                                تاريخ الإمتحان
+                                                            </div>
+                                                            <div>
+                                                                {{
+                                                                    subject?.Date_Test
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </v-tabs-window-item>
+                                        <!-- 00000000000000000000000000 -->
+                                        <v-tabs-window-item
+                                            value="three1"
+                                            style="width: 100% !important"
+                                            class="monthly"
+                                        >
+                                            <div v-if="student.state">
+                                                <div
+                                                    class="title"
+                                                    style="border: none"
+                                                >
+                                                    النتائج الشهرية
+                                                </div>
+                                                <div class="header">
+                                                    <v-select
+                                                        v-model="selectedMonth"
+                                                        label="أختر الشهر"
+                                                        :items="[
+                                                            'شهر أكتوبر',
+                                                            'شهر نوفمبر',
+                                                            'الترم الأول',
+                                                            'شهر فبراير',
+                                                            'شهر مارس',
+                                                            'الترم الثاني',
+                                                        ]"
+                                                    ></v-select>
+                                                    <div
+                                                        class="download"
+                                                        @click="downloadPDF"
+                                                    >
+                                                        <img
+                                                            src="../assets/student/download-pdf.svg"
+                                                            alt=""
+                                                        />
+                                                        <div>تحميل الشهادة</div>
+                                                    </div>
+                                                </div>
+                                                <div class="Certificate">
+                                                    <div class="head">
+                                                        <div
+                                                            class="right"
+                                                            style="border: none"
+                                                        >
+                                                            <div>
+                                                                الإسم :
+                                                                {{
+                                                                    student.student_name
+                                                                }}
+                                                            </div>
+                                                            <div>
+                                                                المرحلة الدراسية
+                                                                :
+                                                                {{
+                                                                    student.educational_level
+                                                                }}
+                                                            </div>
+                                                            <div>
+                                                                السنة الدراسية :
+                                                                {{
+                                                                    student.year
+                                                                }}
+                                                            </div>
+                                                            <div>
+                                                                الفصل :
+                                                                {{
+                                                                    student?.section
+                                                                }}
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="left"
+                                                            style="border: none"
+                                                        >
+                                                            <img
+                                                                src="../assets/images.jpeg"
+                                                                alt="School Logo"
+                                                            />
+                                                            <p
+                                                                class="ma-2 text-center"
+                                                            >
+                                                                معهد السراج
+                                                                المنير الأزهري
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="body">
+                                                        <table>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>
+                                                                        المادة
+                                                                    </th>
+                                                                    <th>
+                                                                        المدرس
+                                                                    </th>
+                                                                    <th>
+                                                                        تقييم
+                                                                        السلوك
+                                                                    </th>
+                                                                    <th>
+                                                                        الدرجة
+                                                                        الصغرى
+                                                                    </th>
+                                                                    <th>
+                                                                        درجة
+                                                                        الطالب
+                                                                    </th>
+                                                                    <th>
+                                                                        الدرجة
+                                                                        الكبرى
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <template
+                                                                    v-if="
+                                                                        filteredResults.length >
+                                                                        0
+                                                                    "
                                                                 >
                                                                     <template
                                                                         v-for="(
-                                                                            degree,
-                                                                            degreeIndex
-                                                                        ) in monthly.Degrees"
+                                                                            monthly,
+                                                                            index
+                                                                        ) in filteredResults"
                                                                         :key="
-                                                                            degreeIndex
+                                                                            index
                                                                         "
                                                                     >
-                                                                        <tr>
-                                                                            <td>
-                                                                                {{
-                                                                                    degree.Subject_Name
-                                                                                }}
-                                                                            </td>
-                                                                            <td>
-                                                                                {{
-                                                                                    degree.Teacher_Name
-                                                                                }}
-                                                                            </td>
-                                                                            <td>
-                                                                                {{
-                                                                                    degree.Behavior_assessment
-                                                                                }}
-                                                                            </td>
-                                                                            <td>
-                                                                                {{
-                                                                                    degree.Minor_degree
-                                                                                }}
-                                                                            </td>
-                                                                            <td>
-                                                                                {{
-                                                                                    degree.Student_degree
-                                                                                }}
-                                                                            </td>
-                                                                            <td>
-                                                                                {{
-                                                                                    degree.Major_degree
-                                                                                }}
-                                                                            </td>
-                                                                        </tr>
+                                                                        <template
+                                                                            v-for="(
+                                                                                degree,
+                                                                                degreeIndex
+                                                                            ) in monthly.Degrees"
+                                                                            :key="
+                                                                                degreeIndex
+                                                                            "
+                                                                        >
+                                                                            <tr>
+                                                                                <td>
+                                                                                    {{
+                                                                                        degree.Subject_Name
+                                                                                    }}
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{
+                                                                                        degree.Teacher_Name
+                                                                                    }}
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{
+                                                                                        degree.Behavior_assessment
+                                                                                    }}
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{
+                                                                                        degree.Minor_degree
+                                                                                    }}
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{
+                                                                                        degree.Student_degree
+                                                                                    }}
+                                                                                </td>
+                                                                                <td>
+                                                                                    {{
+                                                                                        degree.Major_degree
+                                                                                    }}
+                                                                                </td>
+                                                                            </tr>
+                                                                        </template>
                                                                     </template>
                                                                 </template>
-                                                            </template>
-                                                            <template v-else>
-                                                                <tr>
-                                                                    <td
-                                                                        colspan="6"
-                                                                    >
-                                                                        No data
-                                                                        available
-                                                                    </td>
-                                                                </tr>
-                                                            </template>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div v-else>
-                                            <div class="">
-                                                <v-alert type="warning">
-                                                    تم حجب الاختبارات لحين
-                                                    السداد.
-                                                </v-alert>
-                                            </div>
-                                        </div>
-                                    </v-tabs-window-item>
-
-                                    <v-tabs-window-item value="four1">
-                                        <v-card flat v-if="student">
-                                            <div class="title">الصور</div>
-                                            <div class="container_img">
-                                                <div
-                                                    class="img"
-                                                    v-for="photo in filteredPhotos"
-                                                    :key="photo.link"
-                                                >
-                                                    <img
-                                                        :src="photo.link"
-                                                        alt=""
-                                                    />
-                                                    <div class="date">
-                                                        {{ photo.Date }}
+                                                                <template
+                                                                    v-else
+                                                                >
+                                                                    <tr>
+                                                                        <td
+                                                                            colspan="6"
+                                                                        >
+                                                                            No
+                                                                            data
+                                                                            available
+                                                                        </td>
+                                                                    </tr>
+                                                                </template>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </v-card>
-                                        <v-alert type="error" v-else>
-                                            لا يوجد بيانات لهذا الطالب
-                                        </v-alert>
-                                    </v-tabs-window-item>
-                                </v-tabs-window>
-                            </v-card-text>
+                                            <div v-else>
+                                                <div class="">
+                                                    <v-alert type="warning">
+                                                        تم حجب الاختبارات لحين
+                                                        السداد.
+                                                    </v-alert>
+                                                </div>
+                                            </div>
+                                        </v-tabs-window-item>
+
+                                        <v-tabs-window-item
+                                            value="four1"
+                                            class="notifications-tab"
+                                        >
+                                            <v-card
+                                                flat
+                                                class="notifications-card"
+                                            >
+                                                <div
+                                                    class="notifications-title Title"
+                                                >
+                                                    الإشعارات
+                                                </div>
+                                                <v-list>
+                                                    <v-list-item-group>
+                                                        <v-list-item
+                                                            v-for="(
+                                                                notification,
+                                                                index
+                                                            ) in notifications"
+                                                            :key="index"
+                                                        >
+                                                            <v-list-item-content>
+                                                                <v-alert
+                                                                    :color="
+                                                                        getNotificationColor(
+                                                                            notification.NotificationType
+                                                                        )
+                                                                    "
+                                                                    dense
+                                                                    class="notification-alert"
+                                                                >
+                                                                    <template
+                                                                        v-slot:prepend
+                                                                    >
+                                                                        <v-icon>
+                                                                            {{
+                                                                                getNotificationIcon(
+                                                                                    notification.NotificationType
+                                                                                )
+                                                                            }}
+                                                                        </v-icon>
+                                                                    </template>
+                                                                    <v-list-item-title
+                                                                        class="notification-title"
+                                                                    >
+                                                                        {{
+                                                                            notification.NoticeTitle
+                                                                        }}
+                                                                    </v-list-item-title>
+                                                                    <v-list-item-subtitle
+                                                                        class="notification-description"
+                                                                    >
+                                                                        {{
+                                                                            notification.theDescription
+                                                                        }}
+                                                                    </v-list-item-subtitle>
+                                                                </v-alert>
+                                                            </v-list-item-content>
+                                                        </v-list-item>
+                                                    </v-list-item-group>
+                                                    <v-list-item
+                                                        v-if="
+                                                            !notifications.length
+                                                        "
+                                                    >
+                                                        <v-list-item-content>
+                                                            <v-alert
+                                                                type="info"
+                                                                border="false"
+                                                                color="grey lighten-3"
+                                                                dense
+                                                            >
+                                                                لا توجد إشعارات
+                                                                حالياً.
+                                                            </v-alert>
+                                                        </v-list-item-content>
+                                                    </v-list-item>
+                                                </v-list>
+                                            </v-card>
+                                        </v-tabs-window-item>
+                                        <!-- 5555555555555555 -->
+                                        <v-tabs-window-item value="seven1">
+                                            <v-card flat>
+                                                <div
+                                                    class="title"
+                                                    style="margin-bottom: 20px"
+                                                >
+                                                    الاختبارات
+                                                </div>
+                                                <div v-if="loading">
+                                                    تحميل...
+                                                </div>
+                                                <div v-else>
+                                                    <div
+                                                        v-for="(
+                                                            exam, index
+                                                        ) in exams"
+                                                        :key="index"
+                                                    >
+                                                        <v-card
+                                                            class="ma-2"
+                                                            outlined
+                                                        >
+                                                            <v-card-title>
+                                                                اختبار بتاريخ
+                                                                {{
+                                                                    exam.Date_Testing
+                                                                }}
+                                                                في الساعة
+                                                                {{
+                                                                    exam.Time_Testing
+                                                                }}
+                                                            </v-card-title>
+                                                            <v-card-subtitle>
+                                                                تفاصيل الأسئلة
+                                                            </v-card-subtitle>
+                                                            <v-card-text>
+                                                                <v-list>
+                                                                    <v-list-item-group
+                                                                        v-for="(
+                                                                            question,
+                                                                            qIndex
+                                                                        ) in exam.questions"
+                                                                        :key="
+                                                                            qIndex
+                                                                        "
+                                                                    >
+                                                                        <v-list-item>
+                                                                            <v-list-item-content>
+                                                                                <v-list-item-title
+                                                                                    >{{
+                                                                                        question.title
+                                                                                    }}</v-list-item-title
+                                                                                >
+                                                                                <v-list-item-subtitle
+                                                                                    >{{
+                                                                                        question.question
+                                                                                    }}</v-list-item-subtitle
+                                                                                >
+                                                                                <v-list-item-subtitle
+                                                                                    >الإجابة
+                                                                                    الصحيحة:
+                                                                                    {{
+                                                                                        question.correctAnswer
+                                                                                    }}</v-list-item-subtitle
+                                                                                >
+                                                                                <v-list-item-subtitle
+                                                                                    >الإجابة
+                                                                                    الخاطئة
+                                                                                    1:
+                                                                                    {{
+                                                                                        question.wrongAnswer1
+                                                                                    }}</v-list-item-subtitle
+                                                                                >
+                                                                                <v-list-item-subtitle
+                                                                                    >الإجابة
+                                                                                    الخاطئة
+                                                                                    2:
+                                                                                    {{
+                                                                                        question.wrongAnswer2
+                                                                                    }}</v-list-item-subtitle
+                                                                                >
+                                                                            </v-list-item-content>
+                                                                        </v-list-item>
+                                                                    </v-list-item-group>
+                                                                </v-list>
+                                                            </v-card-text>
+                                                        </v-card>
+                                                    </div>
+                                                </div>
+                                            </v-card>
+                                        </v-tabs-window-item>
+                                        <v-tabs-window-item value="se11">
+                                            <v-card flat v-if="student">
+                                                <div
+                                                    class="title"
+                                                    style="margin-bottom: 20px"
+                                                >
+                                                    الخطط الأسبوعية
+                                                </div>
+                                                <div v-if="loading">
+                                                    تحميل...
+                                                </div>
+                                                <div v-else>
+                                                    <div
+                                                        v-if="
+                                                            studySchedules.length ===
+                                                            0
+                                                        "
+                                                    >
+                                                        لا توجد خطط أسبوعية
+                                                        متاحة.
+                                                    </div>
+                                                    <div
+                                                        v-for="(
+                                                            scheduleItem, index
+                                                        ) in studySchedules"
+                                                        :key="index"
+                                                    >
+                                                        <v-card
+                                                            class="ma-2"
+                                                            outlined
+                                                        >
+                                                            <v-card-title
+                                                                >جدول
+                                                                الأسبوع</v-card-title
+                                                            >
+                                                            <v-card-subtitle
+                                                                >التفاصيل</v-card-subtitle
+                                                            >
+                                                            <v-card-text>
+                                                                <div
+                                                                    v-for="(
+                                                                        schedule,
+                                                                        scheduleIndex
+                                                                    ) in scheduleItem.schedule"
+                                                                    :key="
+                                                                        scheduleIndex
+                                                                    "
+                                                                >
+                                                                    <v-card
+                                                                        class="mb-4"
+                                                                        outlined
+                                                                    >
+                                                                        <v-card-title
+                                                                            >{{
+                                                                                schedule.Subject_Name
+                                                                            }}</v-card-title
+                                                                        >
+                                                                        <v-card-subtitle
+                                                                            >اليوم:
+                                                                            {{
+                                                                                schedule.Subject_Name
+                                                                            }}</v-card-subtitle
+                                                                        >
+                                                                        <v-card-text>
+                                                                            <div>
+                                                                                <strong
+                                                                                    >مدرس
+                                                                                    المادة:</strong
+                                                                                >
+                                                                                {{
+                                                                                    schedule.Major_degree
+                                                                                }}
+                                                                            </div>
+                                                                            <div>
+                                                                                <strong
+                                                                                    >من
+                                                                                    الساعة:</strong
+                                                                                >
+                                                                                {{
+                                                                                    schedule.Minor_degree
+                                                                                }}
+                                                                            </div>
+                                                                            <div>
+                                                                                <strong
+                                                                                    >إلى
+                                                                                    الساعة:</strong
+                                                                                >
+                                                                                {{
+                                                                                    schedule.Student_degree
+                                                                                }}
+                                                                            </div>
+                                                                        </v-card-text>
+                                                                    </v-card>
+                                                                </div>
+                                                            </v-card-text>
+                                                        </v-card>
+                                                    </div>
+                                                </div>
+                                            </v-card>
+                                        </v-tabs-window-item>
+                                    </v-tabs-window>
+                                </v-card-text>
+                            </v-card>
                         </v-card>
                     </v-tabs-window-item>
 
@@ -793,33 +1318,35 @@
 
 <script>
 import { db } from "@/Firebase.js";
-import { doc, getDoc, getDocs } from "firebase/firestore";
+import {
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    collection,
+    where,
+} from "firebase/firestore";
+import Chart from "chart.js/auto";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
-import Chart from "chart.js/auto";
+import { mapActions } from "pinia";
+import { usenotification } from "../store/notification.js";
 
 export default {
-    mounted() {
-        this.interval = setInterval(() => {
-            if (this.value === 100) {
-                clearInterval(this.interval);
-                return;
-            }
-            this.value += 10;
-        }, 100);
-    },
-    beforeUnmount() {
-        clearInterval(this.interval);
-    },
     data() {
         return {
+            exams: [],
+            studySchedules: [],
+            photos: [],
+            loading1: false,
+            isAuthenticated: false,
+            loading: true, // أضفناه لتفعيل عنصر التحميل
             CreateChart: null,
             interval: null,
             value: 0,
-            tab_1: 0,
+            results: [],
             paymentMethod: null,
-            paymentMethods: ["الدفع المباشر", "نظام التقسيط"],
             dialogSuccess: false,
             transitionTimeline: false, // متغير للتحكم في الانتقال للـ timeline-item-content
             transitionProgress: false, // متغير للتحكم في الانتقال للبروجريس بار
@@ -832,7 +1359,9 @@ export default {
             progress: 0,
             tab_5: null,
             tab_4: null,
+            tab_1: 0,
             tab_2: null,
+            tab_3: null,
             tab: "option-1", // تحديد التاب الافتراضي
             selectedGrade: null,
             gradeLevels: ["الصف الأول", "الصف الثاني", "الصف الثالث"],
@@ -853,176 +1382,6 @@ export default {
 
             // خاص بالبروحريس بار وتقسيم القسط
 
-            // student: {
-            //     name: "أحمد محمد",
-            //     gender: "ذكر",
-            //     age: 12,
-            //     BithOfDate: "2009-08-05",
-            //     gradeLevel: "الصف الخامس",
-            //     schoolYear: "2023-2024",
-            //     photo: {
-            //         url1: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-            //     },
-            //     Results: {
-            //         weeklyResults: [
-            //             {
-            //                 Subject_Name: "دين",
-            //                 Major_degree: 100,
-            //                 Student_degree: 96,
-            //                 Date_Test: "2023-09-05",
-            //             },
-            //             {
-            //                 Subject_Name: "دراسات",
-            //                 Major_degree: 50,
-            //                 Student_degree: 42,
-            //                 Date_Test: "2023-11-05",
-            //             },
-            //         ],
-            //     },
-            //     Monthly: [
-            //         {
-            //             Certificate_title: "شهر يناير",
-            //             Degrees: [
-            //                 {
-            //                     Subject_Name: "عربي",
-            //                     Teacher_Name: "عماد عمر",
-            //                     Behavior_assessment: "ممتاز",
-            //                     Minor_degree: 50,
-            //                     Major_degree: 100,
-            //                     Student_degree: 99,
-            //                 },
-            //                 {
-            //                     Subject_Name: "قرآن كريم",
-            //                     Teacher_Name: "نور محمود",
-            //                     Behavior_assessment: "ممتاز",
-            //                     Minor_degree: 50,
-            //                     Major_degree: 100,
-            //                     Student_degree: 95,
-            //                 },
-            //                 {
-            //                     Subject_Name: " جغرافيا",
-            //                     Teacher_Name: "علاء محمود",
-            //                     Behavior_assessment: "ممتاز",
-            //                     Minor_degree: 50,
-            //                     Major_degree: 100,
-            //                     Student_degree: 80,
-            //                 },
-            //                 {
-            //                     Subject_Name: " تاريخ",
-            //                     Teacher_Name: "خالد محمد",
-            //                     Behavior_assessment: "ممتاز",
-            //                     Minor_degree: 50,
-            //                     Major_degree: 100,
-            //                     Student_degree: 77,
-            //                 },
-            //             ],
-            //         },
-            //         // أضف المزيد من الأشهر هنا
-            //         {
-            //             Certificate_title: "شهر فبراير",
-            //             Degrees: [
-            //                 {
-            //                     Subject_Name: "انجليزى",
-            //                     Teacher_Name: "كريم عمر",
-            //                     Behavior_assessment: "جيد",
-            //                     Minor_degree: 50,
-            //                     Major_degree: 100,
-            //                     Student_degree: 98,
-            //                 },
-            //                 {
-            //                     Subject_Name: " جغرافيا",
-            //                     Teacher_Name: "كمال محمود",
-            //                     Behavior_assessment: "جيد جدا",
-            //                     Minor_degree: 50,
-            //                     Major_degree: 100,
-            //                     Student_degree: 94,
-            //                 },
-            //                 {
-            //                     Subject_Name: " جغرافيا",
-            //                     Teacher_Name: "علاء محمود",
-            //                     Behavior_assessment: "ممتاز",
-            //                     Minor_degree: 50,
-            //                     Major_degree: 100,
-            //                     Student_degree: 82,
-            //                 },
-            //                 {
-            //                     Subject_Name: " تاريخ",
-            //                     Teacher_Name: "خالد محمد",
-            //                     Behavior_assessment: "ممتاز",
-            //                     Minor_degree: 50,
-            //                     Major_degree: 100,
-            //                     Student_degree: 79,
-            //                 },
-            //             ],
-            //         },
-            //     ],
-            //     payments: {
-            //         Requird: 100,
-            //         paid_up: 120,
-            //         installment_system: "شهريا",
-            //     },
-            //     Notifications: [
-            //         {
-            //             Title: "جواب الفصل لولي الأمر",
-            //             Details:
-            //                 "السيد/السيدة [اسم ولي الأمر]، نود إعلامكم بقرار فصل ابنكم/ابنتكم [اسم الطالب] من معهد السراج المنير الأزهري بسبب تكرار المخالفات للوائح والانضباط المدرسي، وذلك اعتبارًا من تاريخ هذا الخطاب.",
-            //         },
-            //         {
-            //             Title: "جواب الفصل لولي الأمر",
-            //             Details:
-            //                 "السيد/السيدة [اسم ولي الأمر]، نود إعلامكم بقرار فصل ابنكم/ابنتكم [اسم الطالب] من معهد السراج المنير الأزهري بسبب تكرار المخالفات للوائح والانضباط المدرسي، وذلك اعتبارًا من تاريخ هذا الخطاب.",
-            //         },
-            //         {
-            //             Title: "جواب الفصل لولي الأمر",
-            //             Details:
-            //                 "السيد/السيدة [اسم ولي الأمر]، نود إعلامكم بقرار فصل ابنكم/ابنتكم [اسم الطالب] من معهد السراج المنير الأزهري بسبب تكرار المخالفات للوائح والانضباط المدرسي، وذلك اعتبارًا من تاريخ هذا الخطاب.",
-            //         },
-            //     ],
-
-            //     photos: [
-            //         {
-            //             Date: "2023/2/5",
-            //             link: "https://images.pexels.com/photos/6778692/pexels-photo-6778692.jpeg",
-            //             grade: "الصف الأول",
-            //         },
-            //         {
-            //             Date: "2022/3/9",
-            //             link: "https://firebasestorage.googleapis.com/v0/b/alseraj--almoner.appspot.com/o/images%2F%D8%AE%D9%84%D9%81%D9%8A%D8%A9%20%D9%84%D9%84%D9%85%D8%B4%D8%B1%D9%88%D8%B9%20-%20Copy.jpg?alt=media&token=6262aa52-b522-47e1-b17d-a11ecec9e4cf",
-            //             grade: "الصف الثاني",
-            //         },
-            //         {
-            //             Date: "2022/3/4",
-            //             link: "https://images.pexels.com/photos/7410112/pexels-photo-7410112.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            //             grade: "الصف الثالث",
-            //         },
-            //         // أضف المزيد من الصور هنا
-            //         {
-            //             Date: "2023/5/15",
-            //             link: "https://images.pexels.com/photos/9389657/pexels-photo-9389657.jpeg",
-            //             grade: "الصف الأول",
-            //         },
-
-            //         {
-            //             Date: "2022/4/10",
-            //             link: "https://images.pexels.com/photos/62403/pexels-photo-62403.jpeg",
-            //             grade: "الصف الثاني",
-            //         },
-            //         {
-            //             Date: "2022/7/1",
-            //             link: "https://images.pexels.com/photos/870711/pexels-photo-870711.jpeg",
-            //             grade: "الصف الثالث",
-            //         },
-            //         {
-            //             Date: "2022/8/8",
-            //             link: "https://images.pexels.com/photos/3023202/pexels-photo-3023202.jpeg",
-            //             grade: "الصف الثالث",
-            //         },
-            //     ],
-            //     statistics: [
-            //         { id: 1, data: "إحصائيات تجريبية 1" },
-            //         { id: 2, data: "إحصائيات تجريبية 2" },
-            //     ],
-            // },
             student: {
                 notifications: [],
                 student_name: "",
@@ -1046,6 +1405,75 @@ export default {
                 },
             },
         };
+    },
+    mounted() {
+        this.get_notifications("students_notification");
+        this.interval = setInterval(() => {
+            if (this.value === 100) {
+                clearInterval(this.interval);
+                return;
+            }
+            this.value += 10;
+        }, 100);
+    },
+
+    async created() {
+        const documentId = this.$route.params.id; // استلام documentId من الـ route params
+        this.loading = true; // بدء حالة التحميل
+
+        try {
+            // محاولة الحصول على بيانات الطالب
+            const docSnap = await getDoc(doc(db, "students", documentId));
+            if (docSnap.exists()) {
+                const studentData = docSnap.data();
+                this.student = studentData;
+                this.results = studentData.Results || []; // استخراج بيانات Results
+                this.isAuthenticated = true;
+
+                // جلب بيانات الإشعارات من حقل Notifications
+                this.notifications = studentData.Notifications || [];
+                this.photos = studentData.photos || [];
+                this.exams = studentData.exams || [];
+
+                console.log("Exams Data:", this.exams); // تحقق من بيانات الامتحانات
+
+                // جلب بيانات الجدول الدراسي بناءً على بيانات الطالب
+                const studyScheduleQuery = query(
+                    collection(db, "studySchedule"),
+                    where("class", "==", studentData.class),
+                    where(
+                        "educational_level",
+                        "==",
+                        studentData.educational_level
+                    ),
+                    where("section", "==", studentData.section)
+                );
+
+                const scheduleSnapshot = await getDocs(studyScheduleQuery);
+                if (!scheduleSnapshot.empty) {
+                    this.studySchedules = scheduleSnapshot.docs.map((doc) =>
+                        doc.data()
+                    );
+                    console.log("Study Schedules Data:", this.studySchedules); // تحقق من بيانات الجدول الدراسي
+                } else {
+                    console.error(
+                        "No study schedules found for the given class, level, and section."
+                    );
+                    this.studySchedules = [];
+                }
+            } else {
+                console.error("No document found for the given ID");
+                this.isAuthenticated = false;
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            this.isAuthenticated = false;
+        } finally {
+            this.loading = false; // إنهاء حالة التحميل
+        }
+    },
+    beforeUnmount() {
+        clearInterval(this.interval);
     },
     computed: {
         filteredResults() {
@@ -1125,6 +1553,7 @@ export default {
         },
     },
     methods: {
+        ...mapActions(usenotification, ["get_notifications"]),
         async loadStudent(id) {
             try {
                 const studentRef = doc(db, "students", id);
@@ -1250,7 +1679,7 @@ export default {
             doc.text("السنه الدراسيه:  " + this.student.schoolYear, 232, 50);
             doc.setFontSize(30);
             doc.text("شهادة", 130, 84);
-
+            // ******************************************************
             const tableColumn = [
                 "الدرجة النهائية للطالب",
                 "الدرجة الكبرى",
@@ -1344,35 +1773,9 @@ export default {
             }
         },
     },
-    async created() {
-        const documentId = this.$route.params.id; // استلام documentId من الـ route params
-        this.loading = true; // بدء حالة التحميل
-
-        try {
-            // محاولة الحصول على بيانات الطالب
-            const docSnap = await getDoc(doc(db, "students", documentId));
-            if (docSnap.exists()) {
-                const studentData = docSnap.data();
-                this.student = studentData;
-                this.results = studentData.Results || []; // استخراج بيانات Results
-                this.isAuthenticated = true;
-
-                // جلب بيانات الإشعارات من حقل Notifications
-                this.notifications = studentData.Notifications || [];
-                this.photos = studentData.photos || [];
-            } else {
-                console.error("No document found for the given ID");
-                this.isAuthenticated = false;
-            }
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            this.isAuthenticated = false;
-        } finally {
-            this.loading1 = false; // إنهاء حالة التحميل
-        }
-    },
 };
 </script>
+
 <style lang="scss" scoped>
 .v-container {
     overflow: hidden;

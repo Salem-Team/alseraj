@@ -196,7 +196,7 @@ export default {
     watch: {
         userType(newValue) {
             if (newValue === "parent") {
-                this.National_id = "852";
+                this.National_id = "111";
                 this.password = "111";
             } else if (newValue === "admin") {
                 this.National_id = "1210987654321";

@@ -2291,77 +2291,61 @@
                                                     label="الرقم القومى"
                                                 ></v-text-field>
 
-                                                <div
-                                                    style="
-                                                        width: 100%;
-                                                        display: flex;
-                                                        gap: 20px;
+                                                <!-- حقل اسم الطالب -->
+                                                <v-text-field
+                                                    v-model="form.student_name"
+                                                    style="width: 50%"
+                                                    :error-messages="
+                                                        errors.student_name
                                                     "
-                                                >
-                                                    <v-text-field
-                                                        v-model="
-                                                            form.student_name
-                                                        "
-                                                        style="width: 50%"
-                                                        :error-messages="
-                                                            errors.student_name
-                                                        "
-                                                        required
-                                                        label="اسم الطالب"
-                                                    ></v-text-field>
+                                                    required
+                                                    label="اسم الطالب"
+                                                ></v-text-field>
 
-                                                    <v-select
-                                                        :items="[
-                                                            '1/1',
-                                                            '1/2',
-                                                            '1/3',
-                                                            '1/4',
-                                                            '1/5',
-                                                            '1/6',
-                                                            '2/1',
-                                                            '2/2',
-                                                            '2/3',
-                                                            '2/4',
-                                                            '2/5',
-                                                            '2/6',
-                                                            '3/1',
-                                                            '3/2',
-                                                            '3/3',
-                                                            '3/4',
-                                                            '3/5',
-                                                            '3/6',
-                                                        ]"
-                                                        variant="outlined"
-                                                        style="width: 50%"
-                                                        v-model="form.class"
-                                                        :error-messages="
-                                                            errors.class
-                                                        "
-                                                        label="الفصل"
-                                                        required
-                                                    ></v-select>
-                                                </div>
-
-                                                <div
-                                                    style="
-                                                        width: 100%;
-                                                        display: flex;
-                                                        gap: 20px;
+                                                <!-- حقل الفصل -->
+                                                <v-select
+                                                    :items="[
+                                                        '1/1',
+                                                        '1/2',
+                                                        '1/3',
+                                                        '1/4',
+                                                        '1/5',
+                                                        '1/6',
+                                                        '2/1',
+                                                        '2/2',
+                                                        '2/3',
+                                                        '2/4',
+                                                        '2/5',
+                                                        '2/6',
+                                                        '3/1',
+                                                        '3/2',
+                                                        '3/3',
+                                                        '3/4',
+                                                        '3/5',
+                                                        '3/6',
+                                                    ]"
+                                                    style="width: 50%"
+                                                    v-model="form.class"
+                                                    :error-messages="
+                                                        errors.class
                                                     "
-                                                >
-                                                    <v-select
-                                                        v-model="form.gender"
-                                                        style="width: 100%"
-                                                        :error-messages="
-                                                            errors.gender
-                                                        "
-                                                        label="الجنس"
-                                                        required
-                                                        :items="['أنثى', 'ذكر']"
-                                                        variant="outlined"
-                                                    ></v-select>
-                                                </div>
+                                                    label="الفصل"
+                                                    required
+                                                ></v-select>
 
+                                                <!-- حقل الجنس -->
+                                                <v-select
+                                                    v-model="form.gender"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.gender
+                                                    "
+                                                    label="الجنس"
+                                                    required
+                                                    :items="['أنثى', 'ذكر']"
+                                                ></v-select>
+
+                                                <!-- حقل القسم -->
                                                 <v-select
                                                     v-model="form.section"
                                                     :error-messages="
@@ -2370,9 +2354,32 @@
                                                     label="القسم"
                                                     required
                                                     :items="['عربي', 'لغات']"
-                                                    variant="outlined"
                                                 ></v-select>
 
+                                                <!-- حقل رقم هاتف الطالب -->
+                                                <v-text-field
+                                                    v-model="form.student_phone"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.student_phone
+                                                    "
+                                                    required
+                                                    label="رقم هاتف الطالب"
+                                                ></v-text-field>
+
+                                                <!-- حقل البريد الإلكتروني للطالب -->
+                                                <v-text-field
+                                                    v-model="form.student_email"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.student_email
+                                                    "
+                                                    required
+                                                    label="البريد الإلكتروني للطالب"
+                                                    type="email"
+                                                ></v-text-field>
+
+                                                <!-- حقل تاريخ الميلاد -->
                                                 <v-menu
                                                     ref="menu"
                                                     v-model="menu"
@@ -2502,6 +2509,28 @@
                                                     required
                                                     label="كلمة مرور الطالب"
                                                     type="password"
+                                                ></v-text-field>
+
+                                                <v-text-field
+                                                    v-model="form.parent_phone"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.parent_phone
+                                                    "
+                                                    required
+                                                    label="رقم هاتف ولي الأمر"
+                                                ></v-text-field>
+
+                                                <!-- حقل البريد الإلكتروني لولي الأمر -->
+                                                <v-text-field
+                                                    v-model="form.parent_email"
+                                                    style="width: 100%"
+                                                    :error-messages="
+                                                        errors.parent_email
+                                                    "
+                                                    required
+                                                    label="البريد الإلكتروني لولي الأمر"
+                                                    type="email"
                                                 ></v-text-field>
                                             </div>
                                         </form>
@@ -3477,7 +3506,9 @@ export default {
                             new Date().getFullYear().toString(),
                         National_id: this.form.parent_national_id || "",
                         state: true,
-                        student_pass: this.form.student_pass || "", // إضافة كلمة مرور الطالب
+                        student_pass: this.form.student_pass || "",
+                        student_phone: this.form.student_phone || "",
+                        student_email: this.form.student_email || "", // إضافة البريد الإلكتروني للطالب
                     };
 
                     await setDoc(
@@ -3510,6 +3541,8 @@ export default {
                                     class: this.form.class,
                                     natioal_id: this.form.student_id,
                                 }),
+                                parent_phone: this.form.parent_phone || "",
+                                parent_email: this.form.parent_email || "", // إضافة البريد الإلكتروني لولي الأمر
                             },
                             { merge: true }
                         );
@@ -3529,7 +3562,9 @@ export default {
                                     natioal_id: this.form.student_id,
                                 },
                             ],
-                            parent_pass: this.form.parent_pass || "", // إضافة كلمة مرور ولي الأمر
+                            parent_pass: this.form.parent_pass || "",
+                            parent_phone: this.form.parent_phone || "",
+                            parent_email: this.form.parent_email || "", // إضافة البريد الإلكتروني لولي الأمر
                         });
                         console.log("Created new parent document successfully");
                     }
@@ -3745,8 +3780,12 @@ export default {
                 gender: "",
                 section: "",
                 birthday: "2024/07/19",
+                student_phone: "",
+                parent_phone: "",
                 parent_name: "",
                 national_id: "",
+                parent_email: "",
+                student_email: "",
 
                 Guardian: [
                     { Guardian_name: "" },

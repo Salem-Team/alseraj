@@ -406,26 +406,7 @@
                                                         @input="markChanges"
                                                     ></v-text-field>
                                                     <v-select
-                                                        :items="[
-                                                            '1/1',
-                                                            '1/2',
-                                                            '1/3',
-                                                            '1/4',
-                                                            '1/5',
-                                                            '1/6',
-                                                            '2/1',
-                                                            '2/2',
-                                                            '2/3',
-                                                            '2/4',
-                                                            '2/5',
-                                                            '2/6',
-                                                            '3/1',
-                                                            '3/2',
-                                                            '3/3',
-                                                            '3/4',
-                                                            '3/5',
-                                                            '3/6',
-                                                        ]"
+                                                        :items="classItems"
                                                         variant="outlined"
                                                         style="width: 50%"
                                                         v-model="
@@ -1468,10 +1449,18 @@
                                                             <div>المدفوع</div>
                                                             <div>
                                                                 {{
-                                                                    selectedStudent
+                                                                    this
+                                                                        .selectedStudent
                                                                         .payments
-                                                                        .paid_Up ||
-                                                                    0
+                                                                        .payment_System ===
+                                                                    "نظام التقسيط"
+                                                                        ? selectedStudent
+                                                                              .payments
+                                                                              .paid_Up
+                                                                        : selectedStudent
+                                                                              .payments
+                                                                              .Expenses ||
+                                                                          0
                                                                 }}
                                                             </div>
                                                         </div>
@@ -1479,13 +1468,18 @@
                                                             <div>المتبقي</div>
                                                             <div>
                                                                 {{
-                                                                    selectedStudent
+                                                                    this
+                                                                        .selectedStudent
                                                                         .payments
-                                                                        .Expenses -
-                                                                        selectedStudent
-                                                                            .payments
-                                                                            .paid_Up ||
-                                                                    0
+                                                                        .payment_System ===
+                                                                    "نظام التقسيط"
+                                                                        ? selectedStudent
+                                                                              .payments
+                                                                              .Expenses -
+                                                                          selectedStudent
+                                                                              .payments
+                                                                              .paid_Up
+                                                                        : 0 || 0
                                                                 }}
                                                             </div>
                                                         </div>
@@ -1749,8 +1743,13 @@
                                                             </div>
                                                         </v-row>
                                                         <div
-                                                            class="Title"
-                                                            v-if="CreateChart"
+                                                            class="Title kheslam"
+                                                            v-if="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .payment_System ===
+                                                                'نظام التقسيط'
+                                                            "
                                                             style="
                                                                 margin-top: 55px;
                                                             "
@@ -1765,7 +1764,12 @@
                                                         </div>
                                                         <div
                                                             class="details"
-                                                            v-if="CreateChart"
+                                                            v-if="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .payment_System ===
+                                                                'نظام التقسيط'
+                                                            "
                                                         >
                                                             <div
                                                                 class="myChart"
@@ -2311,26 +2315,7 @@
                                                     ></v-text-field>
 
                                                     <v-select
-                                                        :items="[
-                                                            '1/1',
-                                                            '1/2',
-                                                            '1/3',
-                                                            '1/4',
-                                                            '1/5',
-                                                            '1/6',
-                                                            '2/1',
-                                                            '2/2',
-                                                            '2/3',
-                                                            '2/4',
-                                                            '2/5',
-                                                            '2/6',
-                                                            '3/1',
-                                                            '3/2',
-                                                            '3/3',
-                                                            '3/4',
-                                                            '3/5',
-                                                            '3/6',
-                                                        ]"
+                                                        :items="classItems"
                                                         variant="outlined"
                                                         style="width: 50%"
                                                         v-model="form.class"
@@ -4579,10 +4564,23 @@ export default {
         // },
 
         updatePaymentOptions() {
-            if (this.paymentMethod === "نظام التقسيط") {
+            if (this.paymentMethods === "نظام التقسيط") {
+                // Clear fields related to installment plans
                 this.selectedPlan = null;
                 this.paidAmount = 0;
                 this.amount = 0;
+            } else {
+                // Update Firebase if the payment method is not "نظام التقسيط"
+                this.updateStudentPayments(
+                    this.selectedStudent.id,
+                    "Residual",
+                    this.selectedStudent.payments.Expenses
+                );
+                this.updateStudentPayments(
+                    this.selectedStudent.id,
+                    "paid_Up",
+                    0
+                );
             }
         },
         payAmount() {
@@ -4663,9 +4661,7 @@ export default {
             ];
             return monthNames[month - 1] || month;
         },
-        setChangesMade(status) {
-            this.changesMade3 = status;
-        },
+
         async saveChanges3() {
             try {
                 let totalExpenses = 0;
@@ -4727,7 +4723,28 @@ export default {
                         "No matching class room found for the selected grade"
                     );
                 }
-
+                console.log(this.selectedStudent.payments.payment_System);
+                if (
+                    this.selectedStudent.payments.payment_System ===
+                    "نظام التقسيط"
+                ) {
+                    // Clear fields related to installment plans
+                    this.selectedPlan = null;
+                    this.paidAmount = 0;
+                    this.amount = 0;
+                } else {
+                    // Update Firebase if the payment method is not "نظام التقسيط"
+                    this.updateStudentPayments(
+                        this.selectedStudent.id,
+                        "paid_Up",
+                        this.selectedStudent.payments.Expenses
+                    );
+                    this.updateStudentPayments(
+                        this.selectedStudent.id,
+                        "Residual",
+                        0
+                    );
+                }
                 this.confirmationText = "تم التعديل بنجاح";
                 this.showSnackbar = true;
             } catch (error) {
@@ -4773,6 +4790,9 @@ export default {
             if (this.selectedStudent.payments.paid_Up > expenses) {
                 this.selectedStudent.payments.paid_Up = expenses;
             }
+        },
+        setChangesMade(status) {
+            this.changesMade3 = status;
         },
     },
     watch: {
@@ -4848,6 +4868,41 @@ export default {
         },
         remainingAmount() {
             return Math.max(this.totalAmount - this.paidAmount, 0);
+        },
+        classItems() {
+            // Generate the class items based on the selected grade
+            switch (this.year) {
+                case "مرحلة رياض الأطفال الاولي":
+                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
+                case "مرحلة رياض الأطفال الثانية":
+                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
+                case "الصف الأول الابتدائي":
+                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
+                case "الصف الثاني الابتدائي":
+                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
+                case "الصف الثالث الابتدائي":
+                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
+                case "الصف الرابع الابتدائي":
+                    return ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6"];
+                case "الصف الخامس الابتدائي":
+                    return ["5/1", "5/2", "5/3", "5/4", "5/5", "5/6"];
+                case "الصف السادس الابتدائي":
+                    return ["6/1", "6/2", "6/3", "6/4", "6/5", "6/6"];
+                case "الصف الأول الإعدادي":
+                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
+                case "الصف الثاني الإعدادي":
+                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
+                case "الصف الثالث الإعدادي":
+                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
+                case "الصف الأول الثانوي":
+                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
+                case "الصف الثاني الثانوي":
+                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
+                case "الصف الثالث الثانوي":
+                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
+                default:
+                    return [];
+            }
         },
     },
     mounted() {

@@ -20,7 +20,7 @@
                     <div class="head">
                         <div class="name">{{ user.name }}</div>
                     </div>
-                    <div class="grad" v-if="user.userType === 'admin'">
+                    <div class="grad" v-if="user.email !== ''">
                         {{ user.email }}
                     </div>
                     <div class="grad">{{ user.National_id }}</div>
@@ -87,7 +87,11 @@
                 <div style="color: var(--main-color)">تعديل البيانات</div>
                 <v-btn icon="mdi-close" @click="dialog = false"></v-btn>
             </div>
-            <form ref="form" @submit.prevent="" class="ma-auto mt-4">
+            <form
+                ref="form"
+                @submit.prevent="update_data()"
+                class="ma-auto mt-4"
+            >
                 <v-text-field
                     v-model="user.name"
                     type="text"
@@ -113,7 +117,7 @@
                 ></v-text-field>
 
                 <v-text-field
-                    v-if="user.userType === 'admin'"
+                    v-if="user.email !== ''"
                     v-model="user.email"
                     type="email"
                     label="بريد الكتروني"
@@ -125,90 +129,101 @@
                     ]"
                     required
                 ></v-text-field>
-                <v-text-field
-                    v-model="password"
-                    :rules="[
-                        (v) => !!v || 'كلمة المرور مطلوبة',
-                        (v) =>
-                            (v && v.length >= 6) ||
-                            'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
-                    ]"
-                    :type="show_Password ? 'text' : 'password'"
-                    label="كلمة مرور السابقة"
-                    variant="outlined"
-                    required
-                    :append-inner-icon="
-                        show_Password ? 'mdi-eye' : 'mdi-eye-off'
-                    "
-                    :minlength="6"
-                    @click:append-inner="toggle_Show_Password"
-                    @focus="check_pass()"
-                    @blur="check_pass()"
-                ></v-text-field>
                 <p
+                    @click="dispaly = !dispaly"
                     style="
-                        display: block;
-                        margin-right: 15px;
-                        font-size: small;
-                        color: #af0829;
+                        cursor: pointer;
+                        color: var(--main-color);
+                        padding-right: 5px;
                     "
-                    v-if="check === false"
                 >
-                    كلمة المرور غير صحيحة
+                    تغيير كلمه المرور
                 </p>
-                <v-text-field
-                    v-model="user_password"
-                    :rules="[
-                        (v) => !!v || 'كلمة المرور مطلوبة',
-                        (v) =>
-                            (v && v.length >= 6) ||
-                            'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
-                    ]"
-                    :type="show_Password1 ? 'text' : 'password'"
-                    label="كلمة مرور الجديدة"
-                    variant="outlined"
-                    required
-                    :append-inner-icon="
-                        show_Password1 ? 'mdi-eye' : 'mdi-eye-off'
-                    "
-                    :minlength="6"
-                    @click:append-inner="toggle_Show_Password1"
-                ></v-text-field>
-                <v-text-field
-                    v-model="password2"
-                    :rules="[
-                        (v) => !!v || 'كلمة المرور مطلوبة',
-                        (v) =>
-                            (v && v.length >= 6) ||
-                            'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
-                    ]"
-                    :type="show_Password2 ? 'text' : 'password'"
-                    label="تأكيد كلمة مرور"
-                    variant="outlined"
-                    required
-                    :append-inner-icon="
-                        show_Password2 ? 'mdi-eye' : 'mdi-eye-off'
-                    "
-                    :minlength="6"
-                    @click:append-inner="toggle_Show_Password2"
-                    @focus="check_pass1()"
-                    @blur="check_pass1()"
-                ></v-text-field>
-                <p
-                    style="
-                        display: block;
-                        margin-right: 15px;
-                        font-size: small;
-                        color: #af0829;
-                    "
-                    v-if="check1 === false"
-                >
-                    كلمة المرور غير متطابقة
-                </p>
+                <br />
+                <div v-if="dispaly === true">
+                    <v-text-field
+                        v-model="password"
+                        :rules="[
+                            (v) => !!v || 'كلمة المرور مطلوبة',
+                            (v) =>
+                                (v && v.length >= 6) ||
+                                'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
+                        ]"
+                        :type="show_Password ? 'text' : 'password'"
+                        label="كلمة مرور السابقة"
+                        variant="outlined"
+                        required
+                        :append-inner-icon="
+                            show_Password ? 'mdi-eye' : 'mdi-eye-off'
+                        "
+                        :minlength="6"
+                        @click:append-inner="toggle_Show_Password"
+                        @focus="check_pass()"
+                        @blur="check_pass()"
+                    ></v-text-field>
+                    <p
+                        style="
+                            display: block;
+                            margin-right: 15px;
+                            font-size: small;
+                            color: #af0829;
+                        "
+                        v-if="check === false"
+                    >
+                        كلمة المرور غير صحيحة
+                    </p>
+                    <v-text-field
+                        v-model="user_password"
+                        :rules="[
+                            (v) => !!v || 'كلمة المرور مطلوبة',
+                            (v) =>
+                                (v && v.length >= 6) ||
+                                'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
+                        ]"
+                        :type="show_Password1 ? 'text' : 'password'"
+                        label="كلمة مرور الجديدة"
+                        variant="outlined"
+                        required
+                        :append-inner-icon="
+                            show_Password1 ? 'mdi-eye' : 'mdi-eye-off'
+                        "
+                        :minlength="6"
+                        @click:append-inner="toggle_Show_Password1"
+                    ></v-text-field>
+                    <v-text-field
+                        v-model="password2"
+                        :rules="[
+                            (v) => !!v || 'كلمة المرور مطلوبة',
+                            (v) =>
+                                (v && v.length >= 6) ||
+                                'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
+                        ]"
+                        :type="show_Password2 ? 'text' : 'password'"
+                        label="تأكيد كلمة مرور"
+                        variant="outlined"
+                        required
+                        :append-inner-icon="
+                            show_Password2 ? 'mdi-eye' : 'mdi-eye-off'
+                        "
+                        :minlength="6"
+                        @click:append-inner="toggle_Show_Password2"
+                        @focus="check_pass1()"
+                        @blur="check_pass1()"
+                    ></v-text-field>
+                    <p
+                        style="
+                            display: block;
+                            margin-right: 15px;
+                            font-size: small;
+                            color: #af0829;
+                        "
+                        v-if="check1 === false"
+                    >
+                        كلمة المرور غير متطابقة
+                    </p>
+                </div>
                 <v-btn
                     type="submit"
-                    :loading="loading"
-                    :disabled="loading"
                     class="d-flex align-center mb-4"
                     style="
                         width: 100%;
@@ -241,8 +256,11 @@
 </template>
 
 <script>
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../Firebase.js";
 import { mapState, mapActions } from "pinia";
 import { useAuthStore } from "../store/userStore";
+import { useSecureDataStore } from "@/store/secureData.js";
 export default {
     data: () => ({
         password: "",
@@ -251,6 +269,7 @@ export default {
         password2: "",
         user_password: "",
         dialog: false,
+        dispaly: false,
         show_Password: false, // State for showing password
         show_Password1: false, // State for showing password
         show_Password2: false, // State for showing password
@@ -297,11 +316,61 @@ export default {
             }
         },
         check_pass1() {
-            if (this.password != this.user_password) {
+            if (this.password2 != this.user_password) {
                 this.check1 = false;
             } else {
                 this.check1 = true;
                 this.user.password = this.user_password;
+            }
+        },
+        async update_data() {
+            const secrureDataStore = useSecureDataStore();
+            try {
+                if (this.user.userType === "parent") {
+                    const docRef = doc(db, "parents", this.user.id);
+                    // Update document in Firestore
+                    await updateDoc(docRef, {
+                        National_id: this.user.National_id,
+                        name: this.user.name,
+                        parent_pass: this.user.password,
+                    });
+                }
+
+                if (this.user.userType === "admin") {
+                    const docRef = doc(db, "users", this.user.id);
+                    // Update document in Firestore
+                    await updateDoc(docRef, {
+                        name: secrureDataStore.encryptData(
+                            this.user.name,
+                            "12345a"
+                        ),
+                        email: secrureDataStore.encryptData(
+                            this.user.email,
+                            "12345a"
+                        ),
+                        National_id: secrureDataStore.encryptData(
+                            this.user.National_id,
+                            "12345a"
+                        ),
+                        password: this.user.password,
+                        roles: this.user.roles,
+                    });
+                }
+
+                if (this.user.userType === "student") {
+                    const docRef = doc(db, "students", this.user.id);
+                    // Update document in Firestore
+                    await updateDoc(docRef, {
+                        National_id: this.user.National_id,
+                        name: this.user.name,
+                        student_pass: this.user.password,
+                    });
+                }
+                console.log("done");
+                this.dialog = false;
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                this.error = "An error occurred while fetching user data.";
             }
         },
         async My_Logout() {

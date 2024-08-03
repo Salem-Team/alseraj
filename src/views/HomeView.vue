@@ -1,8 +1,74 @@
 <template>
     <section class="parallax">
         <h1 id="text">مدرسة السراج المنير</h1>
-        <img class="img_1" src="../assets/m_3.png" id="street" />
+        <img class="img_1" src="../assets/m_3.png" id="street" loading="lazy" />
     </section>
+    <v-overlay
+        v-model="loading1"
+        style="z-index: 10000000000; background-color: rgb(176, 176, 176, 0.8)"
+    >
+        <svg
+            style="
+                position: fixed;
+                top: 60px;
+                right: 600px;
+                transform: translate(50%, 50%);
+                width: 245px;
+                z-index: 11000100011;
+            "
+            v-if="loading1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 200 200"
+        >
+            <radialGradient
+                id="a12"
+                cx=".66"
+                fx=".66"
+                cy=".3125"
+                fy=".3125"
+                gradientTransform="scale(1.5)"
+            >
+                <stop offset="0" stop-color="#336699"></stop>
+                <stop offset=".3" stop-color="#336699" stop-opacity=".9"></stop>
+                <stop offset=".6" stop-color="#336699" stop-opacity=".6"></stop>
+                <stop offset=".8" stop-color="#336699" stop-opacity=".3"></stop>
+                <stop offset="1" stop-color="#336699" stop-opacity="0"></stop>
+            </radialGradient>
+            <circle
+                transform-origin="center"
+                fill="none"
+                stroke="url(#a12)"
+                stroke-width="15"
+                stroke-linecap="round"
+                stroke-dasharray="200 1000"
+                stroke-dashoffset="0"
+                cx="100"
+                cy="100"
+                r="70"
+            >
+                <animateTransform
+                    type="rotate"
+                    attributeName="transform"
+                    calcMode="spline"
+                    dur="2"
+                    values="360;0"
+                    keyTimes="0;1"
+                    keySplines="0 0 1 1"
+                    repeatCount="indefinite"
+                ></animateTransform>
+            </circle>
+            <circle
+                transform-origin="center"
+                fill="none"
+                opacity=".2"
+                stroke="#336699"
+                stroke-width="15"
+                stroke-linecap="round"
+                cx="100"
+                cy="100"
+                r="70"
+            ></circle></svg
+    ></v-overlay>
     <div visible>
         <Photo_Gallery_data />
         <News_data />
@@ -51,7 +117,21 @@ import News_data from "../components/News_data.vue";
 import Q_A from "../components/Q_A.vue";
 import Photo_Gallery_data from "../components/Photo_Gallery_data.vue";
 import { defineComponent } from "vue";
+import { storeToRefs } from "pinia";
+import { useJobs } from "@/store/job.js";
 export default defineComponent({
+    setup() {
+        const jobs = useJobs();
+
+        // Destructure reactive references and methods from Jobs store
+        const { loading1 } = storeToRefs(jobs);
+
+        // Return the necessary reactive properties and methods
+        return {
+            jobs,
+            loading1,
+        };
+    },
     components: {
         job_data,
         Q_A,

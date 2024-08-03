@@ -57,7 +57,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
-app.get("https://alseraj.vercel.app/", (req, res) => {
+app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 app.post("/upload", upload.single("file"), (req, res) => {

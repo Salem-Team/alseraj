@@ -102,11 +102,13 @@
                         src="../assets/profile/edit-info.svg"
                         alt=""
                         class="pluse pluse_1 ml-2"
+                        @click="toggleEditMode"
                     />
                     <img
                         src="../assets/profile/logout.svg"
                         alt=""
                         class="pluse pluse_1 ml-5"
+                        @click="handleLogout"
                     />
                 </div>
             </div>
@@ -168,13 +170,13 @@
 
                                 <v-tab value="seven1">
                                     <img
-                                        src="../assets/student/depositphotos_193076800-stock-illustration-girl-student-gets-ready-for.jpg"
+                                        src="../assets/student/analysis.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>
-                                <v-tab value="seven2">
+                                <v-tab value="eight">
                                     <img
-                                        src="../assets/student/analysis.svg"
+                                        src="../assets/student/study-icon.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>
@@ -304,9 +306,6 @@
                                                                         student.student_name
                                                                     }}
                                                                 </div>
-                                                                <img
-                                                                    src="../assets/profile/information.svg"
-                                                                />
                                                             </div>
                                                             <div
                                                                 class="class"
@@ -374,15 +373,78 @@
                                                                     }}
                                                                 </div>
                                                             </div>
-                                                            <div class="class">
-                                                                <div>
-                                                                    رقم الهاتف
+                                                            <div
+                                                                class="bg-white pa-0"
+                                                                v-if="!editMode"
+                                                            >
+                                                                <!-- عرض بيانات الطالب -->
+                                                                <div
+                                                                    class="class"
+                                                                >
+                                                                    <div>
+                                                                        رقم
+                                                                        الهاتف
+                                                                    </div>
+                                                                    <div>
+                                                                        {{
+                                                                            student.student_phone
+                                                                        }}
+                                                                    </div>
                                                                 </div>
-                                                                <div>
-                                                                    {{
-                                                                        student.phone
-                                                                    }}
+                                                                <div
+                                                                    class="class"
+                                                                >
+                                                                    <div>
+                                                                        الايميل
+                                                                    </div>
+                                                                    <div>
+                                                                        {{
+                                                                            student.student_email
+                                                                        }}
+                                                                    </div>
                                                                 </div>
+                                                            </div>
+                                                            <div
+                                                                v-else
+                                                                class="bg-white"
+                                                            >
+                                                                <!-- نموذج تعديل بيانات الطالب -->
+                                                                <v-form
+                                                                    ref="form"
+                                                                >
+                                                                    <div
+                                                                        class=""
+                                                                    >
+                                                                        <v-text-field
+                                                                            class=""
+                                                                            label="رقم الهاتف"
+                                                                            v-model="
+                                                                                student.student_phone
+                                                                            "
+                                                                        ></v-text-field>
+                                                                    </div>
+                                                                    <div>
+                                                                        <v-text-field
+                                                                            label="الايميل"
+                                                                            v-model="
+                                                                                student.student_email
+                                                                            "
+                                                                        ></v-text-field>
+                                                                    </div>
+                                                                    <v-btn
+                                                                        @click="
+                                                                            updateStudent
+                                                                        "
+                                                                        >حفظ
+                                                                        التعديلات</v-btn
+                                                                    >
+                                                                    <v-btn
+                                                                        @click="
+                                                                            editMode = false
+                                                                        "
+                                                                        >إلغاء</v-btn
+                                                                    >
+                                                                </v-form>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -850,19 +912,6 @@
                                                 </div>
                                             </v-card>
                                         </v-tabs-window-item>
-                                        <v-tabs-window-item value="seven2">
-                                            <v-card flat>
-                                                <div
-                                                    class="title"
-                                                    style="margin-bottom: 20px"
-                                                >
-                                                    الدرجات الشهريه
-                                                </div>
-                                                <student-chart
-                                                    :studentId="studentId"
-                                                />
-                                            </v-card>
-                                        </v-tabs-window-item>
                                         <v-tabs-window-item value="se11">
                                             <v-card flat v-if="student">
                                                 <div
@@ -963,6 +1012,59 @@
                                                 </div>
                                             </v-card>
                                         </v-tabs-window-item>
+                                        <v-tabs-window-item value="eight">
+                                            <v-card flat v-if="student">
+                                                <div
+                                                    class="title"
+                                                    style="margin-bottom: 20px"
+                                                >
+                                                    المحتوى التعليمي
+                                                </div>
+                                                <div v-if="loading">
+                                                    تحميل...
+                                                </div>
+                                                <div v-else>
+                                                    <div
+                                                        v-if="
+                                                            educationalContent.length ===
+                                                            0
+                                                        "
+                                                    >
+                                                        لا يوجد محتوى تعليمي
+                                                    </div>
+                                                    <v-row
+                                                        v-else
+                                                        class="d-flex ga-0"
+                                                    >
+                                                        <v-col
+                                                            v-for="content in educationalContent"
+                                                            :key="
+                                                                content.filePath
+                                                            "
+                                                            cols="4"
+                                                            sm="4"
+                                                            md="4"
+                                                        >
+                                                            <v-card outlined>
+                                                                <v-img
+                                                                    :src="
+                                                                        content.linkphoto
+                                                                    "
+                                                                ></v-img>
+                                                                <v-card-title>{{
+                                                                    content.description
+                                                                }}</v-card-title>
+                                                                <v-card-subtitle
+                                                                    >{{
+                                                                        content.DatePhoto
+                                                                    }}</v-card-subtitle
+                                                                >
+                                                            </v-card>
+                                                        </v-col>
+                                                    </v-row>
+                                                </div>
+                                            </v-card>
+                                        </v-tabs-window-item>
                                     </v-tabs-window>
                                 </v-card-text>
                             </v-card>
@@ -983,21 +1085,23 @@ import {
     query,
     collection,
     where,
+    updateDoc,
 } from "firebase/firestore";
 import Chart from "chart.js/auto";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { useAuthStore } from "../store/userStore";
 import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 import { mapActions } from "pinia";
+import { useRouter } from "vue-router";
 import { usenotification } from "../store/notification.js";
-import studentChart from "@/components/student/student_chart.vue";
 
 export default {
-    components: { studentChart },
     data() {
         return {
-            studentId: this.$route.params.id,
             exams: [],
+            editMode: false, // حالة التعديل
+            educationalContent: [],
             studySchedules: [],
             photos: [],
             loading1: false,
@@ -1067,6 +1171,24 @@ export default {
             },
         };
     },
+    setup() {
+        const authStore = useAuthStore();
+        const router = useRouter();
+
+        const handleLogout = async () => {
+            try {
+                authStore.logout(); // تنظيف حالة المستخدم من المتجر
+                await router.push("/UserLogin"); // توجيه المستخدم إلى صفحة تسجيل الدخول بعد تسجيل الخروج
+            } catch (error) {
+                console.error("Error signing out:", error);
+                alert("فشل في تسجيل الخروج");
+            }
+        };
+
+        return {
+            handleLogout,
+        };
+    },
     mounted() {
         this.get_notifications("students_notification");
         this.interval = setInterval(() => {
@@ -1122,8 +1244,34 @@ export default {
                     );
                     this.studySchedules = [];
                 }
+                const educationalContentQuery = query(
+                    collection(db, "Educationalcontent"),
+                    where("classId", "==", studentData.class),
+                    where(
+                        "educational_level",
+                        "==",
+                        studentData.educational_level
+                    ),
+                    where("sectionId", "==", studentData.section)
+                );
+
+                const educationalContentSnapshot = await getDocs(
+                    educationalContentQuery
+                );
+                if (!educationalContentSnapshot.empty) {
+                    this.educationalContent =
+                        educationalContentSnapshot.docs.map((doc) =>
+                            doc.data()
+                        );
+
+                    // تحديث بيانات الطالب بالمحتوى التعليمي الجديد
+                    await updateDoc(doc(db, "students", documentId), {
+                        educationalContent: this.educationalContent,
+                    });
+                } else {
+                    this.educationalContent = [];
+                }
             } else {
-                console.error("No document found for the given ID");
                 this.isAuthenticated = false;
             }
         } catch (error) {
@@ -1228,6 +1376,26 @@ export default {
             } catch (error) {
                 console.error("Error loading student:", error);
                 this.student = null;
+            }
+        },
+        cancelEdit() {
+            this.editMode = false; // إغلاق وضع التعديل بدون حفظ التعديلات
+        },
+        toggleEditMode() {
+            this.editMode = !this.editMode; // التبديل بين وضع العرض ووضع التعديل
+        },
+
+        async updateStudent() {
+            try {
+                await updateDoc(doc(db, "students", this.$route.params.id), {
+                    student_phone: this.student.student_phone,
+                    student_email: this.student.student_email,
+                });
+                this.editMode = false; // إغلاق وضع التعديل بعد الحفظ
+                alert("تم حفظ التعديلات بنجاح");
+            } catch (error) {
+                console.error("Error updating student data:", error);
+                alert("فشل في حفظ التعديلات");
             }
         },
         getNotificationColor(type) {
@@ -1335,9 +1503,15 @@ export default {
             doc.setFontSize(14);
             doc.text("معهد السراج المنير الأزهرى", 16, 70);
 
-            doc.text("الاسم:  " + this.student.name, 248, 30);
-            doc.text("المرحله الدراسيه:  " + this.student.gradeLevel, 225, 40);
-            doc.text("السنه الدراسيه:  " + this.student.schoolYear, 232, 50);
+            doc.text("الاسم:  " + this.student.student_name, 248, 30);
+            doc.text(
+                "المرحله الدراسيه:  " + this.student.educational_level,
+                195,
+                40
+            );
+            doc.text("السنه الدراسيه:  " + this.student.year, 235, 50);
+            doc.text(this.selectedMonth, 255, 60);
+
             doc.setFontSize(30);
             doc.text("شهادة", 130, 84);
             // ******************************************************
@@ -1384,7 +1558,7 @@ export default {
                 },
             });
 
-            doc.save("table.pdf");
+            doc.save(this.selectedMonth + ".pdf");
         },
         updatePaymentOptions() {
             if (this.paymentMethod === "نظام التقسيط") {

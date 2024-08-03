@@ -143,8 +143,11 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                         },
                     }
                 );
-                console.log("File uploaded successfully:", response);
-                return response.data;
+                console.log(
+                    "File uploaded successfully:",
+                    response.data.message
+                );
+                return response.data.message;
             } catch (error) {
                 console.error(
                     "Error uploading file:",
@@ -217,7 +220,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                 this.loading = true;
                 if (this.Photo.video) {
                     // Step 1: Upload the image and get the download URL
-                    const videoUrl = await this.upload_Image(this.Photo.video);
+                    const videoUrl = await this.uploadImage(this.Photo.video);
                     // Get current local time
                     const currentTime = Timestamp.now();
 

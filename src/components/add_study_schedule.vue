@@ -23,7 +23,7 @@
                 <div style="padding: 20px">
                     <v-select
                         v-model="selectedClass"
-                        :items="classes"
+                        :items="classItems"
                         label="اختر الفصل"
                         @blur="fetchScheduleId"
                         required
@@ -41,12 +41,28 @@
                                 <thead>
                                     <tr>
                                         <th>اليوم الدراسي</th>
-                                        <th>الفترة الأولى</th>
-                                        <th>الفترة الثانية</th>
-                                        <th>الفترة الثالثة</th>
+                                        <th>الحصة الأولى</th>
+                                        <th>الحصة الثانية</th>
+                                        <th>الحصة الثالثة</th>
+                                        <th>الحصة الرابعة</th>
+                                        <th>الحصة الخامسة</th>
+                                        <th>الحصة السادسة</th>
+                                        <th>الحصة السابعة</th>
+                                        <th>الحصة الثامنة</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td>مدة الحصة</td>
+                                        <td>8:00 - 8:45</td>
+                                        <td>8:45 - 9:30</td>
+                                        <td>9:30 - 10:15</td>
+                                        <td>10:15 - 11:00</td>
+                                        <td>11:00 - 11:45</td>
+                                        <td>11:45 - 12:30</td>
+                                        <td>12:30 - 1:15</td>
+                                        <td>1:15 - 2:00</td>
+                                    </tr>
                                     <tr
                                         v-for="(
                                             degree, index
@@ -55,28 +71,180 @@
                                     >
                                         <td>{{ degree.Subject_Name }}</td>
                                         <td>
-                                            <v-text-field
-                                                v-model="degree.Minor_degree"
-                                                style="text-align: center"
-                                                @input="handleInputChange"
-                                                required
-                                            ></v-text-field>
+                                            <div class="period-container">
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period1.subject
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المادة"
+                                                    required
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period1.teacher
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المدرس"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
                                         </td>
                                         <td>
-                                            <v-text-field
-                                                v-model="degree.Major_degree"
-                                                style="text-align: center"
-                                                @input="handleInputChange"
-                                                required
-                                            ></v-text-field>
+                                            <div class="period-container">
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period2.subject
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المادة"
+                                                    required
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period2.teacher
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المدرس"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
                                         </td>
                                         <td>
-                                            <v-text-field
-                                                v-model="degree.Student_degree"
-                                                style="text-align: center"
-                                                @input="handleInputChange"
-                                                required
-                                            ></v-text-field>
+                                            <div class="period-container">
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period3.subject
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المادة"
+                                                    required
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period3.teacher
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المدرس"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="period-container">
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period4.subject
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المادة"
+                                                    required
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period4.teacher
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المدرس"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="period-container">
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period5.subject
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المادة"
+                                                    required
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period5.teacher
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المدرس"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="period-container">
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period6.subject
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المادة"
+                                                    required
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period6.teacher
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المدرس"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="period-container">
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period7.subject
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المادة"
+                                                    required
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period7.teacher
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المدرس"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="period-container">
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period8.subject
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المادة"
+                                                    required
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    v-model="
+                                                        degree.Period8.teacher
+                                                    "
+                                                    style="text-align: center"
+                                                    @input="handleInputChange"
+                                                    label="المدرس"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -93,7 +261,7 @@
             v-model="showSnackbar"
             :text="confirmationText"
             :snackbar="showSnackbar"
-            @close-snackbar="showSnackbar = false"
+            @close-snackbar="handleCloseSnackbar"
         />
     </v-dialog>
 </template>
@@ -145,61 +313,78 @@ export default {
             showDialog: false,
             changesMade: false,
             confirmationText: "",
-            selectedClass: null, // تعيين القيمة الافتراضية لاحقًا
-            selectedSection: null, // تعيين القيمة الافتراضية لاحقًا
+            selectedClass: null,
+            selectedSection: null,
             showSnackbar: false,
             classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
             sections: ["عربي", "لغات"],
             Results: {
                 educational_level: "",
-                classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
-                sections: ["عربي", "لغات"],
                 schedule: [
                     {
-                        Subject_Name: "السبت",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
+                        Subject_Name: "الأحد",
+                        Period1: { subject: "", teacher: "" },
+                        Period2: { subject: "", teacher: "" },
+                        Period3: { subject: "", teacher: "" },
+                        Period4: { subject: "", teacher: "" },
+                        Period5: { subject: "", teacher: "" },
+                        Period6: { subject: "", teacher: "" },
+                        Period7: { subject: "", teacher: "" },
+                        Period8: { subject: "", teacher: "" },
                     },
                     {
-                        Subject_Name: "الاحد",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                    {
-                        Subject_Name: "الاثنين ",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
+                        Subject_Name: "الإثنين",
+                        Period1: { subject: "", teacher: "" },
+                        Period2: { subject: "", teacher: "" },
+                        Period3: { subject: "", teacher: "" },
+                        Period4: { subject: "", teacher: "" },
+                        Period5: { subject: "", teacher: "" },
+                        Period6: { subject: "", teacher: "" },
+                        Period7: { subject: "", teacher: "" },
+                        Period8: { subject: "", teacher: "" },
                     },
                     {
                         Subject_Name: "الثلاثاء",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
+                        Period1: { subject: "", teacher: "" },
+                        Period2: { subject: "", teacher: "" },
+                        Period3: { subject: "", teacher: "" },
+                        Period4: { subject: "", teacher: "" },
+                        Period5: { subject: "", teacher: "" },
+                        Period6: { subject: "", teacher: "" },
+                        Period7: { subject: "", teacher: "" },
+                        Period8: { subject: "", teacher: "" },
                     },
                     {
-                        Subject_Name: "الاربعاء",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
+                        Subject_Name: "الأربعاء",
+                        Period1: { subject: "", teacher: "" },
+                        Period2: { subject: "", teacher: "" },
+                        Period3: { subject: "", teacher: "" },
+                        Period4: { subject: "", teacher: "" },
+                        Period5: { subject: "", teacher: "" },
+                        Period6: { subject: "", teacher: "" },
+                        Period7: { subject: "", teacher: "" },
+                        Period8: { subject: "", teacher: "" },
                     },
                     {
                         Subject_Name: "الخميس",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
+                        Period1: { subject: "", teacher: "" },
+                        Period2: { subject: "", teacher: "" },
+                        Period3: { subject: "", teacher: "" },
+                        Period4: { subject: "", teacher: "" },
+                        Period5: { subject: "", teacher: "" },
+                        Period6: { subject: "", teacher: "" },
+                        Period7: { subject: "", teacher: "" },
+                        Period8: { subject: "", teacher: "" },
                     },
                 ],
             },
-            lastModified: "لم يتم التعديل بعد",
-            scheduleId: null, // هنا لتخزين معرّف الجدول
+            lastModified: "",
+            scheduleId: "",
         };
     },
     methods: {
         handleCloseSnackbar() {
-            this.showSnackbar = false; // تحديث حالة الرسالة في المكون الأم
+            this.showSnackbar = false;
         },
         async loadSchedule() {
             if (!this.selectedClass || !this.selectedSection) return;
@@ -274,45 +459,64 @@ export default {
                 if (!querySnapshot.empty) {
                     const doc = querySnapshot.docs[0];
                     this.scheduleId = doc.id;
-                    this.loadSchedule(); // تحميل البيانات الحالية
+                    this.loadSchedule();
                 } else {
                     this.scheduleId = uuidv4();
                     this.Results.schedule = [
                         {
-                            Subject_Name: "السبت",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                        {
                             Subject_Name: "الأحد",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
+                            Period1: { subject: "", teacher: "" },
+                            Period2: { subject: "", teacher: "" },
+                            Period3: { subject: "", teacher: "" },
+                            Period4: { subject: "", teacher: "" },
+                            Period5: { subject: "", teacher: "" },
+                            Period6: { subject: "", teacher: "" },
+                            Period7: { subject: "", teacher: "" },
+                            Period8: { subject: "", teacher: "" },
                         },
                         {
                             Subject_Name: "الإثنين",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
+                            Period1: { subject: "", teacher: "" },
+                            Period2: { subject: "", teacher: "" },
+                            Period3: { subject: "", teacher: "" },
+                            Period4: { subject: "", teacher: "" },
+                            Period5: { subject: "", teacher: "" },
+                            Period6: { subject: "", teacher: "" },
+                            Period7: { subject: "", teacher: "" },
+                            Period8: { subject: "", teacher: "" },
                         },
                         {
                             Subject_Name: "الثلاثاء",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
+                            Period1: { subject: "", teacher: "" },
+                            Period2: { subject: "", teacher: "" },
+                            Period3: { subject: "", teacher: "" },
+                            Period4: { subject: "", teacher: "" },
+                            Period5: { subject: "", teacher: "" },
+                            Period6: { subject: "", teacher: "" },
+                            Period7: { subject: "", teacher: "" },
+                            Period8: { subject: "", teacher: "" },
                         },
                         {
                             Subject_Name: "الأربعاء",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
+                            Period1: { subject: "", teacher: "" },
+                            Period2: { subject: "", teacher: "" },
+                            Period3: { subject: "", teacher: "" },
+                            Period4: { subject: "", teacher: "" },
+                            Period5: { subject: "", teacher: "" },
+                            Period6: { subject: "", teacher: "" },
+                            Period7: { subject: "", teacher: "" },
+                            Period8: { subject: "", teacher: "" },
                         },
                         {
                             Subject_Name: "الخميس",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
+                            Period1: { subject: "", teacher: "" },
+                            Period2: { subject: "", teacher: "" },
+                            Period3: { subject: "", teacher: "" },
+                            Period4: { subject: "", teacher: "" },
+                            Period5: { subject: "", teacher: "" },
+                            Period6: { subject: "", teacher: "" },
+                            Period7: { subject: "", teacher: "" },
+                            Period8: { subject: "", teacher: "" },
                         },
                     ];
                 }
@@ -330,10 +534,46 @@ export default {
     watch: {
         showDialog(val) {
             if (val) {
-                // تعيين القيم الافتراضية عند فتح الحوار
                 this.selectedClass = "1/1";
                 this.selectedSection = "عربي";
-                this.fetchScheduleId(); // قم بتحديث الجدول عند فتح الحوار
+                this.fetchScheduleId();
+            }
+        },
+    },
+    computed: {
+        classItems() {
+            // Generate the class items based on the selected grade
+            switch (this.year) {
+                case "مرحلة رياض الأطفال الاولي":
+                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
+                case "مرحلة رياض الأطفال الثانية":
+                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
+                case "الصف الأول الابتدائي":
+                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
+                case "الصف الثاني الابتدائي":
+                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
+                case "الصف الثالث الابتدائي":
+                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
+                case "الصف الرابع الابتدائي":
+                    return ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6"];
+                case "الصف الخامس الابتدائي":
+                    return ["5/1", "5/2", "5/3", "5/4", "5/5", "5/6"];
+                case "الصف السادس الابتدائي":
+                    return ["6/1", "6/2", "6/3", "6/4", "6/5", "6/6"];
+                case "الصف الأول الإعدادي":
+                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
+                case "الصف الثاني الإعدادي":
+                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
+                case "الصف الثالث الإعدادي":
+                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
+                case "الصف الأول الثانوي":
+                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
+                case "الصف الثاني الثانوي":
+                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
+                case "الصف الثالث الثانوي":
+                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
+                default:
+                    return [];
             }
         },
     },
@@ -343,4 +583,13 @@ export default {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped>
+.table {
+    width: 100%;
+    overflow-x: auto;
+}
+.period-container {
+    display: flex;
+    flex-direction: column;
+}
+</style>

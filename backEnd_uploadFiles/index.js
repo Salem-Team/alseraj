@@ -153,6 +153,86 @@ app.post("/upload", upload.single("file"), (req, res) => {
     }
 });
 
+app.get("/upload", async (req, res) => {
+    if (req.query.url) {
+        let assetId = req.query.url;
+        const assetIdList = assetId.split("/").slice(7, assetId.length);
+        const assetIdLastIndex =
+            assetIdList[assetIdList.length - 1].lastIndexOf(".");
+        assetId = [
+            ...assetIdList.slice(0, assetIdList.length - 1),
+            assetIdList[assetIdList.length - 1].slice(0, assetIdLastIndex),
+        ].join("/");
+        console.log(assetId);
+        console.log(
+            assetId.includes("images"),
+            assetId.includes("videos"),
+            assetId.includes("pdfs")
+        );
+        try {
+            const asset = await cloudinary.api.resource(assetId, {
+                resource_type: assetId.includes("videos")
+                    ? "video"
+                    : assetId.includes("images")
+                    ? "image"
+                    : assetId.includes("pdfs")
+                    ? "raw"
+                    : "auto",
+            });
+
+            // Send the asset details as a response
+            res.status(200).json(asset);
+        } catch (error) {
+            console.error("Error fetching asset:", error);
+            res.status(500).json({ error: "Asset not found" });
+        }
+    } else {
+        res.status(400).json({ error: "Asset ID is required" });
+    }
+});
+
+// Route to delete the asset from Cloudinary by its public ID
+app.delete("/upload", async (req, res) => {
+    if (req.query.url) {
+        let assetId = req.query.url;
+        const assetIdList = assetId.split("/").slice(7, assetId.length);
+        const assetIdLastIndex =
+            assetIdList[assetIdList.length - 1].lastIndexOf(".");
+        assetId = [
+            ...assetIdList.slice(0, assetIdList.length - 1),
+            assetIdList[assetIdList.length - 1].slice(0, assetIdLastIndex),
+        ].join("/");
+        console.log(assetId);
+        console.log(
+            assetId.includes("images"),
+            assetId.includes("videos"),
+            assetId.includes("pdfs")
+        );
+        try {
+            // Delete the asset from Cloudinary
+            const result = await cloudinary.uploader.destroy(assetId, {
+                resource_type: assetId.includes("images")
+                    ? "image"
+                    : assetId.includes("videos")
+                    ? "video"
+                    : "raw",
+                invalidate: true,
+            });
+
+            if (result.result === "ok") {
+                res.json({ message: "Asset deleted successfully" });
+            } else {
+                res.status(404).json({ error: "Asset not found" });
+            }
+        } catch (error) {
+            console.error("Error deleting asset:", error);
+            res.status(500).json({ error: "Failed to delete asset" });
+        }
+    } else {
+        res.status(400).json({ error: "Asset ID is required" });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });

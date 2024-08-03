@@ -45,10 +45,12 @@
 
                 <!-- Description -->
                 <v-card-text>
-                    <p
-                        v-html="New.description"
-                        style="color: var(--therd-color) !important"
-                    ></p>
+                    <div style="width: 90% !important; margin: auto">
+                        <p
+                            v-html="New.description"
+                            style="color: var(--therd-color) !important"
+                        ></p>
+                    </div>
                 </v-card-text>
             </v-card>
             <!-- Display each photo -->

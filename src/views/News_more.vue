@@ -130,10 +130,12 @@
 
                         <!-- Description -->
                         <v-card-text>
-                            <p
-                                v-html="New.description"
-                                style="color: var(--therd-color) !important"
-                            ></p>
+                            <div style="width: 90% !important; margin: auto">
+                                <p
+                                    v-html="New.description"
+                                    style="color: var(--therd-color) !important"
+                                ></p>
+                            </div>
                         </v-card-text>
                     </v-card>
                     <!-- Display each photo -->
@@ -261,19 +263,7 @@ export default defineComponent({
     font-weight: bold;
     font-size: 20px;
 }
-.v-img::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    border-style: solid;
-    border-width: 0px 0px 130px 300px;
-    border-color: transparent transparent white transparent;
-    transition: 0.3s;
-}
-.v-card:hover .v-img::before {
-    border-width: 0px 580px 270px 0;
-}
+
 .v-card {
     text-align: center !important;
 }

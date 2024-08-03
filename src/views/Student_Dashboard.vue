@@ -920,7 +920,7 @@
                                         </v-tabs-window-item>
                                         <v-tabs-window-item value="seven2">
                                             <v-card flat>
-                                                <AddSubject />
+                                                <Student_chart />
                                             </v-card>
                                         </v-tabs-window-item>
                                         <v-tabs-window-item value="se11">
@@ -1088,7 +1088,7 @@
 </template>
 
 <script>
-import AddSubject from "../components/subject/addSubject";
+import Student_chart from "../components/student/student_chart.vue";
 import { db } from "@/Firebase.js";
 import {
     doc,
@@ -1109,7 +1109,7 @@ import { useRouter } from "vue-router";
 import { usenotification } from "../store/notification.js";
 
 export default {
-    components: { AddSubject },
+    components: { Student_chart },
     data() {
         return {
             exams: [],

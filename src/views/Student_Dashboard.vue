@@ -174,6 +174,12 @@
                                         alt=""
                                         width="30px"
                                 /></v-tab>
+                                <v-tab value="seven2">
+                                    <img
+                                        src="../assets/student/depositphotos_193076800-stock-illustration-girl-student-gets-ready-for.svg"
+                                        alt=""
+                                        width="30px"
+                                /></v-tab>
                                 <v-tab value="eight">
                                     <img
                                         src="../assets/student/study-icon.svg"
@@ -912,6 +918,11 @@
                                                 </div>
                                             </v-card>
                                         </v-tabs-window-item>
+                                        <v-tabs-window-item value="seven2">
+                                            <v-card flat>
+                                                <AddSubject />
+                                            </v-card>
+                                        </v-tabs-window-item>
                                         <v-tabs-window-item value="se11">
                                             <v-card flat v-if="student">
                                                 <div
@@ -1077,6 +1088,7 @@
 </template>
 
 <script>
+import AddSubject from "../components/subject/addSubject";
 import { db } from "@/Firebase.js";
 import {
     doc,
@@ -1097,6 +1109,7 @@ import { useRouter } from "vue-router";
 import { usenotification } from "../store/notification.js";
 
 export default {
+    components: { AddSubject },
     data() {
         return {
             exams: [],

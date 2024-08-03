@@ -173,6 +173,12 @@
                                         alt=""
                                         width="30px"
                                 /></v-tab>
+                                <v-tab value="eight">
+                                    <img
+                                        src="../assets/student/study-icon.svg"
+                                        alt=""
+                                        width="30px"
+                                /></v-tab>
                             </v-tabs>
                             <v-card
                                 variant="flat"
@@ -372,7 +378,17 @@
                                                                 </div>
                                                                 <div>
                                                                     {{
-                                                                        student.phone
+                                                                        student.student_phone
+                                                                    }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="class">
+                                                                <div>
+                                                                    الايميل
+                                                                </div>
+                                                                <div>
+                                                                    {{
+                                                                        student.student_email
                                                                     }}
                                                                 </div>
                                                             </div>
@@ -842,6 +858,7 @@
                                                 </div>
                                             </v-card>
                                         </v-tabs-window-item>
+
                                         <v-tabs-window-item value="se11">
                                             <v-card flat v-if="student">
                                                 <div
@@ -939,6 +956,60 @@
                                                             </v-card-text>
                                                         </v-card>
                                                     </div>
+                                                </div>
+                                            </v-card>
+                                        </v-tabs-window-item>
+
+                                        <v-tabs-window-item value="eight">
+                                            <v-card flat v-if="student">
+                                                <div
+                                                    class="title"
+                                                    style="margin-bottom: 20px"
+                                                >
+                                                    المحتوى التعليمي
+                                                </div>
+                                                <div v-if="loading">
+                                                    تحميل...
+                                                </div>
+                                                <div v-else>
+                                                    <div
+                                                        v-if="
+                                                            educationalContent.length ===
+                                                            0
+                                                        "
+                                                    >
+                                                        لا يوجد محتوى تعليمي
+                                                    </div>
+                                                    <v-row
+                                                        v-else
+                                                        class="d-flex ga-0"
+                                                    >
+                                                        <v-col
+                                                            v-for="content in educationalContent"
+                                                            :key="
+                                                                content.filePath
+                                                            "
+                                                            cols="4"
+                                                            sm="4"
+                                                            md="4"
+                                                        >
+                                                            <v-card outlined>
+                                                                <v-img
+                                                                    :src="
+                                                                        content.linkphoto
+                                                                    "
+                                                                ></v-img>
+                                                                <v-card-title>{{
+                                                                    content.description
+                                                                }}</v-card-title>
+                                                                <v-card-subtitle
+                                                                    >{{
+                                                                        content.DatePhoto
+                                                                    }}</v-card-subtitle
+                                                                >
+                                                            </v-card>
+                                                        </v-col>
+                                                    </v-row>
                                                 </div>
                                             </v-card>
                                         </v-tabs-window-item>
@@ -1324,6 +1395,7 @@ import {
     getDocs,
     query,
     collection,
+    updateDoc,
     where,
 } from "firebase/firestore";
 import Chart from "chart.js/auto";
@@ -1338,6 +1410,7 @@ export default {
         return {
             exams: [],
             studySchedules: [],
+            educationalContent: [],
             photos: [],
             loading1: false,
             isAuthenticated: false,
@@ -1435,8 +1508,6 @@ export default {
                 this.photos = studentData.photos || [];
                 this.exams = studentData.exams || [];
 
-                console.log("Exams Data:", this.exams); // تحقق من بيانات الامتحانات
-
                 // جلب بيانات الجدول الدراسي بناءً على بيانات الطالب
                 const studyScheduleQuery = query(
                     collection(db, "studySchedule"),
@@ -1454,15 +1525,39 @@ export default {
                     this.studySchedules = scheduleSnapshot.docs.map((doc) =>
                         doc.data()
                     );
-                    console.log("Study Schedules Data:", this.studySchedules); // تحقق من بيانات الجدول الدراسي
                 } else {
-                    console.error(
-                        "No study schedules found for the given class, level, and section."
-                    );
                     this.studySchedules = [];
                 }
+
+                // جلب بيانات Educationalcontent بناءً على بيانات الطالب
+                const educationalContentQuery = query(
+                    collection(db, "Educationalcontent"),
+                    where("classId", "==", studentData.class),
+                    where(
+                        "educational_level",
+                        "==",
+                        studentData.educational_level
+                    ),
+                    where("sectionId", "==", studentData.section)
+                );
+
+                const educationalContentSnapshot = await getDocs(
+                    educationalContentQuery
+                );
+                if (!educationalContentSnapshot.empty) {
+                    this.educationalContent =
+                        educationalContentSnapshot.docs.map((doc) =>
+                            doc.data()
+                        );
+
+                    // تحديث بيانات الطالب بالمحتوى التعليمي الجديد
+                    await updateDoc(doc(db, "students", documentId), {
+                        educationalContent: this.educationalContent,
+                    });
+                } else {
+                    this.educationalContent = [];
+                }
             } else {
-                console.error("No document found for the given ID");
                 this.isAuthenticated = false;
             }
         } catch (error) {
@@ -1472,6 +1567,7 @@ export default {
             this.loading = false; // إنهاء حالة التحميل
         }
     },
+
     beforeUnmount() {
         clearInterval(this.interval);
     },
@@ -1624,28 +1720,7 @@ export default {
                 console.log("error");
             }
         },
-        // createChart() {
-        //     const ctx = document.getElementById("myChart");
-        //     if (ctx) {
-        //         console.log("start createChart");
-        //         this.CreateChart = true;
-        //         new Chart(ctx, {
-        //             type: "doughnut",
-        //             data: {
-        //                 datasets: [
-        //                     {
-        //                         label: "المصروفات",
-        //                         data: ["90", "80"],
-        //                         backgroundColor: ["#336699", "#d8588c"],
-        //                         hoverOffset: 4,
-        //                     },
-        //                 ],
-        //             },
-        //         });
-        //     } else {
-        //         console.log("error");
-        //     }
-        // },
+
         downloadPDF() {
             const doc = new jsPDF("landscape");
             doc.addFileToVFS("Amiri-Regular.ttf", Amiri_Regular);
@@ -1674,9 +1749,15 @@ export default {
             doc.setFontSize(14);
             doc.text("معهد السراج المنير الأزهرى", 16, 70);
 
-            doc.text("الاسم:  " + this.student.name, 248, 30);
-            doc.text("المرحله الدراسيه:  " + this.student.gradeLevel, 225, 40);
-            doc.text("السنه الدراسيه:  " + this.student.schoolYear, 232, 50);
+            doc.text("الاسم:  " + this.student.student_name, 248, 30);
+            doc.text(
+                "المرحله الدراسيه:  " + this.student.educational_level,
+                195,
+                40
+            );
+            doc.text("السنه الدراسيه:  " + this.student.year, 235, 50);
+            doc.text(this.selectedMonth, 255, 60);
+
             doc.setFontSize(30);
             doc.text("شهادة", 130, 84);
             // ******************************************************
@@ -1723,7 +1804,7 @@ export default {
                 },
             });
 
-            doc.save("table.pdf");
+            doc.save(this.selectedMonth + ".pdf");
         },
         updatePaymentOptions() {
             if (this.paymentMethod === "نظام التقسيط") {
@@ -2381,5 +2462,483 @@ th {
             }
         }
     }
+}
+.right {
+    width: 100% !important;
+    margin-right: 20px;
+    font-weight: bold;
+    font-size: 20px;
+    border-bottom: 5px solid var(--secound-color);
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .v-breadcrumbs-item:first-child {
+        color: var(--main-color);
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .v-breadcrumbs {
+        padding: 16px 0;
+    }
+}
+.left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.v-container {
+    margin: 20px auto !important;
+    flex-wrap: wrap;
+    padding: 0;
+    justify-content: flex-start !important;
+    flex-direction: column;
+    gap: 40px;
+}
+.card {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--main-color);
+    font-weight: bold;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+}
+.feat {
+    width: 100%;
+    box-shadow: 0 0 10px #ddd;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    // max-width: 33%;
+    & > div {
+        width: 100%;
+
+        position: relative;
+    }
+    .Top {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 250px;
+        .v-img {
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
+        }
+        svg {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 15px;
+            height: 15px;
+            padding: 6px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #fff;
+            z-index: 100000000000;
+            background: var(--main-color);
+            &:first-child {
+                left: 40px;
+            }
+        }
+    }
+    .Bottom {
+        padding: 10px;
+        .title {
+            font-size: 20px;
+            color: var(--main-color);
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--therd-color);
+            font-weight: bold;
+            margin-bottom: 20px;
+            position: relative;
+            font-size: 14px;
+            &::before {
+                content: "";
+                position: absolute;
+                bottom: -10px;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: var(--secound-color);
+            }
+        }
+        .description {
+            font-weight: bold;
+            color: var(--therd-color);
+        }
+    }
+    .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        margin-bottom: 15px;
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            height: 3px;
+            width: 100%;
+            background: var(--secound-color);
+        }
+        & > div {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            .number {
+                background: var(--main-color);
+                color: #fff;
+                border-radius: 5px;
+                font-weight: bold;
+                font-size: 18px;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .name {
+                font-size: 20px;
+                color: var(--main-color);
+                font-weight: bold;
+            }
+            svg {
+                color: var(--main-color);
+                font-size: 20px;
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--therd-color);
+                }
+            }
+        }
+    }
+    .body {
+        & > div {
+            font-weight: bold;
+            font-size: 19px;
+            color: var(--therd-color);
+            margin: 20px 0 5px;
+        }
+        ul {
+            color: var(--therd-color);
+            font-weight: bold;
+            font-size: 16px;
+            li {
+                list-style-type: square;
+                list-style-position: inside;
+            }
+        }
+    }
+    .footer {
+        .show_password {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            background: var(--main-color);
+            width: 100%;
+            padding: 10px;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            &:hover {
+                background-color: var(--therd-color);
+            }
+        }
+    }
+}
+.v-card.v-theme--light.v-card--density-default.v-card--variant-elevated {
+    .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 10px 0;
+        font-size: 23px;
+        color: var(--main-color);
+        font-weight: bold;
+        position: relative;
+        margin-bottom: 20px;
+        svg {
+            cursor: pointer;
+            padding: 10px;
+        }
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            height: 4px;
+            width: 95%;
+            background: var(--secound-color);
+            transform: translateX(-50%);
+        }
+    }
+    .body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        color: var(--therd-color);
+        background: var(--secound-color);
+        margin: 0 10px 10px;
+        border-radius: 5px;
+        svg {
+            color: var(--main-color);
+            font-size: 18px;
+            cursor: pointer;
+        }
+    }
+}
+.feat {
+    width: 100%;
+    box-shadow: 0 0 10px #ddd;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    // max-width: 33%;
+    & > div {
+        width: 100%;
+
+        position: relative;
+    }
+    .Top {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 250px;
+        .v-img {
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
+        }
+        svg {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 15px;
+            height: 15px;
+            padding: 6px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #fff;
+            z-index: 100000000000;
+            background: var(--main-color);
+            &:first-child {
+                left: 40px;
+            }
+        }
+    }
+    .Bottom {
+        padding: 10px;
+        .title {
+            font-size: 20px;
+            color: var(--main-color);
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--therd-color);
+            font-weight: bold;
+            margin-bottom: 20px;
+            position: relative;
+            font-size: 14px;
+            &::before {
+                content: "";
+                position: absolute;
+                bottom: -10px;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: var(--secound-color);
+            }
+        }
+        .description {
+            font-weight: bold;
+            color: var(--therd-color);
+        }
+    }
+    .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        margin-bottom: 15px;
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            height: 3px;
+            width: 100%;
+            background: var(--secound-color);
+        }
+        & > div {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            .number {
+                background: var(--main-color);
+                color: #fff;
+                border-radius: 5px;
+                font-weight: bold;
+                font-size: 18px;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .name {
+                font-size: 20px;
+                color: var(--main-color);
+                font-weight: bold;
+            }
+            svg {
+                color: var(--main-color);
+                font-size: 20px;
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--therd-color);
+                }
+            }
+        }
+    }
+    .body {
+        & > div {
+            font-weight: bold;
+            font-size: 19px;
+            color: var(--therd-color);
+            margin: 20px 0 5px;
+        }
+        ul {
+            color: var(--therd-color);
+            font-weight: bold;
+            font-size: 16px;
+            li {
+                list-style-type: square;
+                list-style-position: inside;
+            }
+        }
+    }
+    .footer {
+        .show_password {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            background: var(--main-color);
+            width: 100%;
+            padding: 10px;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            &:hover {
+                background-color: var(--therd-color);
+            }
+        }
+    }
+}
+.children {
+    width: 100%;
+    .title {
+        width: 100%;
+        background: var(--secound-color);
+        padding: 10px;
+        border-radius: 5px;
+        color: var(--main-color);
+        font-size: 22px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .body {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+        margin-top: 20px;
+
+        .box {
+            box-shadow: 0 0 10px #ddd;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            position: relative;
+            gap: 5px;
+            .head {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: var(--secound-color);
+                padding: 10px;
+                border-radius: 5px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                margin-top: 10px;
+                img {
+                    width: 35px;
+                }
+                .name {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: var(--main-color);
+                }
+            }
+            .grad {
+                color: var(--therd-color);
+                font-weight: bold;
+                font-size: 15px;
+                background: var(--secound-color);
+                padding: 10px;
+                border-radius: 5px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                margin-top: 10px;
+            }
+            .class {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                color: var(--pink-color);
+                font-weight: bold;
+                background: var(--secound-color);
+                padding: 10px;
+                border-radius: 5px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+    }
+}
+.Certificate .head .right {
+    justify-content: space-around;
+    align-items: flex-start;
 }
 </style>

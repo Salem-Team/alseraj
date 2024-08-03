@@ -1,14 +1,5 @@
 <template>
     <div class="profile-container">
-        <!-- <div class="header" v-if="user">
-            <h2 class="welcome-text">مرحبا {{ user.name }}</h2>
-            <div class="action-buttons">
-                <v-btn color="primary ml-2" small @click="Edit"
-                    >تعديل البيانات</v-btn
-                >
-                <v-btn color="#555" small @click="My_Logout">تسجيل خروج</v-btn>
-            </div>
-        </div> -->
         <div class="visible">
             <svg
                 style="
@@ -105,14 +96,42 @@
                         src="../assets/profile/edit-info.svg"
                         alt=""
                         class="pluse pluse_1"
+                        @click="openDialog"
                     />
                     <img
                         src="../assets/profile/logout.svg"
                         alt=""
                         class="pluse pluse_1"
+                        @click="My_Logout"
                     />
                 </div>
             </div>
+
+            <v-dialog v-model="dialog" max-width="500px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">تعديل البيانات</span>
+                    </v-card-title>
+                    <v-card-subtitle>
+                        <v-text-field
+                            v-model="editedParent.parent_phone"
+                            label="رقم الهاتف"
+                            outlined
+                        />
+                        <v-text-field
+                            v-model="editedParent.parent_email"
+                            label="البريد الإلكتروني"
+                            outlined
+                        />
+                    </v-card-subtitle>
+                    <v-card-actions>
+                        <v-btn text @click="closeDialog">إلغاء</v-btn>
+                        <v-btn color="primary" @click="updateParentInfo"
+                            >تحديث</v-btn
+                        >
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
             <v-container class="box d-flex align-center justify-space-around">
                 <div class="hello_text">
                     مرحبًا {{ user.name }}، نشكرك على ثقتك في معهد السراج المنير
@@ -155,113 +174,7 @@
                 </div>
             </v-container>
         </div>
-        <v-card class="profile-card">
-            <!-- <v-toolbar color="info" dark flat>
-                <v-toolbar-title class="text-center"
-                    >الصفحه الشخصيه</v-toolbar-title
-                >
-            </v-toolbar> -->
-
-            <!-- <v-card-text>
-                <v-row>
-                    <v-col cols="12" sm="4">
-                        <v-card class="info-card" style="height: 100%">
-                            <v-card-title class="info-card-title text-center">
-                                بياناتك الشخصيه
-                            </v-card-title>
-                            <v-divider></v-divider>
-                            <v-card-text class="info-card-text">
-                                <div v-if="!editingMode">
-                                    <strong>الاسم:</strong>
-                                    <div>{{ parent.name }}</div>
-                                    <strong>الايميل:</strong>
-                                    <div>{{ parent.email }}</div>
-                                    <strong>رقم الهاتف:</strong>
-                                    <div>{{ parent.phoneNumber }}</div>
-                                </div>
-                                <div v-else>
-                                    <v-text-field
-                                        v-model="editedParent.name"
-                                        label="الاسم"
-                                    ></v-text-field>
-                                    <v-text-field
-                                        v-model="editedParent.email"
-                                        label="الايميل"
-                                    ></v-text-field>
-                                    <v-text-field
-                                        v-model="editedParent.phoneNumber"
-                                        label="رقم الهاتف"
-                                    ></v-text-field>
-                                </div>
-                            </v-card-text>
-                            <v-divider></v-divider>
-                            <v-card-actions>
-                                <v-btn
-                                    v-if="!editingMode"
-                                    color="primary"
-                                    @click="startEditing"
-                                    >تعديل</v-btn
-                                >
-                                <v-btn
-                                    v-else
-                                    color="primary"
-                                    @click="saveChanges"
-                                    >حفظ</v-btn
-                                >
-                            </v-card-actions>
-                        </v-card>
-                    </v-col>
-
-                    <v-col cols="12" sm="8">
-                        <v-card class="info-card" style="height: 100%">
-                            <v-card-title class="info-card-title text-center">
-                                الأولاد المسجلين
-                            </v-card-title>
-                            <v-divider></v-divider>
-                            <v-card-text>
-                                <v-row
-                                    v-for="child in children"
-                                    :key="child.id"
-                                    class="child-info mb-3"
-                                >
-                                    <v-col
-                                        cols="12"
-                                        sm="4"
-                                        class="d-flex flex-column align-center"
-                                    >
-                                        <strong class="text-h6">الاسم:</strong>
-                                        <div>{{ child.name }}</div>
-                                    </v-col>
-                                    <v-col
-                                        cols="12"
-                                        sm="4"
-                                        class="d-flex flex-column align-center"
-                                    >
-                                        <strong class="text-h6"
-                                            >الصف الدراسي:</strong
-                                        >
-                                        <div>{{ child.gradeLevel }}</div>
-                                    </v-col>
-                                    <v-col
-                                        cols="12"
-                                        sm="4"
-                                        class="d-flex align-center justify-center"
-                                    >
-                                        <v-btn
-                                            color="info"
-                                            small
-                                            @click="goToChildDetails(child.id)"
-                                        >
-                                            عرض التفاصيل
-                                        </v-btn>
-                                    </v-col>
-                                </v-row>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                </v-row>
-            </v-card-text> -->
-        </v-card>
+        <v-card class="profile-card"> </v-card>
     </div>
 </template>
 
@@ -270,19 +183,26 @@ import { mapState, mapActions } from "pinia";
 import { useAuthStore } from "../store/userStore";
 import { usenotification } from "../store/notification.js";
 import { db } from "../Firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import {
+    collection,
+    query,
+    where,
+    getDocs,
+    updateDoc,
+    // doc,
+} from "firebase/firestore";
 
 export default {
     data: () => ({
         items: ["بياناتك الشخصية", "أطفالي"],
         children: [],
         parent: {
+            parent_email: "",
+            parent_phone: "",
             name: "",
-            email: "",
-            phoneNumber: "",
         },
         editedParent: {},
-        editingMode: false,
+        dialog: false,
     }),
     computed: {
         ...mapState(useAuthStore, ["user"]),
@@ -292,12 +212,6 @@ export default {
         this.get_notifications("student_notification");
         this.loadParentData();
         this.loadChildrenData();
-        console.log("User data in mounted:", this.user); // Debug log
-        if (this.user && this.user.id) {
-            this.loadParentData();
-        } else {
-            console.error("User ID is missing in Parent_Dashboard");
-        }
     },
     methods: {
         ...mapActions(usenotification, ["get_notifications"]),
@@ -305,9 +219,6 @@ export default {
         async loadParentData() {
             try {
                 const userId = this.user.id;
-                console.log("userId:", userId); // تسجيل قيمة userId
-
-                // تحقق مما إذا كان userId مُعَرّفًا
                 if (!userId) {
                     console.error("المعرف غير مُعَرّف أو فارغ.");
                     return;
@@ -327,6 +238,7 @@ export default {
 
                 querySnapshot.forEach((doc) => {
                     this.parent = doc.data();
+                    this.editedParent = { ...this.parent }; // إعداد البيانات المعدلة
                 });
             } catch (error) {
                 console.error(
@@ -338,7 +250,6 @@ export default {
         async loadChildrenData() {
             try {
                 const userId = this.user.id;
-                console.log("userId:", userId); // التحقق من قيمة userId
                 if (!userId) {
                     console.error("المعرف غير معرف.");
                     return;
@@ -359,7 +270,6 @@ export default {
                 querySnapshot.forEach((doc) => {
                     const parentData = doc.data();
                     this.children = parentData.Child || [];
-                    console.log("children:", this.children); // التحقق من قيمة children
                 });
             } catch (error) {
                 console.error(
@@ -374,7 +284,7 @@ export default {
         async My_Logout() {
             try {
                 await this.logout();
-                this.$router.push({ name: "home" });
+                this.$router.push({ name: "UserLogin" });
             } catch (error) {
                 console.error("حدث خطأ أثناء تسجيل الخروج:", error.message);
             }
@@ -385,15 +295,45 @@ export default {
                 params: { id: childId },
             });
         },
-        startEditing() {
-            // نسخ بيانات الوالد للتعديل
-            this.editedParent = { ...this.parent };
-            this.editingMode = true;
+        openDialog() {
+            this.dialog = true;
         },
-        saveChanges() {
-            // حفظ التعديلات وتحديث البيانات
-            this.parent = { ...this.editedParent };
-            this.editingMode = false;
+        closeDialog() {
+            this.dialog = false;
+        },
+        async updateParentInfo() {
+            try {
+                const userId = this.user.id;
+                if (!userId) {
+                    console.error("المعرف غير مُعَرّف أو فارغ.");
+                    return;
+                }
+
+                const parentDocRef = query(
+                    collection(db, "parents"),
+                    where("National_id", "==", userId)
+                );
+                const querySnapshot = await getDocs(parentDocRef);
+
+                if (querySnapshot.empty) {
+                    console.error("لم يتم العثور على المستند لتحديث البيانات.");
+                    return;
+                }
+
+                const docRef = querySnapshot.docs[0].ref;
+                await updateDoc(docRef, {
+                    phoneNumber: this.editedParent.parent_phone,
+                    email: this.editedParent.parent_email,
+                });
+
+                this.parent = { ...this.editedParent };
+                this.closeDialog();
+            } catch (error) {
+                console.error(
+                    "حدث خطأ أثناء تحديث بيانات الوالد:",
+                    error.message
+                );
+            }
         },
     },
 };

@@ -331,6 +331,7 @@
                                             @click.prevent="
                                                 photos.photo_Information(photo)
                                             "
+                                            @click.="moveText()"
                                         />
                                         <video
                                             @click="dialog_6 = true"
@@ -377,10 +378,10 @@
                                         ></v-btn>
                                     </div>
                                     <v-carousel
+                                        class="carousel"
                                         :show-arrows="false"
                                         hide-delimiter-background
                                         color="var(--main-color)"
-                                        style="overflow: auto"
                                     >
                                         <div>
                                             <v-carousel-item
@@ -532,11 +533,25 @@ export default defineComponent({
             photos,
         };
     },
+    methods: {
+        moveText() {
+            // Assuming `.v-carousel__controls` is the correct class for the delimiter container
+            let controls = document.getElementsByClassName(
+                "v-carousel__controls"
+            );
+            controls.style.overflowX = "auto"; // Corrected syntax for setting CSS properties
+        },
+    },
 });
 </script>
 
 <style lang="scss" scoped>
-feat {
+.v-window.v-theme--light.v-carousel.v-carousel--hide-delimiter-background.carousel
+    .v-carousel__controls {
+    overflow: auto !important;
+    width: 100px !important;
+}
+.feat {
     gap: 10px;
     display: flex;
     align-items: center;

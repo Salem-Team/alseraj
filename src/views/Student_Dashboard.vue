@@ -919,8 +919,12 @@
                                             </v-card>
                                         </v-tabs-window-item>
                                         <v-tabs-window-item value="seven2">
-                                            <v-card flat>
-                                                <Student_chart />
+                                            <v-card>
+                                                <v-row>
+                                                    <v-col>
+                                                        <Student_chart />
+                                                    </v-col>
+                                                </v-row>
                                             </v-card>
                                         </v-tabs-window-item>
                                         <v-tabs-window-item value="se11">

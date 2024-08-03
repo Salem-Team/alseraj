@@ -176,7 +176,7 @@
                                 /></v-tab>
                                 <v-tab value="seven2">
                                     <img
-                                        src="../assets/student/depositphotos_193076800-stock-illustration-girl-student-gets-ready-for.svg"
+                                        src="../assets/student/analysis.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>

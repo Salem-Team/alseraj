@@ -261,6 +261,7 @@ import { db } from "../Firebase.js";
 import { mapState, mapActions } from "pinia";
 import { useAuthStore } from "../store/userStore";
 import { useSecureDataStore } from "@/store/secureData.js";
+import Cookies from "js-cookie";
 export default {
     data: () => ({
         password: "",
@@ -334,6 +335,9 @@ export default {
                         name: this.user.name,
                         parent_pass: this.user.password,
                     });
+                    Cookies.set("user", JSON.stringify(this.user), {
+                        expires: 7,
+                    });
                 }
 
                 if (this.user.userType === "admin") {
@@ -355,6 +359,9 @@ export default {
                         password: this.user.password,
                         roles: this.user.roles,
                     });
+                    Cookies.set("user", JSON.stringify(this.user), {
+                        expires: 7,
+                    });
                 }
 
                 if (this.user.userType === "student") {
@@ -365,7 +372,11 @@ export default {
                         name: this.user.name,
                         student_pass: this.user.password,
                     });
+                    Cookies.set("user", JSON.stringify(this.user), {
+                        expires: 7,
+                    });
                 }
+
                 console.log("done");
                 this.dialog = false;
             } catch (error) {

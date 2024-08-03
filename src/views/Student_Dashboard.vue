@@ -1181,7 +1181,7 @@ export default {
                 await router.push("/UserLogin"); // توجيه المستخدم إلى صفحة تسجيل الدخول بعد تسجيل الخروج
             } catch (error) {
                 console.error("Error signing out:", error);
-                alert("فشل في تسجيل الخروج");
+                alert("فشل في  الخروج");
             }
         };
 

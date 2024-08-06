@@ -768,4 +768,14 @@ img.pluse.pluse_1 {
         background: #fff;
     }
 }
+.monthly .Certificate .head .right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--therd-color);
+    flex-wrap: wrap;
+    align-content: flex-start;
+    align-items: flex-start;
 </style>

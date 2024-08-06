@@ -776,6 +776,6 @@ img.pluse.pluse_1 {
     font-weight: 700;
     color: var(--therd-color);
     flex-wrap: wrap;
-    align-content: flex-start;
-    align-items: flex-start;
+    align-content: flex-start !important;
+    align-items: flex-start !important;
 </style>

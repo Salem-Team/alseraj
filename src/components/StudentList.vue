@@ -4432,33 +4432,62 @@ export default {
                 const studentDoc = await getDoc(studentRef);
                 if (studentDoc.exists()) {
                     const studentData = studentDoc.data();
+                    if (!studentData.Notifications) {
+                        studentData.Notifications = [];
+                    }
                     studentData.Notifications.push({
                         NoticeTitle: this.AddNotice.NoticeTitle,
                         theDescription: this.AddNotice.theDescription,
                         NotificationType: this.AddNotice.NotificationType,
                     });
-                    // عند تحديث selectedStudent باستخدام بيانات محدثة
-                    this.selectedStudent = Object.assign(
-                        {},
-                        this.selectedStudent,
-                        studentData
-                    );
-                    await updateDoc(studentRef, studentData);
-                    this.dialogAddNotice = false;
+
+                    // تحديث حقل Notifications فقط بدلاً من تحديث المستند بالكامل
+                    await updateDoc(studentRef, {
+                        Notifications: studentData.Notifications,
+                    });
+
+                    // إعادة تعيين النموذج (form) بعد الإضافة
                     this.AddNotice = {
-                        NoticeTitle: this.AddNotice.NoticeTitle,
-                        theDescription: this.AddNotice.theDescription,
-                        NotificationType: this.AddNotice.NotificationType,
+                        NoticeTitle: "",
+                        theDescription: "",
+                        NotificationType: "",
                     };
+
+                    // إغلاق النموذج
+                    this.dialogAddNotice = false;
+
                     // إعداد نص الرسالة وتفعيل Snackbar
-                    this.confirmationText = "تم  اضافه الاشعار بنجاح";
+                    this.confirmationText = "تم اضافه الاشعار بنجاح";
                     this.showSnackbar = true;
+
+                    // تحديث بيانات الطلاب
                     await this.fetchStudents();
                 }
             } catch (error) {
-                console.error("Error adding subject:", error);
+                console.error("Error adding notification:", error);
+            } finally {
+                this.isAdding = false;
             }
         },
+        handleAddNotification() {
+            // تحقق من أن جميع الحقول ليست فارغة
+            if (
+                !this.AddNotice.NoticeTitle ||
+                !this.AddNotice.theDescription ||
+                !this.AddNotice.NotificationType
+            ) {
+                this.confirmationText = "الرجاء ملء جميع الحقول";
+                this.showSnackbar = true;
+                return;
+            }
+
+            // بدء حالة التحميل
+            this.isAdding = true;
+
+            // استدعاء دالة إضافة الإشعار
+            this.addNotifications(this.selectedStudent.id);
+        },
+
         async deleteNotification(studentId, NotificatIndex) {
             try {
                 const studentRef = doc(db, "students", studentId);

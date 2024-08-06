@@ -607,9 +607,14 @@
                                                                 }}
                                                             </div>
                                                             <div>
-                                                                الفصل :
+                                                                القسم :
                                                                 {{
-                                                                    student?.section
+                                                                    student.section
+                                                                }}
+                                                            </div>
+                                                            <div>
+                                                                {{
+                                                                    selectedMonth
                                                                 }}
                                                             </div>
                                                         </div>
@@ -980,43 +985,39 @@
                                                                         outlined
                                                                     >
                                                                         <v-card-title
-                                                                            >{{
-                                                                                schedule.Subject_Name
-                                                                            }}</v-card-title
-                                                                        >
-                                                                        <v-card-subtitle
                                                                             >اليوم:
                                                                             {{
-                                                                                schedule.Subject_Name
-                                                                            }}</v-card-subtitle
+                                                                                schedule.day
+                                                                            }}</v-card-title
                                                                         >
                                                                         <v-card-text>
-                                                                            <div>
-                                                                                <strong
-                                                                                    >مدرس
-                                                                                    المادة:</strong
-                                                                                >
-                                                                                {{
-                                                                                    schedule.Major_degree
-                                                                                }}
-                                                                            </div>
-                                                                            <div>
-                                                                                <strong
-                                                                                    >من
-                                                                                    الساعة:</strong
-                                                                                >
-                                                                                {{
-                                                                                    schedule.Minor_degree
-                                                                                }}
-                                                                            </div>
-                                                                            <div>
-                                                                                <strong
-                                                                                    >إلى
-                                                                                    الساعة:</strong
-                                                                                >
-                                                                                {{
-                                                                                    schedule.Student_degree
-                                                                                }}
+                                                                            <div
+                                                                                v-for="(
+                                                                                    period,
+                                                                                    periodIndex
+                                                                                ) in schedule.periods"
+                                                                                :key="
+                                                                                    periodIndex
+                                                                                "
+                                                                            >
+                                                                                <div>
+                                                                                    <strong
+                                                                                        >الحصة
+                                                                                        {{
+                                                                                            periodIndex +
+                                                                                            1
+                                                                                        }}:</strong
+                                                                                    >
+                                                                                    المادة:
+                                                                                    {{
+                                                                                        period.subject
+                                                                                    }}
+                                                                                    -
+                                                                                    المعلم:
+                                                                                    {{
+                                                                                        period.teacher
+                                                                                    }}
+                                                                                </div>
                                                                             </div>
                                                                         </v-card-text>
                                                                     </v-card>
@@ -1198,7 +1199,7 @@ export default {
                 await router.push("/UserLogin"); // توجيه المستخدم إلى صفحة تسجيل الدخول بعد تسجيل الخروج
             } catch (error) {
                 console.error("Error signing out:", error);
-                alert("فشل في تسجيل الخروج");
+                alert("فشل في  الخروج");
             }
         };
 
@@ -1261,6 +1262,8 @@ export default {
                     );
                     this.studySchedules = [];
                 }
+
+                // جلب بيانات المحتوى التعليمي بناءً على بيانات الطالب
                 const educationalContentQuery = query(
                     collection(db, "Educationalcontent"),
                     where("classId", "==", studentData.class),
@@ -1298,6 +1301,7 @@ export default {
             this.loading = false; // إنهاء حالة التحميل
         }
     },
+
     beforeUnmount() {
         clearInterval(this.interval);
     },

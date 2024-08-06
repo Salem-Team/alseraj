@@ -547,9 +547,14 @@
                                                                 }}
                                                             </div>
                                                             <div>
-                                                                الفصل :
+                                                                القسم :
                                                                 {{
                                                                     student?.section
+                                                                }}
+                                                            </div>
+                                                            <div>
+                                                                {{
+                                                                    selectedMonth
                                                                 }}
                                                             </div>
                                                         </div>
@@ -1679,20 +1684,7 @@ export default {
                     return "blue lighten-3";
             }
         },
-        getNotificationIcon(type) {
-            switch (type) {
-                case "تنبيه":
-                    return "mdi-information";
-                case "سئ":
-                    return "mdi-alert";
-                case "error":
-                    return "mdi-alert-circle";
-                case "جيد":
-                    return "mdi-check-circle";
-                default:
-                    return "mdi-information";
-            }
-        },
+
         createChart(data) {
             const ctx = document.getElementById("myChart");
             if (ctx) {

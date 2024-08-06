@@ -1034,12 +1034,12 @@
                                         width="30px"
                                     />
                                 </v-tab>
-                                <v-tab value="two1">
+                                <!-- <v-tab value="two1">
                                     <img
                                         src="../assets/student/notification-bell.svg"
                                         alt=""
                                         width="30px"
-                                /></v-tab>
+                                /></v-tab> -->
                                 <v-tab value="three1">
                                     <img
                                         src="../assets/student/analysis.svg"
@@ -1340,7 +1340,7 @@
                                         </div>
                                     </v-tabs-window-item>
 
-                                    <v-tabs-window-item value="two1">
+                                    <!-- <v-tabs-window-item value="two1">
                                         <v-card flat v-if="student">
                                             <div
                                                 class="title"
@@ -1366,7 +1366,7 @@
                                                 >
                                             </v-list-item>
                                         </v-card>
-                                    </v-tabs-window-item>
+                                    </v-tabs-window-item> -->
 
                                     <v-tabs-window-item value="three1">
                                         <v-card flat v-if="student">

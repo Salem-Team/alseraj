@@ -3164,14 +3164,15 @@ th {
             }
         }
     }
-    .monthly .Certificate .head .right[data-v-38d76ab4] {
-        align-items: stretch !important;
-    }
 }
-.v-list-item[data-v-38d76ab4] {
+.monthly .Certificate .head .right {
+    align-items: flex-start !important;
+    color: #333;
+}
+.v-list-item {
     border: none;
 }
-.v-card--variant-elevated[data-v-38d76ab4] {
+.v-card--variant-elevated {
     background: #fff;
 }
 </style>

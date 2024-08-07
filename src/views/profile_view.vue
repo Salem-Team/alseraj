@@ -1,86 +1,34 @@
 <template>
-    <v-card>
-        <div class="d-flex justify-space-between" v-if="user">
-            <div>
-                <v-btn class="ma-2" size="small" @click="dialog = true">
-                    تعديل البيانات
-                </v-btn>
-                <v-btn class="ma-2" size="small" @click="My_Logout()">
-                    تسجيل خروج
-                </v-btn>
-            </div>
+    <div class="children pa-5">
+        <div class="hello_text">
+            مرحبًا {{ user.name }}، نشكرك على ثقتك في معهد السراج المنير
+            الأزهري، نتطلع سويًا لتحقيق مستقبل مشرق لأبنائنا.
         </div>
-        <div class="children">
-            <div class="hello_text">
-                مرحبًا {{ user.name }}، نشكرك على ثقتك في معهد السراج المنير
-                الأزهري، نتطلع سويًا لتحقيق مستقبل مشرق لأبنائنا.
-            </div>
-            <div class="body">
-                <div class="box">
-                    <div class="head">
-                        <div class="name">{{ user.name }}</div>
-                    </div>
-                    <div class="grad" v-if="user.email !== ''">
-                        {{ user.email }}
-                    </div>
-                    <div class="grad">{{ user.National_id }}</div>
-                    <div class="class" v-if="user.userType === 'admin'">
-                        <div>
-                            الصلاحيات
-                            <div v-for="role in user.roles" :key="role">
-                                {{ role }}
-                            </div>
+        <div class="body">
+            <div class="box">
+                <div class="head">
+                    <div class="name">{{ user.name }}</div>
+                </div>
+                <div class="grad" v-if="user.email !== ''">
+                    {{ user.email }}
+                </div>
+                <div class="grad">{{ user.National_id }}</div>
+                <div class="class" v-if="user.userType === 'admin'">
+                    <div>
+                        الصلاحيات
+                        <div v-for="role in user.roles" :key="role">
+                            {{ role }}
                         </div>
                     </div>
-                    <div class="footer">
-                        <v-dialog max-width="500">
-                            <template
-                                v-slot:activator="{ props: activatorProps }"
-                            >
-                                <div
-                                    class="show_password"
-                                    v-bind="activatorProps"
-                                >
-                                    <font-awesome-icon
-                                        :icon="['fas', 'lock-open']"
-                                    />
-                                    <div>عرض كلمة المرور</div>
-                                </div>
-                            </template>
-
-                            <template v-slot:default="{ isActive }">
-                                <v-card class="pass">
-                                    <div class="head">
-                                        <div>كلمة مرور</div>
-                                        <font-awesome-icon
-                                            :icon="['fas', 'xmark']"
-                                            @click="isActive.value = false"
-                                        />
-                                    </div>
-                                    <div class="body">
-                                        <div id="password">
-                                            {{ user.password }}
-                                        </div>
-                                        <div>
-                                            <div>
-                                                <font-awesome-icon
-                                                    :icon="['fas', 'copy']"
-                                                    @click="Snackbar_Function"
-                                                    @click.prevent="
-                                                        isActive.value = false
-                                                    "
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </v-card>
-                            </template>
-                        </v-dialog>
+                </div>
+                <div class="footer">
+                    <div class="show_password" @click="dialog = true">
+                        تعديل البيانات
                     </div>
                 </div>
             </div>
         </div>
-    </v-card>
+    </div>
     <v-dialog v-model="dialog" width="90%">
         <v-card width="100%" class="popup">
             <div class="d-flex justify-space-between align-center title">
@@ -207,7 +155,7 @@
                         "
                         :minlength="6"
                         @click:append-inner="toggle_Show_Password2"
-                        @focus="check_pass1()"
+                        @input="check_pass1()"
                         @blur="check_pass1()"
                     ></v-text-field>
                     <p
@@ -240,25 +188,12 @@
             </form>
         </v-card></v-dialog
     >
-    <v-snackbar v-model="snackbar1">
-        {{ text }}
-
-        <template v-slot:actions>
-            <v-btn
-                color="var(--main-color)"
-                variant="text"
-                @click="snackbar1 = false"
-            >
-                إغلاق
-            </v-btn>
-        </template>
-    </v-snackbar>
 </template>
 
 <script>
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../Firebase.js";
-import { mapState, mapActions } from "pinia";
+import { mapState } from "pinia";
 import { useAuthStore } from "../store/userStore";
 import { useSecureDataStore } from "@/store/secureData.js";
 import Cookies from "js-cookie";
@@ -274,8 +209,6 @@ export default {
         show_Password: false, // State for showing password
         show_Password1: false, // State for showing password
         show_Password2: false, // State for showing password
-        snackbar1: false,
-        text: `تم نسخ كلمة المرور`,
     }),
     async created() {},
     computed: {
@@ -292,23 +225,7 @@ export default {
         toggle_Show_Password2() {
             this.show_Password2 = !this.show_Password2;
         },
-        ...mapActions(useAuthStore, ["logout"]),
-        Snackbar_Function() {
-            const passwordElement = document.getElementById("password");
-            const password =
-                passwordElement.innerText || passwordElement.textContent;
 
-            // استخدام واجهة برمجة تطبيقات الحافظة لنسخ النص
-            navigator.clipboard
-                .writeText(password)
-                .then(() => {
-                    console.log("تم نسخ كلمة المرور بنجاح!");
-                    this.snackbar1 = true;
-                })
-                .catch((err) => {
-                    console.error("فشل في نسخ كلمة المرور: ", err);
-                });
-        },
         check_pass() {
             if (this.password != this.user.password) {
                 this.check = false;
@@ -327,69 +244,65 @@ export default {
         async update_data() {
             const secrureDataStore = useSecureDataStore();
             try {
-                if (this.user.userType === "parent") {
-                    const docRef = doc(db, "parents", this.user.id);
-                    // Update document in Firestore
-                    await updateDoc(docRef, {
-                        National_id: this.user.National_id,
-                        name: this.user.name,
-                        parent_pass: this.user.password,
-                    });
-                    Cookies.set("user", JSON.stringify(this.user), {
-                        expires: 7,
-                    });
-                }
+                if (this.check1 === true && this.check === true) {
+                    if (this.user.userType === "parent") {
+                        const docRef = doc(db, "parents", this.user.id);
+                        // Update document in Firestore
+                        await updateDoc(docRef, {
+                            National_id: this.user.National_id,
+                            name: this.user.name,
+                            parent_pass: this.user.password,
+                        });
+                        Cookies.set("user", JSON.stringify(this.user), {
+                            expires: 7,
+                        });
+                    }
 
-                if (this.user.userType === "admin") {
-                    const docRef = doc(db, "users", this.user.id);
-                    // Update document in Firestore
-                    await updateDoc(docRef, {
-                        name: secrureDataStore.encryptData(
-                            this.user.name,
-                            "12345a"
-                        ),
-                        email: secrureDataStore.encryptData(
-                            this.user.email,
-                            "12345a"
-                        ),
-                        National_id: secrureDataStore.encryptData(
-                            this.user.National_id,
-                            "12345a"
-                        ),
-                        password: this.user.password,
-                        roles: this.user.roles,
-                    });
-                    Cookies.set("user", JSON.stringify(this.user), {
-                        expires: 7,
-                    });
-                }
+                    if (this.user.userType === "admin") {
+                        const docRef = doc(db, "users", this.user.id);
+                        // Update document in Firestore
+                        await updateDoc(docRef, {
+                            name: secrureDataStore.encryptData(
+                                this.user.name,
+                                "12345a"
+                            ),
+                            email: secrureDataStore.encryptData(
+                                this.user.email,
+                                "12345a"
+                            ),
+                            National_id: secrureDataStore.encryptData(
+                                this.user.National_id,
+                                "12345a"
+                            ),
+                            password: this.user.password,
+                            roles: this.user.roles,
+                        });
+                        Cookies.set("user", JSON.stringify(this.user), {
+                            expires: 7,
+                        });
+                    }
 
-                if (this.user.userType === "student") {
-                    const docRef = doc(db, "students", this.user.id);
-                    // Update document in Firestore
-                    await updateDoc(docRef, {
-                        National_id: this.user.National_id,
-                        name: this.user.name,
-                        student_pass: this.user.password,
-                    });
-                    Cookies.set("user", JSON.stringify(this.user), {
-                        expires: 7,
-                    });
-                }
+                    if (this.user.userType === "student") {
+                        const docRef = doc(db, "students", this.user.id);
+                        // Update document in Firestore
+                        await updateDoc(docRef, {
+                            National_id: this.user.National_id,
+                            name: this.user.name,
+                            student_pass: this.user.password,
+                        });
+                        Cookies.set("user", JSON.stringify(this.user), {
+                            expires: 7,
+                        });
+                    }
 
-                console.log("done");
-                this.dialog = false;
+                    console.log("done");
+                    this.dialog = false;
+                } else {
+                    console.log("not updated");
+                }
             } catch (error) {
                 console.error("Error fetching users:", error);
                 this.error = "An error occurred while fetching user data.";
-            }
-        },
-        async My_Logout() {
-            try {
-                this.logout();
-                this.$router.push({ name: "home" });
-            } catch (error) {
-                console.error("حدث خطأ أثناء تسجيل الخروج:", error.message);
             }
         },
     },

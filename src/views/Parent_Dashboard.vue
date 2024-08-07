@@ -96,13 +96,7 @@
                         src="../assets/profile/edit-info.svg"
                         alt=""
                         class="pluse pluse_1"
-                        @click="openDialog"
-                    />
-                    <img
-                        src="../assets/profile/logout.svg"
-                        alt=""
-                        class="pluse pluse_1"
-                        @click="My_Logout"
+                        @click="$router.push('/profile')"
                     />
                 </div>
             </div>

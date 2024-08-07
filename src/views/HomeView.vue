@@ -11,7 +11,7 @@
             class="loading"
             src="../assets/Loader.gif"
             alt=""
-            style="position: fixed; top: 160px; right: 600px; width: 245px"
+            style="position: fixed; top: 160px; right: 500px; width: 245px"
             v-if="loading1"
         />
     </v-overlay>

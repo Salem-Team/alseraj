@@ -1468,10 +1468,18 @@
                                                             <div>المدفوع</div>
                                                             <div>
                                                                 {{
-                                                                    selectedStudent
+                                                                    this
+                                                                        .selectedStudent
                                                                         .payments
-                                                                        .paid_Up ||
-                                                                    0
+                                                                        .payment_System ===
+                                                                    "نظام التقسيط"
+                                                                        ? selectedStudent
+                                                                              .payments
+                                                                              .paid_Up
+                                                                        : selectedStudent
+                                                                              .payments
+                                                                              .Expenses ||
+                                                                          0
                                                                 }}
                                                             </div>
                                                         </div>
@@ -1479,13 +1487,18 @@
                                                             <div>المتبقي</div>
                                                             <div>
                                                                 {{
-                                                                    selectedStudent
+                                                                    this
+                                                                        .selectedStudent
                                                                         .payments
-                                                                        .Expenses -
-                                                                        selectedStudent
-                                                                            .payments
-                                                                            .paid_Up ||
-                                                                    0
+                                                                        .payment_System ===
+                                                                    "نظام التقسيط"
+                                                                        ? selectedStudent
+                                                                              .payments
+                                                                              .Expenses -
+                                                                          selectedStudent
+                                                                              .payments
+                                                                              .paid_Up
+                                                                        : 0 || 0
                                                                 }}
                                                             </div>
                                                         </div>
@@ -1749,8 +1762,13 @@
                                                             </div>
                                                         </v-row>
                                                         <div
-                                                            class="Title"
-                                                            v-if="CreateChart"
+                                                            class="Title kheslam"
+                                                            v-if="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .payment_System ===
+                                                                'نظام التقسيط'
+                                                            "
                                                             style="
                                                                 margin-top: 55px;
                                                             "
@@ -1765,7 +1783,12 @@
                                                         </div>
                                                         <div
                                                             class="details"
-                                                            v-if="CreateChart"
+                                                            v-if="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .payment_System ===
+                                                                'نظام التقسيط'
+                                                            "
                                                         >
                                                             <div
                                                                 class="myChart"

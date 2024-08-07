@@ -103,7 +103,7 @@
                         class="feat"
                         v-for="New in News"
                         :key="New.id"
-                        style="width: 24% !important"
+                        width="24%"
                         @click.="news.New_Information(New)"
                         @click="dialog_6 = true"
                     >

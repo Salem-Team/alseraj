@@ -8,17 +8,10 @@
         style="z-index: 10000000000; background-color: white"
     >
         <img
+            class="loading"
             src="../assets/Loader.gif"
             alt=""
-            width="25px"
-            style="
-                position: fixed;
-                top: 60px;
-                right: 600px;
-                transform: translate(50%, 50%);
-                width: 245px;
-                z-index: 11000100011;
-            "
+            style="position: fixed; top: 160px; right: 600px; width: 245px"
             v-if="loading1"
         />
     </v-overlay>
@@ -265,7 +258,11 @@ form {
     .icons {
         flex-direction: row !important;
     }
-
+    .loading {
+        position: fixed;
+        top: 300px !important;
+        right: 100px !important;
+    }
     .parallax {
         height: 40vh !important;
         #text {
@@ -276,6 +273,11 @@ form {
 }
 
 @media (min-width: 700px) and (max-width: 950px) {
+    .loading {
+        position: fixed;
+        top: 300px !important;
+        right: 250px !important;
+    }
     .parallax {
         height: 70vh !important;
         #text {

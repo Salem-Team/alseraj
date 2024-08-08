@@ -98,7 +98,10 @@
                                 @click="toggleIcon(student)"
                             />
 
-                            <font-awesome-icon :icon="['fas', 'trash']" />
+                            <font-awesome-icon
+                                :icon="['fas', 'trash']"
+                                @click.stop="confirmDeleteStudent(student.id)"
+                            />
                         </div>
                     </div>
                     <div class="body">
@@ -3860,12 +3863,25 @@ export default {
                     );
                     if (children.length !== updatedChildren.length) {
                         const parentRef = doc(db, "parents", parentDoc.id);
-                        await setDoc(
-                            parentRef,
-                            { Child: updatedChildren },
-                            { merge: true }
-                        );
-                        console.log("Updated parent with id:", parentDoc.id);
+                        if (updatedChildren.length === 0) {
+                            // حذف مستند الأب إذا لم يكن هناك أطفال
+                            await deleteDoc(parentRef);
+                            console.log(
+                                "Deleted parent document with id:",
+                                parentDoc.id
+                            );
+                        } else {
+                            // تحديث مصفوفة الأطفال في مستند الأب
+                            await setDoc(
+                                parentRef,
+                                { Child: updatedChildren },
+                                { merge: true }
+                            );
+                            console.log(
+                                "Updated parent with id:",
+                                parentDoc.id
+                            );
+                        }
                     }
                 });
 
@@ -5636,9 +5652,6 @@ th {
     display: flex;
     // gap: 10px;
     align-items: center;
-    & > div {
-        // width: 48%;
-    }
 }
 .details {
     display: flex;

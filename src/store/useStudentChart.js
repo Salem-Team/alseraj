@@ -14,7 +14,8 @@ export const useStudentStore = defineStore("student", {
         // Fetch student data by National ID
         async getStudent() {
             try {
-                const nationalId = Cookies.get("National_id");
+                const nationalId = JSON.parse(Cookies.get("user")).National_id;
+                console.log("Student National_id:=>", nationalId);
                 const studentCollection = collection(db, "students");
                 const q = query(
                     studentCollection,

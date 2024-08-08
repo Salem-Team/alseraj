@@ -406,7 +406,26 @@
                                                         @input="markChanges"
                                                     ></v-text-field>
                                                     <v-select
-                                                        :items="classItems"
+                                                        :items="[
+                                                            '1/1',
+                                                            '1/2',
+                                                            '1/3',
+                                                            '1/4',
+                                                            '1/5',
+                                                            '1/6',
+                                                            '2/1',
+                                                            '2/2',
+                                                            '2/3',
+                                                            '2/4',
+                                                            '2/5',
+                                                            '2/6',
+                                                            '3/1',
+                                                            '3/2',
+                                                            '3/3',
+                                                            '3/4',
+                                                            '3/5',
+                                                            '3/6',
+                                                        ]"
                                                         variant="outlined"
                                                         style="width: 50%"
                                                         v-model="
@@ -1449,18 +1468,10 @@
                                                             <div>المدفوع</div>
                                                             <div>
                                                                 {{
-                                                                    this
-                                                                        .selectedStudent
+                                                                    selectedStudent
                                                                         .payments
-                                                                        .payment_System ===
-                                                                    "نظام التقسيط"
-                                                                        ? selectedStudent
-                                                                              .payments
-                                                                              .paid_Up
-                                                                        : selectedStudent
-                                                                              .payments
-                                                                              .Expenses ||
-                                                                          0
+                                                                        .paid_Up ||
+                                                                    0
                                                                 }}
                                                             </div>
                                                         </div>
@@ -1468,18 +1479,13 @@
                                                             <div>المتبقي</div>
                                                             <div>
                                                                 {{
-                                                                    this
-                                                                        .selectedStudent
+                                                                    selectedStudent
                                                                         .payments
-                                                                        .payment_System ===
-                                                                    "نظام التقسيط"
-                                                                        ? selectedStudent
-                                                                              .payments
-                                                                              .Expenses -
-                                                                          selectedStudent
-                                                                              .payments
-                                                                              .paid_Up
-                                                                        : 0 || 0
+                                                                        .Expenses -
+                                                                        selectedStudent
+                                                                            .payments
+                                                                            .paid_Up ||
+                                                                    0
                                                                 }}
                                                             </div>
                                                         </div>
@@ -1743,13 +1749,8 @@
                                                             </div>
                                                         </v-row>
                                                         <div
-                                                            class="Title kheslam"
-                                                            v-if="
-                                                                selectedStudent
-                                                                    .payments
-                                                                    .payment_System ===
-                                                                'نظام التقسيط'
-                                                            "
+                                                            class="Title"
+                                                            v-if="CreateChart"
                                                             style="
                                                                 margin-top: 55px;
                                                             "
@@ -1764,12 +1765,7 @@
                                                         </div>
                                                         <div
                                                             class="details"
-                                                            v-if="
-                                                                selectedStudent
-                                                                    .payments
-                                                                    .payment_System ===
-                                                                'نظام التقسيط'
-                                                            "
+                                                            v-if="CreateChart"
                                                         >
                                                             <div
                                                                 class="myChart"
@@ -2306,9 +2302,28 @@
                                                     label="اسم الطالب"
                                                 ></v-text-field>
 
+                                                <!-- حقل الفصل -->
                                                 <v-select
-                                                    :items="classItems"
-                                                    variant="outlined"
+                                                    :items="[
+                                                        '1/1',
+                                                        '1/2',
+                                                        '1/3',
+                                                        '1/4',
+                                                        '1/5',
+                                                        '1/6',
+                                                        '2/1',
+                                                        '2/2',
+                                                        '2/3',
+                                                        '2/4',
+                                                        '2/5',
+                                                        '2/6',
+                                                        '3/1',
+                                                        '3/2',
+                                                        '3/3',
+                                                        '3/4',
+                                                        '3/5',
+                                                        '3/6',
+                                                    ]"
                                                     style="width: 50%"
                                                     v-model="form.class"
                                                     :error-messages="
@@ -2317,9 +2332,7 @@
                                                     label="الفصل"
                                                     required
                                                 ></v-select>
-                                            </div>
 
-                                            <div style="width: 100%">
                                                 <!-- حقل الجنس -->
                                                 <v-select
                                                     v-model="form.gender"
@@ -4419,33 +4432,62 @@ export default {
                 const studentDoc = await getDoc(studentRef);
                 if (studentDoc.exists()) {
                     const studentData = studentDoc.data();
+                    if (!studentData.Notifications) {
+                        studentData.Notifications = [];
+                    }
                     studentData.Notifications.push({
                         NoticeTitle: this.AddNotice.NoticeTitle,
                         theDescription: this.AddNotice.theDescription,
                         NotificationType: this.AddNotice.NotificationType,
                     });
-                    // عند تحديث selectedStudent باستخدام بيانات محدثة
-                    this.selectedStudent = Object.assign(
-                        {},
-                        this.selectedStudent,
-                        studentData
-                    );
-                    await updateDoc(studentRef, studentData);
-                    this.dialogAddNotice = false;
+
+                    // تحديث حقل Notifications فقط بدلاً من تحديث المستند بالكامل
+                    await updateDoc(studentRef, {
+                        Notifications: studentData.Notifications,
+                    });
+
+                    // إعادة تعيين النموذج (form) بعد الإضافة
                     this.AddNotice = {
-                        NoticeTitle: this.AddNotice.NoticeTitle,
-                        theDescription: this.AddNotice.theDescription,
-                        NotificationType: this.AddNotice.NotificationType,
+                        NoticeTitle: "",
+                        theDescription: "",
+                        NotificationType: "",
                     };
+
+                    // إغلاق النموذج
+                    this.dialogAddNotice = false;
+
                     // إعداد نص الرسالة وتفعيل Snackbar
-                    this.confirmationText = "تم  اضافه الاشعار بنجاح";
+                    this.confirmationText = "تم اضافه الاشعار بنجاح";
                     this.showSnackbar = true;
+
+                    // تحديث بيانات الطلاب
                     await this.fetchStudents();
                 }
             } catch (error) {
-                console.error("Error adding subject:", error);
+                console.error("Error adding notification:", error);
+            } finally {
+                this.isAdding = false;
             }
         },
+        handleAddNotification() {
+            // تحقق من أن جميع الحقول ليست فارغة
+            if (
+                !this.AddNotice.NoticeTitle ||
+                !this.AddNotice.theDescription ||
+                !this.AddNotice.NotificationType
+            ) {
+                this.confirmationText = "الرجاء ملء جميع الحقول";
+                this.showSnackbar = true;
+                return;
+            }
+
+            // بدء حالة التحميل
+            this.isAdding = true;
+
+            // استدعاء دالة إضافة الإشعار
+            this.addNotifications(this.selectedStudent.id);
+        },
+
         async deleteNotification(studentId, NotificatIndex) {
             try {
                 const studentRef = doc(db, "students", studentId);
@@ -4629,23 +4671,10 @@ export default {
         // },
 
         updatePaymentOptions() {
-            if (this.paymentMethods === "نظام التقسيط") {
-                // Clear fields related to installment plans
+            if (this.paymentMethod === "نظام التقسيط") {
                 this.selectedPlan = null;
                 this.paidAmount = 0;
                 this.amount = 0;
-            } else {
-                // Update Firebase if the payment method is not "نظام التقسيط"
-                this.updateStudentPayments(
-                    this.selectedStudent.id,
-                    "Residual",
-                    this.selectedStudent.payments.Expenses
-                );
-                this.updateStudentPayments(
-                    this.selectedStudent.id,
-                    "paid_Up",
-                    0
-                );
             }
         },
         payAmount() {
@@ -4726,7 +4755,9 @@ export default {
             ];
             return monthNames[month - 1] || month;
         },
-
+        setChangesMade(status) {
+            this.changesMade3 = status;
+        },
         async saveChanges3() {
             try {
                 let totalExpenses = 0;
@@ -4788,28 +4819,7 @@ export default {
                         "No matching class room found for the selected grade"
                     );
                 }
-                console.log(this.selectedStudent.payments.payment_System);
-                if (
-                    this.selectedStudent.payments.payment_System ===
-                    "نظام التقسيط"
-                ) {
-                    // Clear fields related to installment plans
-                    this.selectedPlan = null;
-                    this.paidAmount = 0;
-                    this.amount = 0;
-                } else {
-                    // Update Firebase if the payment method is not "نظام التقسيط"
-                    this.updateStudentPayments(
-                        this.selectedStudent.id,
-                        "paid_Up",
-                        this.selectedStudent.payments.Expenses
-                    );
-                    this.updateStudentPayments(
-                        this.selectedStudent.id,
-                        "Residual",
-                        0
-                    );
-                }
+
                 this.confirmationText = "تم التعديل بنجاح";
                 this.showSnackbar = true;
             } catch (error) {
@@ -4855,9 +4865,6 @@ export default {
             if (this.selectedStudent.payments.paid_Up > expenses) {
                 this.selectedStudent.payments.paid_Up = expenses;
             }
-        },
-        setChangesMade(status) {
-            this.changesMade3 = status;
         },
     },
     watch: {
@@ -4933,41 +4940,6 @@ export default {
         },
         remainingAmount() {
             return Math.max(this.totalAmount - this.paidAmount, 0);
-        },
-        classItems() {
-            // Generate the class items based on the selected grade
-            switch (this.year) {
-                case "مرحلة رياض الأطفال الاولي":
-                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
-                case "مرحلة رياض الأطفال الثانية":
-                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
-                case "الصف الأول الابتدائي":
-                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
-                case "الصف الثاني الابتدائي":
-                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
-                case "الصف الثالث الابتدائي":
-                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
-                case "الصف الرابع الابتدائي":
-                    return ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6"];
-                case "الصف الخامس الابتدائي":
-                    return ["5/1", "5/2", "5/3", "5/4", "5/5", "5/6"];
-                case "الصف السادس الابتدائي":
-                    return ["6/1", "6/2", "6/3", "6/4", "6/5", "6/6"];
-                case "الصف الأول الإعدادي":
-                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
-                case "الصف الثاني الإعدادي":
-                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
-                case "الصف الثالث الإعدادي":
-                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
-                case "الصف الأول الثانوي":
-                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
-                case "الصف الثاني الثانوي":
-                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
-                case "الصف الثالث الثانوي":
-                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
-                default:
-                    return [];
-            }
         },
     },
     mounted() {

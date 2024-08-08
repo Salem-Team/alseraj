@@ -547,11 +547,23 @@
                                                                 }}
                                                             </div>
                                                             <div>
+<<<<<<< HEAD
                                                                 الفصل :
+=======
+                                                                القسم :
+>>>>>>> e5f1ead0e1ca554c7c8f223f2916b2dafb86c5e4
                                                                 {{
                                                                     student?.section
                                                                 }}
                                                             </div>
+<<<<<<< HEAD
+=======
+                                                            <div>
+                                                                {{
+                                                                    selectedMonth
+                                                                }}
+                                                            </div>
+>>>>>>> e5f1ead0e1ca554c7c8f223f2916b2dafb86c5e4
                                                         </div>
                                                         <div
                                                             class="left"
@@ -1029,12 +1041,12 @@
                                         width="30px"
                                     />
                                 </v-tab>
-                                <v-tab value="two1">
+                                <!-- <v-tab value="two1">
                                     <img
                                         src="../assets/student/notification-bell.svg"
                                         alt=""
                                         width="30px"
-                                /></v-tab>
+                                /></v-tab> -->
                                 <v-tab value="three1">
                                     <img
                                         src="../assets/student/analysis.svg"
@@ -1335,7 +1347,7 @@
                                         </div>
                                     </v-tabs-window-item>
 
-                                    <v-tabs-window-item value="two1">
+                                    <!-- <v-tabs-window-item value="two1">
                                         <v-card flat v-if="student">
                                             <div
                                                 class="title"
@@ -1361,7 +1373,7 @@
                                                 >
                                             </v-list-item>
                                         </v-card>
-                                    </v-tabs-window-item>
+                                    </v-tabs-window-item> -->
 
                                     <v-tabs-window-item value="three1">
                                         <v-card flat v-if="student">
@@ -1679,20 +1691,7 @@ export default {
                     return "blue lighten-3";
             }
         },
-        getNotificationIcon(type) {
-            switch (type) {
-                case "تنبيه":
-                    return "mdi-information";
-                case "سئ":
-                    return "mdi-alert";
-                case "error":
-                    return "mdi-alert-circle";
-                case "جيد":
-                    return "mdi-check-circle";
-                default:
-                    return "mdi-information";
-            }
-        },
+
         createChart(data) {
             const ctx = document.getElementById("myChart");
             if (ctx) {

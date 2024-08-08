@@ -334,10 +334,12 @@
                                     {{ New.time.toDate().toLocaleString() }}
                                 </div>
                             </div>
-                            <div
-                                class="description"
-                                v-html="New.description"
-                            ></div>
+                            <div style="width: 90% !important; margin: auto">
+                                <p
+                                    v-html="New.description"
+                                    style="color: var(--therd-color) !important"
+                                ></p>
+                            </div>
                         </div>
                     </div>
                     <!-- Display each photo -->

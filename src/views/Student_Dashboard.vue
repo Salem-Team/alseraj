@@ -180,6 +180,12 @@
                                         alt=""
                                         width="30px"
                                 /></v-tab>
+                                <v-tab value="eight">
+                                    <img
+                                        src="../assets/student/study-icon.svg"
+                                        alt=""
+                                        width="30px"
+                                /></v-tab>
                             </v-tabs>
                             <v-card
                                 variant="flat"
@@ -601,9 +607,14 @@
                                                                 }}
                                                             </div>
                                                             <div>
-                                                                الفصل :
+                                                                القسم :
                                                                 {{
-                                                                    student?.section
+                                                                    student.section
+                                                                }}
+                                                            </div>
+                                                            <div>
+                                                                {{
+                                                                    selectedMonth
                                                                 }}
                                                             </div>
                                                         </div>
@@ -912,6 +923,15 @@
                                                 </div>
                                             </v-card>
                                         </v-tabs-window-item>
+                                        <v-tabs-window-item value="seven2">
+                                            <v-card>
+                                                <v-row>
+                                                    <v-col>
+                                                        <Student_chart />
+                                                    </v-col>
+                                                </v-row>
+                                            </v-card>
+                                        </v-tabs-window-item>
                                         <v-tabs-window-item value="se11">
                                             <v-card flat v-if="student">
                                                 <div
@@ -965,43 +985,39 @@
                                                                         outlined
                                                                     >
                                                                         <v-card-title
-                                                                            >{{
-                                                                                schedule.Subject_Name
-                                                                            }}</v-card-title
-                                                                        >
-                                                                        <v-card-subtitle
                                                                             >اليوم:
                                                                             {{
-                                                                                schedule.Subject_Name
-                                                                            }}</v-card-subtitle
+                                                                                schedule.day
+                                                                            }}</v-card-title
                                                                         >
                                                                         <v-card-text>
-                                                                            <div>
-                                                                                <strong
-                                                                                    >مدرس
-                                                                                    المادة:</strong
-                                                                                >
-                                                                                {{
-                                                                                    schedule.Major_degree
-                                                                                }}
-                                                                            </div>
-                                                                            <div>
-                                                                                <strong
-                                                                                    >من
-                                                                                    الساعة:</strong
-                                                                                >
-                                                                                {{
-                                                                                    schedule.Minor_degree
-                                                                                }}
-                                                                            </div>
-                                                                            <div>
-                                                                                <strong
-                                                                                    >إلى
-                                                                                    الساعة:</strong
-                                                                                >
-                                                                                {{
-                                                                                    schedule.Student_degree
-                                                                                }}
+                                                                            <div
+                                                                                v-for="(
+                                                                                    period,
+                                                                                    periodIndex
+                                                                                ) in schedule.periods"
+                                                                                :key="
+                                                                                    periodIndex
+                                                                                "
+                                                                            >
+                                                                                <div>
+                                                                                    <strong
+                                                                                        >الحصة
+                                                                                        {{
+                                                                                            periodIndex +
+                                                                                            1
+                                                                                        }}:</strong
+                                                                                    >
+                                                                                    المادة:
+                                                                                    {{
+                                                                                        period.subject
+                                                                                    }}
+                                                                                    -
+                                                                                    المعلم:
+                                                                                    {{
+                                                                                        period.teacher
+                                                                                    }}
+                                                                                </div>
                                                                             </div>
                                                                         </v-card-text>
                                                                     </v-card>
@@ -1077,6 +1093,7 @@
 </template>
 
 <script>
+import Student_chart from "../components/student/student_chart.vue";
 import { db } from "@/Firebase.js";
 import {
     doc,
@@ -1097,6 +1114,7 @@ import { useRouter } from "vue-router";
 import { usenotification } from "../store/notification.js";
 
 export default {
+    components: { Student_chart },
     data() {
         return {
             exams: [],
@@ -1281,6 +1299,7 @@ export default {
             this.loading = false; // إنهاء حالة التحميل
         }
     },
+
     beforeUnmount() {
         clearInterval(this.interval);
     },
@@ -3143,14 +3162,15 @@ th {
             }
         }
     }
-    .monthly .Certificate .head .right[data-v-38d76ab4] {
-        align-items: stretch !important;
-    }
 }
-.v-list-item[data-v-38d76ab4] {
+.monthly .Certificate .head .right {
+    align-items: flex-start !important;
+    color: #333;
+}
+.v-list-item {
     border: none;
 }
-.v-card--variant-elevated[data-v-38d76ab4] {
+.v-card--variant-elevated {
     background: #fff;
 }
 </style>

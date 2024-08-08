@@ -3731,6 +3731,27 @@ export default {
                     );
                 }
 
+                // العثور على الآباء المرتبطين بالطالب وتحديثهم
+                const parentsRef = collection(db, "parents");
+                const parentsSnapshot = await getDocs(parentsRef);
+                parentsSnapshot.forEach(async (parentDoc) => {
+                    const parentData = parentDoc.data();
+                    const children = parentData.Child || [];
+
+                    const updatedChildren = children.filter(
+                        (child) => child.natioal_id !== id
+                    );
+                    if (children.length !== updatedChildren.length) {
+                        const parentRef = doc(db, "parents", parentDoc.id);
+                        await setDoc(
+                            parentRef,
+                            { Child: updatedChildren },
+                            { merge: true }
+                        );
+                        console.log("Updated parent with id:", parentDoc.id);
+                    }
+                });
+
                 this.confirmationText = "تم مسح الطالب بنجاح";
                 this.showSnackbar = true;
                 console.log("Deleted student with id:", id);

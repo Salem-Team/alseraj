@@ -2422,7 +2422,6 @@
                                                     label="اسم الطالب"
                                                 ></v-text-field>
 
-<<<<<<< HEAD
                                                 <!-- حقل الفصل -->
                                                 <v-select
                                                     :items="[
@@ -2445,11 +2444,6 @@
                                                         '3/5',
                                                         '3/6',
                                                     ]"
-=======
-                                                <v-select
-                                                    :items="classItems"
-                                                    variant="outlined"
->>>>>>> origin/eslam-abosife
                                                     style="width: 50%"
                                                     v-model="form.class"
                                                     :error-messages="
@@ -2458,13 +2452,7 @@
                                                     label="الفصل"
                                                     required
                                                 ></v-select>
-<<<<<<< HEAD
 
-=======
-                                            </div>
-
-                                            <div style="width: 100%">
->>>>>>> origin/eslam-abosife
                                                 <!-- حقل الجنس -->
                                                 <v-select
                                                     v-model="form.gender"

@@ -2375,9 +2375,13 @@
                     <template v-slot:default>
                         <v-card
                             class="mx-auto text-white"
-                            style="width: 100% !important; background: #2196f3"
+                            style="
+                                background: #3875a5 !important;
+                                color: white !important;
+                                width: 100% !important;
+                            "
                         >
-                            <v-toolbar title="إضافه طالب ">
+                            <v-toolbar title=" معلومات الطالب وولى امره">
                                 <v-btn
                                     icon
                                     @click="
@@ -2388,11 +2392,11 @@
                                 </v-btn>
                             </v-toolbar>
 
+                            <v-tabs v-model="tab" bg-color="primary">
+                                <v-tab value="student">بيانات الطالب</v-tab>
+                                <v-tab value="parent">ولي الأمر</v-tab>
+                            </v-tabs>
                             <v-card-text>
-                                <v-tabs class="ma-0" v-model="tab">
-                                    <v-tab value="student">بيانات الطالب</v-tab>
-                                    <v-tab value="parent">ولي الأمر</v-tab>
-                                </v-tabs>
                                 <v-tabs-window v-model="tab">
                                     <v-tabs-window-item value="student">
                                         <form @submit.prevent="submit">
@@ -2562,7 +2566,6 @@
                                                     <v-btn
                                                         append-icon="mdi-account-circle"
                                                         type="submit"
-                                                        size="x-large"
                                                         style="
                                                             background: rgb(
                                                                 70,
@@ -2570,9 +2573,9 @@
                                                                 164
                                                             );
                                                             color: white;
-                                                            font-size: 18px;
-                                                            padding: 10px;
-                                                            width: 100;
+                                                            font-size: 24px;
+                                                            padding: 3px;
+                                                            width: 42%;
                                                         "
                                                         >إضافة طالب</v-btn
                                                     >
@@ -2736,7 +2739,9 @@ export default {
         isSortedAscending: Boolean,
         paymentSortActive: Boolean,
         gradeSortActive: String,
+        selectedClassj: String,
         gradeOptions: Array,
+        filteredStudentList: Array,
     },
     setup() {
         const toast = useToast();
@@ -5003,22 +5008,34 @@ export default {
         //     return this.isPressed ? "mdi-eye-off" : "mdi-eye";
         // },
         filteredStudents() {
-            if (this.selectedSection === "الكل") {
-                return this.students.filter(
-                    (student) => student.educational_level === this.year
+            const trimmedQuery = this.searchQuery.trim().toLowerCase();
+            const students = this.filteredStudentList.filter((student) => {
+                const matchesYear = student.educational_level === this.year;
+                const matchesSection =
+                    this.selectedSection === "الكل" ||
+                    student.section === this.selectedSection;
+                const matchesClass =
+                    !this.selectedClassj ||
+                    student.class === this.selectedClassj;
+                const matchesSearchQuery = student.student_name
+                    .toLowerCase()
+                    .includes(trimmedQuery);
+
+                return (
+                    matchesYear &&
+                    matchesSection &&
+                    matchesClass &&
+                    matchesSearchQuery
                 );
-            }
-            return this.students.filter(
-                (student) =>
-                    student.educational_level === this.year &&
-                    student.section === this.selectedSection
-            );
+            });
+
+            this.$emit("updateFilteredCount", students.length);
+            return students;
         },
         sortedStudents() {
             const studentsToSort = this.filteredStudents;
 
             if (this.gradeSortActive) {
-                // الترتيب حسب الدرجات لشهر معين
                 return [...studentsToSort].sort((a, b) => {
                     const gradeA = this.getMonthlyDegrees(
                         a,
@@ -5028,17 +5045,15 @@ export default {
                         b,
                         this.gradeSortActive
                     );
-                    return gradeB - gradeA; // ترتيب تنازلي
+                    return gradeB - gradeA;
                 });
             } else if (this.paymentSortActive) {
-                // الترتيب حسب المدفوعات
                 return [...studentsToSort].sort((a, b) => {
                     const residualA = a.payments.Expenses - a.payments.paid_Up;
                     const residualB = b.payments.Expenses - b.payments.paid_Up;
                     return residualA - residualB;
                 });
             } else {
-                // الترتيب أبجدي
                 return studentsToSort.sort((a, b) => {
                     const nameA = a.student_name.toUpperCase();
                     const nameB = b.student_name.toUpperCase();

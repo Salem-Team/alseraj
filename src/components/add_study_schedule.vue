@@ -100,7 +100,7 @@
                 </div>
             </div>
             <div class="add">
-                <div>(2) جداول دراسية</div>
+                <div>({{ schedules.length }}) جداول دراسية</div>
                 <div>
                     <font-awesome-icon
                         :icon="['fas', 'plus']"
@@ -110,33 +110,39 @@
             </div>
 
             <div class="boxes">
-                <div class="box">
-                    <div class="title">فصل (1/1) - عربي</div>
+                <v-col
+                    cols="6"
+                    v-for="(schedule, index) in schedules"
+                    :key="index"
+                    class="box"
+                >
+                    <div class="title">
+                        {{ schedule.class }} - {{ schedule.section }}
+                    </div>
                     <div class="time">
                         <font-awesome-icon :icon="['fas', 'clock']" />
-                        <div>أحدث تعديل 2024/4/4</div>
+                        <div>
+                            {{
+                                new Date(
+                                    schedule.lastModified.seconds * 1000
+                                ).toLocaleDateString()
+                            }}
+                        </div>
                     </div>
                     <div class="Footer">
-                        <div class="show" @click="main_bubble_1 = true">
+                        <div class="show" @click="showDetails(schedule)">
                             عرض
                         </div>
-                        <div class="delete">حذف</div>
-                    </div>
-                </div>
-                <div class="box">
-                    <div class="title">فصل (1/2) - عربي</div>
-                    <div class="time">
-                        <font-awesome-icon :icon="['fas', 'clock']" />
-                        <div>أحدث تعديل 2024/4/4</div>
-                    </div>
-                    <div class="Footer">
-                        <div class="show" @click="main_bubble_1 = true">
-                            عرض
+                        <div
+                            class="delete"
+                            @click="deleteSchedule(schedule.id)"
+                        >
+                            حذف
                         </div>
-                        <div class="delete">حذف</div>
                     </div>
-                </div>
+                </v-col>
             </div>
+
             <v-dialog v-model="main_bubble" max-width="90%">
                 <div class="schedule">
                     <div class="right">
@@ -196,6 +202,7 @@
                             font-weight: bold;
                             cursor: pointer;
                         "
+                        @click="addSchedule"
                     >
                         إضافة
                     </div>
@@ -235,11 +242,14 @@
                         "
                     >
                         <font-awesome-icon :icon="['fas', 'clock']" />
-                        <div>أحدث تعديل 2024/4/4</div>
+                        <div>
+                            أحدث تعديل
+                            {{ formattedLastModified }}
+                        </div>
                     </div>
 
                     <div style="width: 90%; margin: 0 auto">
-                        <v-select
+                        <!-- <v-select
                             v-model="selectedClass"
                             :items="classes"
                             label="اختر الفصل"
@@ -252,7 +262,7 @@
                             label="اختر القسم"
                             @blur="fetchScheduleId"
                             required
-                        ></v-select>
+                        ></v-select> -->
                     </div>
                     <div
                         style="
@@ -272,7 +282,7 @@
                         "
                     >
                         <font-awesome-icon :icon="['fas', 'floppy-disk']" />
-                        <div>حفظ التغييرات</div>
+                        <div @click="updateSchedule">حفظ التغييرات</div>
                     </div>
                     <div class="contain">
                         <table class="schedule_table">
@@ -290,538 +300,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>الأحد</td>
-                                    <td>
+                                <tr v-for="day in schedule" :key="day.day">
+                                    <td>{{ day.day }}</td>
+                                    <td
+                                        v-for="(period, index) in day.periods"
+                                        :key="index"
+                                    >
                                         <input
                                             type="text"
                                             class="subject"
-                                            value="رياضيات"
+                                            v-model="day.periods[index].subject"
                                         />
                                         <hr />
                                         <input
                                             type="text"
                                             class="teacher"
-                                            value="أ. أحمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="علوم"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. محمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="لغة عربية"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. علي"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="تاريخ"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. سمير"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="جغرافيا"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. خالد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="رياضيات"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. أحمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="علوم"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. محمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="لغة عربية"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. علي"
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>الإثنين</td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="لغة عربية"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. علي"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="رياضيات"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. أحمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="علوم"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. محمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="جغرافيا"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. خالد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="تاريخ"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. سمير"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="لغة عربية"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. علي"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="رياضيات"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. أحمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="علوم"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. محمد"
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>الثلاثاء</td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="علوم"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. محمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="لغة عربية"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. علي"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="رياضيات"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. أحمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="تاريخ"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. سمير"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="جغرافيا"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. خالد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="علوم"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. محمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="لغة عربية"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. علي"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="رياضيات"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. أحمد"
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>الأربعاء</td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="جغرافيا"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. خالد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="تاريخ"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. سمير"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="رياضيات"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. أحمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="علوم"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. محمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="لغة عربية"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. علي"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="جغرافيا"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. خالد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="تاريخ"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. سمير"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="رياضيات"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. أحمد"
-                                        />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>الخميس</td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="تاريخ"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. سمير"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="جغرافيا"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. خالد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="لغة عربية"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. علي"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="رياضيات"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. أحمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="علوم"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. محمد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="تاريخ"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. سمير"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="جغرافيا"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. خالد"
-                                        />
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            class="subject"
-                                            value="لغة عربية"
-                                        />
-                                        <hr />
-                                        <input
-                                            type="text"
-                                            class="teacher"
-                                            value="أ. علي"
+                                            v-model="day.periods[index].teacher"
                                         />
                                     </td>
                                 </tr>
@@ -830,101 +324,7 @@
                     </div>
                 </div>
             </v-dialog>
-            <!-- <v-card style="padding: 15px">
-                <v-card-title
-                    class="headline"
-                    style="
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                    "
-                >
-                    إضافة جدول دراسي
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        :disabled="!changesMade"
-                        color="green darken-1"
-                        @click="saveSchedule"
-                    >
-                        حفظ التعديلات
-                    </v-btn>
-                </v-card-title>
-                <v-card-text>
-                    <div style="padding: 20px">
-                        <v-select
-                            v-model="selectedClass"
-                            :items="classes"
-                            label="اختر الفصل"
-                            @blur="fetchScheduleId"
-                            required
-                        ></v-select>
-                        <v-select
-                            v-model="selectedSection"
-                            :items="sections"
-                            label="اختر القسم"
-                            @blur="fetchScheduleId"
-                            required
-                        ></v-select>
-                        <v-card flat>
-                            <div class="table">
-                                <v-table>
-                                    <thead>
-                                        <tr>
-                                            <th>اليوم الدراسي</th>
-                                            <th>الفترة الأولى</th>
-                                            <th>الفترة الثانية</th>
-                                            <th>الفترة الثالثة</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr
-                                            v-for="(
-                                                degree, index
-                                            ) in Results.schedule"
-                                            :key="index"
-                                        >
-                                            <td>{{ degree.Subject_Name }}</td>
-                                            <td>
-                                                <v-text-field
-                                                    v-model="
-                                                        degree.Minor_degree
-                                                    "
-                                                    style="text-align: center"
-                                                    @input="handleInputChange"
-                                                    required
-                                                ></v-text-field>
-                                            </td>
-                                            <td>
-                                                <v-text-field
-                                                    v-model="
-                                                        degree.Major_degree
-                                                    "
-                                                    style="text-align: center"
-                                                    @input="handleInputChange"
-                                                    required
-                                                ></v-text-field>
-                                            </td>
-                                            <td>
-                                                <v-text-field
-                                                    v-model="
-                                                        degree.Student_degree
-                                                    "
-                                                    style="text-align: center"
-                                                    @input="handleInputChange"
-                                                    required
-                                                ></v-text-field>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </v-table>
-                            </div>
-                        </v-card>
-                    </div>
-                    <div style="padding: 20px; text-align: right">
-                        <p>آخر تعديل: {{ lastModified }}</p>
-                    </div>
-                </v-card-text>
-            </v-card> -->
+
             <confirm_message2
                 v-model="showSnackbar"
                 :text="confirmationText"
@@ -940,14 +340,10 @@ import {
     getFirestore,
     doc,
     setDoc,
-    getDoc,
     getDocs,
-    Timestamp,
-    query,
     collection,
-    where,
+    // deleteDoc,
 } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
 import { initializeApp } from "@firebase/app";
 
 const firebaseConfig = {
@@ -961,15 +357,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app);
-import confirm_message2 from "@/components/confirm_message2.vue";
-
-export { db, storage };
 
 export default {
-    components: {
-        confirm_message2,
-    },
     props: {
         year: {
             type: Number,
@@ -984,201 +373,217 @@ export default {
             showDialog: false,
             changesMade: false,
             confirmationText: "",
-            selectedClass: null, // تعيين القيمة الافتراضية لاحقًا
-            selectedSection: null, // تعيين القيمة الافتراضية لاحقًا
+            selectedClass: null,
+            selectedSection: null,
+            schedule: [
+                {
+                    day: "الأحد",
+                    periods: [
+                        { subject: "رياضيات", teacher: "أ. أحمد" },
+                        { subject: "علوم", teacher: "أ. محمد" },
+                        { subject: "لغة عربية", teacher: "أ. علي" },
+                        { subject: "تاريخ", teacher: "أ. سمير" },
+                        { subject: "جغرافيا", teacher: "أ. خالد" },
+                        { subject: "رياضيات", teacher: "أ. أحمد" },
+                        { subject: "علوم", teacher: "أ. محمد" },
+                        { subject: "لغة عربية", teacher: "أ. علي" },
+                    ],
+                },
+                {
+                    day: "الإثنين",
+                    periods: [
+                        { subject: "لغة عربية", teacher: "أ. علي" },
+                        { subject: "رياضيات", teacher: "أ. أحمد" },
+                        { subject: "علوم", teacher: "أ. محمد" },
+                        { subject: "جغرافيا", teacher: "أ. خالد" },
+                        { subject: "تاريخ", teacher: "أ. سمير" },
+                        { subject: "لغة عربية", teacher: "أ. علي" },
+                        { subject: "رياضيات", teacher: "أ. أحمد" },
+                        { subject: "علوم", teacher: "أ. محمد" },
+                    ],
+                },
+                {
+                    day: "الثلاثاء",
+                    periods: [
+                        { subject: "لغة عربية", teacher: "أ. علي" },
+                        { subject: "رياضيات", teacher: "أ. أحمد" },
+                        { subject: "علوم", teacher: "أ. محمد" },
+                        { subject: "جغرافيا", teacher: "أ. خالد" },
+                        { subject: "تاريخ", teacher: "أ. سمير" },
+                        { subject: "لغة عربية", teacher: "أ. علي" },
+                        { subject: "رياضيات", teacher: "أ. أحمد" },
+                        { subject: "علوم", teacher: "أ. محمد" },
+                    ],
+                },
+                {
+                    day: "الاربعاء",
+                    periods: [
+                        { subject: "لغة عربية", teacher: "أ. علي" },
+                        { subject: "رياضيات", teacher: "أ. أحمد" },
+                        { subject: "علوم", teacher: "أ. محمد" },
+                        { subject: "جغرافيا", teacher: "أ. خالد" },
+                        { subject: "تاريخ", teacher: "أ. سمير" },
+                        { subject: "لغة عربية", teacher: "أ. علي" },
+                        { subject: "رياضيات", teacher: "أ. أحمد" },
+                        { subject: "علوم", teacher: "أ. محمد" },
+                    ],
+                },
+                {
+                    day: "الخميس",
+                    periods: [
+                        { subject: "لغة عربية", teacher: "أ. علي" },
+                        { subject: "رياضيات", teacher: "أ. أحمد" },
+                        { subject: "علوم", teacher: "أ. محمد" },
+                        { subject: "جغرافيا", teacher: "أ. خالد" },
+                        { subject: "تاريخ", teacher: "أ. سمير" },
+                        { subject: "لغة عربية", teacher: "أ. علي" },
+                        { subject: "رياضيات", teacher: "أ. أحمد" },
+                        { subject: "علوم", teacher: "أ. محمد" },
+                    ],
+                },
+            ],
             showSnackbar: false,
             classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
             sections: ["عربي", "لغات"],
-            Results: {
-                educational_level: "",
-                classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
-                sections: ["عربي", "لغات"],
-                schedule: [
-                    {
-                        Subject_Name: "السبت",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                    {
-                        Subject_Name: "الاحد",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                    {
-                        Subject_Name: "الاثنين ",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                    {
-                        Subject_Name: "الثلاثاء",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                    {
-                        Subject_Name: "الاربعاء",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                    {
-                        Subject_Name: "الخميس",
-                        Minor_degree: "",
-                        Major_degree: "",
-                        Student_degree: "",
-                    },
-                ],
-            },
             lastModified: "لم يتم التعديل بعد",
-            scheduleId: null, // هنا لتخزين معرّف الجدول
+            scheduleId: null,
         };
     },
+    computed: {
+        formattedLastModified() {
+            return this.lastModified === "لم يتم التعديل بعد"
+                ? "لم يتم التعديل بعد"
+                : new Date(this.lastModified).toLocaleString();
+        },
+    },
     methods: {
-        handleCloseSnackbar() {
-            this.showSnackbar = false; // تحديث حالة الرسالة في المكون الأم
+        showDetails(schedule) {
+            this.selectedClass = schedule.class;
+            this.selectedSection = schedule.section;
+            this.schedule = schedule.schedule;
+            this.scheduleId = schedule.id;
+            this.lastModified = schedule.lastModified.toDate(); // Ensure proper date conversion
+            this.main_bubble_1 = true;
         },
-        async loadSchedule() {
-            if (!this.selectedClass || !this.selectedSection) return;
-
-            try {
-                this.changesMade = false;
-                this.lastModified = "لم يتم التعديل بعد";
-
-                const docRef = doc(db, "studySchedule", this.scheduleId);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    this.Results.schedule =
-                        data.schedule || this.Results.schedule;
-                    this.lastModified = data.lastModified
-                        ? data.lastModified.toDate().toLocaleString()
-                        : "لم يتم التعديل بعد";
-                }
-            } catch (error) {
-                console.error("Error getting document: ", error);
+        async updateSchedule() {
+            if (!this.scheduleId || !this.selectedClass) {
+                console.error("Please provide all required fields.");
+                return;
             }
-        },
-        async saveSchedule() {
-            if (!this.selectedClass || !this.selectedSection) return;
-
             try {
-                const docRef = doc(db, "studySchedule", this.scheduleId);
-                const docSnap = await getDoc(docRef);
-
-                const isNew = !docSnap.exists();
-
+                this.loading1 = true;
+                const scheduleRef = doc(db, "studySchedule", this.scheduleId);
                 await setDoc(
-                    docRef,
+                    scheduleRef,
                     {
                         class: this.selectedClass,
                         section: this.selectedSection,
-                        educational_level: this.year,
-                        schedule: this.Results.schedule,
-                        lastModified: Timestamp.now(),
+                        schedule: this.schedule,
+                        lastModified: new Date(),
                     },
                     { merge: true }
                 );
-
-                this.changesMade = false;
-                this.lastModified = new Date().toLocaleString();
-                this.closeDialog();
-
-                if (isNew) {
-                    this.confirmationText = `تم إضافة جدول دراسي جديد للفصل ${this.selectedClass} للقسم ${this.selectedSection} للسنة الدراسية ${this.year}`;
-                } else {
-                    this.confirmationText = "تم تعديل الجدول";
-                }
-                this.showSnackbar = true;
+                console.log("Schedule updated successfully");
+                this.loading1 = false;
             } catch (error) {
-                console.error("Error updating document: ", error);
-            }
-        },
-        async fetchScheduleId() {
-            if (!this.selectedClass || !this.selectedSection) return;
-
-            try {
-                const querySnapshot = await getDocs(
-                    query(
-                        collection(db, "studySchedule"),
-                        where("class", "==", this.selectedClass),
-                        where("section", "==", this.selectedSection),
-                        where("educational_level", "==", this.year)
-                    )
-                );
-
-                if (!querySnapshot.empty) {
-                    const doc = querySnapshot.docs[0];
-                    this.scheduleId = doc.id;
-                    this.loadSchedule(); // تحميل البيانات الحالية
-                } else {
-                    this.scheduleId = uuidv4();
-                    this.Results.schedule = [
-                        {
-                            Subject_Name: "السبت",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                        {
-                            Subject_Name: "الأحد",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                        {
-                            Subject_Name: "الإثنين",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                        {
-                            Subject_Name: "الثلاثاء",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                        {
-                            Subject_Name: "الأربعاء",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                        {
-                            Subject_Name: "الخميس",
-                            Minor_degree: "",
-                            Major_degree: "",
-                            Student_degree: "",
-                        },
-                    ];
-                }
-            } catch (error) {
-                console.error("Error fetching schedule ID: ", error);
+                console.error("Error updating schedule: ", error);
+                this.loading1 = false;
             }
         },
         closeDialog() {
             this.showDialog = false;
-            console.log('@click="main_bubble = false"');
+            this.resetDialog();
         },
-        handleInputChange() {
-            this.changesMade = true;
+        resetDialog() {
+            this.selectedClass = null;
+            this.selectedSection = null;
+            this.schedule = [];
+            this.lastModified = "لم يتم التعديل بعد";
         },
+
+        async fetchSchedules() {
+            try {
+                const querySnapshot = await getDocs(
+                    collection(db, "studySchedule")
+                );
+                this.schedules = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+            } catch (error) {
+                console.error("Error fetching schedules: ", error.message);
+            }
+        },
+        async deleteSchedule(scheduleId) {
+            if (!scheduleId) {
+                console.error("No schedule ID provided for deletion.");
+                return;
+            }
+            try {
+                this.showDialog = false;
+
+                // await deleteDoc(doc(db, "studySchedule", scheduleId));
+                // Immediately remove the deleted schedule from the local schedules array
+                this.schedules = this.schedules.filter(
+                    (schedule) => schedule.id !== scheduleId
+                );
+                await this.fetchSchedules();
+                console.log("Schedule deleted successfully.");
+            } catch (error) {
+                console.error("Error deleting schedule:", error);
+            }
+        },
+        async addSchedule() {
+            if (!this.selectedClass || !this.selectedSection) {
+                console.error("Please provide all required fields.");
+                return;
+            }
+            try {
+                this.loading1 = true;
+                const docRef = doc(collection(db, "studySchedule"), uuidv4());
+                await setDoc(docRef, {
+                    class: this.selectedClass,
+                    section: this.selectedSection,
+                    schedule: this.schedule,
+                    educational_level: this.year,
+                    lastModified: new Date(),
+                });
+                console.log("Schedule added successfully");
+                // تحديث الجداول بعد إضافة جدول جديد
+                await this.fetchSchedules();
+                this.resetDialog();
+                this.loading1 = false;
+                this.main_bubble = false;
+            } catch (error) {
+                console.error("Error adding schedule: ", error);
+                this.loading1 = false;
+            }
+        },
+
+        // async deletePlan(id) {
+        //     try {
+        //         await deleteDoc(doc(db, "weeklyPlan", id));
+        //         this.weeklyPlans = this.weeklyPlans.filter(
+        //             (plan) => plan.id !== id
+        //         );
+        //         this.confirmationText = "تم حذف الخطه الاسبوعيه بنجاح";
+        //         this.showSnackbar = true;
+        //     } catch (error) {
+        //         console.error("Error deleting plan: ", error);
+        //     }
+        // },
     },
     watch: {
         showDialog(val) {
             if (val) {
-                // تعيين القيم الافتراضية عند فتح الحوار
                 this.selectedClass = "1/1";
                 this.selectedSection = "عربي";
-                this.fetchScheduleId(); // قم بتحديث الجدول عند فتح الحوار
+                this.fetchSchedules(); // Fetch schedules when dialog is shown
             }
         },
     },
     mounted() {
-        console.log(this.year);
+        this.fetchSchedules(); // Fetch schedules when the component is mounted
     },
 };
 </script>
@@ -1560,7 +965,7 @@ svg {
 .boxes {
     display: flex;
     flex-wrap: wrap;
-    gap: 13px;
+    // gap: 13px;
     width: 90%;
     margin: 20px auto;
 

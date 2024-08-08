@@ -17,7 +17,8 @@
                     class="a"
                     to="/profile"
                     v-if="user.National_id !== '' || user.id !== ''"
-                    >الملف</router-link
+                >
+                    الملف الشخصي</router-link
                 >
             </div>
             <div>
@@ -25,7 +26,7 @@
                     class="a"
                     to="/Parent_Dashboard"
                     v-if="user.userType === 'parent'"
-                    >الملف الشخصي</router-link
+                    >الأبناء</router-link
                 >
             </div>
             <div>

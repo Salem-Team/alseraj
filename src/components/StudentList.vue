@@ -1,12 +1,6 @@
 <template>
     <v-container>
-        <v-text-field
-            v-model="searchQuery"
-            @input="searchStudent"
-            label="ادخل اسم الطالب"
-        ></v-text-field>
-
-        <v-row>
+        <div>
             <svg
                 style="
                     position: fixed;
@@ -87,13 +81,118 @@
             <v-container v-if="!loading1 && students.length === 0">
                 <Empty_error text="لا يوجد طلاب مسجلين." />
             </v-container>
-            <v-col cols="12" v-else>
+            <div class="boxes" v-else>
+                <div
+                    class="box"
+                    v-for="(student, index) in sortedStudents"
+                    :key="student.id"
+                >
+                    <div class="head">
+                        <div>
+                            <div class="number">{{ index + 1 }}</div>
+                            <div class="name">{{ student.student_name }}</div>
+                        </div>
+                        <div>
+                            <font-awesome-icon
+                                :icon="['fas', icon(student)]"
+                                @click="toggleIcon(student)"
+                            />
+
+                            <font-awesome-icon :icon="['fas', 'trash']" />
+                        </div>
+                    </div>
+                    <div class="body">
+                        <div class="feat_1">
+                            <div>فصل {{ student.class }}</div>
+                            <div>{{ student.section }}</div>
+                        </div>
+                        <div class="feat_2">
+                            <div
+                                class="feat"
+                                v-for="(grade, index) in gradeOptions"
+                                :key="index"
+                            >
+                                <div class="text-center">
+                                    <v-progress-circular
+                                        :model-value="
+                                            parseFloat(
+                                                percentageTotalDegrees(
+                                                    student,
+                                                    index
+                                                ).toFixed(1)
+                                            )
+                                        "
+                                        :rotate="360"
+                                        :size="100"
+                                        :width="15"
+                                        color="var(--main-color)"
+                                    >
+                                        <template v-slot:default>
+                                            {{
+                                                parseFloat(
+                                                    percentageTotalDegrees(
+                                                        student,
+                                                        index
+                                                    ).toFixed(1)
+                                                )
+                                            }}%
+                                        </template>
+                                    </v-progress-circular>
+                                </div>
+                                <div class="ranking">{{ grade }}</div>
+                            </div>
+                        </div>
+                        <div class="feat_3">
+                            <div class="header">
+                                <div>
+                                    <font-awesome-icon
+                                        :icon="['fas', 'money-bill']"
+                                    />
+                                    <div>المصروفات</div>
+                                </div>
+                                <div>
+                                    {{ student.payments.paid_Up }} /
+                                    {{ student.payments.Expenses }}
+                                </div>
+                            </div>
+                            <div class="pro">
+                                <div
+                                    class="Progress"
+                                    :style="{
+                                        width:
+                                            calculatePaymentProgress(
+                                                student.payments.paid_Up,
+                                                student.payments.Expenses
+                                            ) + '%',
+                                    }"
+                                ></div>
+                                <div class="label-box">
+                                    {{
+                                        Math.ceil(
+                                            calculatePaymentProgress(
+                                                student.payments.paid_Up,
+                                                student.payments.Expenses
+                                            )
+                                        )
+                                    }}%
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="feat_4"
+                            @click.stop="openStudentDetails(student)"
+                        >
+                            <font-awesome-icon :icon="['fas', 'circle-info']" />
+                            <div>التفاصيل</div>
+                        </div>
+                    </div>
+                </div>
                 <v-list>
                     <v-list-item
                         v-for="(student, index) in sortedStudents"
                         :key="student.id"
                     >
-                        <v-list-item-content class="student-item">
+                        <!-- <v-list-item-content class="student-item">
                             <v-row>
                                 <v-col>
                                     <div
@@ -116,7 +215,6 @@
                                         <div
                                             class="d-flex align-center justify-center"
                                         >
-                                            <!-- 000000000000000000000000000 -->
                                             <v-avatar color="info">
                                                 <v-icon
                                                     @click.stop="
@@ -141,7 +239,6 @@
                                                     @click="toggleIcon(student)"
                                                     class="custom-icon animated-icon"
                                                 >
-                                                    {{ icon(student) }}
                                                 </v-icon>
                                             </v-avatar>
                                         </div>
@@ -311,7 +408,7 @@
                                     >
                                 </v-col>
                             </v-row>
-                        </v-list-item-content>
+                        </v-list-item-content> -->
                         <v-dialog v-model="dialogStudentDetails">
                             <v-stepper
                                 v-model="e1"
@@ -1468,10 +1565,18 @@
                                                             <div>المدفوع</div>
                                                             <div>
                                                                 {{
-                                                                    selectedStudent
+                                                                    this
+                                                                        .selectedStudent
                                                                         .payments
-                                                                        .paid_Up ||
-                                                                    0
+                                                                        .payment_System ===
+                                                                    "نظام التقسيط"
+                                                                        ? selectedStudent
+                                                                              .payments
+                                                                              .paid_Up
+                                                                        : selectedStudent
+                                                                              .payments
+                                                                              .Expenses ||
+                                                                          0
                                                                 }}
                                                             </div>
                                                         </div>
@@ -1479,13 +1584,18 @@
                                                             <div>المتبقي</div>
                                                             <div>
                                                                 {{
-                                                                    selectedStudent
+                                                                    this
+                                                                        .selectedStudent
                                                                         .payments
-                                                                        .Expenses -
-                                                                        selectedStudent
-                                                                            .payments
-                                                                            .paid_Up ||
-                                                                    0
+                                                                        .payment_System ===
+                                                                    "نظام التقسيط"
+                                                                        ? selectedStudent
+                                                                              .payments
+                                                                              .Expenses -
+                                                                          selectedStudent
+                                                                              .payments
+                                                                              .paid_Up
+                                                                        : 0 || 0
                                                                 }}
                                                             </div>
                                                         </div>
@@ -1749,8 +1859,13 @@
                                                             </div>
                                                         </v-row>
                                                         <div
-                                                            class="Title"
-                                                            v-if="CreateChart"
+                                                            class="Title kheslam"
+                                                            v-if="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .payment_System ===
+                                                                'نظام التقسيط'
+                                                            "
                                                             style="
                                                                 margin-top: 55px;
                                                             "
@@ -1765,7 +1880,12 @@
                                                         </div>
                                                         <div
                                                             class="details"
-                                                            v-if="CreateChart"
+                                                            v-if="
+                                                                selectedStudent
+                                                                    .payments
+                                                                    .payment_System ===
+                                                                'نظام التقسيط'
+                                                            "
                                                         >
                                                             <div
                                                                 class="myChart"
@@ -2170,7 +2290,6 @@
                                                                     photo.DatePhoto
                                                                 }}
                                                             </p>
-                                                            <!-- عرض وقت الصورة -->
                                                         </v-card-text>
                                                     </v-card>
                                                 </v-col>
@@ -2243,7 +2362,7 @@
                         </v-dialog>
                     </v-list-item>
                 </v-list>
-            </v-col>
+            </div>
             <v-col cols="2">
                 <v-dialog
                     transition="dialog-top-transition"
@@ -2274,13 +2393,11 @@
                                 <v-tab value="student">بيانات الطالب</v-tab>
                                 <v-tab value="parent">ولي الأمر</v-tab>
                             </v-tabs>
-                            <!-- 111111111111111111111111111111111111111111111111111111111111111111111111111111 -->
                             <v-card-text>
                                 <v-tabs-window v-model="tab">
                                     <v-tabs-window-item value="student">
                                         <form @submit.prevent="submit">
                                             <div style="padding: 20px">
-                                                <!-- حقل معرف الطالب -->
                                                 <v-text-field
                                                     v-model="form.student_id"
                                                     style="width: 100%"
@@ -2541,7 +2658,7 @@
                     </template>
                 </v-dialog>
             </v-col>
-        </v-row>
+        </div>
         <confirm_message2
             v-model="showSnackbar"
             :text="confirmationText"
@@ -3116,7 +3233,7 @@ export default {
             }
         },
         icon(student) {
-            return student.state ? "mdi-eye-off" : "mdi-eye";
+            return student.state ? "eye" : "eye-slash";
         },
         ...mapActions(usenotification, ["send_Notification"]),
         getMonthlyDegrees(student, month) {
@@ -4097,40 +4214,7 @@ export default {
 
             return isValid;
         },
-        async searchStudent() {
-            try {
-                const trimmedQuery = this.searchQuery.trim().toLowerCase();
-                // Fetch all students if search query is empty
-                if (!trimmedQuery) {
-                    const querySnapshot = await getDocs(
-                        collection(db, "students")
-                    );
-                    this.students = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                        showDetails: false,
-                    }));
-                } else {
-                    // Perform search based on the trimmed search query
-                    const querySnapshot = await getDocs(
-                        collection(db, "students")
-                    );
-                    this.students = querySnapshot.docs
-                        .map((doc) => ({
-                            id: doc.id,
-                            ...doc.data(),
-                            showDetails: false,
-                        }))
-                        .filter((student) =>
-                            student.student_name
-                                .toLowerCase()
-                                .includes(trimmedQuery)
-                        );
-                }
-            } catch (error) {
-                console.error("Error searching students:", error);
-            }
-        },
+
         removeItem(index) {
             this.testform4.splice(index, 1);
         },
@@ -4965,7 +5049,7 @@ export default {
     },
     mounted() {
         this.loadStudents();
-        this.searchStudent(); // Fetch all students initially
+        // Fetch all students initially
         this.generateRandomPassword();
         this.fetchStudents();
         this.interval = setInterval(() => {
@@ -5553,7 +5637,7 @@ th {
     // gap: 10px;
     align-items: center;
     & > div {
-        width: 48%;
+        // width: 48%;
     }
 }
 .details {
@@ -5660,6 +5744,161 @@ th {
         }
     }
 }
+svg {
+    cursor: pointer;
+}
+.boxes {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    .box {
+        box-shadow: 0 0 10px #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        .head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 20px;
+            & > div {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                .number {
+                    background: var(--main-color);
+                    min-width: 35px;
+                    min-height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #fff;
+                    font-weight: bold;
+                    border-radius: 5px;
+                    font-size: 18px;
+                    padding: 5px;
+                }
+                .name {
+                    font-size: 20px;
+                    color: var(--main-color);
+                    font-weight: bold;
+                }
+                svg {
+                    font-size: 20px;
+                    color: var(--main-color);
+                }
+            }
+            &::before {
+                content: "";
+                position: absolute;
+                bottom: -10px;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: var(--secound-color);
+            }
+        }
+        .body {
+            .feat_1 {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background: var(--secound-color);
+                padding: 10px;
+                border-radius: 5px;
+                color: var(--therd-color);
+                font-weight: bold;
+                font-size: 16px;
+                justify-content: space-between;
+            }
+            .feat_2 {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin: 20px 0;
+                .feat {
+                    width: 15%;
+                    flex-grow: 1;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 10px;
+                    box-shadow: 0 0 10px #ddd;
+                    border-radius: 5px;
+                    padding: 10px;
+                    font-weight: bold;
+                    .text-center {
+                        font-size: 20px;
+                    }
+                    .ranking {
+                        color: var(--therd-color);
+                    }
+                }
+            }
+            .feat_3 {
+                box-shadow: 0 0 10px #ddd;
+                padding: 10px;
+                border-radius: 5px;
+                .header {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    background: var(--secound-color);
+                    padding: 10px;
+                    border-radius: 5px;
+                    color: var(--therd-color);
+                    font-weight: bold;
+                    font-size: 16px;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+                    div {
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                    }
+                }
+            }
+            .feat_4 {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                justify-content: center;
+                background: var(--main-color);
+                color: #fff;
+                padding: 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-top: 20px;
+                font-weight: bold;
+            }
+        }
+    }
+}
+.pro {
+    background: var(--secound-color);
+    height: 25px;
+    width: 100%;
+    position: relative;
+    border-radius: 25px;
+    .Progress {
+        background: var(--therd-color);
+        width: 0;
+        height: 100%;
+        border-radius: 25px;
+    }
+
+    .label-box {
+        position: absolute;
+        border-radius: 4px;
+        font-size: 16px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: bold;
+    }
+}
 @media (max-width: 599px) {
     .details_row {
         flex-direction: column;
@@ -5667,17 +5906,14 @@ th {
             width: 100%;
         }
     }
-    .container_img {
-        flex-direction: column;
-        .img {
-            width: 100%;
-            img {
-                width: 100%;
-            }
-        }
+    .boxes .box .body .feat_2 .feat {
+        width: 48%;
     }
 }
 @media (min-width: 600px) and (max-width: 768px) {
+    .boxes .box .body .feat_2 .feat {
+        width: 48%;
+    }
 }
 @media (min-width: 769px) {
     .weekly {
@@ -5716,8 +5952,7 @@ th {
 
 .progress-bar {
     width: 100%;
-    height: 32px;
-    background: #e3f1fd;
+    height: 12px;
 }
 
 .progress-label2 {
@@ -5728,25 +5963,7 @@ th {
     font-weight: bold;
     white-space: nowrap;
 }
-.label-box {
-    position: relative;
-    background-color: #007bff;
-    padding: 5px 10px;
-    border-radius: 4px;
-}
 
-.label-box::after {
-    content: "";
-    position: absolute;
-    bottom: -10px; /* وضع السهم أسفل المربع */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid #007bff; /* نفس لون خلفية المربع */
-}
 .custom-icon {
     font-size: 36px; /* يمكنك تعديل الحجم هنا */
 }

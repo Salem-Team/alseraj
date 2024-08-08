@@ -35,24 +35,16 @@
                     :options="{ threshold: 0.5 }"
                     transition="fade-transition"
                 >
-                    <div class="cards">
-                        <v-img
-                            v-if="photo.File_type == 'صورة'"
-                            :src="photo.image"
-                            height="200"
-                            cover
-                        ></v-img>
-                        <video
-                            v-if="photo.File_type == 'فيديو'"
-                            width="210"
-                            height="200"
-                            controls
-                        >
-                            <source :src="photo.video" type="video/mp4" />
+                    <v-img
+                        v-if="photo.File_type == 'صورة'"
+                        :src="photo.image"
+                        height="200"
+                    ></v-img>
+                    <video v-if="photo.File_type == 'فيديو'" controls>
+                        <source :src="photo.video" type="video/mp4" />
 
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
+                        Your browser does not support the video tag.
+                    </video>
                 </v-lazy>
             </v-card>
         </div>
@@ -64,48 +56,40 @@
                     <v-btn icon="mdi-close" @click="dialog_6 = false"></v-btn>
                 </div>
                 <v-carousel
-                    :show-arrows="false"
-                    hide-delimiter-background
-                    color="var(--main-color)"
+                    :show-arrows="showArrows"
+                    hide-delimiters
+                    height="100%"
                 >
-                    <div>
-                        <v-carousel-item
-                            class="pa-5"
-                            v-if="photos.File_Information == 'صورة'"
-                            :src="photos.Photo_Information"
-                            height="400"
-                            cover
-                        ></v-carousel-item>
-                    </div>
-                    <div>
-                        <v-carousel-item
-                            class="pa-5"
-                            v-if="photos.File_Information == 'فيديو'"
-                            height="400"
-                            cover
-                        >
-                            <video width="400" height="400" controls>
-                                <source
-                                    :src="photos.Video_Information"
-                                    type="video/mp4"
-                                />
+                    <!-- Make carousel content scrollable -->
+                    <v-carousel-item
+                        class="pa-5 text-center"
+                        v-if="photos.File_Information == 'صورة'"
+                        :src="photos.Photo_Information"
+                        height="400"
+                    ></v-carousel-item>
+                    <v-carousel-item
+                        class="pa-5 text-center"
+                        v-if="photos.File_Information == 'فيديو'"
+                    >
+                        <video height="400" controls>
+                            <source
+                                :src="photos.Video_Information"
+                                type="video/mp4"
+                            />
 
-                                Your browser does not support the video tag.
-                            </video></v-carousel-item
-                        >
-                    </div>
+                            Your browser does not support the video tag.
+                        </video></v-carousel-item
+                    >
                     <div v-for="photo in Photos" :key="photo.id">
                         <v-carousel-item
                             v-if="photo.File_type == 'صورة'"
-                            class="pa-5"
+                            class="pa-5 text-center"
                             :src="photo.image"
                             height="400"
-                            cover
                         ></v-carousel-item>
                         <v-carousel-item
                             v-if="photo.File_type == 'فيديو'"
                             class="pa-5 text-center"
-                            cover
                         >
                             <video controls height="400">
                                 <source :src="photo.video" type="video/mp4" />
@@ -114,6 +98,22 @@
                             </video></v-carousel-item
                         >
                     </div>
+                    <template v-slot:next="{ props }">
+                        <v-icon
+                            style="text-align: center; color: var(--main-color)"
+                            @click="props.onClick"
+                            class="pa-10 carousel-arrow next-arrow"
+                            >mdi-menu-right</v-icon
+                        >
+                    </template>
+                    <template v-slot:prev="{ props }">
+                        <v-icon
+                            style="text-align: center; color: var(--main-color)"
+                            @click="props.onClick"
+                            class="pa-10 carousel-arrow prev-arrow"
+                            >mdi-menu-left</v-icon
+                        >
+                    </template>
                 </v-carousel>
             </v-card></v-dialog
         >
@@ -139,7 +139,6 @@ import { storeToRefs } from "pinia";
 import { defineComponent } from "vue";
 import { usePhoto_Gallery } from "@/store/Photo_Gallery.js";
 import Empty_error from "@/components/Empty_error.vue";
-import { gsap } from "gsap";
 export default defineComponent({
     inject: ["Emitter"],
     components: {
@@ -148,7 +147,7 @@ export default defineComponent({
     setup() {
         // Access the Photo Gallery store
         const photos = usePhoto_Gallery();
-
+        photos.Get_splice();
         // Destructure reactive references and methods from Photo Gallery store
         const {
             Photo,
@@ -184,27 +183,19 @@ export default defineComponent({
             photo_Information,
         };
     },
+    data() {
+        return {
+            showArrows: true,
+        };
+    },
     mounted() {
-        // Initialize or fetch data on component setup
-        this.photos.Get_splice(); // Retrieve initial set of photos
-
-        // GSAP animation for cards
-        gsap.fromTo(
-            ".cards",
-            {
-                opacity: 0,
-                x: 50,
-                stagger: 0.2, // Stagger animation for each card
-                ease: "power3.out", // Easing function
-            },
-            {
-                opacity: 1,
-                x: 0,
-                duration: 1.5,
-                stagger: 0.2,
-                ease: "power3.out",
-            }
-        );
+        this.updateArrowVisibility();
+        window.addEventListener("resize", this.updateArrowVisibility);
+    },
+    methods: {
+        updateArrowVisibility() {
+            this.showArrows = window.innerWidth >= 700;
+        },
     },
 });
 </script>
@@ -286,6 +277,17 @@ export default defineComponent({
     -webkit-box-shadow: 0 0 20px #ddd; /* Box shadow for webkit browsers */
     -moz-box-shadow: 0 0 20px #ddd; /* Box shadow for mozilla browsers */
     box-shadow: 0 0 20px #ddd; /* Box shadow */
+    img,
+    video {
+        height: 300px;
+        width: 100%;
+        object-fit: cover;
+        object-position: center;
+        cursor: zoom-in;
+        &:hover {
+            transform: scale(1.02);
+        }
+    }
     &::before {
         content: ""; /* Empty content before pseudo-element */
         position: absolute; /* Absolute positioning */
@@ -391,12 +393,14 @@ export default defineComponent({
         flex-direction: column !important;
     }
     .card {
+        margin-bottom: 20px !important;
         width: 100% !important;
     }
 }
 
 @media (min-width: 700px) and (max-width: 950px) {
     .card {
+        margin-bottom: 20px !important;
         width: 47% !important;
     }
 }

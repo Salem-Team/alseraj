@@ -2375,13 +2375,9 @@
                     <template v-slot:default>
                         <v-card
                             class="mx-auto text-white"
-                            style="
-                                background: #3875a5 !important;
-                                color: white !important;
-                                width: 100% !important;
-                            "
+                            style="width: 100% !important; background: #2196f3"
                         >
-                            <v-toolbar title=" معلومات الطالب وولى امره">
+                            <v-toolbar title="إضافه طالب ">
                                 <v-btn
                                     icon
                                     @click="
@@ -2392,11 +2388,11 @@
                                 </v-btn>
                             </v-toolbar>
 
-                            <v-tabs v-model="tab" bg-color="primary">
-                                <v-tab value="student">بيانات الطالب</v-tab>
-                                <v-tab value="parent">ولي الأمر</v-tab>
-                            </v-tabs>
                             <v-card-text>
+                                <v-tabs class="ma-0" v-model="tab">
+                                    <v-tab value="student">بيانات الطالب</v-tab>
+                                    <v-tab value="parent">ولي الأمر</v-tab>
+                                </v-tabs>
                                 <v-tabs-window v-model="tab">
                                     <v-tabs-window-item value="student">
                                         <form @submit.prevent="submit">
@@ -2566,6 +2562,7 @@
                                                     <v-btn
                                                         append-icon="mdi-account-circle"
                                                         type="submit"
+                                                        size="x-large"
                                                         style="
                                                             background: rgb(
                                                                 70,
@@ -2573,9 +2570,9 @@
                                                                 164
                                                             );
                                                             color: white;
-                                                            font-size: 24px;
-                                                            padding: 3px;
-                                                            width: 42%;
+                                                            font-size: 18px;
+                                                            padding: 10px;
+                                                            width: 100;
                                                         "
                                                         >إضافة طالب</v-btn
                                                     >

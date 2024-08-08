@@ -91,30 +91,22 @@
                             <div>الملف الشخصي</div>
                         </v-breadcrumbs-item>
                     </v-breadcrumbs>
-                    <div class="hello_text mb-8">
-                        مرحبًا {{ student.student_name }}، نشكرك على ثقتك في
-                        معهد السراج المنير الأزهري، نتطلع سويًا لتحقيق المستقبل
-                        المشرق .
-                    </div>
                 </div>
-                <div class="left">
+                <div class="left pl-6">
                     <img
                         src="../assets/profile/edit-info.svg"
                         alt=""
-                        class="pluse pluse_1 ml-2"
-                        @click="toggleEditMode"
-                    />
-                    <img
-                        src="../assets/profile/logout.svg"
-                        alt=""
-                        class="pluse pluse_1 ml-5"
-                        @click="handleLogout"
+                        class="pluse pluse_1"
+                        @click="$router.push('/profile')"
                     />
                 </div>
             </div>
         </div>
         <!-- Loading  تحميل -->
-
+        <div class="hello_text mb-8 pr-5">
+            مرحبًا {{ student.student_name }}، نشكرك على ثقتك في معهد السراج
+            المنير الأزهري، نتطلع سويًا لتحقيق المستقبل المشرق .
+        </div>
         <v-card
             variant="flat"
             style="border: none; background: #fff; margin: 22px"
@@ -174,9 +166,9 @@
                                         alt=""
                                         width="30px"
                                 /></v-tab>
-                                <v-tab value="eight">
+                                <v-tab value="seven2">
                                     <img
-                                        src="../assets/student/study-icon.svg"
+                                        src="../assets/student/analysis.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>
@@ -1199,7 +1191,7 @@ export default {
                 await router.push("/UserLogin"); // توجيه المستخدم إلى صفحة تسجيل الدخول بعد تسجيل الخروج
             } catch (error) {
                 console.error("Error signing out:", error);
-                alert("فشل في تسجيل الخروج");
+                alert("فشل في  الخروج");
             }
         };
 
@@ -1262,6 +1254,8 @@ export default {
                     );
                     this.studySchedules = [];
                 }
+
+                // جلب بيانات المحتوى التعليمي بناءً على بيانات الطالب
                 const educationalContentQuery = query(
                     collection(db, "Educationalcontent"),
                     where("classId", "==", studentData.class),
@@ -1703,7 +1697,7 @@ export default {
 .left {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
 }
 .v-container {
     margin: 20px auto !important;

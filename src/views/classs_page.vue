@@ -1,223 +1,219 @@
 <template>
     <div>
+        <svg
+            style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 245px;
+            "
+            v-if="loading1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 200 200"
+        >
+            <radialGradient
+                id="a12"
+                cx=".66"
+                fx=".66"
+                cy=".3125"
+                fy=".3125"
+                gradientTransform="scale(1.5)"
+            >
+                <stop offset="0" stop-color="#336699"></stop>
+                <stop offset=".3" stop-color="#336699" stop-opacity=".9"></stop>
+                <stop offset=".6" stop-color="#336699" stop-opacity=".6"></stop>
+                <stop offset=".8" stop-color="#336699" stop-opacity=".3"></stop>
+                <stop offset="1" stop-color="#336699" stop-opacity="0"></stop>
+            </radialGradient>
+            <circle
+                transform-origin="center"
+                fill="none"
+                stroke="url(#a12)"
+                stroke-width="15"
+                stroke-linecap="round"
+                stroke-dasharray="200 1000"
+                stroke-dashoffset="0"
+                cx="100"
+                cy="100"
+                r="70"
+            >
+                <animateTransform
+                    type="rotate"
+                    attributeName="transform"
+                    calcMode="spline"
+                    dur="2"
+                    values="360;0"
+                    keyTimes="0;1"
+                    keySplines="0 0 1 1"
+                    repeatCount="indefinite"
+                ></animateTransform>
+            </circle>
+            <circle
+                transform-origin="center"
+                fill="none"
+                opacity=".2"
+                stroke="#336699"
+                stroke-width="15"
+                stroke-linecap="round"
+                cx="100"
+                cy="100"
+                r="70"
+            ></circle>
+        </svg>
+        <div class="right">
+            <div>
+                <v-breadcrumbs>
+                    <v-breadcrumbs-item
+                        @click="$router.push('/ClassRoom')"
+                        link
+                    >
+                        <div>الفصول الدراسية</div>
+                        <font-awesome-icon :icon="['fas', 'school']" />
+                    </v-breadcrumbs-item>
+                    <v-breadcrumbs-divider />
+                    <v-breadcrumbs-item>{{ year }}</v-breadcrumbs-item>
+                </v-breadcrumbs>
+            </div>
+            <div class="left">
+                <img
+                    src="../assets/class/search.png"
+                    alt=""
+                    @click="dialog_7 = true"
+                    class="pluse icon"
+                />
+                <img
+                    src="../assets/top_board/filter.svg"
+                    alt=""
+                    class="pluse icon"
+                    @click="dialogFilter = true"
+                />
+                <img
+                    src="../assets/class/square.png"
+                    alt=""
+                    @click="dialog = true"
+                    class="pluse icon"
+                    v-tooltip="add"
+                />
+            </div>
+        </div>
         <v-container>
-            <v-row>
-                <v-col>
-                    <div class="ser">
-                        <div class="right">
-                            <div>{{ year }}</div>
-                        </div>
-                        <div
-                            class="left"
-                            style="
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                gap: 20px;
-                            "
-                        >
-                            <font-awesome-icon
-                                :icon="['fas', 'filter']"
-                                style="cursor: pointer"
-                                @click="dialogFilter = true"
+            <v-dialog v-model="dialog_7" width="90%">
+                <div class="search">
+                    <div class="head">
+                        <div>البحث</div>
+                        <font-awesome-icon
+                            :icon="['fas', 'xmark']"
+                            @click="dialog_7 = false"
+                        />
+                    </div>
+                    <div class="body">
+                        <div class="input_container">
+                            <input
+                                type="text"
+                                v-model="searchQuery"
+                                @input="searchStudent"
+                                placeholder="ادخل إسم الطالب"
                             />
+
                             <font-awesome-icon
-                                :icon="['fas', 'plus']"
-                                @click="dialog = true"
-                                style="cursor: pointer"
-                                v-tooltip="add"
+                                :icon="['fas', 'magnifying-glass']"
+                                @click="
+                                    searchQuery === ''
+                                        ? (dialog_7 = true)
+                                        : (dialog_7 = false)
+                                "
                             />
                         </div>
                     </div>
+                </div>
+            </v-dialog>
+            <v-row>
+                <v-col>
                     <v-dialog v-model="dialog" width="90%">
-                        <v-card width="100%" class="popup">
-                            <v-card-title
-                                class="d-flex justify-space-between align-center"
-                            >
-                                <div
-                                    class="text-h4 ps-2"
-                                    style="color: var(--main-color)"
-                                >
-                                    إضافة
-                                </div>
-                                <v-btn
-                                    style="color: var(--main-color)"
-                                    icon="mdi-close"
-                                    variant="text"
-                                    @click="dialog = false"
-                                ></v-btn>
-                            </v-card-title>
-                            <div class="cards mb-4" style="padding: 10px">
-                                <v-row
-                                    style="
-                                        display: flex;
-                                        justify-content: space-around;
-                                        align-items: center;
-                                    "
-                                    class="mb-4"
-                                >
-                                    <v-card
-                                        style="
-                                            background-color: var(
-                                                --secound-color
-                                            ) !important;
-                                            width: 30% !important;
-                                        "
-                                        class="card text-center mt-3"
-                                        prepend-icon="mdi-book-open-variant"
-                                        link
-                                        @click="subject = true"
-                                    >
-                                        <v-card-title>إضافة مواد</v-card-title>
-                                    </v-card>
-
-                                    <!-- v-card to open dialog -->
-                                    <v-card
-                                        style="
-                                            background-color: var(
-                                                --secound-color
-                                            ) !important;
-                                            width: 30% !important;
-                                        "
-                                        class="card text-center mt-3"
-                                        prepend-icon="mdi-account"
-                                        link
-                                        @click="openDialog"
-                                    >
-                                        <v-card-title
-                                            >إضافة جدول دراسي</v-card-title
-                                        >
-                                    </v-card>
-                                    <v-card
-                                        style="
-                                            background-color: var(
-                                                --secound-color
-                                            ) !important;
-                                            width: 30% !important;
-                                        "
-                                        class="card text-center mt-3"
-                                        prepend-icon="mdi-account"
-                                        link
-                                        @click="dialog_1 = true"
-                                    >
-                                        <v-card-title @click="dialog = false"
-                                            >إضافة إشعارات</v-card-title
-                                        >
-                                    </v-card>
-                                </v-row>
-                                <add-subject
-                                    @closeDialog="closeDialog"
-                                    :localSubject="subject"
-                                />
-                                <add-study-schedule
-                                    :year="year"
-                                    v-model="showDialog"
-                                />
-                                <v-row
-                                    style="
-                                        display: flex;
-                                        justify-content: space-around;
-                                        align-items: center;
-                                    "
-                                >
-                                    <v-card
-                                        style="
-                                            background-color: var(
-                                                --secound-color
-                                            ) !important;
-                                        "
-                                        class="card text-center mt-3"
-                                        prepend-icon="mdi-newspaper-variant-multiple-outline"
-                                        @click="showAddStudentDialog"
-                                        width="30%"
-                                    >
-                                        <v-card-title @click="dialog = false"
-                                            >إضافة بيانات الطالب</v-card-title
-                                        >
-                                    </v-card>
-                                    <v-card
-                                        style="
-                                            background-color: var(
-                                                --secound-color
-                                            ) !important;
-                                        "
-                                        class="card text-center mt-3"
-                                        prepend-icon="mdi-image"
-                                        link
-                                        @click="dialog_2 = true"
-                                        width="30%"
-                                    >
-                                        <v-card-title @click="dialog = false"
-                                            >إضافة الصور</v-card-title
-                                        >
-                                    </v-card>
-                                    <!--Bubble sheet -->
-                                    <v-card
-                                        style="
-                                            background-color: var(
-                                                --secound-color
-                                            ) !important;
-                                            width: 30% !important;
-                                        "
-                                        class="card text-center mt-3"
-                                        prepend-icon="mdi-help-circle-outline"
-                                        link
-                                        @click="main_bubble = true"
-                                    >
-                                        <v-card-title @click="dialog = false"
-                                            >إضافة أختبارات</v-card-title
-                                        >
-                                    </v-card>
-                                </v-row>
-                                <v-row>
-                                    <v-col clos="4"
-                                        ><v-card
-                                            style="
-                                                background-color: var(
-                                                    --secound-color
-                                                ) !important;
-                                            "
-                                            class="card text-center mt-3"
-                                            prepend-icon="mdi-newspaper-variant-multiple-outline"
-                                            width="100%"
-                                            @click="openDialog2"
-                                        >
-                                            <v-card-title
-                                                >إضافة الخطه
-                                                الاسبوعيه</v-card-title
-                                            >
-                                        </v-card></v-col
-                                    >
-                                    <v-col cols="4">
-                                        <v-card
-                                            style="
-                                                background-color: var(
-                                                    --secound-color
-                                                ) !important;
-                                            "
-                                            class="card text-center mt-3"
-                                            prepend-icon="mdi-newspaper-variant-multiple-outline"
-                                            width="100%"
-                                            @click="openDialogq"
-                                        >
-                                            <v-card-title
-                                                >إضافة محتوي
-                                                تعليمي</v-card-title
-                                            >
-                                        </v-card>
-                                    </v-col>
-                                    <EducationalContentDialog
-                                        :year="year"
-                                        v-model="dialogq"
+                        <div class="search">
+                            <div class="head">
+                                <div>
+                                    <font-awesome-icon
+                                        :icon="['fas', 'gear']"
                                     />
-                                </v-row>
-                                <weeklyPlan
-                                    v-model="showDialog2"
-                                    :year="year"
+                                    <div>الإعدادات</div>
+                                </div>
+                                <font-awesome-icon
+                                    :icon="['fas', 'xmark']"
+                                    @click="dialog = false"
                                 />
                             </div>
-                        </v-card>
+                            <div class="boxes">
+                                <div class="box" link @click="subject = true">
+                                    <img
+                                        src="../assets/class/book-stack.png"
+                                        alt=""
+                                    />
+                                    <div>المواد الدراسية</div>
+                                </div>
+                                <div class="box" @click="openDialog">
+                                    <img
+                                        src="../assets/class/schedule.png"
+                                        alt=""
+                                    />
+                                    <div>الجداول الدراسية</div>
+                                </div>
+                                <div class="box" @click="dialog_1 = true">
+                                    <img
+                                        src="../assets/class/notification.png"
+                                        alt=""
+                                    />
+                                    <div>الإشعارات</div>
+                                </div>
+                                <div class="box" @click="showAddStudentDialog">
+                                    <img
+                                        src="../assets/class/student.png"
+                                        alt=""
+                                    />
+                                    <div>طالب جديد</div>
+                                </div>
+                                <div class="box" @click="dialog_2 = true">
+                                    <img
+                                        src="../assets/class/picture.png"
+                                        alt=""
+                                    />
+                                    <div>معرض الصور</div>
+                                </div>
+                                <div class="box" @click="main_bubble = true">
+                                    <img
+                                        src="../assets/class/exam.png"
+                                        alt=""
+                                    />
+                                    <div>الإختبارت الأونلاين</div>
+                                </div>
+                                <div class="box" @click="openDialog2">
+                                    <img
+                                        src="../assets/class/plan.png"
+                                        alt=""
+                                    />
+                                    <div>الخطط الأسبوعية</div>
+                                </div>
+                                <div class="box" @click="openDialogq">
+                                    <img
+                                        src="../assets/class/learning.png"
+                                        alt=""
+                                    />
+                                    <div>المحتوي التعليمي</div>
+                                </div>
+                            </div>
+                        </div>
                     </v-dialog>
+
+                    <add-subject
+                        @closeDialog="closeDialog"
+                        :localSubject="subject"
+                    />
+                    <add-study-schedule :year="year" v-model="showDialog" />
+                    <EducationalContentDialog :year="year" v-model="dialogq" />
+
+                    <weeklyPlan v-model="showDialog2" :year="year" />
+
                     <v-dialog v-model="dialog_1" max-width="90%">
                         <v-card style="padding: 30px">
                             <div
@@ -927,7 +923,7 @@
                                                                     newTest.className
                                                                 "
                                                                 :items="
-                                                                    classItems
+                                                                    all_classes
                                                                 "
                                                                 label="اسم الفصل"
                                                                 required
@@ -1081,116 +1077,92 @@
                 {{ snackbar.message }}
                 <v-btn text @click="snackbar.visible = false">Close</v-btn>
             </v-snackbar>
-            <v-row>
-                <v-col>
-                    <h3
-                        v-if="isSortedAscending"
-                        style="color: rgba(33, 150, 243, 0.768627451)"
-                    >
-                        نوع الفلتر :
-                        {{ isSortedAscending ? " ابجدي" : "" }}
-                    </h3>
-                    <h3
-                        v-if="paymentSortActive"
-                        style="color: rgba(33, 150, 243, 0.768627451)"
-                    >
-                        نوع الفلتر :
-                        {{ paymentSortActive ? "حسب المدفوعات" : "" }}
-                    </h3>
-                    <!-- <h3
-                        v-if="filtersy.byGrades"
-                        style="color: rgba(33, 150, 243, 0.768627451)"
-                    >
-                        نوع الفلتر :
-                        {{ filtersy.byGrades ? filtersy.byGrades : "" }}
-                    </h3> -->
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col cols="12" md="4" sm="6">
-                    <v-btn
-                        :class="{ active: activeButton === 'الكل' }"
-                        :style="buttonStyle('الكل')"
-                        rounded="xl"
-                        size="x-large"
-                        block
-                        @click="updateSection('الكل')"
-                    >
-                        الكل
-                    </v-btn>
-                </v-col>
-                <v-col cols="12" md="4" sm="6">
-                    <v-btn
-                        :class="{ active: activeButton === 'عربي' }"
-                        :style="buttonStyle('عربي')"
-                        rounded="xl"
-                        size="x-large"
-                        block
-                        @click="updateSection('عربي')"
-                    >
-                        عربي
-                    </v-btn>
-                </v-col>
-                <v-col cols="12" md="4" sm="6">
-                    <v-btn
-                        :class="{ active: activeButton === 'لغات' }"
-                        :style="buttonStyle('لغات')"
-                        rounded="xl"
-                        size="x-large"
-                        block
-                        @click="updateSection('لغات')"
-                    >
-                        لغات
-                    </v-btn>
-                </v-col>
-            </v-row>
 
-            <v-dialog
-                v-model="dialogFilter"
-                max-width="600px"
-                class="custom-dialog"
-            >
-                <transition name="fade">
-                    <v-card>
-                        <v-card-title class="headline">
-                            فلتر الطلاب
-                        </v-card-title>
-                        <v-card-text>
-                            <!-- Filter Options -->
-                            <v-form>
-                                <!-- Alphabetical Order Toggle -->
-                                <v-row class="mb-3">
-                                    <v-col>
-                                        <v-switch
-                                            v-model="paymentSortActive"
-                                            label="اعلي المدفوعات"
-                                            :style="{
-                                                color: paymentSortActive
-                                                    ? 'green'
-                                                    : '',
-                                            }"
-                                            @change="handlePaymentSortChange"
-                                            class="filter-switch"
-                                        />
-                                    </v-col>
-                                </v-row>
+            <ul class="show_details">
+                <li v-if="selectedClassj">
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>فصل {{ selectedClassj }}</div>
+                </li>
+                <li v-if="filtersy.byGrades">
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>نتائج {{ filtersy.byGrades }}</div>
+                </li>
+                <li v-if="paymentSortActive">
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>ترتيب حسب المدفوعات</div>
+                </li>
+                <li v-if="filteredStudentsCount">
+                    <font-awesome-icon :icon="['fas', 'filter']" />
+                    <div>نتيجة الفلتر: {{ filteredStudentsCount }}</div>
+                </li>
+            </ul>
 
-                                <!-- Sort by Grades Select -->
-                                <v-row class="mb-3">
-                                    <v-col cols="12">
-                                        <v-select
-                                            v-model="filtersy.byGrades"
-                                            :items="gradeOptions"
-                                            label="ترتيب حسب الدرجات"
-                                            outlined
-                                            hide-details
-                                        ></v-select>
-                                    </v-col>
-                                </v-row>
-                            </v-form>
-                        </v-card-text>
-                    </v-card>
-                </transition>
+            <v-dialog v-model="dialogFilter" width="90%">
+                <div class="filter">
+                    <div class="head">
+                        <div>
+                            <font-awesome-icon :icon="['fas', 'filter']" />
+                            <div>الفلتر</div>
+                        </div>
+                        <font-awesome-icon
+                            :icon="['fas', 'xmark']"
+                            @click="dialogFilter = false"
+                        />
+                    </div>
+
+                    <div class="body">
+                        <div>
+                            <v-switch
+                                v-model="paymentSortActive"
+                                label="ترتيب حسب المدفوعات"
+                                :style="{
+                                    color: paymentSortActive
+                                        ? 'var(--main-color)'
+                                        : '',
+                                }"
+                                style="
+                                    font-weight: bold;
+                                    background: whitesmoke;
+                                    margin: 10px 0;
+                                    border-radius: 5px;
+                                    padding: 0 10px;
+                                "
+                                @blur="handlePaymentSortChange"
+                                class="filter-switch"
+                                color="var(--main-color)"
+                                hide-details
+                            ></v-switch>
+                        </div>
+                        <div>
+                            <v-select
+                                v-model="filtersy.byGrades"
+                                :items="gradeOptions"
+                                label="ترتيب حسب النتائج"
+                                outlined
+                                hide-details
+                            ></v-select>
+                        </div>
+                        <div>
+                            <v-select
+                                v-model="selectedClassj"
+                                :items="all_classes"
+                                label="اختر الفصل الدراسي"
+                                outlined
+                                hide-details
+                            ></v-select>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <div @click="applyFilters">
+                            <font-awesome-icon :icon="['fas', 'filter']" />
+                            <div>تطبيق الفلتر</div>
+                        </div>
+                        <div @click="resetFilters">
+                            <font-awesome-icon :icon="['fas', 'retweet']" />
+                            <div>إعادة تعيين</div>
+                        </div>
+                    </div>
+                </div>
             </v-dialog>
         </v-container>
         <StudentList
@@ -1198,9 +1170,12 @@
             :sortStudents="sortStudentsByYearAndAlphabetically"
             :selectedSection="selectedSection"
             :isSortedAscending="isSortedAscending"
+            :selectedClassj="selectedClassj"
             :paymentSortActive="paymentSortActive"
             :gradeSortActive="filtersy.byGrades"
             :gradeOptions="gradeOptions"
+            :filteredStudentList="students"
+            @updateFilteredCount="updateFilteredCount"
         />
         <v-dialog
             v-model="showDeleteDialog"
@@ -1307,10 +1282,12 @@ export default {
             questions: [],
             main_bubble: false,
             paymentSortActive: false,
+            selectedClassj: null,
             activeButton: "الكل",
             all_classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
             section: ["عربي", "لغات"],
             selectedSection: "الكل",
+            dialog_7: false,
             dialog_6: false,
             showDialog: false,
             showDialog2: false,
@@ -1356,6 +1333,7 @@ export default {
 
             sortActive: false, // متغير لتتبع حالة الترتيب
             dialog: false,
+            dialog_1: false,
             newNotification: {
                 NoticeTitle: "",
                 theDescription: "",
@@ -1367,7 +1345,7 @@ export default {
             students_class: [],
             searchQuery: "",
             dialogAddPhoto: false,
-            dialog_1: false,
+
             dialog_bubble: false,
             dialog_2: false,
             dialogAddNotice: false,
@@ -1385,7 +1363,7 @@ export default {
             },
 
             progress: 0,
-            selectedClass: [],
+            // selectedClass: [],
             students: [],
             classes: [],
             AddPhoto: {
@@ -1426,41 +1404,6 @@ export default {
             return this.class_rooms.filter(
                 (classs) => classs.grade === this.year
             );
-        },
-        classItems() {
-            // Generate the class items based on the selected grade
-            switch (this.year) {
-                case "مرحلة رياض الأطفال الاولي":
-                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
-                case "مرحلة رياض الأطفال الثانية":
-                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
-                case "الصف الأول الابتدائي":
-                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
-                case "الصف الثاني الابتدائي":
-                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
-                case "الصف الثالث الابتدائي":
-                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
-                case "الصف الرابع الابتدائي":
-                    return ["4/1", "4/2", "4/3", "4/4", "4/5", "4/6"];
-                case "الصف الخامس الابتدائي":
-                    return ["5/1", "5/2", "5/3", "5/4", "5/5", "5/6"];
-                case "الصف السادس الابتدائي":
-                    return ["6/1", "6/2", "6/3", "6/4", "6/5", "6/6"];
-                case "الصف الأول الإعدادي":
-                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
-                case "الصف الثاني الإعدادي":
-                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
-                case "الصف الثالث الإعدادي":
-                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
-                case "الصف الأول الثانوي":
-                    return ["1/1", "1/2", "1/3", "1/4", "1/5", "1/6"];
-                case "الصف الثاني الثانوي":
-                    return ["2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
-                case "الصف الثالث الثانوي":
-                    return ["3/1", "3/2", "3/3", "3/4", "3/5", "3/6"];
-                default:
-                    return [];
-            }
         },
     },
     methods: {
@@ -1897,11 +1840,7 @@ export default {
                 this.filtersy.byGrades = null;
             }
         },
-        applyFilters() {
-            // Handle filter logic here
-            console.log("Filters applied:", this.filters);
-            this.dialogFilter = false;
-        },
+
         async fetchClassRooms() {
             try {
                 const querySnapshot = await getDocs(
@@ -2009,9 +1948,9 @@ export default {
                 console.error("Error editing notification:", error);
             }
         },
-        selectClass(classRoom) {
-            this.selectedClass = classRoom;
-        },
+        // selectClass(classRoom) {
+        //     this.selectedClass = classRoom;
+        // },
         closeNotificationDialogs() {
             this.editNotificationDialog = false;
         },
@@ -2084,11 +2023,61 @@ export default {
                 console.error("Error deleting photo:", error);
             }
         },
+        applyFilters() {
+            // Trigger sorting or filtering logic based on selected options
+            this.sortStudentsByYearAndAlphabetically();
+            // Close the filter dialog
+            this.dialogFilter = false;
+        },
+        resetFilters() {
+            // Reset all filter-related data properties
+            this.paymentSortActive = false;
+            this.filtersy.byGrades = null;
+            this.selectedClassj = null;
+            // Optionally, reset the filtered student list
+            this.sortStudentsByYearAndAlphabetically();
+        },
+        updateFilteredCount(count) {
+            this.filteredStudentsCount = count;
+        },
+        async searchStudent() {
+            try {
+                const trimmedQuery = this.searchQuery.trim().toLowerCase();
+                if (!trimmedQuery) {
+                    const querySnapshot = await getDocs(
+                        collection(db, "students")
+                    );
+                    this.students = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                        showDetails: false,
+                    }));
+                } else {
+                    const querySnapshot = await getDocs(
+                        collection(db, "students")
+                    );
+                    this.students = querySnapshot.docs
+                        .map((doc) => ({
+                            id: doc.id,
+                            ...doc.data(),
+                            showDetails: false,
+                        }))
+                        .filter((student) =>
+                            student.student_name
+                                .toLowerCase()
+                                .includes(trimmedQuery)
+                        );
+                }
+            } catch (error) {
+                console.error("Error searching students:", error);
+            }
+        },
     },
+
     async mounted() {
         await this.fetchClassRooms();
-        console.log(this.filteredClasses);
         this.fetchClassRooms();
+        this.searchStudent();
     },
     created() {
         this.loadQuestions();
@@ -2124,6 +2113,7 @@ form {
 .v-dialog > .v-overlay__content > form > .v-card {
     padding: 35px !important;
 }
+
 .my-custom-btn {
     font-size: 16px; /* حجم الخط */
     padding: 10px 20px; /* حشوة الزر */
@@ -2156,5 +2146,534 @@ form {
 /* تنسيق نافذة التأكيد */
 .v-dialog__content {
     padding: 20px;
+}
+
+.admin-card {
+    padding: 68px;
+    background-color: #2196f333;
+}
+.right {
+    width: 90% !important;
+    margin: auto;
+    font-weight: bold;
+    font-size: 20px;
+    border-bottom: 5px solid var(--secound-color);
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .v-breadcrumbs-item:first-child {
+        color: var(--main-color);
+        cursor: pointer;
+        font-size: 24px;
+    }
+    .v-breadcrumbs {
+        padding: 16px 0;
+    }
+}
+.left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.v-container {
+    margin: 20px auto !important;
+    flex-wrap: wrap;
+    padding: 0;
+    justify-content: flex-start !important;
+    gap: 40px;
+}
+.card {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--main-color);
+    font-weight: bold;
+    padding: 20px;
+    text-align: center;
+}
+.feat {
+    width: 24% !important;
+    box-shadow: 0 0 10px #ddd;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    & > div {
+        width: 100%;
+        position: relative;
+    }
+    .Top {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 250px;
+        .v-img {
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
+        }
+        svg {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 15px;
+            height: 15px;
+            padding: 6px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #fff;
+            z-index: 100000000000;
+            background: var(--main-color);
+            &:first-child {
+                left: 40px;
+            }
+        }
+    }
+    .Bottom {
+        padding: 10px;
+        .title {
+            font-size: 20px;
+            color: var(--main-color);
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .time {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--therd-color);
+            font-weight: bold;
+            margin-bottom: 20px;
+            position: relative;
+            font-size: 14px;
+            &::before {
+                content: "";
+                position: absolute;
+                bottom: -10px;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: var(--secound-color);
+            }
+        }
+        .description {
+            font-weight: bold;
+            color: var(--therd-color);
+        }
+    }
+    .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        margin-bottom: 15px;
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            height: 3px;
+            width: 100%;
+            background: var(--secound-color);
+        }
+        & > div {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            .number {
+                background: var(--main-color);
+                color: #fff;
+                border-radius: 5px;
+                font-weight: bold;
+                font-size: 18px;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .name {
+                font-size: 20px;
+                color: var(--main-color);
+                font-weight: bold;
+            }
+            svg {
+                color: var(--main-color);
+                font-size: 20px;
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--therd-color);
+                }
+            }
+        }
+    }
+    .body {
+        & > div {
+            font-weight: bold;
+            font-size: 19px;
+            color: var(--therd-color);
+            margin: 20px 0 5px;
+        }
+        ul {
+            color: var(--therd-color);
+            font-weight: bold;
+            font-size: 16px;
+            li {
+                list-style-type: square;
+                list-style-position: inside;
+            }
+        }
+    }
+    .footer {
+        .show_password {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            background: var(--main-color);
+            width: 100%;
+            padding: 10px;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            &:hover {
+                background-color: var(--therd-color);
+            }
+        }
+    }
+}
+.v-card.v-theme--light.v-card--density-default.v-card--variant-elevated {
+    .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 10px 0;
+        font-size: 23px;
+        color: var(--main-color);
+        font-weight: bold;
+        position: relative;
+        margin-bottom: 20px;
+        svg {
+            cursor: pointer;
+            padding: 10px;
+        }
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            height: 4px;
+            width: 95%;
+            background: var(--secound-color);
+            transform: translateX(-50%);
+        }
+    }
+    .body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        color: var(--therd-color);
+        background: var(--secound-color);
+        margin: 0 10px 10px;
+        border-radius: 5px;
+        svg {
+            color: var(--main-color);
+            font-size: 18px;
+            cursor: pointer;
+        }
+    }
+}
+img.pluse {
+    cursor: pointer;
+    width: 30px;
+    &:hover {
+        opacity: 0.7;
+    }
+    &:first-child {
+        transform: rotateY(180deg);
+    }
+    // &:nth-child(2) {
+    // }
+}
+.visible {
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.popup .title {
+    padding: 20px 20px 0 !important;
+    font-size: 23px;
+    font-weight: bold;
+    color: var(--main-color);
+    position: relative;
+    margin-bottom: 15px;
+    &::before {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        height: 3px;
+        width: calc(100% - 40px);
+        background: var(--secound-color);
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+.v-btn--icon.v-btn--density-default {
+    color: var(--main-color);
+    width: auto;
+    height: auto;
+    box-shadow: none;
+    &:hover {
+        background: #fff;
+    }
+}
+svg {
+    cursor: pointer;
+}
+.search {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    overflow: auto;
+    .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        margin-bottom: 15px;
+        color: var(--main-color);
+        font-weight: bold;
+        font-size: 20px;
+        div {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            height: 3px;
+            width: 100%;
+            background: var(--secound-color);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+    .body {
+        .input_container {
+            width: 100%;
+            position: relative;
+            input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid var(--secound-color);
+                margin: 10px 0;
+                border-radius: 5px;
+            }
+            svg {
+                position: absolute;
+                left: 30px;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                background: var(--main-color);
+                padding: 5px 10px;
+                border-radius: 5px;
+                color: #fff;
+            }
+        }
+    }
+    .boxes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 13px;
+        margin-top: 35px;
+
+        .box {
+            flex-grow: 1;
+            width: 24%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            &:hover {
+                background: #33669929;
+            }
+            img {
+                height: 50px;
+            }
+            div {
+                font-size: 18px;
+                font-weight: bold;
+                color: var(--main-color);
+            }
+        }
+    }
+}
+.filter {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        margin-bottom: 30px;
+        color: var(--main-color);
+        font-weight: bold;
+        font-size: 20px;
+        div {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            height: 3px;
+            width: 100%;
+            background: var(--secound-color);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+    .body {
+        & > div {
+            margin-top: 15px;
+        }
+        .v-switch .v-label {
+            font-weight: bold;
+        }
+        .filter-switch {
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            background-color: whitesmoke;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .switch-input {
+            display: none;
+        }
+
+        .switch-label {
+            cursor: pointer;
+            color: var(--main-color);
+        }
+
+        .switch-input:checked + .switch-label {
+            color: var(--main-color);
+        }
+    }
+    .footer {
+        & > div {
+            display: flex;
+            align-items: center;
+            height: 40px;
+            background: var(--main-color);
+            color: #fff;
+            justify-content: center;
+            gap: 5px;
+            font-weight: bold;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+            border: 1px solid;
+            transition: 0.3s;
+            &:last-child {
+                background: #fff;
+                color: var(--main-color);
+                border-color: var(--main-color);
+            }
+            &:hover {
+                background: var(--main-color);
+                color: #fff;
+            }
+        }
+    }
+}
+.v-breadcrumbs-item {
+    svg {
+        display: none;
+    }
+}
+@media (max-width: 700px) {
+    .v-breadcrumbs-item {
+        svg {
+            display: flex;
+        }
+        div {
+            display: none;
+        }
+    }
+    .search .boxes {
+        gap: 10px;
+        .box {
+            width: 48%;
+            text-align: center;
+            div {
+                font-size: 14px;
+            }
+        }
+    }
+    .feat {
+        width: 100% !important;
+    }
+    .right {
+        flex-direction: column;
+        .left {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 15px;
+            gap: 25px;
+        }
+    }
+}
+
+@media (min-width: 700px) and (max-width: 950px) {
+    .feat {
+        width: 47% !important;
+    }
+}
+ul.show_details {
+    color: var(--therd-color);
+    font-weight: bold;
+    font-size: 16px;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+
+    li {
+        list-style-type: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--secound-color);
+        padding: 10px;
+        border-radius: 5px;
+    }
 }
 </style>

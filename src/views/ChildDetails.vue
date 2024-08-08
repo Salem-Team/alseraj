@@ -547,23 +547,16 @@
                                                                 }}
                                                             </div>
                                                             <div>
-<<<<<<< HEAD
-                                                                الفصل :
-=======
                                                                 القسم :
->>>>>>> e5f1ead0e1ca554c7c8f223f2916b2dafb86c5e4
                                                                 {{
                                                                     student?.section
                                                                 }}
                                                             </div>
-<<<<<<< HEAD
-=======
                                                             <div>
                                                                 {{
                                                                     selectedMonth
                                                                 }}
                                                             </div>
->>>>>>> e5f1ead0e1ca554c7c8f223f2916b2dafb86c5e4
                                                         </div>
                                                         <div
                                                             class="left"

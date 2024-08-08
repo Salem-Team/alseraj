@@ -202,8 +202,8 @@ export default {
                 this.National_id = "1210987654321";
                 this.password = "123456";
             } else if (newValue === "student") {
-                this.National_id = "111";
-                this.password = "111";
+                this.National_id = "333";
+                this.password = "123456";
             }
         },
     },

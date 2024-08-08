@@ -152,48 +152,44 @@
                                     width="30%"
                                     v-else
                                 >
-                                    <v-lazy
-                                        :min-height="200"
-                                        :options="{ threshold: 0.5 }"
-                                        transition="fade-transition"
+                                    <img
+                                        @click="dialog_6 = true"
+                                        v-if="photo.File_type == 'صورة'"
+                                        :src="photo.image"
+                                        alt=""
+                                        @click.prevent="
+                                            photos.photo_Information(photo)
+                                        "
+                                        loading="lazy"
+                                    />
+                                    <video
+                                        @click="dialog_6 = true"
+                                        v-else
+                                        controls
+                                        loading="lazy"
                                     >
-                                        <img
-                                            @click="dialog_6 = true"
-                                            v-if="photo.File_type == 'صورة'"
-                                            :src="photo.image"
-                                            alt=""
-                                            @click.prevent="
-                                                photos.photo_Information(photo)
-                                            "
+                                        <source
+                                            :src="photo.video"
+                                            type="video/mp4"
                                         />
-                                        <video
-                                            @click="dialog_6 = true"
-                                            v-else
-                                            controls
-                                        >
-                                            <source
-                                                :src="photo.video"
-                                                type="video/mp4"
-                                            />
 
-                                            Your browser does not support the
-                                            video tag.
-                                        </video>
-                                        <div class="caption">
-                                            <div class="time">
-                                                <font-awesome-icon
-                                                    :icon="['fas', 'clock']"
-                                                />
-                                                <div>
-                                                    {{
-                                                        photo.time
-                                                            .toDate()
-                                                            .toLocaleString()
-                                                    }}
-                                                </div>
+                                        Your browser does not support the video
+                                        tag.
+                                    </video>
+                                    <div class="caption">
+                                        <div class="time">
+                                            <font-awesome-icon
+                                                :icon="['fas', 'clock']"
+                                            />
+                                            <div>
+                                                {{
+                                                    photo.time
+                                                        .toDate()
+                                                        .toLocaleString()
+                                                }}
                                             </div>
                                         </div>
-                                    </v-lazy>
+                                    </div>
                                 </div>
                             </v-tabs-window-item>
 
@@ -209,48 +205,44 @@
                                     width="30%"
                                     v-else
                                 >
-                                    <v-lazy
-                                        :min-height="200"
-                                        :options="{ threshold: 0.5 }"
-                                        transition="fade-transition"
+                                    <img
+                                        @click="dialog_6 = true"
+                                        v-if="photo.File_type == 'صورة'"
+                                        :src="photo.image"
+                                        alt=""
+                                        @click.prevent="
+                                            photos.photo_Information(photo)
+                                        "
+                                        loading="lazy"
+                                    />
+                                    <video
+                                        @click="dialog_6 = true"
+                                        v-else
+                                        controls
+                                        loading="lazy"
                                     >
-                                        <img
-                                            @click="dialog_6 = true"
-                                            v-if="photo.File_type == 'صورة'"
-                                            :src="photo.image"
-                                            alt=""
-                                            @click.prevent="
-                                                photos.photo_Information(photo)
-                                            "
+                                        <source
+                                            :src="photo.video"
+                                            type="video/mp4"
                                         />
-                                        <video
-                                            @click="dialog_6 = true"
-                                            v-else
-                                            controls
-                                        >
-                                            <source
-                                                :src="photo.video"
-                                                type="video/mp4"
-                                            />
 
-                                            Your browser does not support the
-                                            video tag.
-                                        </video>
-                                        <div class="caption">
-                                            <div class="time">
-                                                <font-awesome-icon
-                                                    :icon="['fas', 'clock']"
-                                                />
-                                                <div>
-                                                    {{
-                                                        photo.time
-                                                            .toDate()
-                                                            .toLocaleString()
-                                                    }}
-                                                </div>
+                                        Your browser does not support the video
+                                        tag.
+                                    </video>
+                                    <div class="caption">
+                                        <div class="time">
+                                            <font-awesome-icon
+                                                :icon="['fas', 'clock']"
+                                            />
+                                            <div>
+                                                {{
+                                                    photo.time
+                                                        .toDate()
+                                                        .toLocaleString()
+                                                }}
                                             </div>
                                         </div>
-                                    </v-lazy>
+                                    </div>
                                 </div>
                             </v-tabs-window-item>
                             <v-tabs-window-item value="news">
@@ -265,48 +257,44 @@
                                     :key="photo.id"
                                     v-else
                                 >
-                                    <v-lazy
-                                        :min-height="200"
-                                        :options="{ threshold: 0.5 }"
-                                        transition="fade-transition"
+                                    <img
+                                        @click="dialog_6 = true"
+                                        v-if="photo.File_type == 'صورة'"
+                                        :src="photo.image"
+                                        alt=""
+                                        @click.prevent="
+                                            photos.photo_Information(photo)
+                                        "
+                                        loading="lazy"
+                                    />
+                                    <video
+                                        @click="dialog_6 = true"
+                                        v-else
+                                        controls
+                                        loading="lazy"
                                     >
-                                        <img
-                                            @click="dialog_6 = true"
-                                            v-if="photo.File_type == 'صورة'"
-                                            :src="photo.image"
-                                            alt=""
-                                            @click.prevent="
-                                                photos.photo_Information(photo)
-                                            "
+                                        <source
+                                            :src="photo.video"
+                                            type="video/mp4"
                                         />
-                                        <video
-                                            @click="dialog_6 = true"
-                                            v-else
-                                            controls
-                                        >
-                                            <source
-                                                :src="photo.video"
-                                                type="video/mp4"
-                                            />
 
-                                            Your browser does not support the
-                                            video tag.
-                                        </video>
-                                        <div class="caption">
-                                            <div class="time">
-                                                <font-awesome-icon
-                                                    :icon="['fas', 'clock']"
-                                                />
-                                                <div>
-                                                    {{
-                                                        photo.time
-                                                            .toDate()
-                                                            .toLocaleString()
-                                                    }}
-                                                </div>
+                                        Your browser does not support the video
+                                        tag.
+                                    </video>
+                                    <div class="caption">
+                                        <div class="time">
+                                            <font-awesome-icon
+                                                :icon="['fas', 'clock']"
+                                            />
+                                            <div>
+                                                {{
+                                                    photo.time
+                                                        .toDate()
+                                                        .toLocaleString()
+                                                }}
                                             </div>
                                         </div>
-                                    </v-lazy>
+                                    </div>
                                 </div>
                             </v-tabs-window-item>
 
@@ -322,49 +310,45 @@
                                     :key="photo.id"
                                     v-else
                                 >
-                                    <v-lazy
-                                        :min-height="200"
-                                        :options="{ threshold: 0.5 }"
-                                        transition="fade-transition"
+                                    <img
+                                        @click="dialog_6 = true"
+                                        v-if="photo.File_type == 'صورة'"
+                                        :src="photo.image"
+                                        alt=""
+                                        loading="lazy"
+                                        @click.prevent="
+                                            photos.photo_Information(photo)
+                                        "
+                                        @click.="moveText()"
+                                    />
+                                    <video
+                                        @click="dialog_6 = true"
+                                        v-else
+                                        controls
+                                        loading="lazy"
                                     >
-                                        <img
-                                            @click="dialog_6 = true"
-                                            v-if="photo.File_type == 'صورة'"
-                                            :src="photo.image"
-                                            alt=""
-                                            @click.prevent="
-                                                photos.photo_Information(photo)
-                                            "
-                                            @click.="moveText()"
+                                        <source
+                                            :src="photo.video"
+                                            type="video/mp4"
                                         />
-                                        <video
-                                            @click="dialog_6 = true"
-                                            v-else
-                                            controls
-                                        >
-                                            <source
-                                                :src="photo.video"
-                                                type="video/mp4"
-                                            />
 
-                                            Your browser does not support the
-                                            video tag.
-                                        </video>
-                                        <div class="caption">
-                                            <div class="time">
-                                                <font-awesome-icon
-                                                    :icon="['fas', 'clock']"
-                                                />
-                                                <div>
-                                                    {{
-                                                        photo.time
-                                                            .toDate()
-                                                            .toLocaleString()
-                                                    }}
-                                                </div>
+                                        Your browser does not support the video
+                                        tag.
+                                    </video>
+                                    <div class="caption">
+                                        <div class="time">
+                                            <font-awesome-icon
+                                                :icon="['fas', 'clock']"
+                                            />
+                                            <div>
+                                                {{
+                                                    photo.time
+                                                        .toDate()
+                                                        .toLocaleString()
+                                                }}
                                             </div>
                                         </div>
-                                    </v-lazy>
+                                    </div>
                                 </div>
                             </v-tabs-window-item>
                             <!-- Display each photo -->
@@ -382,67 +366,54 @@
                                         ></v-btn>
                                     </div>
                                     <v-carousel
-                                        class="carousel"
-                                        :show-arrows="false"
-                                        hide-delimiter-background
-                                        color="var(--main-color)"
+                                        :show-arrows="showArrows"
+                                        hide-delimiters
+                                        height="100%"
                                     >
-                                        <div>
-                                            <v-carousel-item
-                                                class="pa-5"
-                                                v-if="
-                                                    photos.File_Information ==
-                                                    'صورة'
-                                                "
-                                                :src="photos.Photo_Information"
-                                                height="400"
-                                                cover
-                                            ></v-carousel-item>
-                                        </div>
-                                        <div>
-                                            <v-carousel-item
-                                                class="pa-5"
-                                                v-if="
-                                                    photos.File_Information ==
-                                                    'فيديو'
-                                                "
-                                                height="400"
-                                                cover
-                                            >
-                                                <video
-                                                    width="400"
-                                                    height="400"
-                                                    controls
-                                                >
-                                                    <source
-                                                        :src="
-                                                            photos.Video_Information
-                                                        "
-                                                        type="video/mp4"
-                                                    />
+                                        <!-- Make carousel content scrollable -->
+                                        <v-carousel-item
+                                            class="pa-5 text-center"
+                                            v-if="
+                                                photos.File_Information ==
+                                                'صورة'
+                                            "
+                                            :src="photos.Photo_Information"
+                                            height="400"
+                                        ></v-carousel-item>
+                                        <v-carousel-item
+                                            class="pa-5 text-center"
+                                            v-if="
+                                                photos.File_Information ==
+                                                'فيديو'
+                                            "
+                                        >
+                                            <video height="400" controls>
+                                                <source
+                                                    :src="
+                                                        photos.Video_Information
+                                                    "
+                                                    type="video/mp4"
+                                                />
 
-                                                    Your browser does not
-                                                    support the video tag.
-                                                </video></v-carousel-item
-                                            >
-                                        </div>
+                                                Your browser does not support
+                                                the video tag.
+                                            </video></v-carousel-item
+                                        >
                                         <div
                                             v-for="photo in Photos"
                                             :key="photo.id"
                                         >
                                             <v-carousel-item
                                                 v-if="photo.File_type == 'صورة'"
-                                                class="pa-5"
+                                                class="pa-5 text-center"
                                                 :src="photo.image"
                                                 height="400"
-                                                cover
                                             ></v-carousel-item>
                                             <v-carousel-item
                                                 v-if="
                                                     photo.File_type == 'فيديو'
                                                 "
                                                 class="pa-5 text-center"
-                                                cover
                                             >
                                                 <video controls height="400">
                                                     <source
@@ -455,6 +426,28 @@
                                                 </video></v-carousel-item
                                             >
                                         </div>
+                                        <template v-slot:next="{ props }">
+                                            <v-icon
+                                                style="
+                                                    text-align: center;
+                                                    color: var(--main-color);
+                                                "
+                                                @click="props.onClick"
+                                                class="pa-10 carousel-arrow next-arrow"
+                                                >mdi-menu-right</v-icon
+                                            >
+                                        </template>
+                                        <template v-slot:prev="{ props }">
+                                            <v-icon
+                                                style="
+                                                    text-align: center;
+                                                    color: var(--main-color);
+                                                "
+                                                @click="props.onClick"
+                                                class="pa-10 carousel-arrow prev-arrow"
+                                                >mdi-menu-left</v-icon
+                                            >
+                                        </template>
                                     </v-carousel></v-card
                                 ></v-dialog
                             >
@@ -537,13 +530,18 @@ export default defineComponent({
             photos,
         };
     },
+    data() {
+        return {
+            showArrows: true,
+        };
+    },
+    mounted() {
+        this.updateArrowVisibility();
+        window.addEventListener("resize", this.updateArrowVisibility);
+    },
     methods: {
-        moveText() {
-            // Assuming `.v-carousel__controls` is the correct class for the delimiter container
-            let controls = document.getElementsByClassName(
-                "v-carousel__controls"
-            );
-            controls.style.overflowX = "auto"; // Corrected syntax for setting CSS properties
+        updateArrowVisibility() {
+            this.showArrows = window.innerWidth >= 700;
         },
     },
 });
@@ -730,10 +728,21 @@ svg {
 @media (max-width: 700px) {
     .v-window-item.v-tabs-window-item {
         flex-direction: column !important;
-        gap: 15px;
+        gap: 15px !important;
         align-items: stretch !important;
         .Img_Container {
             width: 100% !important;
+            justify-content: flex-start;
+            margin-bottom: 20px !important;
+        }
+    }
+}
+
+@media (min-width: 700px) and (max-width: 950px) {
+    .v-window-item.v-tabs-window-item {
+        .Img_Container {
+            margin-bottom: 20px !important;
+            width: 47% !important;
             justify-content: flex-start;
         }
     }

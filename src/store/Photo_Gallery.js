@@ -12,7 +12,7 @@ import {
 } from "@firebase/firestore";
 import { initializeApp } from "@firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getStorage, ref, deleteObject } from "firebase/storage";
+//import { getStorage, ref, deleteObject } from "firebase/storage";
 
 const firebaseConfig = {
     // Firebase configuration object
@@ -86,40 +86,6 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                 this.File_Name = "news/";
             }
         },
-
-        // Action method to upload an image to Firebase Storage
-        // async upload_Image(file) {
-        //     if (!file) {
-        //         console.error("No file selected");
-        //         return;
-        //     }
-        //     console.log("start");
-        //     // Create a FormData object to hold the file data
-        //     const formData = new FormData();
-        //     formData.append("file", file); // Append the file with the key 'file'
-
-        //     try {
-        //         console.log("wait");
-
-        //         const response = await axios.post(
-        //             "http://localhost:3000/upload",
-        //             formData,
-        //             {
-        //                 headers: {
-        //                     "Content-Type": "multipart/form-data",
-        //                 },
-        //             }
-        //         );
-        //         console.log(
-        //             "File uploaded successfully:",
-        //             response.data.message
-        //         );
-        //         return response.data.message;
-        //     } catch (error) {
-        //         console.error("Error uploading file:", error);
-        //     }
-        //     console.log("end");
-        // },
         async uploadImage(file) {
             if (!file) {
                 console.error("No file selected");
@@ -311,7 +277,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         },
 
         // Action method to delete a photo from Firebase Storage
-        async delete_photo(image) {
+        /*async delete_photo(image) {
             const storage = getStorage();
 
             // Create a reference to the file to delete
@@ -319,20 +285,30 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
 
             // Delete the file
             deleteObject(desertRef);
+        },*/
+        async deletePhoto(photoId) {
+            try {
+                console.log("Deleting photo with ID:", photoId);
+
+                // Make a DELETE request to delete the photo
+                await axios.delete(`/uploads/${photoId}`);
+
+                console.log("Photo deleted successfully:", photoId);
+            } catch (error) {
+                console.error("Error deleting photo:", photoId);
+                throw error; // Propagate the error to handle it in the calling function
+            }
         },
 
         // Action method to delete a photo from Firestore
-        async delete_Photo(PhotoId, image) {
+        async delete_Photo(PhotoId) {
             try {
                 // Log before attempting to delete
                 console.log("Deleting Photo from Firestore:", PhotoId);
 
                 // Step 1: Delete the document from Firestore
                 await deleteDoc(doc(db, "Photos", PhotoId));
-
-                // Step 2: Delete the corresponding image from Firebase Storage
-                this.delete_photo(image);
-
+                await this.deletePhoto(PhotoId);
                 // Log after successful deletion
                 console.log(
                     "Photo deleted from Firestore successfully:",

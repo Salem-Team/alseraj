@@ -198,11 +198,21 @@
                                             <font-awesome-icon
                                                 v-if="photo.File_type == 'صورة'"
                                                 @click="photos.dialog_3 = true"
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 :icon="['fas', 'trash']"
                                             />
                                             <font-awesome-icon
                                                 v-else
                                                 @click="photos.dialog_4 = true"
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 :icon="['fas', 'trash']"
                                             />
                                         </div>
@@ -260,10 +270,20 @@
                                             <font-awesome-icon
                                                 v-if="photo.File_type == 'صورة'"
                                                 @click="photos.dialog_3 = true"
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 :icon="['fas', 'trash']"
                                             />
                                             <font-awesome-icon
                                                 v-else
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_4 = true"
                                                 :icon="['fas', 'trash']"
                                             />
@@ -321,11 +341,21 @@
                                         <div class="delete">
                                             <font-awesome-icon
                                                 v-if="photo.File_type == 'صورة'"
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_3 = true"
                                                 :icon="['fas', 'trash']"
                                             />
                                             <font-awesome-icon
                                                 v-else
+                                                @click.prevent="
+                                                    photos.photo_Information(
+                                                        photo
+                                                    )
+                                                "
                                                 @click="photos.dialog_4 = true"
                                                 :icon="['fas', 'trash']"
                                             />
@@ -387,6 +417,11 @@
                                                         photo.File_type ==
                                                         'صورة'
                                                     "
+                                                    @click.prevent="
+                                                        photos.photo_Information(
+                                                            photo
+                                                        )
+                                                    "
                                                     @click="
                                                         photos.dialog_3 = true
                                                     "
@@ -394,6 +429,11 @@
                                                 />
                                                 <font-awesome-icon
                                                     v-else
+                                                    @click.prevent="
+                                                        photos.photo_Information(
+                                                            photo
+                                                        )
+                                                    "
                                                     @click="
                                                         photos.dialog_4 = true
                                                     "
@@ -420,67 +460,54 @@
                                         ></v-btn>
                                     </div>
                                     <v-carousel
-                                        :show-arrows="false"
-                                        hide-delimiter-background
-                                        color="var(--main-color)"
-                                        style="overflow: auto"
+                                        :show-arrows="showArrows"
+                                        hide-delimiters
+                                        height="100%"
                                     >
-                                        <div>
-                                            <v-carousel-item
-                                                class="pa-5"
-                                                v-if="
-                                                    photos.File_Information ==
-                                                    'صورة'
-                                                "
-                                                :src="photos.Photo_Information"
-                                                height="400"
-                                                cover
-                                            ></v-carousel-item>
-                                        </div>
-                                        <div>
-                                            <v-carousel-item
-                                                class="pa-5"
-                                                v-if="
-                                                    photos.File_Information ==
-                                                    'فيديو'
-                                                "
-                                                height="400"
-                                                cover
-                                            >
-                                                <video
-                                                    width="400"
-                                                    height="400"
-                                                    controls
-                                                >
-                                                    <source
-                                                        :src="
-                                                            photos.Video_Information
-                                                        "
-                                                        type="video/mp4"
-                                                    />
+                                        <!-- Make carousel content scrollable -->
+                                        <v-carousel-item
+                                            class="pa-5 text-center"
+                                            v-if="
+                                                photos.File_Information ==
+                                                'صورة'
+                                            "
+                                            :src="photos.Photo_Information"
+                                            height="400"
+                                        ></v-carousel-item>
+                                        <v-carousel-item
+                                            class="pa-5 text-center"
+                                            v-if="
+                                                photos.File_Information ==
+                                                'فيديو'
+                                            "
+                                        >
+                                            <video height="400" controls>
+                                                <source
+                                                    :src="
+                                                        photos.Video_Information
+                                                    "
+                                                    type="video/mp4"
+                                                />
 
-                                                    Your browser does not
-                                                    support the video tag.
-                                                </video></v-carousel-item
-                                            >
-                                        </div>
+                                                Your browser does not support
+                                                the video tag.
+                                            </video></v-carousel-item
+                                        >
                                         <div
                                             v-for="photo in Photos"
                                             :key="photo.id"
                                         >
                                             <v-carousel-item
                                                 v-if="photo.File_type == 'صورة'"
-                                                class="pa-5"
+                                                class="pa-5 text-center"
                                                 :src="photo.image"
                                                 height="400"
-                                                cover
                                             ></v-carousel-item>
                                             <v-carousel-item
                                                 v-if="
                                                     photo.File_type == 'فيديو'
                                                 "
                                                 class="pa-5 text-center"
-                                                cover
                                             >
                                                 <video controls height="400">
                                                     <source
@@ -493,6 +520,28 @@
                                                 </video></v-carousel-item
                                             >
                                         </div>
+                                        <template v-slot:next="{ props }">
+                                            <v-icon
+                                                style="
+                                                    text-align: center;
+                                                    color: var(--main-color);
+                                                "
+                                                @click="props.onClick"
+                                                class="pa-10 carousel-arrow next-arrow"
+                                                >mdi-menu-right</v-icon
+                                            >
+                                        </template>
+                                        <template v-slot:prev="{ props }">
+                                            <v-icon
+                                                style="
+                                                    text-align: center;
+                                                    color: var(--main-color);
+                                                "
+                                                @click="props.onClick"
+                                                class="pa-10 carousel-arrow prev-arrow"
+                                                >mdi-menu-left</v-icon
+                                            >
+                                        </template>
                                     </v-carousel></v-card
                                 ></v-dialog
                             >
@@ -667,12 +716,7 @@
                         color="var(--pink-color)"
                         :loading="loading"
                         :disabled="loading"
-                        @click="
-                            photos.delete_Photo(
-                                photos.Id_Information,
-                                photos.Video_Information
-                            )
-                        "
+                        @click="photos.delete_Photo(photos.Id_Information)"
                         style="
                             color: #fff;
                             font-weight: bold;
@@ -725,12 +769,7 @@
                         color="var(--pink-color)"
                         :loading="loading"
                         :disabled="loading"
-                        @click="
-                            photos.delete_Photo(
-                                photos.Id_Information,
-                                photos.Photo_Information
-                            )
-                        "
+                        @click="photos.delete_Photo(photos.Id_Information)"
                         style="
                             color: #fff;
                             font-weight: bold;
@@ -866,36 +905,26 @@ export default defineComponent({
             news,
         };
     },
-    data: () => ({
-        length: 2,
-        onboarding: 1,
-    }),
+    data() {
+        return {
+            showArrows: true,
+        };
+    },
+    mounted() {
+        this.updateArrowVisibility();
+        window.addEventListener("resize", this.updateArrowVisibility);
+    },
+    methods: {
+        updateArrowVisibility() {
+            this.showArrows = window.innerWidth >= 700;
+        },
+    },
 });
 </script>
 <style lang="scss" scoped>
 form {
     width: 96.5%;
     margin: auto;
-}
-.feat {
-    gap: 10px;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    flex-direction: row !important;
-    .number {
-        background-color: var(--secound-color);
-        font-size: 25px;
-        font-weight: bold;
-        padding-top: 3px;
-        padding-left: 5px;
-        padding-right: 5px;
-        color: var(--main-color);
-    }
-    .title {
-        color: var(--therd-color);
-        font-weight: bold;
-    }
 }
 
 .box {
@@ -973,156 +1002,6 @@ form {
     text-align: center;
     width: 100%;
 }
-.feat {
-    width: 100%;
-    box-shadow: 0 0 10px #ddd;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    max-width: 33%;
-    & > div {
-        width: 100%;
-        position: relative;
-    }
-    .Top {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 250px;
-        .v-img {
-            border-top-right-radius: 5px;
-            border-top-left-radius: 5px;
-        }
-        svg {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            width: 15px;
-            height: 15px;
-            padding: 6px;
-            border-radius: 50%;
-            cursor: pointer;
-            color: #fff;
-            z-index: 100000000000;
-            background: var(--main-color);
-            &:first-child {
-                left: 40px;
-            }
-        }
-    }
-    .Bottom {
-        padding: 10px;
-        .title {
-            font-size: 20px;
-            color: var(--main-color);
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        .time {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--therd-color);
-            font-weight: bold;
-            margin-bottom: 20px;
-            position: relative;
-            font-size: 14px;
-            &::before {
-                content: "";
-                position: absolute;
-                bottom: -10px;
-                left: 0;
-                width: 100%;
-                height: 4px;
-                background: var(--secound-color);
-            }
-        }
-        .description {
-            font-weight: bold;
-            color: var(--therd-color);
-        }
-    }
-    .head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: relative;
-        margin-bottom: 15px;
-        &::before {
-            content: "";
-            position: absolute;
-            bottom: -15px;
-            height: 3px;
-            width: 100%;
-            background: var(--secound-color);
-        }
-        & > div {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            .number {
-                background: var(--main-color);
-                color: #fff;
-                border-radius: 5px;
-                font-weight: bold;
-                font-size: 18px;
-                width: 30px;
-                height: 30px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .name {
-                font-size: 20px;
-                color: var(--main-color);
-                font-weight: bold;
-            }
-            svg {
-                color: var(--main-color);
-                font-size: 20px;
-                cursor: pointer;
-
-                &:hover {
-                    color: var(--therd-color);
-                }
-            }
-        }
-    }
-    .body {
-        & > div {
-            font-weight: bold;
-            font-size: 19px;
-            color: var(--therd-color);
-            margin: 20px 0 5px;
-        }
-        ul {
-            color: var(--therd-color);
-            font-weight: bold;
-            font-size: 16px;
-            li {
-                list-style-type: square;
-                list-style-position: inside;
-            }
-        }
-    }
-    .footer {
-        .show_password {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            background: var(--main-color);
-            width: 100%;
-            padding: 10px;
-            color: #fff;
-            border-radius: 5px;
-            cursor: pointer;
-            &:hover {
-                background-color: var(--therd-color);
-            }
-        }
-    }
-}
 .v-card.v-theme--light.v-card--density-default.v-card--variant-elevated {
     .head {
         display: flex;
@@ -1183,8 +1062,9 @@ svg {
     flex-wrap: wrap;
     min-height: 400px;
     padding: 10px;
+    width: 100% !important;
     .Img_Container {
-        width: 32%;
+        width: 32% !important;
         padding: 15px;
         box-shadow: 0 0 10px #ddd;
         border-radius: 5px;
@@ -1221,22 +1101,26 @@ svg {
         }
     }
 }
-@media (max-width: 599px) {
-}
-@media (min-width: 600px) and (max-width: 768px) {
-}
-@media (min-width: 769px) {
-    .v-container {
-        flex-direction: row;
-        gap: 15px;
+@media (max-width: 700px) {
+    .v-window-item.v-tabs-window-item {
+        flex-direction: column !important;
+        gap: 15px !important;
         align-items: stretch !important;
+        .Img_Container {
+            width: 100% !important;
+            justify-content: flex-start;
+            margin-bottom: 20px !important;
+        }
     }
-    .card {
-        width: 32%;
-    }
-    .feat {
-        width: 32%;
-        justify-content: flex-start;
+}
+
+@media (min-width: 700px) and (max-width: 950px) {
+    .v-window-item.v-tabs-window-item {
+        .Img_Container {
+            margin-bottom: 20px !important;
+            width: 47% !important;
+            justify-content: flex-start;
+        }
     }
 }
 

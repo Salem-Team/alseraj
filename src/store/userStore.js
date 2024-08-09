@@ -5,10 +5,13 @@ export const useAuthStore = defineStore("auth", {
     state: () => ({
         user: {
             id: "",
+            email: "",
             National_id: "",
             password: "",
             userType: "",
             roles: [],
+            name: "",
+            phone: "",
         },
         loading: false,
         error: null,
@@ -31,10 +34,13 @@ export const useAuthStore = defineStore("auth", {
                     // Handle the error as needed, for example, set `this.user` to a default value or an empty object
                     this.user = {
                         id: "",
+                        email: "",
                         National_id: "",
                         password: "",
                         userType: "",
                         roles: [],
+                        name: "",
+                        phone: "",
                     };
                 }
             } else {
@@ -47,10 +53,20 @@ export const useAuthStore = defineStore("auth", {
                     userType: "",
                     roles: [],
                     name: "",
+                    phone: "",
                 };
             }
         },
-        async login(id, email, National_id, userType, roles, name, password) {
+        async login(
+            id,
+            email,
+            National_id,
+            userType,
+            roles,
+            name,
+            password,
+            phone
+        ) {
             this.loading = true;
             try {
                 // تحقق من البريد الإلكتروني وكلمة المرور
@@ -63,6 +79,7 @@ export const useAuthStore = defineStore("auth", {
                     roles,
                     name,
                     password,
+                    phone,
                 };
                 this.error = null;
                 // تخزين بيانات المستخدم في الكوكيز
@@ -84,6 +101,7 @@ export const useAuthStore = defineStore("auth", {
                 userType: "",
                 roles: [],
                 name: "",
+                phone: "",
             };
             // إزالة بيانات المستخدم من الكوكيز
             Cookies.remove("user");

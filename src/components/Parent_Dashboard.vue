@@ -1,106 +1,6 @@
 <template>
     <div class="profile-container">
         <div class="visible">
-            <svg
-                style="
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 245px;
-                "
-                v-if="loading1"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 200 200"
-            >
-                <radialGradient
-                    id="a12"
-                    cx=".66"
-                    fx=".66"
-                    cy=".3125"
-                    fy=".3125"
-                    gradientTransform="scale(1.5)"
-                >
-                    <stop offset="0" stop-color="#336699"></stop>
-                    <stop
-                        offset=".3"
-                        stop-color="#336699"
-                        stop-opacity=".9"
-                    ></stop>
-                    <stop
-                        offset=".6"
-                        stop-color="#336699"
-                        stop-opacity=".6"
-                    ></stop>
-                    <stop
-                        offset=".8"
-                        stop-color="#336699"
-                        stop-opacity=".3"
-                    ></stop>
-                    <stop
-                        offset="1"
-                        stop-color="#336699"
-                        stop-opacity="0"
-                    ></stop>
-                </radialGradient>
-                <circle
-                    transform-origin="center"
-                    fill="none"
-                    stroke="url(#a12)"
-                    stroke-width="15"
-                    stroke-linecap="round"
-                    stroke-dasharray="200 1000"
-                    stroke-dashoffset="0"
-                    cx="100"
-                    cy="100"
-                    r="70"
-                >
-                    <animateTransform
-                        type="rotate"
-                        attributeName="transform"
-                        calcMode="spline"
-                        dur="2"
-                        values="360;0"
-                        keyTimes="0;1"
-                        keySplines="0 0 1 1"
-                        repeatCount="indefinite"
-                    ></animateTransform>
-                </circle>
-                <circle
-                    transform-origin="center"
-                    fill="none"
-                    opacity=".2"
-                    stroke="#336699"
-                    stroke-width="15"
-                    stroke-linecap="round"
-                    cx="100"
-                    cy="100"
-                    r="70"
-                ></circle>
-            </svg>
-            <div class="right">
-                <div>
-                    <v-breadcrumbs>
-                        <v-breadcrumbs-item>
-                            <img
-                                src="../assets/profile/user.svg"
-                                alt=""
-                                class="pluse"
-                            />
-                            <div>الملف الشخصي</div>
-                        </v-breadcrumbs-item>
-                    </v-breadcrumbs>
-                </div>
-                <div class="left">
-                    <img
-                        src="../assets/profile/edit-info.svg"
-                        alt=""
-                        class="pluse pluse_1"
-                        @click="$router.push('/profile')"
-                    />
-                </div>
-            </div>
-
             <v-dialog v-model="dialog" max-width="500px">
                 <v-card>
                     <v-card-title>
@@ -127,11 +27,6 @@
                 </v-card>
             </v-dialog>
             <v-container class="box d-flex align-center justify-space-around">
-                <div class="hello_text">
-                    مرحبًا {{ user.name }}، نشكرك على ثقتك في معهد السراج المنير
-                    الأزهري، نتطلع سويًا لتحقيق مستقبل مشرق لأبنائنا.
-                </div>
-
                 <div class="children">
                     <div class="title">
                         <img
@@ -342,33 +237,7 @@ export default {
     padding: 68px;
     background-color: #2196f333;
 }
-.right {
-    width: 90% !important;
-    margin: auto;
-    font-weight: bold;
-    font-size: 20px;
-    border-bottom: 5px solid var(--secound-color);
-    padding: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .v-breadcrumbs-item:first-child {
-        color: var(--main-color);
-        cursor: pointer;
-        font-size: 24px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    .v-breadcrumbs {
-        padding: 16px 0;
-    }
-}
-.left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
+
 .v-container {
     margin: 20px auto !important;
     flex-wrap: wrap;
@@ -583,11 +452,7 @@ export default {
         }
     }
 }
-.hello_text {
-    font-size: 20px;
-    color: var(--therd-color);
-    font-weight: bold;
-}
+
 .form {
     display: flex;
     flex-direction: column;

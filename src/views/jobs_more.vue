@@ -1,5 +1,6 @@
 <template>
     <div>
+        <Offline_error />
         <!-- Header Section -->
         <svg
             style="
@@ -73,9 +74,9 @@
                 </v-breadcrumbs>
             </div>
         </div>
-
+        <Empty_error v-if="empty === true" :text="text0" />
         <!-- Main Content Container -->
-        <v-container>
+        <v-container v-if="(!loading1, empty === false)">
             <!-- Iterate over Jobs -->
             <div class="feat" v-for="Job in Jobs" :key="Job.id">
                 <div>
@@ -86,7 +87,9 @@
                         </div>
                         <div class="time">
                             <font-awesome-icon :icon="['fas', 'clock']" />
-                            <div>{{ Job.time.toDate().toLocaleString() }}</div>
+                            <div>
+                                {{ Job.time.toDate().toLocaleString() }}
+                            </div>
                         </div>
                     </div>
 
@@ -252,8 +255,14 @@
 import { storeToRefs } from "pinia";
 import { defineComponent } from "vue";
 import { useJobs } from "@/store/job.js";
-
+import Offline_error from "@/components/Offline_error.vue";
+import Empty_error from "@/components/Empty_error.vue";
 export default defineComponent({
+    inject: ["Emitter"],
+    components: {
+        Empty_error,
+        Offline_error,
+    },
     setup() {
         const jobs = useJobs();
         jobs.Get_data();
@@ -265,6 +274,8 @@ export default defineComponent({
             loading,
             applies,
             progress,
+            text0,
+            empty,
             Apply,
             upload_CV,
             Get_applies,
@@ -284,6 +295,8 @@ export default defineComponent({
             loading,
             applies,
             progress,
+            text0,
+            empty,
             Apply,
             upload_CV,
             Get_applies,

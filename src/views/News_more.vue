@@ -1,181 +1,181 @@
 <template>
     <div>
-        <Offline_error>
-            <template v-slot:default>
-                <!-- News Section -->
-                <svg
-                    style="
-                        position: fixed;
-                        top: 50%;
-                        left: 50%;
-                        transform: translate(-50%, -50%);
-                        width: 245px;
-                    "
-                    v-if="loading1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 200 200"
+        <Offline_error />
+        <!-- News Section -->
+        <svg
+            style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 245px;
+            "
+            v-if="loading1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 200 200"
+        >
+            <radialGradient
+                id="a12"
+                cx=".66"
+                fx=".66"
+                cy=".3125"
+                fy=".3125"
+                gradientTransform="scale(1.5)"
+            >
+                <stop offset="0" stop-color="#336699"></stop>
+                <stop offset=".3" stop-color="#336699" stop-opacity=".9"></stop>
+                <stop offset=".6" stop-color="#336699" stop-opacity=".6"></stop>
+                <stop offset=".8" stop-color="#336699" stop-opacity=".3"></stop>
+                <stop offset="1" stop-color="#336699" stop-opacity="0"></stop>
+            </radialGradient>
+            <circle
+                transform-origin="center"
+                fill="none"
+                stroke="url(#a12)"
+                stroke-width="15"
+                stroke-linecap="round"
+                stroke-dasharray="200 1000"
+                stroke-dashoffset="0"
+                cx="100"
+                cy="100"
+                r="70"
+            >
+                <animateTransform
+                    type="rotate"
+                    attributeName="transform"
+                    calcMode="spline"
+                    dur="2"
+                    values="360;0"
+                    keyTimes="0;1"
+                    keySplines="0 0 1 1"
+                    repeatCount="indefinite"
+                ></animateTransform>
+            </circle>
+            <circle
+                transform-origin="center"
+                fill="none"
+                opacity=".2"
+                stroke="#336699"
+                stroke-width="15"
+                stroke-linecap="round"
+                cx="100"
+                cy="100"
+                r="70"
+            ></circle>
+        </svg>
+        <div class="right">
+            <div>
+                <v-breadcrumbs>
+                    <v-breadcrumbs-item @click="$router.push('/')" link>
+                        الرئيسية
+                    </v-breadcrumbs-item>
+                    <v-breadcrumbs-divider />
+                    <v-breadcrumbs-item>الأخبار</v-breadcrumbs-item>
+                </v-breadcrumbs>
+            </div>
+        </div>
+        <Empty_error v-if="empty === true" :text="text0" />
+        <!-- News Cards Container -->
+        <v-container
+            class="box d-flex align-center justify-space-around"
+            v-if="(!loading1, empty === false)"
+            atyle="width:100% !important"
+        >
+            <!-- News Card Loop -->
+            <v-card
+                class="feat"
+                v-for="New in News"
+                :key="New.id"
+                width="24%"
+                @click.="news.New_Information(New)"
+                @click="dialog_6 = true"
+            >
+                <v-lazy
+                    :min-height="200"
+                    :options="{ threshold: 0.5 }"
+                    transition="fade-transition"
                 >
-                    <radialGradient
-                        id="a12"
-                        cx=".66"
-                        fx=".66"
-                        cy=".3125"
-                        fy=".3125"
-                        gradientTransform="scale(1.5)"
-                    >
-                        <stop offset="0" stop-color="#336699"></stop>
-                        <stop
-                            offset=".3"
-                            stop-color="#336699"
-                            stop-opacity=".9"
-                        ></stop>
-                        <stop
-                            offset=".6"
-                            stop-color="#336699"
-                            stop-opacity=".6"
-                        ></stop>
-                        <stop
-                            offset=".8"
-                            stop-color="#336699"
-                            stop-opacity=".3"
-                        ></stop>
-                        <stop
-                            offset="1"
-                            stop-color="#336699"
-                            stop-opacity="0"
-                        ></stop>
-                    </radialGradient>
-                    <circle
-                        transform-origin="center"
-                        fill="none"
-                        stroke="url(#a12)"
-                        stroke-width="15"
-                        stroke-linecap="round"
-                        stroke-dasharray="200 1000"
-                        stroke-dashoffset="0"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                    >
-                        <animateTransform
-                            type="rotate"
-                            attributeName="transform"
-                            calcMode="spline"
-                            dur="2"
-                            values="360;0"
-                            keyTimes="0;1"
-                            keySplines="0 0 1 1"
-                            repeatCount="indefinite"
-                        ></animateTransform>
-                    </circle>
-                    <circle
-                        transform-origin="center"
-                        fill="none"
-                        opacity=".2"
-                        stroke="#336699"
-                        stroke-width="15"
-                        stroke-linecap="round"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                    ></circle>
-                </svg>
-                <div class="right">
-                    <div>
-                        <v-breadcrumbs>
-                            <v-breadcrumbs-item @click="$router.push('/')" link>
-                                الرئيسية
-                            </v-breadcrumbs-item>
-                            <v-breadcrumbs-divider />
-                            <v-breadcrumbs-item>الأخبار</v-breadcrumbs-item>
-                        </v-breadcrumbs>
+                    <!-- Image -->
+                    <v-img :src="New.image" height="300" cover></v-img>
+                </v-lazy>
+                <!-- Title -->
+                <v-card-text
+                    class="card_title d-flex justify-center flex-wrap"
+                    style="z-index: 100"
+                >
+                    {{ New.title }}
+                </v-card-text>
+
+                <!-- Time -->
+                <v-card-subtitle style="margin-top: 20px">
+                    {{ New.time.toDate().toLocaleString() }}
+                </v-card-subtitle>
+
+                <!-- Description -->
+                <v-card-text>
+                    <div style="width: 90% !important; margin: auto">
+                        <p
+                            v-html="New.description"
+                            style="color: var(--therd-color) !important"
+                        ></p>
                     </div>
-                </div>
-                <Empty_error v-if="empty === true" :text="text0" />
-                <!-- News Cards Container -->
-                <v-container
-                    class="box d-flex align-center justify-space-around"
-                    v-if="(!loading1, empty === false)"
-                    atyle="width:100% !important"
-                >
-                    <!-- News Card Loop -->
-                    <v-card
-                        class="feat"
-                        v-for="New in News"
-                        :key="New.id"
-                        width="24%"
-                        @click.="news.New_Information(New)"
-                        @click="dialog_6 = true"
+                </v-card-text>
+            </v-card>
+            <!-- Display each photo -->
+            <v-dialog v-model="dialog_6" width="90%">
+                <v-card width="100%" class="popup">
+                    <div
+                        class="d-flex justify-space-between align-center title"
                     >
-                        <v-lazy
-                            :min-height="200"
-                            :options="{ threshold: 0.5 }"
-                            transition="fade-transition"
-                        >
-                            <!-- Image -->
-                            <v-img :src="New.image" height="300" cover></v-img>
-                        </v-lazy>
-                        <!-- Title -->
-                        <v-card-text
-                            class="card_title d-flex justify-center flex-wrap"
-                            style="z-index: 100"
-                        >
-                            {{ New.title }}
-                        </v-card-text>
-
-                        <!-- Time -->
-                        <v-card-subtitle style="margin-top: 20px">
-                            {{ New.time.toDate().toLocaleString() }}
-                        </v-card-subtitle>
-
-                        <!-- Description -->
-                        <v-card-text>
-                            <div style="width: 90% !important; margin: auto">
-                                <p
-                                    v-html="New.description"
-                                    style="color: var(--therd-color) !important"
-                                ></p>
-                            </div>
-                        </v-card-text>
-                    </v-card>
-                    <!-- Display each photo -->
-                    <v-dialog v-model="dialog_6" width="90%">
-                        <v-card width="100%" class="popup">
-                            <div
-                                class="d-flex justify-space-between align-center title"
+                        <div style="color: var(--main-color)">الصور</div>
+                        <v-btn
+                            icon="mdi-close"
+                            @click="dialog_6 = false"
+                        ></v-btn>
+                    </div>
+                    <v-carousel
+                        :show-arrows="showArrows"
+                        hide-delimiters
+                        height="100%"
+                    >
+                        <v-carousel-item
+                            class="pa-5 text-center"
+                            :src="news.Image_Information"
+                            height="400"
+                        ></v-carousel-item>
+                        <v-carousel-item
+                            class="pa-5 text-center"
+                            v-for="New in News"
+                            :key="New.id"
+                            :src="New.image"
+                            height="400"
+                        ></v-carousel-item>
+                        <template v-slot:next="{ props }">
+                            <v-icon
+                                style="
+                                    text-align: center;
+                                    color: var(--main-color);
+                                "
+                                @click="props.onClick"
+                                class="pa-10 carousel-arrow next-arrow"
+                                >mdi-menu-right</v-icon
                             >
-                                <div style="color: var(--main-color)">
-                                    الصور
-                                </div>
-                                <v-btn
-                                    icon="mdi-close"
-                                    @click="dialog_6 = false"
-                                ></v-btn>
-                            </div>
-                            <v-carousel
-                                :show-arrows="false"
-                                hide-delimiter-background
-                                color="var(--main-color)"
+                        </template>
+                        <template v-slot:prev="{ props }">
+                            <v-icon
+                                style="
+                                    text-align: center;
+                                    color: var(--main-color);
+                                "
+                                @click="props.onClick"
+                                class="pa-10 carousel-arrow prev-arrow"
+                                >mdi-menu-left</v-icon
                             >
-                                <v-carousel-item
-                                    class="pa-5"
-                                    :src="news.Image_Information"
-                                    height="400"
-                                    cover
-                                ></v-carousel-item>
-                                <v-carousel-item
-                                    class="pa-5"
-                                    v-for="New in News"
-                                    :key="New.id"
-                                    :src="New.image"
-                                    height="400"
-                                    cover
-                                ></v-carousel-item>
-                            </v-carousel> </v-card
-                    ></v-dialog>
-                </v-container>
-            </template>
-        </Offline_error>
+                        </template>
+                    </v-carousel>
+                </v-card></v-dialog
+            >
+        </v-container>
     </div>
 </template>
 
@@ -224,6 +224,20 @@ export default defineComponent({
             news,
             News,
         };
+    },
+    data() {
+        return {
+            showArrows: true,
+        };
+    },
+    mounted() {
+        this.updateArrowVisibility();
+        window.addEventListener("resize", this.updateArrowVisibility);
+    },
+    methods: {
+        updateArrowVisibility() {
+            this.showArrows = window.innerWidth >= 700;
+        },
     },
 });
 </script>

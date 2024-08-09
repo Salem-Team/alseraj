@@ -1,395 +1,422 @@
 <template>
     <div class="visible">
-        <Offline_error>
-            <template v-slot:default>
-                <svg
-                    style="
-                        position: fixed;
-                        top: 50%;
-                        left: 50%;
-                        transform: translate(-50%, -50%);
-                        width: 245px;
-                    "
-                    v-if="loading1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 200 200"
+        <Offline_error />
+        <svg
+            style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 245px;
+            "
+            v-if="loading1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 200 200"
+        >
+            <radialGradient
+                id="a12"
+                cx=".66"
+                fx=".66"
+                cy=".3125"
+                fy=".3125"
+                gradientTransform="scale(1.5)"
+            >
+                <stop offset="0" stop-color="#336699"></stop>
+                <stop offset=".3" stop-color="#336699" stop-opacity=".9"></stop>
+                <stop offset=".6" stop-color="#336699" stop-opacity=".6"></stop>
+                <stop offset=".8" stop-color="#336699" stop-opacity=".3"></stop>
+                <stop offset="1" stop-color="#336699" stop-opacity="0"></stop>
+            </radialGradient>
+            <circle
+                transform-origin="center"
+                fill="none"
+                stroke="url(#a12)"
+                stroke-width="15"
+                stroke-linecap="round"
+                stroke-dasharray="200 1000"
+                stroke-dashoffset="0"
+                cx="100"
+                cy="100"
+                r="70"
+            >
+                <animateTransform
+                    type="rotate"
+                    attributeName="transform"
+                    calcMode="spline"
+                    dur="2"
+                    values="360;0"
+                    keyTimes="0;1"
+                    keySplines="0 0 1 1"
+                    repeatCount="indefinite"
+                ></animateTransform>
+            </circle>
+            <circle
+                transform-origin="center"
+                fill="none"
+                opacity=".2"
+                stroke="#336699"
+                stroke-width="15"
+                stroke-linecap="round"
+                cx="100"
+                cy="100"
+                r="70"
+            ></circle>
+        </svg>
+        <div class="right">
+            <div>
+                <v-breadcrumbs>
+                    <v-breadcrumbs-item @click="$router.push('/admin')" link>
+                        الإشراف
+                    </v-breadcrumbs-item>
+                    <v-breadcrumbs-divider />
+                    <v-breadcrumbs-item>المعرض</v-breadcrumbs-item>
+                </v-breadcrumbs>
+            </div>
+            <div class="left">
+                <font-awesome-icon
+                    @click="dialog = true"
+                    :icon="['fas', 'plus']"
+                />
+            </div>
+        </div>
+        <v-card
+            style="
+                min-height: 400px;
+                width: 90% !important;
+                margin: 20px auto auto;
+                border: none;
+                background: none;
+                box-shadow: none;
+            "
+        >
+            <v-tabs
+                v-model="tab"
+                style="
+                    background-color: white;
+                    color: var(--main-color);
+                    font-weight: bold;
+                    width: calc(100% - 20px);
+                    margin: 0 auto;
+                "
+            >
+                <v-tab
+                    value="all"
+                    style="font-weight: bold"
+                    @click="photos.show_Data"
+                    >الكل</v-tab
                 >
-                    <radialGradient
-                        id="a12"
-                        cx=".66"
-                        fx=".66"
-                        cy=".3125"
-                        fy=".3125"
-                        gradientTransform="scale(1.5)"
-                    >
-                        <stop offset="0" stop-color="#336699"></stop>
-                        <stop
-                            offset=".3"
-                            stop-color="#336699"
-                            stop-opacity=".9"
-                        ></stop>
-                        <stop
-                            offset=".6"
-                            stop-color="#336699"
-                            stop-opacity=".6"
-                        ></stop>
-                        <stop
-                            offset=".8"
-                            stop-color="#336699"
-                            stop-opacity=".3"
-                        ></stop>
-                        <stop
-                            offset="1"
-                            stop-color="#336699"
-                            stop-opacity="0"
-                        ></stop>
-                    </radialGradient>
-                    <circle
-                        transform-origin="center"
-                        fill="none"
-                        stroke="url(#a12)"
-                        stroke-width="15"
-                        stroke-linecap="round"
-                        stroke-dasharray="200 1000"
-                        stroke-dashoffset="0"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                    >
-                        <animateTransform
-                            type="rotate"
-                            attributeName="transform"
-                            calcMode="spline"
-                            dur="2"
-                            values="360;0"
-                            keyTimes="0;1"
-                            keySplines="0 0 1 1"
-                            repeatCount="indefinite"
-                        ></animateTransform>
-                    </circle>
-                    <circle
-                        transform-origin="center"
-                        fill="none"
-                        opacity=".2"
-                        stroke="#336699"
-                        stroke-width="15"
-                        stroke-linecap="round"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                    ></circle>
-                </svg>
-                <div class="right">
-                    <div>
-                        <v-breadcrumbs>
-                            <v-breadcrumbs-item
-                                @click="$router.push('/admin')"
-                                link
+                <v-tab
+                    value="party"
+                    style="font-weight: bold"
+                    @click="photos.show_Data"
+                    >حفلات</v-tab
+                >
+                <v-tab
+                    value="news"
+                    style="font-weight: bold"
+                    @click="photos.show_Data"
+                    >أخبار</v-tab
+                >
+                <v-tab
+                    value="trip"
+                    style="font-weight: bold"
+                    @click="photos.show_Data"
+                    >رحلات</v-tab
+                >
+            </v-tabs>
+
+            <v-card-text>
+                <v-tabs-window v-model="tab">
+                    <v-tabs-window-item value="all">
+                        <Empty_error v-if="empty === true" :text="text0" />
+                        <div
+                            class="Img_Container"
+                            v-for="photo in Photos"
+                            :key="photo.id"
+                        >
+                            <img
+                                @click="dialog_6 = true"
+                                v-if="photo.File_type == 'صورة'"
+                                :src="photo.image"
+                                alt=""
+                                @click.prevent="photos.photo_Information(photo)"
+                                loading="lazy"
+                            />
+                            <video
+                                @click="dialog_6 = true"
+                                v-else
+                                controls
+                                loading="lazy"
                             >
-                                الإشراف
-                            </v-breadcrumbs-item>
-                            <v-breadcrumbs-divider />
-                            <v-breadcrumbs-item>المعرض</v-breadcrumbs-item>
-                        </v-breadcrumbs>
-                    </div>
-                    <div class="left">
-                        <font-awesome-icon
-                            @click="dialog = true"
-                            :icon="['fas', 'plus']"
-                        />
-                    </div>
-                </div>
-                <v-card
-                    style="
-                        min-height: 400px;
-                        width: 90% !important;
-                        margin: 20px auto auto;
-                        border: none;
-                        background: none;
-                        box-shadow: none;
-                    "
-                >
-                    <v-tabs
-                        v-model="tab"
-                        style="
-                            background-color: white;
-                            color: var(--main-color);
-                            font-weight: bold;
-                            width: calc(100% - 20px);
-                            margin: 0 auto;
-                        "
-                    >
-                        <v-tab
-                            value="all"
-                            style="font-weight: bold"
-                            @click="photos.show_Data"
-                            >الكل</v-tab
-                        >
-                        <v-tab
-                            value="party"
-                            style="font-weight: bold"
-                            @click="photos.show_Data"
-                            >حفلات</v-tab
-                        >
-                        <v-tab
-                            value="news"
-                            style="font-weight: bold"
-                            @click="photos.show_Data"
-                            >أخبار</v-tab
-                        >
-                        <v-tab
-                            value="trip"
-                            style="font-weight: bold"
-                            @click="photos.show_Data"
-                            >رحلات</v-tab
-                        >
-                    </v-tabs>
+                                <source :src="photo.video" type="video/mp4" />
 
-                    <v-card-text>
-                        <v-tabs-window v-model="tab">
-                            <v-tabs-window-item value="all">
-                                <Empty_error
-                                    v-if="empty === true"
-                                    :text="text0"
-                                />
-                                <div
-                                    class="Img_Container"
-                                    v-for="photo in Photos"
-                                    :key="photo.id"
-                                >
-                                    <img
-                                        @click="dialog_6 = true"
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="caption">
+                                <div class="time">
+                                    <font-awesome-icon
+                                        :icon="['fas', 'clock']"
+                                    />
+                                    <div>
+                                        {{
+                                            photo.time.toDate().toLocaleString()
+                                        }}
+                                    </div>
+                                </div>
+                                <div class="delete">
+                                    <font-awesome-icon
                                         v-if="photo.File_type == 'صورة'"
-                                        :src="photo.image"
-                                        alt=""
+                                        @click="photos.dialog_3 = true"
                                         @click.prevent="
                                             photos.photo_Information(photo)
                                         "
-                                        loading="lazy"
+                                        :icon="['fas', 'trash']"
                                     />
-                                    <video
-                                        @click="dialog_6 = true"
+                                    <font-awesome-icon
                                         v-else
-                                        controls
-                                        loading="lazy"
-                                    >
-                                        <source
-                                            :src="photo.video"
-                                            type="video/mp4"
-                                        />
-
-                                        Your browser does not support the video
-                                        tag.
-                                    </video>
-                                    <div class="caption">
-                                        <div class="time">
-                                            <font-awesome-icon
-                                                :icon="['fas', 'clock']"
-                                            />
-                                            <div>
-                                                {{
-                                                    photo.time
-                                                        .toDate()
-                                                        .toLocaleString()
-                                                }}
-                                            </div>
-                                        </div>
-                                        <div class="delete">
-                                            <font-awesome-icon
-                                                v-if="photo.File_type == 'صورة'"
-                                                @click="photos.dialog_3 = true"
-                                                @click.prevent="
-                                                    photos.photo_Information(
-                                                        photo
-                                                    )
-                                                "
-                                                :icon="['fas', 'trash']"
-                                            />
-                                            <font-awesome-icon
-                                                v-else
-                                                @click="photos.dialog_4 = true"
-                                                @click.prevent="
-                                                    photos.photo_Information(
-                                                        photo
-                                                    )
-                                                "
-                                                :icon="['fas', 'trash']"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </v-tabs-window-item>
-                            <v-tabs-window-item value="party">
-                                <Empty_error
-                                    v-if="empty1 === true"
-                                    :text="text1"
-                                />
-                                <div
-                                    class="Img_Container"
-                                    v-for="photo in Photos"
-                                    :key="photo.id"
-                                >
-                                    <img
-                                        @click="dialog_6 = true"
-                                        v-if="photo.File_type == 'صورة'"
-                                        :src="photo.image"
-                                        alt=""
+                                        @click="photos.dialog_4 = true"
                                         @click.prevent="
                                             photos.photo_Information(photo)
                                         "
-                                        loading="lazy"
+                                        :icon="['fas', 'trash']"
                                     />
-                                    <video
-                                        @click="dialog_6 = true"
-                                        v-else
-                                        controls
-                                        loading="lazy"
-                                    >
-                                        <source
-                                            :src="photo.video"
-                                            type="video/mp4"
-                                        />
+                                </div>
+                            </div>
+                        </div>
+                    </v-tabs-window-item>
+                    <v-tabs-window-item value="party">
+                        <Empty_error v-if="empty1 === true" :text="text1" />
+                        <div
+                            class="Img_Container"
+                            v-for="photo in Photos"
+                            :key="photo.id"
+                        >
+                            <img
+                                @click="dialog_6 = true"
+                                v-if="photo.File_type == 'صورة'"
+                                :src="photo.image"
+                                alt=""
+                                @click.prevent="photos.photo_Information(photo)"
+                                loading="lazy"
+                            />
+                            <video
+                                @click="dialog_6 = true"
+                                v-else
+                                controls
+                                loading="lazy"
+                            >
+                                <source :src="photo.video" type="video/mp4" />
 
-                                        Your browser does not support the video
-                                        tag.
-                                    </video>
-                                    <div class="caption">
-                                        <div class="time">
-                                            <font-awesome-icon
-                                                :icon="['fas', 'clock']"
-                                            />
-                                            <div>
-                                                {{
-                                                    photo.time
-                                                        .toDate()
-                                                        .toLocaleString()
-                                                }}
-                                            </div>
-                                        </div>
-                                        <div class="delete">
-                                            <font-awesome-icon
-                                                v-if="photo.File_type == 'صورة'"
-                                                @click="photos.dialog_3 = true"
-                                                @click.prevent="
-                                                    photos.photo_Information(
-                                                        photo
-                                                    )
-                                                "
-                                                :icon="['fas', 'trash']"
-                                            />
-                                            <font-awesome-icon
-                                                v-else
-                                                @click.prevent="
-                                                    photos.photo_Information(
-                                                        photo
-                                                    )
-                                                "
-                                                @click="photos.dialog_4 = true"
-                                                :icon="['fas', 'trash']"
-                                            />
-                                        </div>
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="caption">
+                                <div class="time">
+                                    <font-awesome-icon
+                                        :icon="['fas', 'clock']"
+                                    />
+                                    <div>
+                                        {{
+                                            photo.time.toDate().toLocaleString()
+                                        }}
                                     </div>
                                 </div>
-                            </v-tabs-window-item>
-                            <v-tabs-window-item value="news">
-                                <Empty_error
-                                    v-if="empty2 === true"
-                                    :text="text2"
-                                />
-                                <div
-                                    class="Img_Container"
-                                    v-for="photo in Photos"
-                                    :key="photo.id"
-                                >
-                                    <img
-                                        @click="dialog_6 = true"
+                                <div class="delete">
+                                    <font-awesome-icon
                                         v-if="photo.File_type == 'صورة'"
-                                        :src="photo.image"
-                                        alt=""
+                                        @click="photos.dialog_3 = true"
                                         @click.prevent="
                                             photos.photo_Information(photo)
                                         "
-                                        loading="lazy"
+                                        :icon="['fas', 'trash']"
                                     />
-                                    <video
-                                        @click="dialog_6 = true"
+                                    <font-awesome-icon
                                         v-else
-                                        controls
-                                        loading="lazy"
-                                    >
-                                        <source
-                                            :src="photo.video"
-                                            type="video/mp4"
-                                        />
+                                        @click.prevent="
+                                            photos.photo_Information(photo)
+                                        "
+                                        @click="photos.dialog_4 = true"
+                                        :icon="['fas', 'trash']"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </v-tabs-window-item>
+                    <v-tabs-window-item value="news">
+                        <Empty_error v-if="empty2 === true" :text="text2" />
+                        <div
+                            class="Img_Container"
+                            v-for="photo in Photos"
+                            :key="photo.id"
+                        >
+                            <img
+                                @click="dialog_6 = true"
+                                v-if="photo.File_type == 'صورة'"
+                                :src="photo.image"
+                                alt=""
+                                @click.prevent="photos.photo_Information(photo)"
+                                loading="lazy"
+                            />
+                            <video
+                                @click="dialog_6 = true"
+                                v-else
+                                controls
+                                loading="lazy"
+                            >
+                                <source :src="photo.video" type="video/mp4" />
 
-                                        Your browser does not support the video
-                                        tag.
-                                    </video>
-                                    <div class="caption">
-                                        <div class="time">
-                                            <font-awesome-icon
-                                                :icon="['fas', 'clock']"
-                                            />
-                                            <div>
-                                                {{
-                                                    photo.time
-                                                        .toDate()
-                                                        .toLocaleString()
-                                                }}
-                                            </div>
-                                        </div>
-                                        <div class="delete">
-                                            <font-awesome-icon
-                                                v-if="photo.File_type == 'صورة'"
-                                                @click.prevent="
-                                                    photos.photo_Information(
-                                                        photo
-                                                    )
-                                                "
-                                                @click="photos.dialog_3 = true"
-                                                :icon="['fas', 'trash']"
-                                            />
-                                            <font-awesome-icon
-                                                v-else
-                                                @click.prevent="
-                                                    photos.photo_Information(
-                                                        photo
-                                                    )
-                                                "
-                                                @click="photos.dialog_4 = true"
-                                                :icon="['fas', 'trash']"
-                                            />
-                                        </div>
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="caption">
+                                <div class="time">
+                                    <font-awesome-icon
+                                        :icon="['fas', 'clock']"
+                                    />
+                                    <div>
+                                        {{
+                                            photo.time.toDate().toLocaleString()
+                                        }}
                                     </div>
                                 </div>
-                            </v-tabs-window-item>
-                            <v-tabs-window-item value="trip">
-                                <Empty_error
-                                    v-if="empty3 === true"
-                                    :text="text3"
+                                <div class="delete">
+                                    <font-awesome-icon
+                                        v-if="photo.File_type == 'صورة'"
+                                        @click.prevent="
+                                            photos.photo_Information(photo)
+                                        "
+                                        @click="photos.dialog_3 = true"
+                                        :icon="['fas', 'trash']"
+                                    />
+                                    <font-awesome-icon
+                                        v-else
+                                        @click.prevent="
+                                            photos.photo_Information(photo)
+                                        "
+                                        @click="photos.dialog_4 = true"
+                                        :icon="['fas', 'trash']"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </v-tabs-window-item>
+                    <v-tabs-window-item value="trip">
+                        <Empty_error v-if="empty3 === true" :text="text3" />
+                        <div
+                            class="Img_Container"
+                            v-for="photo in Photos"
+                            :key="photo.id"
+                        >
+                            <div class="cards">
+                                <img
+                                    @click="dialog_6 = true"
+                                    v-if="photo.File_type == 'صورة'"
+                                    :src="photo.image"
+                                    alt=""
+                                    @click.prevent="
+                                        photos.photo_Information(photo)
+                                    "
+                                    loading="lazy"
                                 />
-                                <div
-                                    class="Img_Container"
-                                    v-for="photo in Photos"
-                                    :key="photo.id"
+                                <video
+                                    @click="dialog_6 = true"
+                                    v-else
+                                    controls
+                                    loading="lazy"
                                 >
-                                    <div class="cards">
-                                        <img
-                                            @click="dialog_6 = true"
+                                    <source
+                                        :src="photo.video"
+                                        type="video/mp4"
+                                    />
+
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="caption">
+                                    <div class="time">
+                                        <font-awesome-icon
+                                            :icon="['fas', 'clock']"
+                                        />
+                                        <div>
+                                            {{
+                                                photo.time
+                                                    .toDate()
+                                                    .toLocaleString()
+                                            }}
+                                        </div>
+                                    </div>
+                                    <div class="delete">
+                                        <font-awesome-icon
                                             v-if="photo.File_type == 'صورة'"
-                                            :src="photo.image"
-                                            alt=""
                                             @click.prevent="
                                                 photos.photo_Information(photo)
                                             "
-                                            loading="lazy"
+                                            @click="photos.dialog_3 = true"
+                                            :icon="['fas', 'trash']"
                                         />
-                                        <video
-                                            @click="dialog_6 = true"
+                                        <font-awesome-icon
                                             v-else
-                                            controls
-                                            loading="lazy"
-                                        >
+                                            @click.prevent="
+                                                photos.photo_Information(photo)
+                                            "
+                                            @click="photos.dialog_4 = true"
+                                            :icon="['fas', 'trash']"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </v-tabs-window-item>
+
+                    <!-- Display each photo -->
+                    <v-dialog v-model="dialog_6" width="90%">
+                        <v-card width="100%" class="popup">
+                            <div
+                                class="d-flex justify-space-between align-center title"
+                            >
+                                <div style="color: var(--main-color)">
+                                    الصور
+                                </div>
+                                <v-btn
+                                    icon="mdi-close"
+                                    @click="dialog_6 = false"
+                                ></v-btn>
+                            </div>
+                            <v-carousel
+                                :show-arrows="showArrows"
+                                hide-delimiters
+                                height="100%"
+                            >
+                                <!-- Make carousel content scrollable -->
+                                <v-carousel-item
+                                    class="pa-5 text-center"
+                                    v-if="photos.File_Information == 'صورة'"
+                                    :src="photos.Photo_Information"
+                                    height="400"
+                                ></v-carousel-item>
+                                <v-carousel-item
+                                    class="pa-5 text-center"
+                                    v-if="photos.File_Information == 'فيديو'"
+                                >
+                                    <video height="400" controls>
+                                        <source
+                                            :src="photos.Video_Information"
+                                            type="video/mp4"
+                                        />
+
+                                        Your browser does not support the video
+                                        tag.
+                                    </video></v-carousel-item
+                                >
+                                <div v-for="photo in Photos" :key="photo.id">
+                                    <v-carousel-item
+                                        v-if="photo.File_type == 'صورة'"
+                                        class="pa-5 text-center"
+                                        :src="photo.image"
+                                        height="400"
+                                    ></v-carousel-item>
+                                    <v-carousel-item
+                                        v-if="photo.File_type == 'فيديو'"
+                                        class="pa-5 text-center"
+                                    >
+                                        <video controls height="400">
                                             <source
                                                 :src="photo.video"
                                                 type="video/mp4"
@@ -397,285 +424,156 @@
 
                                             Your browser does not support the
                                             video tag.
-                                        </video>
-                                        <div class="caption">
-                                            <div class="time">
-                                                <font-awesome-icon
-                                                    :icon="['fas', 'clock']"
-                                                />
-                                                <div>
-                                                    {{
-                                                        photo.time
-                                                            .toDate()
-                                                            .toLocaleString()
-                                                    }}
-                                                </div>
-                                            </div>
-                                            <div class="delete">
-                                                <font-awesome-icon
-                                                    v-if="
-                                                        photo.File_type ==
-                                                        'صورة'
-                                                    "
-                                                    @click.prevent="
-                                                        photos.photo_Information(
-                                                            photo
-                                                        )
-                                                    "
-                                                    @click="
-                                                        photos.dialog_3 = true
-                                                    "
-                                                    :icon="['fas', 'trash']"
-                                                />
-                                                <font-awesome-icon
-                                                    v-else
-                                                    @click.prevent="
-                                                        photos.photo_Information(
-                                                            photo
-                                                        )
-                                                    "
-                                                    @click="
-                                                        photos.dialog_4 = true
-                                                    "
-                                                    :icon="['fas', 'trash']"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
+                                        </video></v-carousel-item
+                                    >
                                 </div>
-                            </v-tabs-window-item>
-
-                            <!-- Display each photo -->
-                            <v-dialog v-model="dialog_6" width="90%">
-                                <v-card width="100%" class="popup">
-                                    <div
-                                        class="d-flex justify-space-between align-center title"
+                                <template v-slot:next="{ props }">
+                                    <v-icon
+                                        style="
+                                            text-align: center;
+                                            color: var(--main-color);
+                                        "
+                                        @click="props.onClick"
+                                        class="pa-10 carousel-arrow next-arrow"
+                                        >mdi-menu-right</v-icon
                                     >
-                                        <div style="color: var(--main-color)">
-                                            الصور
-                                        </div>
-                                        <v-btn
-                                            icon="mdi-close"
-                                            @click="dialog_6 = false"
-                                        ></v-btn>
-                                    </div>
-                                    <v-carousel
-                                        :show-arrows="showArrows"
-                                        hide-delimiters
-                                        height="100%"
+                                </template>
+                                <template v-slot:prev="{ props }">
+                                    <v-icon
+                                        style="
+                                            text-align: center;
+                                            color: var(--main-color);
+                                        "
+                                        @click="props.onClick"
+                                        class="pa-10 carousel-arrow prev-arrow"
+                                        >mdi-menu-left</v-icon
                                     >
-                                        <!-- Make carousel content scrollable -->
-                                        <v-carousel-item
-                                            class="pa-5 text-center"
-                                            v-if="
-                                                photos.File_Information ==
-                                                'صورة'
-                                            "
-                                            :src="photos.Photo_Information"
-                                            height="400"
-                                        ></v-carousel-item>
-                                        <v-carousel-item
-                                            class="pa-5 text-center"
-                                            v-if="
-                                                photos.File_Information ==
-                                                'فيديو'
-                                            "
-                                        >
-                                            <video height="400" controls>
-                                                <source
-                                                    :src="
-                                                        photos.Video_Information
-                                                    "
-                                                    type="video/mp4"
-                                                />
+                                </template>
+                            </v-carousel></v-card
+                        ></v-dialog
+                    >
+                </v-tabs-window>
+            </v-card-text>
+        </v-card>
+        <v-dialog v-model="dialog" width="90%">
+            <v-card width="100%" class="popup">
+                <div class="d-flex justify-space-between align-center title">
+                    <div style="color: var(--main-color)">
+                        إضافة {{ photos.types }}
+                    </div>
+                    <v-btn icon="mdi-close" @click="dialog = false"></v-btn>
+                </div>
+                <form ref="form" @submit.prevent class="ma-auto mt-4">
+                    <v-select
+                        style="width: 100%"
+                        v-model="photos.types"
+                        :items="['صورة', 'فيديو']"
+                        label="أختر نوع الملف "
+                        variant="outlined"
+                        required
+                        :rules="[(v) => !!v || 'الرجاء اختيار النوع ']"
+                    ></v-select>
+                    <!-- File input for images, shown if type is 'صورة' -->
+                    <v-file-input
+                        v-if="photos.types == 'صورة'"
+                        style="width: 100%"
+                        v-model="photos.Photo.image"
+                        label="صورة"
+                        accept="image/*"
+                        variant="outlined"
+                        prepend-icon=""
+                        prepend-inner-icon="mdi-paperclip"
+                        @change="photos.onFileChange"
+                        required
+                        :rules="[(v) => !!v || 'الرجاء اختيار صورة']"
+                    >
+                    </v-file-input>
+                    <!-- File input for videos, shown if type is 'فيديو' -->
+                    <v-file-input
+                        v-if="photos.types == 'فيديو'"
+                        style="width: 100%"
+                        v-model="photos.Photo.video"
+                        label="فيديو"
+                        accept="mp4"
+                        variant="outlined"
+                        prepend-icon=""
+                        prepend-inner-icon="mdi-paperclip"
+                        @change="photos.on_Video_Change"
+                        required
+                        :rules="[(v) => !!v || 'الرجاء اختيار فيديو']"
+                    >
+                    </v-file-input>
+                    <!-- Display selected image -->
+                    <v-img
+                        v-if="photos.Photo.image"
+                        :src="photos.image"
+                        height="200"
+                    ></v-img>
 
-                                                Your browser does not support
-                                                the video tag.
-                                            </video></v-carousel-item
-                                        >
-                                        <div
-                                            v-for="photo in Photos"
-                                            :key="photo.id"
-                                        >
-                                            <v-carousel-item
-                                                v-if="photo.File_type == 'صورة'"
-                                                class="pa-5 text-center"
-                                                :src="photo.image"
-                                                height="400"
-                                            ></v-carousel-item>
-                                            <v-carousel-item
-                                                v-if="
-                                                    photo.File_type == 'فيديو'
-                                                "
-                                                class="pa-5 text-center"
-                                            >
-                                                <video controls height="400">
-                                                    <source
-                                                        :src="photo.video"
-                                                        type="video/mp4"
-                                                    />
-
-                                                    Your browser does not
-                                                    support the video tag.
-                                                </video></v-carousel-item
-                                            >
-                                        </div>
-                                        <template v-slot:next="{ props }">
-                                            <v-icon
-                                                style="
-                                                    text-align: center;
-                                                    color: var(--main-color);
-                                                "
-                                                @click="props.onClick"
-                                                class="pa-10 carousel-arrow next-arrow"
-                                                >mdi-menu-right</v-icon
-                                            >
-                                        </template>
-                                        <template v-slot:prev="{ props }">
-                                            <v-icon
-                                                style="
-                                                    text-align: center;
-                                                    color: var(--main-color);
-                                                "
-                                                @click="props.onClick"
-                                                class="pa-10 carousel-arrow prev-arrow"
-                                                >mdi-menu-left</v-icon
-                                            >
-                                        </template>
-                                    </v-carousel></v-card
-                                ></v-dialog
-                            >
-                        </v-tabs-window>
-                    </v-card-text>
-                </v-card>
-                <v-dialog v-model="dialog" width="90%">
-                    <v-card width="100%" class="popup">
-                        <div
-                            class="d-flex justify-space-between align-center title"
-                        >
-                            <div style="color: var(--main-color)">
-                                إضافة {{ photos.types }}
-                            </div>
-                            <v-btn
-                                icon="mdi-close"
-                                @click="dialog = false"
-                            ></v-btn>
-                        </div>
-                        <form ref="form" @submit.prevent class="ma-auto mt-4">
-                            <v-select
-                                style="width: 100%"
-                                v-model="photos.types"
-                                :items="['صورة', 'فيديو']"
-                                label="أختر نوع الملف "
-                                variant="outlined"
-                                required
-                                :rules="[(v) => !!v || 'الرجاء اختيار النوع ']"
-                            ></v-select>
-                            <!-- File input for images, shown if type is 'صورة' -->
-                            <v-file-input
-                                v-if="photos.types == 'صورة'"
-                                style="width: 100%"
-                                v-model="photos.Photo.image"
-                                label="صورة"
-                                accept="image/*"
-                                variant="outlined"
-                                prepend-icon=""
-                                prepend-inner-icon="mdi-paperclip"
-                                @change="photos.onFileChange"
-                                required
-                                :rules="[(v) => !!v || 'الرجاء اختيار صورة']"
-                            >
-                            </v-file-input>
-                            <!-- File input for videos, shown if type is 'فيديو' -->
-                            <v-file-input
-                                v-if="photos.types == 'فيديو'"
-                                style="width: 100%"
-                                v-model="photos.Photo.video"
-                                label="فيديو"
-                                accept="mp4"
-                                variant="outlined"
-                                prepend-icon=""
-                                prepend-inner-icon="mdi-paperclip"
-                                @change="photos.on_Video_Change"
-                                required
-                                :rules="[(v) => !!v || 'الرجاء اختيار فيديو']"
-                            >
-                            </v-file-input>
-                            <!-- Display selected image -->
-                            <v-img
-                                v-if="photos.Photo.image"
-                                :src="photos.image"
-                                height="200"
-                            ></v-img>
-
-                            <!-- Display selected video -->
-                            <video
-                                v-if="photos.Photo.video"
-                                width="320"
-                                height="240"
-                                style="text-align: center"
-                                controls
-                            >
-                                <source :src="photos.video" type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                            <br />
-                            <v-select
-                                style="width: 100%"
-                                v-model="photos.type"
-                                :items="photos.Types"
-                                :label="`اختر نوع ال${photos.types}`"
-                                variant="outlined"
-                                @blur="photos.handletypes"
-                                @click="photos.handletypes"
-                                required
-                                :rules="[
-                                    (v) => !!v || 'الرجاء اختيار نوع الصورة',
-                                ]"
-                            ></v-select>
-                            <v-btn
-                                v-if="photos.types == 'صورة'"
-                                type="submit"
-                                :loading="loading"
-                                :disabled="loading"
-                                class="d-flex align-center mt-4 mb-4"
-                                style="
-                                    width: 100%;
-                                    padding: 20px;
-                                    letter-spacing: normal;
-                                    font-weight: bold;
-                                    font-size: 19px;
-                                    background: var(--main-color);
-                                    color: #fff;
-                                "
-                                @click="photos.Add_Photos"
-                            >
-                                إضافة صورة
-                            </v-btn>
-                            <v-btn
-                                v-if="photos.types == 'فيديو'"
-                                type="submit"
-                                :loading="loading"
-                                :disabled="loading"
-                                class="d-flex align-center mt-4 mb-4"
-                                style="
-                                    width: 100%;
-                                    padding: 20px;
-                                    letter-spacing: normal;
-                                    font-weight: bold;
-                                    font-size: 19px;
-                                    background: var(--main-color);
-                                    color: #fff;
-                                "
-                                @click="photos.Add_Video"
-                            >
-                                إضافة فيديو
-                            </v-btn>
-                        </form>
-                    </v-card></v-dialog
-                >
-            </template>
-        </Offline_error>
+                    <!-- Display selected video -->
+                    <video
+                        v-if="photos.Photo.video"
+                        width="320"
+                        height="240"
+                        style="text-align: center"
+                        controls
+                    >
+                        <source :src="photos.video" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <br />
+                    <v-select
+                        style="width: 100%"
+                        v-model="photos.type"
+                        :items="photos.Types"
+                        :label="`اختر نوع ال${photos.types}`"
+                        variant="outlined"
+                        @blur="photos.handletypes"
+                        @click="photos.handletypes"
+                        required
+                        :rules="[(v) => !!v || 'الرجاء اختيار نوع الصورة']"
+                    ></v-select>
+                    <v-btn
+                        v-if="photos.types == 'صورة'"
+                        type="submit"
+                        :loading="loading"
+                        :disabled="loading"
+                        class="d-flex align-center mt-4 mb-4"
+                        style="
+                            width: 100%;
+                            padding: 20px;
+                            letter-spacing: normal;
+                            font-weight: bold;
+                            font-size: 19px;
+                            background: var(--main-color);
+                            color: #fff;
+                        "
+                        @click="photos.Add_Photos"
+                    >
+                        إضافة صورة
+                    </v-btn>
+                    <v-btn
+                        v-if="photos.types == 'فيديو'"
+                        type="submit"
+                        :loading="loading"
+                        :disabled="loading"
+                        class="d-flex align-center mt-4 mb-4"
+                        style="
+                            width: 100%;
+                            padding: 20px;
+                            letter-spacing: normal;
+                            font-weight: bold;
+                            font-size: 19px;
+                            background: var(--main-color);
+                            color: #fff;
+                        "
+                        @click="photos.Add_Video"
+                    >
+                        إضافة فيديو
+                    </v-btn>
+                </form>
+            </v-card></v-dialog
+        >
     </div>
     <v-dialog v-model="dialog_4" width="90%">
         <v-card width="100%" class="popup">

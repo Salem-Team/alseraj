@@ -1,112 +1,5 @@
 <template>
     <v-container class="mt-0">
-        <!-- بيانات الطالب -->
-        <div class="visible">
-            <svg
-                style="
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 245px;
-                "
-                v-if="loading1"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 200 200"
-            >
-                <radialGradient
-                    id="a12"
-                    cx=".66"
-                    fx=".66"
-                    cy=".3125"
-                    fy=".3125"
-                    gradientTransform="scale(1.5)"
-                >
-                    <stop offset="0" stop-color="#336699"></stop>
-                    <stop
-                        offset=".3"
-                        stop-color="#336699"
-                        stop-opacity=".9"
-                    ></stop>
-                    <stop
-                        offset=".6"
-                        stop-color="#336699"
-                        stop-opacity=".6"
-                    ></stop>
-                    <stop
-                        offset=".8"
-                        stop-color="#336699"
-                        stop-opacity=".3"
-                    ></stop>
-                    <stop
-                        offset="1"
-                        stop-color="#336699"
-                        stop-opacity="0"
-                    ></stop>
-                </radialGradient>
-                <circle
-                    transform-origin="center"
-                    fill="none"
-                    stroke="url(#a12)"
-                    stroke-width="15"
-                    stroke-linecap="round"
-                    stroke-dasharray="200 1000"
-                    stroke-dashoffset="0"
-                    cx="100"
-                    cy="100"
-                    r="70"
-                >
-                    <animateTransform
-                        type="rotate"
-                        attributeName="transform"
-                        calcMode="spline"
-                        dur="2"
-                        values="360;0"
-                        keyTimes="0;1"
-                        keySplines="0 0 1 1"
-                        repeatCount="indefinite"
-                    ></animateTransform>
-                </circle>
-                <circle
-                    transform-origin="center"
-                    fill="none"
-                    opacity=".2"
-                    stroke="#336699"
-                    stroke-width="15"
-                    stroke-linecap="round"
-                    cx="100"
-                    cy="100"
-                    r="70"
-                ></circle>
-            </svg>
-            <div class="right">
-                <div>
-                    <v-breadcrumbs>
-                        <v-breadcrumbs-item>
-                            <img
-                                src="../assets/profile/user.svg"
-                                alt=""
-                                class="pluse"
-                            />
-                            <div>الملف الشخصي</div>
-                        </v-breadcrumbs-item>
-                    </v-breadcrumbs>
-                </div>
-                <div class="left pl-6">
-                    <img
-                        src="../assets/profile/edit-info.svg"
-                        alt=""
-                        class="pluse pluse_1"
-                        @click="$router.push('/profile')"
-                    />
-                </div>
-            </div>
-        </div>
-        <!-- Loading  تحميل -->
-        <div class="hello_text mb-8 pr-5">
-            مرحبًا {{ student.student_name }}، نشكرك على ثقتك في معهد السراج
-            المنير الأزهري، نتطلع سويًا لتحقيق المستقبل المشرق .
-        </div>
         <v-card
             variant="flat"
             style="border: none; background: #fff; margin: 22px"
@@ -307,7 +200,7 @@
                                                                     class="name"
                                                                 >
                                                                     {{
-                                                                        student.student_name
+                                                                        user.name
                                                                     }}
                                                                 </div>
                                                             </div>
@@ -361,9 +254,8 @@
                                                                     الرقم القومى
                                                                 </div>
                                                                 <div>
-                                                                    <!-- 11111111111111111111111111 -->
                                                                     {{
-                                                                        student.documentId
+                                                                        user.National_id
                                                                     }}
                                                                 </div>
                                                             </div>
@@ -392,7 +284,7 @@
                                                                     </div>
                                                                     <div>
                                                                         {{
-                                                                            student.student_phone
+                                                                            user.phone
                                                                         }}
                                                                     </div>
                                                                 </div>
@@ -404,7 +296,7 @@
                                                                     </div>
                                                                     <div>
                                                                         {{
-                                                                            student.student_email
+                                                                            user.email
                                                                         }}
                                                                     </div>
                                                                 </div>
@@ -1704,7 +1596,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { useAuthStore } from "../store/userStore";
 import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useRouter } from "vue-router";
 import { usenotification } from "../store/notification.js";
 
@@ -1814,7 +1706,7 @@ export default {
     },
 
     async created() {
-        const documentId = this.$route.params.id; // استلام documentId من الـ route params
+        const documentId = this.user.id; // استلام documentId من الـ route params
         this.loading = true; // بدء حالة التحميل
 
         try {
@@ -1902,6 +1794,7 @@ export default {
         clearInterval(this.interval);
     },
     computed: {
+        ...mapState(useAuthStore, ["user"]),
         filteredResults() {
             if (!this.results || !this.selectedMonth) return []; // التأكد من أن results و selectedMonth مُهيّأت
             return this.results.flatMap((result) =>
@@ -2517,11 +2410,7 @@ export default {
         }
     }
 }
-.hello_text {
-    font-size: 20px;
-    color: var(--therd-color);
-    font-weight: bold;
-}
+
 .form {
     display: flex;
     flex-direction: column;
@@ -2640,20 +2529,6 @@ export default {
     }
 }
 
-img.pluse {
-    width: 40px;
-    cursor: pointer;
-    &:hover {
-        opacity: 0.7;
-    }
-}
-img.pluse.pluse_1 {
-    width: 30px;
-    cursor: pointer;
-    &:hover {
-        opacity: 0.7;
-    }
-}
 .visible {
     opacity: 0;
     animation: fadeIn 1s ease-in-out forwards;

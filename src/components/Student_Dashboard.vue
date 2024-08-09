@@ -1,112 +1,5 @@
 <template>
     <v-container class="mt-0">
-        <!-- بيانات الطالب -->
-        <div class="visible">
-            <svg
-                style="
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 245px;
-                "
-                v-if="loading1"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 200 200"
-            >
-                <radialGradient
-                    id="a12"
-                    cx=".66"
-                    fx=".66"
-                    cy=".3125"
-                    fy=".3125"
-                    gradientTransform="scale(1.5)"
-                >
-                    <stop offset="0" stop-color="#336699"></stop>
-                    <stop
-                        offset=".3"
-                        stop-color="#336699"
-                        stop-opacity=".9"
-                    ></stop>
-                    <stop
-                        offset=".6"
-                        stop-color="#336699"
-                        stop-opacity=".6"
-                    ></stop>
-                    <stop
-                        offset=".8"
-                        stop-color="#336699"
-                        stop-opacity=".3"
-                    ></stop>
-                    <stop
-                        offset="1"
-                        stop-color="#336699"
-                        stop-opacity="0"
-                    ></stop>
-                </radialGradient>
-                <circle
-                    transform-origin="center"
-                    fill="none"
-                    stroke="url(#a12)"
-                    stroke-width="15"
-                    stroke-linecap="round"
-                    stroke-dasharray="200 1000"
-                    stroke-dashoffset="0"
-                    cx="100"
-                    cy="100"
-                    r="70"
-                >
-                    <animateTransform
-                        type="rotate"
-                        attributeName="transform"
-                        calcMode="spline"
-                        dur="2"
-                        values="360;0"
-                        keyTimes="0;1"
-                        keySplines="0 0 1 1"
-                        repeatCount="indefinite"
-                    ></animateTransform>
-                </circle>
-                <circle
-                    transform-origin="center"
-                    fill="none"
-                    opacity=".2"
-                    stroke="#336699"
-                    stroke-width="15"
-                    stroke-linecap="round"
-                    cx="100"
-                    cy="100"
-                    r="70"
-                ></circle>
-            </svg>
-            <div class="right">
-                <div>
-                    <v-breadcrumbs>
-                        <v-breadcrumbs-item>
-                            <img
-                                src="../assets/profile/user.svg"
-                                alt=""
-                                class="pluse"
-                            />
-                            <div>الملف الشخصي</div>
-                        </v-breadcrumbs-item>
-                    </v-breadcrumbs>
-                </div>
-                <div class="left pl-6">
-                    <img
-                        src="../assets/profile/edit-info.svg"
-                        alt=""
-                        class="pluse pluse_1"
-                        @click="$router.push('/profile')"
-                    />
-                </div>
-            </div>
-        </div>
-        <!-- Loading  تحميل -->
-        <div class="hello_text mb-8 pr-5">
-            مرحبًا {{ student.student_name }}، نشكرك على ثقتك في معهد السراج
-            المنير الأزهري، نتطلع سويًا لتحقيق المستقبل المشرق .
-        </div>
         <v-card
             variant="flat"
             style="border: none; background: #fff; margin: 22px"
@@ -175,6 +68,12 @@
                                 <v-tab value="eight">
                                     <img
                                         src="../assets/student/study-icon.svg"
+                                        alt=""
+                                        width="30px"
+                                /></v-tab>
+                                <v-tab value="thenine">
+                                    <img
+                                        src="../assets/class/schedule.png"
                                         alt=""
                                         width="30px"
                                 /></v-tab>
@@ -301,7 +200,7 @@
                                                                     class="name"
                                                                 >
                                                                     {{
-                                                                        student.student_name
+                                                                        user.name
                                                                     }}
                                                                 </div>
                                                             </div>
@@ -356,7 +255,7 @@
                                                                 </div>
                                                                 <div>
                                                                     {{
-                                                                        student.National_id
+                                                                        user.National_id
                                                                     }}
                                                                 </div>
                                                             </div>
@@ -385,7 +284,7 @@
                                                                     </div>
                                                                     <div>
                                                                         {{
-                                                                            student.student_phone
+                                                                            user.phone
                                                                         }}
                                                                     </div>
                                                                 </div>
@@ -397,7 +296,7 @@
                                                                     </div>
                                                                     <div>
                                                                         {{
-                                                                            student.student_email
+                                                                            user.email
                                                                         }}
                                                                     </div>
                                                                 </div>
@@ -528,7 +427,7 @@
                                                             </div>
                                                             <div>
                                                                 {{
-                                                                    subject?.Date_Test
+                                                                    subject?.Date
                                                                 }}
                                                             </div>
                                                         </div>
@@ -1073,6 +972,602 @@
                                                 </div>
                                             </v-card>
                                         </v-tabs-window-item>
+                                        <v-tabs-window-item value="thenine">
+                                            <v-card flat v-if="student">
+                                                <div class="contain">
+                                                    <table
+                                                        class="schedule_table"
+                                                    >
+                                                        <thead>
+                                                            <tr>
+                                                                <th>الأيام</th>
+                                                                <th>
+                                                                    الحصة
+                                                                    الأولى<br />8:00
+                                                                    - 8:45
+                                                                </th>
+                                                                <th>
+                                                                    الحصة
+                                                                    الثانية<br />8:45
+                                                                    - 9:30
+                                                                </th>
+                                                                <th>
+                                                                    الحصة
+                                                                    الثالثة<br />9:30
+                                                                    - 10:15
+                                                                </th>
+                                                                <th>
+                                                                    الحصة
+                                                                    الرابعة<br />10:15
+                                                                    - 11:00
+                                                                </th>
+                                                                <th>
+                                                                    الحصة
+                                                                    الخامسة<br />11:00
+                                                                    - 11:45
+                                                                </th>
+                                                                <th>
+                                                                    الحصة
+                                                                    السادسة<br />11:45
+                                                                    - 12:30
+                                                                </th>
+                                                                <th>
+                                                                    الحصة
+                                                                    السابعة<br />12:30
+                                                                    - 1:15
+                                                                </th>
+                                                                <th>
+                                                                    الحصة
+                                                                    الثامنة<br />1:15
+                                                                    - 2:00
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>الأحد</td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="رياضيات"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. أحمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="علوم"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. محمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="لغة عربية"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. علي"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="تاريخ"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. سمير"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="جغرافيا"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. خالد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="رياضيات"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. أحمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="علوم"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. محمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="لغة عربية"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. علي"
+                                                                    />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>الإثنين</td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="لغة عربية"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. علي"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="رياضيات"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. أحمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="علوم"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. محمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="جغرافيا"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. خالد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="تاريخ"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. سمير"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="لغة عربية"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. علي"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="رياضيات"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. أحمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="علوم"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. محمد"
+                                                                    />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    الثلاثاء
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="علوم"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. محمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="لغة عربية"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. علي"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="رياضيات"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. أحمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="تاريخ"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. سمير"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="جغرافيا"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. خالد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="علوم"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. محمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="لغة عربية"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. علي"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="رياضيات"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. أحمد"
+                                                                    />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    الأربعاء
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="جغرافيا"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. خالد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="تاريخ"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. سمير"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="رياضيات"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. أحمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="علوم"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. محمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="لغة عربية"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. علي"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="جغرافيا"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. خالد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="تاريخ"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. سمير"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="رياضيات"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. أحمد"
+                                                                    />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>الخميس</td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="تاريخ"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. سمير"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="جغرافيا"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. خالد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="لغة عربية"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. علي"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="رياضيات"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. أحمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="علوم"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. محمد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="تاريخ"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. سمير"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="جغرافيا"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. خالد"
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        class="subject"
+                                                                        value="لغة عربية"
+                                                                    />
+                                                                    <hr />
+                                                                    <input
+                                                                        type="text"
+                                                                        class="teacher"
+                                                                        value="أ. علي"
+                                                                    />
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </v-card>
+                                        </v-tabs-window-item>
                                     </v-tabs-window>
                                 </v-card-text>
                             </v-card>
@@ -1101,7 +1596,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { useAuthStore } from "../store/userStore";
 import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useRouter } from "vue-router";
 import { usenotification } from "../store/notification.js";
 
@@ -1211,7 +1706,7 @@ export default {
     },
 
     async created() {
-        const documentId = this.$route.params.id; // استلام documentId من الـ route params
+        const documentId = this.user.id; // استلام documentId من الـ route params
         this.loading = true; // بدء حالة التحميل
 
         try {
@@ -1220,6 +1715,7 @@ export default {
             if (docSnap.exists()) {
                 const studentData = docSnap.data();
                 this.student = studentData;
+                studentData.documentId = documentId;
                 this.results = studentData.Results || []; // استخراج بيانات Results
                 this.isAuthenticated = true;
 
@@ -1298,6 +1794,7 @@ export default {
         clearInterval(this.interval);
     },
     computed: {
+        ...mapState(useAuthStore, ["user"]),
         filteredResults() {
             if (!this.results || !this.selectedMonth) return []; // التأكد من أن results و selectedMonth مُهيّأت
             return this.results.flatMap((result) =>
@@ -1913,11 +2410,7 @@ export default {
         }
     }
 }
-.hello_text {
-    font-size: 20px;
-    color: var(--therd-color);
-    font-weight: bold;
-}
+
 .form {
     display: flex;
     flex-direction: column;
@@ -2036,20 +2529,6 @@ export default {
     }
 }
 
-img.pluse {
-    width: 40px;
-    cursor: pointer;
-    &:hover {
-        opacity: 0.7;
-    }
-}
-img.pluse.pluse_1 {
-    width: 30px;
-    cursor: pointer;
-    &:hover {
-        opacity: 0.7;
-    }
-}
 .visible {
     opacity: 0;
     animation: fadeIn 1s ease-in-out forwards;
@@ -3166,5 +3645,73 @@ th {
 }
 .v-card--variant-elevated {
     background: #fff;
+}
+.contain {
+    width: 90%;
+    overflow: auto;
+    margin: 20px auto;
+}
+
+table.schedule_table {
+    width: 100%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    th,
+    td {
+        border: 2px solid #ddd;
+        padding: 12px;
+        text-align: center;
+        vertical-align: middle;
+        min-height: 30px;
+        min-width: 140px;
+
+        &:first-child {
+            background-color: var(--secound-color);
+            color: var(--main-color);
+            font-weight: bold;
+        }
+
+        &:not(:first-child) {
+            background-color: white;
+        }
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    td {
+        .subject {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .teacher {
+            display: block;
+            font-size: 14px;
+            color: #777;
+        }
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 5px 0;
+    }
+    input {
+        padding: 5px;
+        border: none;
+        background: none;
+        text-align: center;
+        font-size: 14px;
+        border-radius: 5px;
+        width: 100%;
+    }
 }
 </style>

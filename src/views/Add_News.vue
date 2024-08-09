@@ -1,385 +1,353 @@
 <template>
     <div class="visible">
-        <Offline_error>
-            <template v-slot:default>
-                <svg
-                    style="
-                        position: fixed;
-                        top: 50%;
-                        left: 50%;
-                        transform: translate(-50%, -50%);
-                        width: 245px;
-                    "
-                    v-if="loading1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 200 200"
+        <Offline_error />
+        <svg
+            style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 245px;
+            "
+            v-if="loading1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 200 200"
+        >
+            <radialGradient
+                id="a12"
+                cx=".66"
+                fx=".66"
+                cy=".3125"
+                fy=".3125"
+                gradientTransform="scale(1.5)"
+            >
+                <stop offset="0" stop-color="#336699"></stop>
+                <stop offset=".3" stop-color="#336699" stop-opacity=".9"></stop>
+                <stop offset=".6" stop-color="#336699" stop-opacity=".6"></stop>
+                <stop offset=".8" stop-color="#336699" stop-opacity=".3"></stop>
+                <stop offset="1" stop-color="#336699" stop-opacity="0"></stop>
+            </radialGradient>
+            <circle
+                transform-origin="center"
+                fill="none"
+                stroke="url(#a12)"
+                stroke-width="15"
+                stroke-linecap="round"
+                stroke-dasharray="200 1000"
+                stroke-dashoffset="0"
+                cx="100"
+                cy="100"
+                r="70"
+            >
+                <animateTransform
+                    type="rotate"
+                    attributeName="transform"
+                    calcMode="spline"
+                    dur="2"
+                    values="360;0"
+                    keyTimes="0;1"
+                    keySplines="0 0 1 1"
+                    repeatCount="indefinite"
+                ></animateTransform>
+            </circle>
+            <circle
+                transform-origin="center"
+                fill="none"
+                opacity=".2"
+                stroke="#336699"
+                stroke-width="15"
+                stroke-linecap="round"
+                cx="100"
+                cy="100"
+                r="70"
+            ></circle>
+        </svg>
+        <div class="right">
+            <div>
+                <v-breadcrumbs>
+                    <v-breadcrumbs-item @click="$router.push('/admin')" link>
+                        الإشراف
+                    </v-breadcrumbs-item>
+                    <v-breadcrumbs-divider />
+                    <v-breadcrumbs-item>الأخبار</v-breadcrumbs-item>
+                </v-breadcrumbs>
+            </div>
+            <div class="left">
+                <img
+                    src="../assets/news/plus.svg"
+                    alt=""
+                    @click="dialog = true"
+                    class="pluse icon"
+                />
+            </div>
+        </div>
+
+        <v-dialog v-model="dialog" width="90%">
+            <v-card width="100%" class="popup">
+                <div
+                    class="d-flex justify-space-between align-center title mb-4"
                 >
-                    <radialGradient
-                        id="a12"
-                        cx=".66"
-                        fx=".66"
-                        cy=".3125"
-                        fy=".3125"
-                        gradientTransform="scale(1.5)"
+                    <div style="color: var(--main-color)">إضافة خبر</div>
+                    <v-btn icon="mdi-close" @click="dialog = false"></v-btn>
+                </div>
+                <form
+                    ref="form"
+                    @submit.prevent="news.Add_News"
+                    class="ma-auto mt-4"
+                >
+                    <v-text-field
+                        v-model="New.title"
+                        :rules="[(v) => !!v || 'الرجاء إدخال عنوان الخبر']"
+                        type="text"
+                        label="عنوان"
+                        variant="outlined"
+                        required
+                        :minlength="10"
+                        :maxlength="150"
+                    ></v-text-field>
+
+                    <v-file-input
+                        v-model="New.image"
+                        label="صورة"
+                        accept="image/*"
+                        variant="outlined"
+                        prepend-icon=""
+                        required
+                        prepend-inner-icon="mdi-paperclip"
+                        @input="news.upload_Image"
                     >
-                        <stop offset="0" stop-color="#336699"></stop>
-                        <stop
-                            offset=".3"
-                            stop-color="#336699"
-                            stop-opacity=".9"
-                        ></stop>
-                        <stop
-                            offset=".6"
-                            stop-color="#336699"
-                            stop-opacity=".6"
-                        ></stop>
-                        <stop
-                            offset=".8"
-                            stop-color="#336699"
-                            stop-opacity=".3"
-                        ></stop>
-                        <stop
-                            offset="1"
-                            stop-color="#336699"
-                            stop-opacity="0"
-                        ></stop>
-                    </radialGradient>
-                    <circle
-                        transform-origin="center"
-                        fill="none"
-                        stroke="url(#a12)"
-                        stroke-width="15"
-                        stroke-linecap="round"
-                        stroke-dasharray="200 1000"
-                        stroke-dashoffset="0"
-                        cx="100"
-                        cy="100"
-                        r="70"
+                    </v-file-input>
+                    <p>وصف قصير</p>
+                    <ckeditor
+                        v-model="New.description"
+                        id="Description"
+                        :editor="editor"
+                        :config="editorConfig"
+                        @input="updateCharCount"
+                        ref="ckeditor"
+                    ></ckeditor>
+                    <p>
+                        عدد الحروف: {{ charCount }} /
+                        {{ maxChars }}
+                        <span v-if="charCount >= maxChars" style="color: red">
+                            (Maximum characters reached)</span
+                        >
+                    </p>
+                    <v-btn
+                        class="d-flex align-center mt-4 mb-4"
+                        type="submit"
+                        :loading="loading"
+                        :disabled="loading"
+                        style="
+                            width: 100%;
+                            padding: 20px;
+                            letter-spacing: normal;
+                            font-weight: bold;
+                            font-size: 19px;
+                            background: var(--main-color);
+                            color: #fff;
+                        "
                     >
-                        <animateTransform
-                            type="rotate"
-                            attributeName="transform"
-                            calcMode="spline"
-                            dur="2"
-                            values="360;0"
-                            keyTimes="0;1"
-                            keySplines="0 0 1 1"
-                            repeatCount="indefinite"
-                        ></animateTransform>
-                    </circle>
-                    <circle
-                        transform-origin="center"
-                        fill="none"
-                        opacity=".2"
-                        stroke="#336699"
-                        stroke-width="15"
-                        stroke-linecap="round"
-                        cx="100"
-                        cy="100"
-                        r="70"
-                    ></circle>
-                </svg>
-                <div class="right">
-                    <div>
-                        <v-breadcrumbs>
-                            <v-breadcrumbs-item
-                                @click="$router.push('/admin')"
-                                link
-                            >
-                                الإشراف
-                            </v-breadcrumbs-item>
-                            <v-breadcrumbs-divider />
-                            <v-breadcrumbs-item>الأخبار</v-breadcrumbs-item>
-                        </v-breadcrumbs>
+                        إضافة
+                    </v-btn>
+                </form>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="dialog_1" width="90%">
+            <v-card width="100%" class="popup">
+                <div class="d-flex justify-space-between align-center title">
+                    <div style="color: var(--main-color)">تعديل خبر</div>
+                    <v-btn icon="mdi-close" @click="dialog_1 = false"></v-btn>
+                </div>
+                <form
+                    ref="form"
+                    @submit.prevent="news.Update_News(news.Id_Information)"
+                    class="ma-auto mt-4"
+                >
+                    <v-text-field
+                        v-model="news.Title_Information"
+                        :rules="[(v) => !!v || 'الرجاء إدخال عنوان الخبر']"
+                        type="text"
+                        label="عنوان"
+                        variant="outlined"
+                        required
+                        :minlength="10"
+                        :maxlength="150"
+                    ></v-text-field>
+                    <v-file-input
+                        v-model="news.Image_Information"
+                        label="صورة"
+                        accept="image/*"
+                        variant="outlined"
+                        prepend-icon=""
+                        prepend-inner-icon="mdi-paperclip"
+                        @change="news.onFileChange"
+                    ></v-file-input>
+                    <div
+                        v-if="news.Image_Information !== '' && news.image == ''"
+                    >
+                        <v-fab
+                            icon="mdi-delete"
+                            location="top right"
+                            size="40"
+                            absolute
+                            style="bottom: -15px; left: 5px"
+                            offset
+                            @click="
+                                news.delete_photo(news.Image_Information),
+                                    (news.Image_Information = '')
+                            "
+                        ></v-fab>
+                        <v-img
+                            :src="news.Image_Information"
+                            height="400"
+                            width="100%"
+                        ></v-img>
                     </div>
-                    <div class="left">
-                        <img
-                            src="../assets/news/plus.svg"
-                            alt=""
-                            @click="dialog = true"
-                            class="pluse icon"
-                        />
+                    <div v-if="news.image != ''">
+                        <v-img
+                            :src="news.image"
+                            height="400"
+                            width="100%"
+                        ></v-img>
+                    </div>
+                    <br />
+                    <p>وصف قصير</p>
+                    <ckeditor
+                        v-model="news.Description_Information"
+                        id="Description"
+                        :editor="editor"
+                        :config="editorConfig"
+                        @input="updateCharCount2"
+                        ref="ckeditor"
+                    ></ckeditor>
+                    <p>
+                        عدد الحروف: {{ charCount }} /
+                        {{ maxChars }}
+                        <span v-if="charCount >= maxChars" style="color: red">
+                            (Maximum characters reached)</span
+                        >
+                    </p>
+
+                    <v-btn
+                        type="submit"
+                        :loading="loading"
+                        :disabled="loading"
+                        class="d-flex align-center mt-4 mb-4"
+                        style="
+                            width: 100%;
+                            padding: 20px;
+                            letter-spacing: normal;
+                            font-weight: bold;
+                            font-size: 19px;
+                            background: var(--main-color);
+                            color: #fff;
+                        "
+                    >
+                        تعديل
+                    </v-btn>
+                </form>
+            </v-card>
+        </v-dialog>
+        <Empty_error v-if="empty === true" :text="text0" />
+        <v-container
+            v-if="(!loading1, empty === false)"
+            class="box d-flex align-center justify-space-around"
+        >
+            <div class="feat" v-for="New in News" :key="New.id">
+                <div class="Top">
+                    <font-awesome-icon
+                        :icon="['fas', 'pen-to-square']"
+                        @click="news.New_Information(New)"
+                        @click.="dialog_1 = true"
+                    />
+                    <font-awesome-icon
+                        :icon="['fas', 'trash']"
+                        @click.="news.New_Information(New)"
+                        @click="news.dialog_3 = true"
+                    />
+                    <v-img
+                        :src="New.image"
+                        width="100%"
+                        height="300"
+                        @click.="news.New_Information(New)"
+                        @click="dialog_6 = true"
+                        loading="lazy"
+                        cover
+                    ></v-img>
+                </div>
+                <div class="Bottom">
+                    <div class="title">{{ New.title }}</div>
+                    <div class="time">
+                        <font-awesome-icon :icon="['fas', 'clock']" />
+                        <div>
+                            {{ New.time.toDate().toLocaleString() }}
+                        </div>
+                    </div>
+                    <div style="width: 90% !important; margin: auto">
+                        <p
+                            v-html="New.description"
+                            style="color: var(--therd-color) !important"
+                        ></p>
                     </div>
                 </div>
-
-                <v-dialog v-model="dialog" width="90%">
-                    <v-card width="100%" class="popup">
-                        <div
-                            class="d-flex justify-space-between align-center title mb-4"
-                        >
-                            <div style="color: var(--main-color)">
-                                إضافة خبر
-                            </div>
-                            <v-btn
-                                icon="mdi-close"
-                                @click="dialog = false"
-                            ></v-btn>
-                        </div>
-                        <form
-                            ref="form"
-                            @submit.prevent="news.Add_News"
-                            class="ma-auto mt-4"
-                        >
-                            <v-text-field
-                                v-model="New.title"
-                                :rules="[
-                                    (v) => !!v || 'الرجاء إدخال عنوان الخبر',
-                                ]"
-                                type="text"
-                                label="عنوان"
-                                variant="outlined"
-                                required
-                                :minlength="10"
-                                :maxlength="150"
-                            ></v-text-field>
-
-                            <v-file-input
-                                v-model="New.image"
-                                label="صورة"
-                                accept="image/*"
-                                variant="outlined"
-                                prepend-icon=""
-                                required
-                                prepend-inner-icon="mdi-paperclip"
-                                @input="news.upload_Image"
-                            >
-                            </v-file-input>
-                            <p>وصف قصير</p>
-                            <ckeditor
-                                v-model="New.description"
-                                id="Description"
-                                :editor="editor"
-                                :config="editorConfig"
-                                @input="updateCharCount"
-                                ref="ckeditor"
-                            ></ckeditor>
-                            <p>
-                                عدد الحروف: {{ charCount }} /
-                                {{ maxChars }}
-                                <span
-                                    v-if="charCount >= maxChars"
-                                    style="color: red"
-                                >
-                                    (Maximum characters reached)</span
-                                >
-                            </p>
-                            <v-btn
-                                class="d-flex align-center mt-4 mb-4"
-                                type="submit"
-                                :loading="loading"
-                                :disabled="loading"
-                                style="
-                                    width: 100%;
-                                    padding: 20px;
-                                    letter-spacing: normal;
-                                    font-weight: bold;
-                                    font-size: 19px;
-                                    background: var(--main-color);
-                                    color: #fff;
-                                "
-                            >
-                                إضافة
-                            </v-btn>
-                        </form>
-                    </v-card>
-                </v-dialog>
-
-                <v-dialog v-model="dialog_1" width="90%">
-                    <v-card width="100%" class="popup">
-                        <div
-                            class="d-flex justify-space-between align-center title"
-                        >
-                            <div style="color: var(--main-color)">
-                                تعديل خبر
-                            </div>
-                            <v-btn
-                                icon="mdi-close"
-                                @click="dialog_1 = false"
-                            ></v-btn>
-                        </div>
-                        <form
-                            ref="form"
-                            @submit.prevent="
-                                news.Update_News(news.Id_Information)
-                            "
-                            class="ma-auto mt-4"
-                        >
-                            <v-text-field
-                                v-model="news.Title_Information"
-                                :rules="[
-                                    (v) => !!v || 'الرجاء إدخال عنوان الخبر',
-                                ]"
-                                type="text"
-                                label="عنوان"
-                                variant="outlined"
-                                required
-                                :minlength="10"
-                                :maxlength="150"
-                            ></v-text-field>
-                            <v-file-input
-                                v-model="news.Image_Information"
-                                label="صورة"
-                                accept="image/*"
-                                variant="outlined"
-                                prepend-icon=""
-                                prepend-inner-icon="mdi-paperclip"
-                                @change="news.onFileChange"
-                            ></v-file-input>
-                            <div
-                                v-if="
-                                    news.Image_Information !== '' &&
-                                    news.image == ''
-                                "
-                            >
-                                <v-fab
-                                    icon="mdi-delete"
-                                    location="top right"
-                                    size="40"
-                                    absolute
-                                    style="bottom: -15px; left: 5px"
-                                    offset
-                                    @click="
-                                        news.delete_photo(
-                                            news.Image_Information
-                                        ),
-                                            (news.Image_Information = '')
-                                    "
-                                ></v-fab>
-                                <v-img
-                                    :src="news.Image_Information"
-                                    height="400"
-                                    width="100%"
-                                ></v-img>
-                            </div>
-                            <div v-if="news.image != ''">
-                                <v-img
-                                    :src="news.image"
-                                    height="400"
-                                    width="100%"
-                                ></v-img>
-                            </div>
-                            <br />
-                            <p>وصف قصير</p>
-                            <ckeditor
-                                v-model="news.Description_Information"
-                                id="Description"
-                                :editor="editor"
-                                :config="editorConfig"
-                                @input="updateCharCount2"
-                                ref="ckeditor"
-                            ></ckeditor>
-                            <p>
-                                عدد الحروف: {{ charCount }} /
-                                {{ maxChars }}
-                                <span
-                                    v-if="charCount >= maxChars"
-                                    style="color: red"
-                                >
-                                    (Maximum characters reached)</span
-                                >
-                            </p>
-
-                            <v-btn
-                                type="submit"
-                                :loading="loading"
-                                :disabled="loading"
-                                class="d-flex align-center mt-4 mb-4"
-                                style="
-                                    width: 100%;
-                                    padding: 20px;
-                                    letter-spacing: normal;
-                                    font-weight: bold;
-                                    font-size: 19px;
-                                    background: var(--main-color);
-                                    color: #fff;
-                                "
-                            >
-                                تعديل
-                            </v-btn>
-                        </form>
-                    </v-card>
-                </v-dialog>
-                <Empty_error v-if="empty === true" :text="text0" />
-                <v-container
-                    v-if="(!loading1, empty === false)"
-                    class="box d-flex align-center justify-space-around"
-                >
-                    <div class="feat" v-for="New in News" :key="New.id">
-                        <div class="Top">
-                            <font-awesome-icon
-                                :icon="['fas', 'pen-to-square']"
-                                @click="news.New_Information(New)"
-                                @click.="dialog_1 = true"
-                            />
-                            <font-awesome-icon
-                                :icon="['fas', 'trash']"
-                                @click.="news.New_Information(New)"
-                                @click="news.dialog_3 = true"
-                            />
-                            <v-img
-                                :src="New.image"
-                                width="100%"
-                                height="300"
-                                @click.="news.New_Information(New)"
-                                @click="dialog_6 = true"
-                                loading="lazy"
-                                cover
-                            ></v-img>
-                        </div>
-                        <div class="Bottom">
-                            <div class="title">{{ New.title }}</div>
-                            <div class="time">
-                                <font-awesome-icon :icon="['fas', 'clock']" />
-                                <div>
-                                    {{ New.time.toDate().toLocaleString() }}
-                                </div>
-                            </div>
-                            <div style="width: 90% !important; margin: auto">
-                                <p
-                                    v-html="New.description"
-                                    style="color: var(--therd-color) !important"
-                                ></p>
-                            </div>
-                        </div>
+            </div>
+            <!-- Display each photo -->
+            <v-dialog v-model="dialog_6" width="90%">
+                <v-card width="100%" class="popup">
+                    <div
+                        class="d-flex justify-space-between align-center title"
+                    >
+                        <div style="color: var(--main-color)">الصور</div>
+                        <v-btn
+                            icon="mdi-close"
+                            @click="dialog_6 = false"
+                        ></v-btn>
                     </div>
-                    <!-- Display each photo -->
-                    <v-dialog v-model="dialog_6" width="90%">
-                        <v-card width="100%" class="popup">
-                            <div
-                                class="d-flex justify-space-between align-center title"
+                    <v-carousel
+                        :show-arrows="showArrows"
+                        hide-delimiters
+                        height="100%"
+                    >
+                        <v-carousel-item
+                            class="pa-5 text-center"
+                            :src="news.Image_Information"
+                            height="400"
+                        ></v-carousel-item>
+                        <v-carousel-item
+                            class="pa-5 text-center"
+                            v-for="New in News"
+                            :key="New.id"
+                            :src="New.image"
+                            height="400"
+                        ></v-carousel-item>
+                        <template v-slot:next="{ props }">
+                            <v-icon
+                                style="
+                                    text-align: center;
+                                    color: var(--main-color);
+                                "
+                                @click="props.onClick"
+                                class="pa-10 carousel-arrow next-arrow"
+                                >mdi-menu-right</v-icon
                             >
-                                <div style="color: var(--main-color)">
-                                    الصور
-                                </div>
-                                <v-btn
-                                    icon="mdi-close"
-                                    @click="dialog_6 = false"
-                                ></v-btn>
-                            </div>
-                            <v-carousel
-                                :show-arrows="false"
-                                hide-delimiter-background
-                                color="var(--main-color)"
+                        </template>
+                        <template v-slot:prev="{ props }">
+                            <v-icon
+                                style="
+                                    text-align: center;
+                                    color: var(--main-color);
+                                "
+                                @click="props.onClick"
+                                class="pa-10 carousel-arrow prev-arrow"
+                                >mdi-menu-left</v-icon
                             >
-                                <v-carousel-item
-                                    class="pa-5"
-                                    :src="news.Image_Information"
-                                    height="400"
-                                    cover
-                                ></v-carousel-item>
-                                <v-carousel-item
-                                    class="pa-5"
-                                    v-for="New in News"
-                                    :key="New.id"
-                                    :src="New.image"
-                                    height="400"
-                                    cover
-                                ></v-carousel-item>
-                            </v-carousel> </v-card
-                    ></v-dialog>
-                </v-container>
-            </template>
-        </Offline_error>
+                        </template>
+                    </v-carousel>
+                </v-card></v-dialog
+            >
+        </v-container>
     </div>
     <v-dialog v-model="news.dialog_3" width="90%">
         <v-card width="100%" class="popup">
@@ -464,6 +432,8 @@ export default defineComponent({
     inject: ["Emitter"],
 
     mounted() {
+        this.updateArrowVisibility();
+        window.addEventListener("resize", this.updateArrowVisibility);
         gsap.fromTo(
             ".icon",
             { y: 3 },
@@ -494,6 +464,7 @@ export default defineComponent({
     },
     data() {
         return {
+            showArrows: true,
             editor: ClassicEditor,
             charCount: 0,
             maxChars: 150,
@@ -505,8 +476,10 @@ export default defineComponent({
             },
         };
     },
-
     methods: {
+        updateArrowVisibility() {
+            this.showArrows = window.innerWidth >= 700;
+        },
         updateCharCount2() {
             this.charCount = this.news.Description_Information.length;
 

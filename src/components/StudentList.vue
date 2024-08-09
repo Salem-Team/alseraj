@@ -98,7 +98,10 @@
                                 @click="toggleIcon(student)"
                             />
 
-                            <font-awesome-icon :icon="['fas', 'trash']" />
+                            <font-awesome-icon
+                                :icon="['fas', 'trash']"
+                                @click.stop="confirmDeleteStudent(student.id)"
+                            />
                         </div>
                     </div>
                     <div class="body">
@@ -2736,7 +2739,9 @@ export default {
         isSortedAscending: Boolean,
         paymentSortActive: Boolean,
         gradeSortActive: String,
+        selectedClassj: String,
         gradeOptions: Array,
+        filteredStudentList: Array,
     },
     setup() {
         const toast = useToast();
@@ -3847,6 +3852,40 @@ export default {
                         educationalLevel
                     );
                 }
+
+                // العثور على الآباء المرتبطين بالطالب وتحديثهم
+                const parentsRef = collection(db, "parents");
+                const parentsSnapshot = await getDocs(parentsRef);
+                parentsSnapshot.forEach(async (parentDoc) => {
+                    const parentData = parentDoc.data();
+                    const children = parentData.Child || [];
+
+                    const updatedChildren = children.filter(
+                        (child) => child.natioal_id !== id
+                    );
+                    if (children.length !== updatedChildren.length) {
+                        const parentRef = doc(db, "parents", parentDoc.id);
+                        if (updatedChildren.length === 0) {
+                            // حذف مستند الأب إذا لم يكن هناك أطفال
+                            await deleteDoc(parentRef);
+                            console.log(
+                                "Deleted parent document with id:",
+                                parentDoc.id
+                            );
+                        } else {
+                            // تحديث مصفوفة الأطفال في مستند الأب
+                            await setDoc(
+                                parentRef,
+                                { Child: updatedChildren },
+                                { merge: true }
+                            );
+                            console.log(
+                                "Updated parent with id:",
+                                parentDoc.id
+                            );
+                        }
+                    }
+                });
 
                 this.confirmationText = "تم مسح الطالب بنجاح";
                 this.showSnackbar = true;
@@ -4969,22 +5008,34 @@ export default {
         //     return this.isPressed ? "mdi-eye-off" : "mdi-eye";
         // },
         filteredStudents() {
-            if (this.selectedSection === "الكل") {
-                return this.students.filter(
-                    (student) => student.educational_level === this.year
+            const trimmedQuery = this.searchQuery.trim().toLowerCase();
+            const students = this.filteredStudentList.filter((student) => {
+                const matchesYear = student.educational_level === this.year;
+                const matchesSection =
+                    this.selectedSection === "الكل" ||
+                    student.section === this.selectedSection;
+                const matchesClass =
+                    !this.selectedClassj ||
+                    student.class === this.selectedClassj;
+                const matchesSearchQuery = student.student_name
+                    .toLowerCase()
+                    .includes(trimmedQuery);
+
+                return (
+                    matchesYear &&
+                    matchesSection &&
+                    matchesClass &&
+                    matchesSearchQuery
                 );
-            }
-            return this.students.filter(
-                (student) =>
-                    student.educational_level === this.year &&
-                    student.section === this.selectedSection
-            );
+            });
+
+            this.$emit("updateFilteredCount", students.length);
+            return students;
         },
         sortedStudents() {
             const studentsToSort = this.filteredStudents;
 
             if (this.gradeSortActive) {
-                // الترتيب حسب الدرجات لشهر معين
                 return [...studentsToSort].sort((a, b) => {
                     const gradeA = this.getMonthlyDegrees(
                         a,
@@ -4994,17 +5045,15 @@ export default {
                         b,
                         this.gradeSortActive
                     );
-                    return gradeB - gradeA; // ترتيب تنازلي
+                    return gradeB - gradeA;
                 });
             } else if (this.paymentSortActive) {
-                // الترتيب حسب المدفوعات
                 return [...studentsToSort].sort((a, b) => {
                     const residualA = a.payments.Expenses - a.payments.paid_Up;
                     const residualB = b.payments.Expenses - b.payments.paid_Up;
                     return residualA - residualB;
                 });
             } else {
-                // الترتيب أبجدي
                 return studentsToSort.sort((a, b) => {
                     const nameA = a.student_name.toUpperCase();
                     const nameB = b.student_name.toUpperCase();
@@ -5615,9 +5664,6 @@ th {
     display: flex;
     // gap: 10px;
     align-items: center;
-    & > div {
-        // width: 48%;
-    }
 }
 .details {
     display: flex;

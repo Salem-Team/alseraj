@@ -5,8 +5,6 @@ import ClassPage from "../views/classs_page.vue";
 import TheAdministrator from "../views/TheAdministrator.vue";
 import HomeView from "../views/HomeView.vue";
 import UserLogin from "../views/USerLogin.vue";
-import Parent_Dashboard from "../views/Parent_Dashboard.vue";
-import Student_Dashboard from "../views/Student_Dashboard.vue";
 import profile_view from "../views/profile_view.vue";
 import Top_Board from "../views/Top_Board.vue";
 import Add_News from "../views/Add_News.vue";
@@ -22,24 +20,14 @@ import ChildDetails from "../views/ChildDetails.vue";
 const routes = [
     { path: "/", name: "home", component: HomeView },
     { path: "/UserLogin", name: "UserLogin", component: UserLogin },
-    {
-        path: "/Parent_Dashboard",
-        name: "Parent_Dashboard",
-        component: Parent_Dashboard,
-        meta: { requiresAuth: true, requiredAuthority: "parent" },
-    },
+
     {
         path: "/ChildDetails/:id",
         name: "ChildDetails",
         component: ChildDetails,
         meta: { requiresAuth: true, requiredAuthority: "parent" },
     },
-    {
-        path: "/Student_Dashboard/:id",
-        name: "Student_Dashboard",
-        component: Student_Dashboard,
-        meta: { requiresAuth: true, requiredAuthority: "student" },
-    },
+
     {
         path: "/Top_Board",
         name: "Top_Board",

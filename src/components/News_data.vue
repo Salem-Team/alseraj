@@ -18,18 +18,18 @@
                 class="feat"
                 v-for="New in News"
                 :key="New.id"
-                width="24%"
+                width="20%"
                 @click.="news.New_Information(New)"
                 @click="dialog_6 = true"
             >
-                <v-lazy
-                    :min-height="400"
-                    :options="{ threshold: 0.5 }"
-                    transition="fade-transition"
-                >
-                    <!-- Image -->
-                    <v-img :src="New.image" height="300" cover></v-img>
-                </v-lazy>
+                <!-- Image -->
+                <v-img
+                    :src="New.image"
+                    height="300"
+                    cover
+                    loading="lazy"
+                ></v-img>
+
                 <!-- Title -->
                 <v-card-text
                     class="card_title d-flex justify-center flex-wrap"
@@ -66,26 +66,47 @@
                         ></v-btn>
                     </div>
                     <v-carousel
-                        :show-arrows="false"
-                        hide-delimiter-background
-                        color="var(--main-color)"
+                        :show-arrows="showArrows"
+                        hide-delimiters
+                        height="100%"
                     >
                         <v-carousel-item
-                            class="pa-5"
+                            class="pa-5 text-center"
                             :src="news.Image_Information"
                             height="400"
-                            cover
                         ></v-carousel-item>
                         <v-carousel-item
-                            class="pa-5"
+                            class="pa-5 text-center"
                             v-for="New in News"
                             :key="New.id"
                             :src="New.image"
                             height="400"
-                            cover
                         ></v-carousel-item>
-                    </v-carousel> </v-card
-            ></v-dialog>
+                        <template v-slot:next="{ props }">
+                            <v-icon
+                                style="
+                                    text-align: center;
+                                    color: var(--main-color);
+                                "
+                                @click="props.onClick"
+                                class="pa-10 carousel-arrow next-arrow"
+                                >mdi-menu-right</v-icon
+                            >
+                        </template>
+                        <template v-slot:prev="{ props }">
+                            <v-icon
+                                style="
+                                    text-align: center;
+                                    color: var(--main-color);
+                                "
+                                @click="props.onClick"
+                                class="pa-10 carousel-arrow prev-arrow"
+                                >mdi-menu-left</v-icon
+                            >
+                        </template>
+                    </v-carousel>
+                </v-card></v-dialog
+            >
         </v-container>
 
         <!-- Button to Load More News -->
@@ -146,6 +167,20 @@ export default defineComponent({
             news,
             News,
         };
+    },
+    data() {
+        return {
+            showArrows: true,
+        };
+    },
+    mounted() {
+        this.updateArrowVisibility();
+        window.addEventListener("resize", this.updateArrowVisibility);
+    },
+    methods: {
+        updateArrowVisibility() {
+            this.showArrows = window.innerWidth >= 700;
+        },
     },
 });
 </script>
@@ -221,21 +256,10 @@ export default defineComponent({
     font-weight: bold;
     font-size: 20px;
 }
-.v-img::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    border-style: solid;
-    border-width: 0px 0px 130px 300px;
-    border-color: transparent transparent white transparent;
-    transition: 0.3s;
-}
-.v-card:hover .v-img::before {
-    border-width: 0px 580px 270px 0;
-}
 .v-card {
     text-align: center !important;
+    box-shadow: 5px 10px var(--secound-color);
+    margin-left: 6px !important;
 }
 
 /* Media Queries */
@@ -324,6 +348,21 @@ export default defineComponent({
 @media (min-width: 700px) and (max-width: 950px) {
     .feat {
         width: 47% !important;
+    }
+}
+@media (min-width: 1080px) {
+    .v-img::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        border-style: solid;
+        border-width: 0px 0px 130px 300px;
+        border-color: transparent transparent white transparent;
+        transition: 0.3s;
+    }
+    .v-card:hover .v-img::before {
+        border-width: 0px 580px 270px 0;
     }
 }
 </style>

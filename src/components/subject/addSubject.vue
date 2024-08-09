@@ -255,6 +255,10 @@ export default {
         },
     },
     methods: {
+        closeSubjectDialog() {
+            this.subjectDialogVisible = false;
+            this.$emit("closeDialog", false);
+        },
         openAddSubjectDialog() {
             this.addSubjectDialogVisible = true;
         },

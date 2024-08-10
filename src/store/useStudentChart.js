@@ -25,6 +25,7 @@ export const useStudentStore = defineStore("student", {
 
                 // Execute the query
                 const querySnapshot = await getDocs(q);
+                console.log("Student querySnapshot:=>", querySnapshot);
 
                 // Clear previous data
                 this.monthlyDta = [];

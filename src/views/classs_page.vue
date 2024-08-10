@@ -549,7 +549,470 @@
                         </v-card>
                     </v-dialog>
                     <v-dialog v-model="main_bubble" max-width="90%">
-                        <v-card>
+                        <div class="search">
+                            <div class="right right_1">
+                                <div>
+                                    <v-breadcrumbs>
+                                        <v-breadcrumbs-item
+                                            @click="main_bubble = false"
+                                            link
+                                        >
+                                            <div>الإعدادت</div>
+                                            <font-awesome-icon
+                                                :icon="['fas', 'gear']"
+                                            />
+                                        </v-breadcrumbs-item>
+                                        <v-breadcrumbs-divider />
+                                        <v-breadcrumbs-item
+                                            >الإختبارات
+                                            الأونلاين</v-breadcrumbs-item
+                                        >
+                                    </v-breadcrumbs>
+                                </div>
+                                <div class="left">
+                                    <font-awesome-icon
+                                        :icon="['fas', 'xmark']"
+                                        @click="main_bubble = false"
+                                        style="font-size: 25px"
+                                    />
+                                </div>
+                            </div>
+                            <div class="add">
+                                <div>(2) إختبارات</div>
+                                <div>
+                                    <font-awesome-icon
+                                        :icon="['fas', 'plus']"
+                                        @click="main_bubble_1 = true"
+                                    />
+                                </div>
+                            </div>
+                            <div class="feats">
+                                <div class="feat">
+                                    <div>المادة: عربي</div>
+                                    <div>أختبار علي الوحدة الأولي</div>
+                                    <div>فصل (1/1) - عربي</div>
+                                    <div>
+                                        <font-awesome-icon
+                                            :icon="['fas', 'calendar-days']"
+                                        />
+                                        <div>2024/8/11</div>
+                                    </div>
+                                    <div class="time">
+                                        <div>
+                                            <font-awesome-icon
+                                                :icon="['fas', 'clock']"
+                                            />
+                                            <div>10:00 م</div>
+                                        </div>
+                                        <div>إلي</div>
+                                        <div>
+                                            <div>10:00 م</div>
+                                        </div>
+                                    </div>
+                                    <div>(10) طلاب تم اختبارهم</div>
+                                    <button>الطلاب</button>
+                                    <div>
+                                        <button @click="main_bubble_2 = true">
+                                            الإختبار
+                                        </button>
+                                        <button>حذف</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <v-dialog v-model="main_bubble_2" max-width="90%">
+                            <div class="search">
+                                <div class="right right_1">
+                                    <v-breadcrumbs>
+                                        <v-breadcrumbs-item
+                                            ><input
+                                                style="width: 80%"
+                                                type="text"
+                                                value="عربي"
+                                        /></v-breadcrumbs-item>
+                                    </v-breadcrumbs>
+                                    <div class="left">
+                                        <font-awesome-icon
+                                            :icon="['fas', 'xmark']"
+                                            @click="main_bubble_2 = false"
+                                            style="font-size: 25px"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="top">
+                                    <v-text-field
+                                        v-model="userName_0"
+                                        label="عنوان الإختبار"
+                                        style="
+                                            color: var(--therd-color);
+                                            font-weight: bold;
+                                        "
+                                    ></v-text-field>
+                                    <v-select
+                                        v-model="newTest.section"
+                                        :items="section"
+                                        label="القسم"
+                                        required
+                                        style="
+                                            color: var(--therd-color);
+                                            font-weight: bold;
+                                        "
+                                    ></v-select>
+
+                                    <v-select
+                                        v-model="newTest.className"
+                                        :items="all_classes"
+                                        label="الفصل"
+                                        required
+                                        style="
+                                            color: var(--therd-color);
+                                            font-weight: bold;
+                                        "
+                                    ></v-select>
+
+                                    <v-text-field
+                                        v-model="
+                                            newTest.questions[0].Date_Testing
+                                        "
+                                        label="تاريخ بدأ الاختبار"
+                                        required
+                                        type="date"
+                                        dir="ltr"
+                                        lang="ar"
+                                    ></v-text-field>
+                                    <v-text-field
+                                        v-model="
+                                            newTest.questions[0].Time_Testing
+                                        "
+                                        label="وقت بداية الإختبار"
+                                        type="time"
+                                        required
+                                    ></v-text-field>
+                                    <v-text-field
+                                        label="وقت نهاية الإختبار"
+                                        type="time"
+                                        required
+                                    ></v-text-field>
+                                    <div class="Btns">
+                                        <v-btn
+                                            :loading="loading"
+                                            class="mt-2"
+                                            type="submit"
+                                            block
+                                            style="
+                                                color: #fff;
+                                                font-weight: bold;
+                                                background: var(--main-color);
+                                                padding: 20px;
+                                            "
+                                        >
+                                            <font-awesome-icon
+                                                :icon="['fas', 'floppy-disk']"
+                                            />
+                                            <div>حفظ التغييرات</div>
+                                        </v-btn>
+                                        <v-menu>
+                                            <template
+                                                v-slot:activator="{ props }"
+                                            >
+                                                <v-btn
+                                                    color="var(--main-color)"
+                                                    v-bind="props"
+                                                    style="
+                                                        color: #fff;
+                                                        font-weight: bold;
+                                                        background: var(
+                                                            --main-color
+                                                        );
+                                                    "
+                                                >
+                                                    <font-awesome-icon
+                                                        :icon="['fas', 'plus']"
+                                                    />
+                                                    <div>إضافة سؤال</div>
+                                                </v-btn>
+                                            </template>
+                                            <v-list>
+                                                <v-list-item @click="AddQu_1">
+                                                    <v-list-item-title>
+                                                        <font-awesome-icon
+                                                            :icon="[
+                                                                'fas',
+                                                                'check',
+                                                            ]"
+                                                        />
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item @click="AddQu_2">
+                                                    <v-list-item-title>
+                                                        <font-awesome-icon
+                                                            :icon="[
+                                                                'fas',
+                                                                'list-check',
+                                                            ]"
+                                                        />
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                            </v-list>
+                                        </v-menu>
+                                    </div>
+                                </div>
+                                <div class="Bottom">
+                                    <div v-if="questions.length > 0">
+                                        <h3
+                                            style="
+                                                color: var(--main-color);
+                                                margin-bottom: 20px;
+                                            "
+                                        >
+                                            عدد الأسئلة : {{ questions.length }}
+                                        </h3>
+                                        <div
+                                            class="Feat"
+                                            v-for="(
+                                                question, index
+                                            ) in questions"
+                                            :key="index"
+                                        >
+                                            <div class="header">
+                                                <div class="number">
+                                                    {{ index + 1 }}
+                                                </div>
+                                                <font-awesome-icon
+                                                    @click="
+                                                        removeQuestion(index)
+                                                    "
+                                                    :icon="['fas', 'trash']"
+                                                    style="
+                                                        font-size: 20px;
+                                                        color: var(
+                                                            --pink-color
+                                                        );
+                                                    "
+                                                />
+                                            </div>
+                                            <div>
+                                                <div
+                                                    v-if="
+                                                        question.type ===
+                                                        'true_false'
+                                                    "
+                                                >
+                                                    <textarea
+                                                        v-model="
+                                                            questions[index]
+                                                                .question
+                                                        "
+                                                        placeholder="أدخل نص السؤال"
+                                                        style="
+                                                            width: 100%;
+                                                            margin: 10px 0;
+                                                            padding: 8px 0;
+                                                            font-weight: bold;
+                                                        "
+                                                    ></textarea>
+                                                    <div class="btns">
+                                                        <div
+                                                            :class="{
+                                                                active:
+                                                                    question.correctAnswer ===
+                                                                    true,
+                                                            }"
+                                                            @click="
+                                                                setAnswer(
+                                                                    index,
+                                                                    true
+                                                                )
+                                                            "
+                                                            color="green"
+                                                            dark
+                                                        >
+                                                            صح
+                                                        </div>
+                                                        <div
+                                                            :class="{
+                                                                active:
+                                                                    question.correctAnswer ===
+                                                                    false,
+                                                            }"
+                                                            @click="
+                                                                setAnswer(
+                                                                    index,
+                                                                    false
+                                                                )
+                                                            "
+                                                            color="red"
+                                                            dark
+                                                        >
+                                                            خطأ
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    v-else-if="
+                                                        question.type ===
+                                                        'multiple_choice'
+                                                    "
+                                                >
+                                                    <textarea
+                                                        style="
+                                                            width: 100%;
+                                                            margin: 10px 0;
+                                                            padding: 8px 0;
+                                                            font-weight: bold;
+                                                        "
+                                                        type="text"
+                                                        v-model="
+                                                            question.question
+                                                        "
+                                                    ></textarea>
+                                                    <div class="inputs">
+                                                        <div
+                                                            v-for="(
+                                                                option, optIndex
+                                                            ) in question.options"
+                                                            :key="optIndex"
+                                                        >
+                                                            <input
+                                                                :style="{
+                                                                    borderColor:
+                                                                        optIndex ===
+                                                                        0
+                                                                            ? 'var(--main-color)'
+                                                                            : 'var(--pink-color)',
+                                                                    borderWidth:
+                                                                        '2px',
+                                                                    borderStyle:
+                                                                        'solid',
+                                                                }"
+                                                                v-model="
+                                                                    questions[
+                                                                        index
+                                                                    ].options[
+                                                                        optIndex
+                                                                    ]
+                                                                "
+                                                                @change="
+                                                                    updateOption(
+                                                                        index,
+                                                                        optIndex
+                                                                    )
+                                                                "
+                                                                type="text"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-else>
+                                        <p>لم تتم إضافة أي أسئلة بعد.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </v-dialog>
+                        <v-dialog v-model="main_bubble_1" max-width="90%">
+                            <div class="search">
+                                <div class="right right_1">
+                                    <v-breadcrumbs>
+                                        <v-breadcrumbs-item
+                                            >إضافة إختبار</v-breadcrumbs-item
+                                        >
+                                    </v-breadcrumbs>
+                                    <div class="left">
+                                        <font-awesome-icon
+                                            :icon="['fas', 'xmark']"
+                                            @click="main_bubble_1 = false"
+                                            style="font-size: 25px"
+                                        />
+                                    </div>
+                                </div>
+                                <v-form
+                                    validate-on="submit lazy"
+                                    @submit.prevent="submit"
+                                    style="margin-top: 20px"
+                                >
+                                    <v-text-field
+                                        v-model="userName"
+                                        label="المادة"
+                                        style="
+                                            color: var(--therd-color);
+                                            font-weight: bold;
+                                        "
+                                    ></v-text-field>
+                                    <v-text-field
+                                        v-model="userName_0"
+                                        label="عنوان الإختبار"
+                                        style="
+                                            color: var(--therd-color);
+                                            font-weight: bold;
+                                        "
+                                    ></v-text-field>
+                                    <v-select
+                                        v-model="newTest.section"
+                                        :items="section"
+                                        label="القسم"
+                                        required
+                                        style="
+                                            color: var(--therd-color);
+                                            font-weight: bold;
+                                        "
+                                    ></v-select>
+
+                                    <v-select
+                                        v-model="newTest.className"
+                                        :items="all_classes"
+                                        label="الفصل"
+                                        required
+                                        style="
+                                            color: var(--therd-color);
+                                            font-weight: bold;
+                                        "
+                                    ></v-select>
+
+                                    <v-text-field
+                                        v-model="
+                                            newTest.questions[0].Date_Testing
+                                        "
+                                        label="تاريخ بدأ الاختبار"
+                                        required
+                                        type="date"
+                                        dir="ltr"
+                                        lang="ar"
+                                    ></v-text-field>
+                                    <v-text-field
+                                        v-model="
+                                            newTest.questions[0].Time_Testing
+                                        "
+                                        label="وقت بداية الإختبار"
+                                        type="time"
+                                        required
+                                    ></v-text-field>
+                                    <v-text-field
+                                        label="وقت نهاية الإختبار"
+                                        type="time"
+                                        required
+                                    ></v-text-field>
+
+                                    <v-btn
+                                        :loading="loading"
+                                        class="mt-2"
+                                        text="إضافة"
+                                        type="submit"
+                                        block
+                                        style="
+                                            color: #fff;
+                                            font-weight: bold;
+                                            background: var(--main-color);
+                                            padding: 20px;
+                                        "
+                                    ></v-btn>
+                                </v-form>
+                            </div>
+                        </v-dialog>
+
+                        <!-- <v-card>
                             <div
                                 style="
                                     background-color: #2196f3;
@@ -613,7 +1076,6 @@
                                                 lg="6"
                                                 class="mb-4"
                                             >
-                                                <!-- 666666666666666666666666666666666666 -->
                                                 <v-card
                                                     class="mx-auto"
                                                     width="100%"
@@ -637,7 +1099,6 @@
                                                             >
                                                                 عرض الأسئلة
                                                             </v-btn>
-                                                            <!-- أيقونة الحذف -->
                                                             <v-icon
                                                                 size="30"
                                                                 @click="
@@ -650,7 +1111,6 @@
                                                                 mdi-delete
                                                             </v-icon>
                                                         </v-card-actions>
-                                                        <!-- نافذة التأكيد -->
 
                                                         <v-card-title
                                                             style="
@@ -759,12 +1219,10 @@
                                                     </v-card-text>
                                                 </v-card>
 
-                                                <!-- 4444444444444444444444444444444444 -->
                                                 <v-dialog
                                                     v-model="questionsDialog"
                                                     max-width="90%"
                                                 >
-                                                    <!-- 77777777777777777777777 -->
                                                     <v-card>
                                                         <v-card-title>
                                                             <span
@@ -774,7 +1232,6 @@
                                                             >
                                                         </v-card-title>
                                                         <v-card-text>
-                                                            <!-- 999999999999999 -->
                                                             <v-form
                                                                 ref="questionsForm"
                                                             >
@@ -793,7 +1250,7 @@
                                                                                 index
                                                                             "
                                                                         >
-                                                                            <v-list-item-content>
+                                                                            <div>
                                                                                 <v-text-field
                                                                                     v-model="
                                                                                         question.question
@@ -823,13 +1280,13 @@
                                                                                     required
                                                                                 ></v-text-field>
                                                                                 <v-divider></v-divider>
-                                                                            </v-list-item-content>
+                                                                            </div>
                                                                         </v-list-item>
                                                                     </v-list-item-group>
                                                                     <v-list-item
                                                                         v-else
                                                                     >
-                                                                        <v-list-item-content>
+                                                                        <div>
                                                                             <v-list-item-title
                                                                                 >لا
                                                                                 توجد
@@ -837,7 +1294,7 @@
                                                                                 لهذا
                                                                                 الاختبار.</v-list-item-title
                                                                             >
-                                                                        </v-list-item-content>
+                                                                        </div>
                                                                     </v-list-item>
                                                                 </v-list>
                                                                 <v-btn
@@ -874,7 +1331,6 @@
                                     </v-col>
                                 </v-row>
                             </v-card-text>
-                            <!-- 555555555555555555555555 -->
                             <v-dialog
                                 v-model="dialog_bubble"
                                 max-width="90%"
@@ -941,7 +1397,6 @@
                                                                 label="عنوان السؤال"
                                                                 required
                                                             >
-                                                                <!-- هنا نعرض العنوان -->
                                                             </v-text-field>
                                                             <v-text-field
                                                                 v-model="
@@ -1065,7 +1520,7 @@
                                     </div>
                                 </v-card>
                             </v-dialog>
-                        </v-card>
+                        </v-card> -->
                     </v-dialog>
                 </v-col>
             </v-row>
@@ -1077,25 +1532,82 @@
                 {{ snackbar.message }}
                 <v-btn text @click="snackbar.visible = false">Close</v-btn>
             </v-snackbar>
-
             <ul class="show_details">
-                <li v-if="selectedClassj">
+                <li>
                     <font-awesome-icon :icon="['fas', 'filter']" />
-                    <div>فصل {{ selectedClassj }}</div>
+                    <div>فصل 1/1</div>
                 </li>
-                <li v-if="filtersy.byGrades">
+                <li>
                     <font-awesome-icon :icon="['fas', 'filter']" />
-                    <div>نتائج {{ filtersy.byGrades }}</div>
+                    <div>نتائج شهر أكتوبر</div>
                 </li>
-                <li v-if="paymentSortActive">
+                <li>
                     <font-awesome-icon :icon="['fas', 'filter']" />
                     <div>ترتيب حسب المدفوعات</div>
                 </li>
-                <li v-if="filteredStudentsCount">
+                <li>
                     <font-awesome-icon :icon="['fas', 'filter']" />
-                    <div>نتيجة الفلتر: {{ filteredStudentsCount }}</div>
+                    <div>نتيجة الفلتر : 10</div>
                 </li>
             </ul>
+
+            <!-- <v-row>
+                <v-col>
+                    <h3
+                        v-if="isSortedAscending"
+                        style="color: rgba(33, 150, 243, 0.768627451)"
+                    >
+                        نوع الفلتر :
+                        {{ isSortedAscending ? " ابجدي" : "" }}
+                    </h3>
+                    <h3
+                        v-if="paymentSortActive"
+                        style="color: rgba(33, 150, 243, 0.768627451)"
+                    >
+                        نوع الفلتر :
+                        {{ paymentSortActive ? "حسب المدفوعات" : "" }}
+                    </h3>
+                    
+                </v-col>
+            </v-row> -->
+            <!-- <v-row>
+                <v-col cols="12" md="4" sm="6">
+                    <v-btn
+                        :class="{ active: activeButton === 'الكل' }"
+                        :style="buttonStyle('الكل')"
+                        rounded="xl"
+                        size="x-large"
+                        block
+                        @click="updateSection('الكل')"
+                    >
+                        الكل
+                    </v-btn>
+                </v-col>
+                <v-col cols="12" md="4" sm="6">
+                    <v-btn
+                        :class="{ active: activeButton === 'عربي' }"
+                        :style="buttonStyle('عربي')"
+                        rounded="xl"
+                        size="x-large"
+                        block
+                        @click="updateSection('عربي')"
+                    >
+                        عربي
+                    </v-btn>
+                </v-col>
+                <v-col cols="12" md="4" sm="6">
+                    <v-btn
+                        :class="{ active: activeButton === 'لغات' }"
+                        :style="buttonStyle('لغات')"
+                        rounded="xl"
+                        size="x-large"
+                        block
+                        @click="updateSection('لغات')"
+                    >
+                        لغات
+                    </v-btn>
+                </v-col>
+            </v-row> -->
 
             <v-dialog v-model="dialogFilter" width="90%">
                 <div class="filter">
@@ -1127,7 +1639,7 @@
                                     border-radius: 5px;
                                     padding: 0 10px;
                                 "
-                                @blur="handlePaymentSortChange"
+                                @change="handlePaymentSortChange"
                                 class="filter-switch"
                                 color="var(--main-color)"
                                 hide-details
@@ -1144,7 +1656,6 @@
                         </div>
                         <div>
                             <v-select
-                                v-model="selectedClassj"
                                 :items="all_classes"
                                 label="اختر الفصل الدراسي"
                                 outlined
@@ -1153,16 +1664,52 @@
                         </div>
                     </div>
                     <div class="footer">
-                        <div @click="applyFilters">
+                        <div>
                             <font-awesome-icon :icon="['fas', 'filter']" />
                             <div>تطبيق الفلتر</div>
                         </div>
-                        <div @click="resetFilters">
+                        <div>
                             <font-awesome-icon :icon="['fas', 'retweet']" />
                             <div>إعادة تعيين</div>
                         </div>
                     </div>
                 </div>
+                <!-- <transition name="fade">
+                    <v-card>
+                        <v-card-title class="headline"> </v-card-title>
+                        <v-card-text>
+                            <v-form>
+                                <v-row class="mb-3">
+                                    <v-col>
+                                        <v-switch
+                                            v-model="paymentSortActive"
+                                            label="اعلي المدفوعات"
+                                            :style="{
+                                                color: paymentSortActive
+                                                    ? 'green'
+                                                    : '',
+                                            }"
+                                            @change="handlePaymentSortChange"
+                                            class="filter-switch"
+                                        />
+                                    </v-col>
+                                </v-row>
+
+                                <v-row class="mb-3">
+                                    <v-col cols="12">
+                                        <v-select
+                                            v-model="filtersy.byGrades"
+                                            :items="gradeOptions"
+                                            label="ترتيب حسب الدرجات"
+                                            outlined
+                                            hide-details
+                                        ></v-select>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
+                        </v-card-text>
+                    </v-card>
+                </transition> -->
             </v-dialog>
         </v-container>
         <StudentList
@@ -1170,12 +1717,9 @@
             :sortStudents="sortStudentsByYearAndAlphabetically"
             :selectedSection="selectedSection"
             :isSortedAscending="isSortedAscending"
-            :selectedClassj="selectedClassj"
             :paymentSortActive="paymentSortActive"
             :gradeSortActive="filtersy.byGrades"
             :gradeOptions="gradeOptions"
-            :filteredStudentList="students"
-            @updateFilteredCount="updateFilteredCount"
         />
         <v-dialog
             v-model="showDeleteDialog"
@@ -1273,16 +1817,28 @@ export default {
     },
     data() {
         return {
+            userName_0: "",
+            questions: [],
+            items: [
+                { title: "Click Me" },
+                { title: "Click Me" },
+                { title: "Click Me" },
+                { title: "Click Me 2" },
+            ],
+            loading: false,
+            rules: [(value) => this.checkApi(value)],
+            timeout: null,
+            userName: "",
             showDeleteDialog: false,
             selectedQuestionId: null,
             questionsDialog: false,
             selectedTestQuestions: [],
             isAscending: true,
             existingQuestions: [],
-            questions: [],
-            main_bubble: false,
+            main_bubble: true,
+            main_bubble_1: false,
+            main_bubble_2: false,
             paymentSortActive: false,
-            selectedClassj: null,
             activeButton: "الكل",
             all_classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
             section: ["عربي", "لغات"],
@@ -1363,7 +1919,7 @@ export default {
             },
 
             progress: 0,
-            // selectedClass: [],
+            selectedClass: [],
             students: [],
             classes: [],
             AddPhoto: {
@@ -1407,6 +1963,98 @@ export default {
         },
     },
     methods: {
+        removeQuestion(index) {
+            this.questions.splice(index, 1);
+        },
+        updateOption(questionIndex, optionIndex) {
+            this.questions[questionIndex].options[optionIndex] =
+                event.target.value;
+            // تعيين الإجابة الصحيحة كأول خيار دائمًا
+            if (optionIndex === 0) {
+                this.questions[questionIndex].correctAnswer =
+                    this.questions[questionIndex].options[0];
+            }
+        },
+        setAnswer(index, answer) {
+            this.questions[index].correctAnswer = answer;
+            console.log("this.questions=>", this.questions);
+        },
+        AddQu_1() {
+            const trueFalseQuestion = {
+                type: "true_false",
+                question: "سؤال صواب أو خطأ؟",
+                correctAnswer: true, // يمكن تعديلها بناءً على المتطلبات
+            };
+            this.questions.push(trueFalseQuestion);
+            console.log("this.questions=>", this.questions);
+        },
+        AddQu_2() {
+            const multipleChoiceQuestion = {
+                type: "multiple_choice",
+                question: "سؤال اختياري",
+                options: ["الإجابة الصحيحة", "إجابة خاطئة", "إجابة خاطئة"], // الخيارات المتاحة
+                correctAnswer: "الإجابة الصحيحة", // الإجابة الصحيحة
+            };
+            this.questions.push(multipleChoiceQuestion);
+            console.log("this.questions=>", this.questions);
+        },
+        async submit(event) {
+            this.loading = true;
+
+            const results = await event;
+
+            this.loading = false;
+
+            alert(JSON.stringify(results, null, 2));
+        },
+        async checkApi(userName) {
+            return new Promise((resolve) => {
+                clearTimeout(this.timeout);
+
+                this.timeout = setTimeout(() => {
+                    if (!userName) return resolve("أدخل اسم المادة.");
+                    if (userName === "johnleider")
+                        return resolve(
+                            "User name already taken. Please try another one."
+                        );
+                    return resolve(true);
+                }, 1000);
+            });
+        },
+        async searchStudent() {
+            try {
+                const trimmedQuery = this.searchQuery.trim().toLowerCase();
+                // Fetch all students if search query is empty
+                if (!trimmedQuery) {
+                    const querySnapshot = await getDocs(
+                        collection(db, "students")
+                    );
+                    this.students = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                        showDetails: false,
+                    }));
+                } else {
+                    // Perform search based on the trimmed search query
+                    const querySnapshot = await getDocs(
+                        collection(db, "students")
+                    );
+                    this.students = querySnapshot.docs
+                        .map((doc) => ({
+                            id: doc.id,
+                            ...doc.data(),
+                            showDetails: false,
+                        }))
+                        .filter((student) =>
+                            student.student_name
+                                .toLowerCase()
+                                .includes(trimmedQuery)
+                        );
+                }
+            } catch (error) {
+                console.error("Error searching students:", error);
+            }
+        },
         openDialogq() {
             this.dialogq = true;
         },
@@ -1840,7 +2488,11 @@ export default {
                 this.filtersy.byGrades = null;
             }
         },
-
+        applyFilters() {
+            // Handle filter logic here
+            console.log("Filters applied:", this.filters);
+            this.dialogFilter = false;
+        },
         async fetchClassRooms() {
             try {
                 const querySnapshot = await getDocs(
@@ -1948,9 +2600,9 @@ export default {
                 console.error("Error editing notification:", error);
             }
         },
-        // selectClass(classRoom) {
-        //     this.selectedClass = classRoom;
-        // },
+        selectClass(classRoom) {
+            this.selectedClass = classRoom;
+        },
         closeNotificationDialogs() {
             this.editNotificationDialog = false;
         },
@@ -2023,59 +2675,10 @@ export default {
                 console.error("Error deleting photo:", error);
             }
         },
-        applyFilters() {
-            // Trigger sorting or filtering logic based on selected options
-            this.sortStudentsByYearAndAlphabetically();
-            // Close the filter dialog
-            this.dialogFilter = false;
-        },
-        resetFilters() {
-            // Reset all filter-related data properties
-            this.paymentSortActive = false;
-            this.filtersy.byGrades = null;
-            this.selectedClassj = null;
-            // Optionally, reset the filtered student list
-            this.sortStudentsByYearAndAlphabetically();
-        },
-        updateFilteredCount(count) {
-            this.filteredStudentsCount = count;
-        },
-        async searchStudent() {
-            try {
-                const trimmedQuery = this.searchQuery.trim().toLowerCase();
-                if (!trimmedQuery) {
-                    const querySnapshot = await getDocs(
-                        collection(db, "students")
-                    );
-                    this.students = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                        showDetails: false,
-                    }));
-                } else {
-                    const querySnapshot = await getDocs(
-                        collection(db, "students")
-                    );
-                    this.students = querySnapshot.docs
-                        .map((doc) => ({
-                            id: doc.id,
-                            ...doc.data(),
-                            showDetails: false,
-                        }))
-                        .filter((student) =>
-                            student.student_name
-                                .toLowerCase()
-                                .includes(trimmedQuery)
-                        );
-                }
-            } catch (error) {
-                console.error("Error searching students:", error);
-            }
-        },
     },
-
     async mounted() {
         await this.fetchClassRooms();
+        console.log(this.filteredClasses);
         this.fetchClassRooms();
         this.searchStudent();
     },
@@ -2194,155 +2797,6 @@ form {
     font-weight: bold;
     padding: 20px;
     text-align: center;
-}
-.feat {
-    width: 24% !important;
-    box-shadow: 0 0 10px #ddd;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    & > div {
-        width: 100%;
-        position: relative;
-    }
-    .Top {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 250px;
-        .v-img {
-            border-top-right-radius: 5px;
-            border-top-left-radius: 5px;
-        }
-        svg {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            width: 15px;
-            height: 15px;
-            padding: 6px;
-            border-radius: 50%;
-            cursor: pointer;
-            color: #fff;
-            z-index: 100000000000;
-            background: var(--main-color);
-            &:first-child {
-                left: 40px;
-            }
-        }
-    }
-    .Bottom {
-        padding: 10px;
-        .title {
-            font-size: 20px;
-            color: var(--main-color);
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        .time {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--therd-color);
-            font-weight: bold;
-            margin-bottom: 20px;
-            position: relative;
-            font-size: 14px;
-            &::before {
-                content: "";
-                position: absolute;
-                bottom: -10px;
-                left: 0;
-                width: 100%;
-                height: 4px;
-                background: var(--secound-color);
-            }
-        }
-        .description {
-            font-weight: bold;
-            color: var(--therd-color);
-        }
-    }
-    .head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: relative;
-        margin-bottom: 15px;
-        &::before {
-            content: "";
-            position: absolute;
-            bottom: -15px;
-            height: 3px;
-            width: 100%;
-            background: var(--secound-color);
-        }
-        & > div {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            .number {
-                background: var(--main-color);
-                color: #fff;
-                border-radius: 5px;
-                font-weight: bold;
-                font-size: 18px;
-                width: 30px;
-                height: 30px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .name {
-                font-size: 20px;
-                color: var(--main-color);
-                font-weight: bold;
-            }
-            svg {
-                color: var(--main-color);
-                font-size: 20px;
-                cursor: pointer;
-
-                &:hover {
-                    color: var(--therd-color);
-                }
-            }
-        }
-    }
-    .body {
-        & > div {
-            font-weight: bold;
-            font-size: 19px;
-            color: var(--therd-color);
-            margin: 20px 0 5px;
-        }
-        ul {
-            color: var(--therd-color);
-            font-weight: bold;
-            font-size: 16px;
-            li {
-                list-style-type: square;
-                list-style-position: inside;
-            }
-        }
-    }
-    .footer {
-        .show_password {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            background: var(--main-color);
-            width: 100%;
-            padding: 10px;
-            color: #fff;
-            border-radius: 5px;
-            cursor: pointer;
-            &:hover {
-                background-color: var(--therd-color);
-            }
-        }
-    }
 }
 .v-card.v-theme--light.v-card--density-default.v-card--variant-elevated {
     .head {
@@ -2619,6 +3073,171 @@ svg {
         display: none;
     }
 }
+.add {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-radius: 5px;
+    width: 90%;
+    margin: 15px auto;
+    color: var(--main-color);
+    font-weight: bold;
+    svg {
+        background: var(--main-color);
+        font-size: 21px;
+        color: #fff;
+        padding: 5px 7px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+}
+.feats {
+    width: 90%;
+    margin: 10px auto;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    .feat {
+        width: 32%;
+        box-shadow: 0 0 10px #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        & > div:not(:last-of-type) {
+            background: var(--secound-color);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: var(--therd-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            & > div {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+        }
+        button {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            color: var(--main-color);
+            background: #fff;
+            border: 1px solid;
+            transition: 0.3s;
+            &:hover {
+                color: #fff;
+                background: var(--main-color);
+            }
+        }
+        & > div:last-of-type {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            & > button {
+                color: #fff;
+                background: var(--main-color);
+                width: 48%;
+                &:last-child {
+                    background: var(--pink-color);
+                }
+            }
+        }
+        .time > div:nth-child(2) {
+            color: var(--pink-color);
+        }
+    }
+}
+.top,
+.Bottom {
+    width: 90%;
+    margin: 20px auto;
+    .Btns {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        align-items: center;
+        flex-wrap: wrap;
+        & > * {
+            width: 100%;
+        }
+    }
+    .btns {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        & > div {
+            flex-grow: 1;
+            width: 48%;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid var(--main-color);
+            color: var(--main-color);
+        }
+    }
+    p {
+        background: var(--secound-color);
+        padding: 10px;
+        border-radius: 5px;
+        color: var(--therd-color);
+        font-weight: bold;
+        text-align: center;
+    }
+    .Feat {
+        box-shadow: 0 0 10px #ddd;
+        border-radius: 5px;
+        padding: 20px;
+        margin-bottom: 10px;
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .number {
+                width: 30px;
+                height: 30px;
+                background: var(--main-color);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+        }
+        .inputs {
+            & > div {
+                width: 100%;
+                margin-bottom: 10px;
+                & > input {
+                    width: 100%;
+
+                    border-width: 2px;
+                    border-style: solid;
+                    padding: 10px;
+                    border-radius: 5px;
+                }
+            }
+        }
+    }
+}
+
+.active {
+    background-color: var(--main-color) !important;
+    color: white !important;
+}
+.active_1 {
+    background-color: green !important;
+    color: white !important;
+}
 @media (max-width: 700px) {
     .v-breadcrumbs-item {
         svg {
@@ -2642,12 +3261,14 @@ svg {
         width: 100% !important;
     }
     .right {
-        flex-direction: column;
-        .left {
-            width: 100%;
-            justify-content: center;
-            margin-bottom: 15px;
-            gap: 25px;
+        &:not(.right_1) {
+            flex-direction: column;
+            .left {
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 15px;
+                gap: 25px;
+            }
         }
     }
 }

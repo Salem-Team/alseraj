@@ -87,17 +87,20 @@
                 v-for="New in News"
                 :key="New.id"
                 width="24%"
+                height="100%"
                 @click.="news.New_Information(New)"
                 @click="dialog_6 = true"
             >
-                <v-lazy
-                    :min-height="200"
-                    :options="{ threshold: 0.5 }"
-                    transition="fade-transition"
-                >
-                    <!-- Image -->
-                    <v-img :src="New.image" height="300" cover></v-img>
-                </v-lazy>
+                <v-skeleton-loader v-if="loading2" type="image">
+                </v-skeleton-loader>
+                <!-- Image -->
+                <v-img
+                    :src="New.image"
+                    height="300"
+                    cover
+                    loading="lazy"
+                    @load="handleImageLoad"
+                ></v-img>
                 <!-- Title -->
                 <v-card-text
                     class="card_title d-flex justify-center flex-wrap"
@@ -227,6 +230,7 @@ export default defineComponent({
     },
     data() {
         return {
+            loading2: true,
             showArrows: true,
         };
     },
@@ -235,6 +239,10 @@ export default defineComponent({
         window.addEventListener("resize", this.updateArrowVisibility);
     },
     methods: {
+        handleImageLoad() {
+            // This method is called when the image has fully loaded
+            this.loading2 = false;
+        },
         updateArrowVisibility() {
             this.showArrows = window.innerWidth >= 700;
         },

@@ -1532,82 +1532,25 @@
                 {{ snackbar.message }}
                 <v-btn text @click="snackbar.visible = false">Close</v-btn>
             </v-snackbar>
+
             <ul class="show_details">
-                <li>
+                <li v-if="selectedClassj">
                     <font-awesome-icon :icon="['fas', 'filter']" />
-                    <div>فصل 1/1</div>
+                    <div>فصل {{ selectedClassj }}</div>
                 </li>
-                <li>
+                <li v-if="filtersy.byGrades">
                     <font-awesome-icon :icon="['fas', 'filter']" />
-                    <div>نتائج شهر أكتوبر</div>
+                    <div>نتائج {{ filtersy.byGrades }}</div>
                 </li>
-                <li>
+                <li v-if="paymentSortActive">
                     <font-awesome-icon :icon="['fas', 'filter']" />
                     <div>ترتيب حسب المدفوعات</div>
                 </li>
-                <li>
+                <li v-if="filteredStudentsCount">
                     <font-awesome-icon :icon="['fas', 'filter']" />
-                    <div>نتيجة الفلتر : 10</div>
+                    <div>نتيجة الفلتر: {{ filteredStudentsCount }}</div>
                 </li>
             </ul>
-
-            <!-- <v-row>
-                <v-col>
-                    <h3
-                        v-if="isSortedAscending"
-                        style="color: rgba(33, 150, 243, 0.768627451)"
-                    >
-                        نوع الفلتر :
-                        {{ isSortedAscending ? " ابجدي" : "" }}
-                    </h3>
-                    <h3
-                        v-if="paymentSortActive"
-                        style="color: rgba(33, 150, 243, 0.768627451)"
-                    >
-                        نوع الفلتر :
-                        {{ paymentSortActive ? "حسب المدفوعات" : "" }}
-                    </h3>
-                    
-                </v-col>
-            </v-row> -->
-            <!-- <v-row>
-                <v-col cols="12" md="4" sm="6">
-                    <v-btn
-                        :class="{ active: activeButton === 'الكل' }"
-                        :style="buttonStyle('الكل')"
-                        rounded="xl"
-                        size="x-large"
-                        block
-                        @click="updateSection('الكل')"
-                    >
-                        الكل
-                    </v-btn>
-                </v-col>
-                <v-col cols="12" md="4" sm="6">
-                    <v-btn
-                        :class="{ active: activeButton === 'عربي' }"
-                        :style="buttonStyle('عربي')"
-                        rounded="xl"
-                        size="x-large"
-                        block
-                        @click="updateSection('عربي')"
-                    >
-                        عربي
-                    </v-btn>
-                </v-col>
-                <v-col cols="12" md="4" sm="6">
-                    <v-btn
-                        :class="{ active: activeButton === 'لغات' }"
-                        :style="buttonStyle('لغات')"
-                        rounded="xl"
-                        size="x-large"
-                        block
-                        @click="updateSection('لغات')"
-                    >
-                        لغات
-                    </v-btn>
-                </v-col>
-            </v-row> -->
 
             <v-dialog v-model="dialogFilter" width="90%">
                 <div class="filter">
@@ -1639,7 +1582,7 @@
                                     border-radius: 5px;
                                     padding: 0 10px;
                                 "
-                                @change="handlePaymentSortChange"
+                                @blur="handlePaymentSortChange"
                                 class="filter-switch"
                                 color="var(--main-color)"
                                 hide-details
@@ -1656,6 +1599,7 @@
                         </div>
                         <div>
                             <v-select
+                                v-model="selectedClassj"
                                 :items="all_classes"
                                 label="اختر الفصل الدراسي"
                                 outlined
@@ -1664,52 +1608,16 @@
                         </div>
                     </div>
                     <div class="footer">
-                        <div>
+                        <div @click="applyFilters">
                             <font-awesome-icon :icon="['fas', 'filter']" />
                             <div>تطبيق الفلتر</div>
                         </div>
-                        <div>
+                        <div @click="resetFilters">
                             <font-awesome-icon :icon="['fas', 'retweet']" />
                             <div>إعادة تعيين</div>
                         </div>
                     </div>
                 </div>
-                <!-- <transition name="fade">
-                    <v-card>
-                        <v-card-title class="headline"> </v-card-title>
-                        <v-card-text>
-                            <v-form>
-                                <v-row class="mb-3">
-                                    <v-col>
-                                        <v-switch
-                                            v-model="paymentSortActive"
-                                            label="اعلي المدفوعات"
-                                            :style="{
-                                                color: paymentSortActive
-                                                    ? 'green'
-                                                    : '',
-                                            }"
-                                            @change="handlePaymentSortChange"
-                                            class="filter-switch"
-                                        />
-                                    </v-col>
-                                </v-row>
-
-                                <v-row class="mb-3">
-                                    <v-col cols="12">
-                                        <v-select
-                                            v-model="filtersy.byGrades"
-                                            :items="gradeOptions"
-                                            label="ترتيب حسب الدرجات"
-                                            outlined
-                                            hide-details
-                                        ></v-select>
-                                    </v-col>
-                                </v-row>
-                            </v-form>
-                        </v-card-text>
-                    </v-card>
-                </transition> -->
             </v-dialog>
         </v-container>
         <StudentList
@@ -1717,9 +1625,12 @@
             :sortStudents="sortStudentsByYearAndAlphabetically"
             :selectedSection="selectedSection"
             :isSortedAscending="isSortedAscending"
+            :selectedClassj="selectedClassj"
             :paymentSortActive="paymentSortActive"
             :gradeSortActive="filtersy.byGrades"
             :gradeOptions="gradeOptions"
+            :filteredStudentList="students"
+            @updateFilteredCount="updateFilteredCount"
         />
         <v-dialog
             v-model="showDeleteDialog"
@@ -1839,6 +1750,7 @@ export default {
             main_bubble_1: false,
             main_bubble_2: false,
             paymentSortActive: false,
+            selectedClassj: null,
             activeButton: "الكل",
             all_classes: ["1/1", "1/2", "2/1", "2/2", "3/1", "3/2"],
             section: ["عربي", "لغات"],
@@ -1919,7 +1831,7 @@ export default {
             },
 
             progress: 0,
-            selectedClass: [],
+            // selectedClass: [],
             students: [],
             classes: [],
             AddPhoto: {
@@ -2020,40 +1932,6 @@ export default {
                     return resolve(true);
                 }, 1000);
             });
-        },
-        async searchStudent() {
-            try {
-                const trimmedQuery = this.searchQuery.trim().toLowerCase();
-                // Fetch all students if search query is empty
-                if (!trimmedQuery) {
-                    const querySnapshot = await getDocs(
-                        collection(db, "students")
-                    );
-                    this.students = querySnapshot.docs.map((doc) => ({
-                        id: doc.id,
-                        ...doc.data(),
-                        showDetails: false,
-                    }));
-                } else {
-                    // Perform search based on the trimmed search query
-                    const querySnapshot = await getDocs(
-                        collection(db, "students")
-                    );
-                    this.students = querySnapshot.docs
-                        .map((doc) => ({
-                            id: doc.id,
-                            ...doc.data(),
-                            showDetails: false,
-                        }))
-                        .filter((student) =>
-                            student.student_name
-                                .toLowerCase()
-                                .includes(trimmedQuery)
-                        );
-                }
-            } catch (error) {
-                console.error("Error searching students:", error);
-            }
         },
         openDialogq() {
             this.dialogq = true;
@@ -2488,11 +2366,7 @@ export default {
                 this.filtersy.byGrades = null;
             }
         },
-        applyFilters() {
-            // Handle filter logic here
-            console.log("Filters applied:", this.filters);
-            this.dialogFilter = false;
-        },
+
         async fetchClassRooms() {
             try {
                 const querySnapshot = await getDocs(
@@ -2600,9 +2474,9 @@ export default {
                 console.error("Error editing notification:", error);
             }
         },
-        selectClass(classRoom) {
-            this.selectedClass = classRoom;
-        },
+        // selectClass(classRoom) {
+        //     this.selectedClass = classRoom;
+        // },
         closeNotificationDialogs() {
             this.editNotificationDialog = false;
         },
@@ -2675,10 +2549,60 @@ export default {
                 console.error("Error deleting photo:", error);
             }
         },
+        applyFilters() {
+            // Trigger sorting or filtering logic based on selected options
+            this.sortStudentsByYearAndAlphabetically();
+            // Close the filter dialog
+            this.dialogFilter = false;
+        },
+        resetFilters() {
+            // Reset all filter-related data properties
+            this.paymentSortActive = false;
+            this.filtersy.byGrades = null;
+            this.selectedClassj = null;
+            // Optionally, reset the filtered student list
+            this.sortStudentsByYearAndAlphabetically();
+            this.dialogFilter = false;
+        },
+        updateFilteredCount(count) {
+            this.filteredStudentsCount = count;
+        },
+        async searchStudent() {
+            try {
+                const trimmedQuery = this.searchQuery.trim().toLowerCase();
+                if (!trimmedQuery) {
+                    const querySnapshot = await getDocs(
+                        collection(db, "students")
+                    );
+                    this.students = querySnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data(),
+                        showDetails: false,
+                    }));
+                } else {
+                    const querySnapshot = await getDocs(
+                        collection(db, "students")
+                    );
+                    this.students = querySnapshot.docs
+                        .map((doc) => ({
+                            id: doc.id,
+                            ...doc.data(),
+                            showDetails: false,
+                        }))
+                        .filter((student) =>
+                            student.student_name
+                                .toLowerCase()
+                                .includes(trimmedQuery)
+                        );
+                }
+            } catch (error) {
+                console.error("Error searching students:", error);
+            }
+        },
     },
+
     async mounted() {
         await this.fetchClassRooms();
-        console.log(this.filteredClasses);
         this.fetchClassRooms();
         this.searchStudent();
     },

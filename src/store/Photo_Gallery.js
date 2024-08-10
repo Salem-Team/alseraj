@@ -370,6 +370,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
             this.trip = [];
             this.party = [];
             this.news = [];
+            this.all = [];
             this.Photos.forEach((Photo) => {
                 this.all.push(Photo);
                 if (Photo.type === "رحلات") {

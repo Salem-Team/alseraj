@@ -147,7 +147,7 @@ export default {
                         ) {
                             authenticatedUser = {
                                 id: doc.id,
-                                National_id: doc.id,
+                                National_id: doc.data().National_id,
                                 name: doc.data().student_name,
                                 userType: "student",
                                 email: doc.data().student_email,

@@ -17,7 +17,12 @@
             left: 0;
         "
     >
-        <img class="loading" src="../assets/Loader.gif" alt="Loading..." />
+        <img
+            class="loading"
+            style="width: 30% !important"
+            src="../assets/Loader.gif"
+            alt="Loading..."
+        />
     </div>
 
     <section class="parallax">

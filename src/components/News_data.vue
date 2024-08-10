@@ -72,6 +72,7 @@
                         :show-arrows="showArrows"
                         hide-delimiters
                         height="100%"
+                        :cycle="false"
                     >
                         <v-carousel-item
                             class="pa-5 text-center"

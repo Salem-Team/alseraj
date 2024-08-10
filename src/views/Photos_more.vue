@@ -266,7 +266,6 @@
                                 alt=""
                                 loading="lazy"
                                 @click.prevent="photos.photo_Information(photo)"
-                                @click.="moveText()"
                                 @load="handleImageLoad"
                             />
                             <video
@@ -312,6 +311,7 @@
                                 :show-arrows="false"
                                 hide-delimiter-background
                                 color="var(--main-color)"
+                                :cycle="false"
                             >
                                 <!-- Make carousel content scrollable -->
                                 <v-carousel-item

@@ -257,6 +257,8 @@
                             :key="photo.id"
                             v-else
                         >
+                            <v-skeleton-loader v-if="loading2" type="image">
+                            </v-skeleton-loader>
                             <img
                                 @click="dialog_6 = true"
                                 v-if="photo.File_type == 'صورة'"
@@ -265,12 +267,14 @@
                                 loading="lazy"
                                 @click.prevent="photos.photo_Information(photo)"
                                 @click.="moveText()"
+                                @load="handleImageLoad"
                             />
                             <video
                                 @click="dialog_6 = true"
                                 v-else
                                 controls
                                 loading="lazy"
+                                @load="handleImageLoad"
                             >
                                 <source :src="photo.video" type="video/mp4" />
 
@@ -456,6 +460,7 @@ export default defineComponent({
     },
     data() {
         return {
+            loading2: true,
             showArrows: true,
         };
     },
@@ -464,6 +469,10 @@ export default defineComponent({
         window.addEventListener("resize", this.updateArrowVisibility);
     },
     methods: {
+        handleImageLoad() {
+            // This method is called when the image has fully loaded
+            this.loading2 = false;
+        },
         updateArrowVisibility() {
             this.showArrows = window.innerWidth >= 700;
         },

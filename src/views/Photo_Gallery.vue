@@ -134,6 +134,8 @@
                             v-for="photo in Photos"
                             :key="photo.id"
                         >
+                            <v-skeleton-loader v-if="loading2" type="image">
+                            </v-skeleton-loader>
                             <img
                                 @click="dialog_6 = true"
                                 v-if="photo.File_type == 'صورة'"
@@ -141,12 +143,14 @@
                                 alt=""
                                 @click.prevent="photos.photo_Information(photo)"
                                 loading="lazy"
+                                @load="handleImageLoad"
                             />
                             <video
                                 @click="dialog_6 = true"
                                 v-else
                                 controls
                                 loading="lazy"
+                                @load="handleImageLoad"
                             >
                                 <source :src="photo.video" type="video/mp4" />
 
@@ -191,6 +195,8 @@
                             v-for="photo in Photos"
                             :key="photo.id"
                         >
+                            <v-skeleton-loader v-if="loading2" type="image">
+                            </v-skeleton-loader>
                             <img
                                 @click="dialog_6 = true"
                                 v-if="photo.File_type == 'صورة'"
@@ -198,12 +204,14 @@
                                 alt=""
                                 @click.prevent="photos.photo_Information(photo)"
                                 loading="lazy"
+                                @load="handleImageLoad"
                             />
                             <video
                                 @click="dialog_6 = true"
                                 v-else
                                 controls
                                 loading="lazy"
+                                @load="handleImageLoad"
                             >
                                 <source :src="photo.video" type="video/mp4" />
 
@@ -248,6 +256,8 @@
                             v-for="photo in Photos"
                             :key="photo.id"
                         >
+                            <v-skeleton-loader v-if="loading2" type="image">
+                            </v-skeleton-loader>
                             <img
                                 @click="dialog_6 = true"
                                 v-if="photo.File_type == 'صورة'"
@@ -255,12 +265,14 @@
                                 alt=""
                                 @click.prevent="photos.photo_Information(photo)"
                                 loading="lazy"
+                                @load="handleImageLoad"
                             />
                             <video
                                 @click="dialog_6 = true"
                                 v-else
                                 controls
                                 loading="lazy"
+                                @load="handleImageLoad"
                             >
                                 <source :src="photo.video" type="video/mp4" />
 
@@ -305,61 +317,56 @@
                             v-for="photo in Photos"
                             :key="photo.id"
                         >
-                            <div class="cards">
-                                <img
-                                    @click="dialog_6 = true"
-                                    v-if="photo.File_type == 'صورة'"
-                                    :src="photo.image"
-                                    alt=""
-                                    @click.prevent="
-                                        photos.photo_Information(photo)
-                                    "
-                                    loading="lazy"
-                                />
-                                <video
-                                    @click="dialog_6 = true"
-                                    v-else
-                                    controls
-                                    loading="lazy"
-                                >
-                                    <source
-                                        :src="photo.video"
-                                        type="video/mp4"
-                                    />
+                            <v-skeleton-loader v-if="loading2" type="image">
+                            </v-skeleton-loader>
+                            <img
+                                @click="dialog_6 = true"
+                                v-if="photo.File_type == 'صورة'"
+                                :src="photo.image"
+                                alt=""
+                                @click.prevent="photos.photo_Information(photo)"
+                                loading="lazy"
+                                @load="handleImageLoad"
+                            />
+                            <video
+                                @click="dialog_6 = true"
+                                v-else
+                                controls
+                                loading="lazy"
+                                @load="handleImageLoad"
+                            >
+                                <source :src="photo.video" type="video/mp4" />
 
-                                    Your browser does not support the video tag.
-                                </video>
-                                <div class="caption">
-                                    <div class="time">
-                                        <font-awesome-icon
-                                            :icon="['fas', 'clock']"
-                                        />
-                                        <div>
-                                            {{
-                                                photo.time
-                                                    .toDate()
-                                                    .toLocaleString()
-                                            }}
-                                        </div>
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="caption">
+                                <div class="time">
+                                    <font-awesome-icon
+                                        :icon="['fas', 'clock']"
+                                    />
+                                    <div>
+                                        {{
+                                            photo.time.toDate().toLocaleString()
+                                        }}
                                     </div>
-                                    <div class="delete">
-                                        <font-awesome-icon
-                                            v-if="photo.File_type == 'صورة'"
-                                            @click.prevent="
-                                                photos.photo_Information(photo)
-                                            "
-                                            @click="photos.dialog_3 = true"
-                                            :icon="['fas', 'trash']"
-                                        />
-                                        <font-awesome-icon
-                                            v-else
-                                            @click.prevent="
-                                                photos.photo_Information(photo)
-                                            "
-                                            @click="photos.dialog_4 = true"
-                                            :icon="['fas', 'trash']"
-                                        />
-                                    </div>
+                                </div>
+                                <div class="delete">
+                                    <font-awesome-icon
+                                        v-if="photo.File_type == 'صورة'"
+                                        @click.prevent="
+                                            photos.photo_Information(photo)
+                                        "
+                                        @click="photos.dialog_3 = true"
+                                        :icon="['fas', 'trash']"
+                                    />
+                                    <font-awesome-icon
+                                        v-else
+                                        @click.prevent="
+                                            photos.photo_Information(photo)
+                                        "
+                                        @click="photos.dialog_4 = true"
+                                        :icon="['fas', 'trash']"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -614,7 +621,12 @@
                         color="var(--pink-color)"
                         :loading="loading"
                         :disabled="loading"
-                        @click="photos.delete_Photo(photos.Id_Information)"
+                        @click="
+                            photos.delete_Photo(
+                                photos.Id_Information,
+                                photos.Photo_Information
+                            )
+                        "
                         style="
                             color: #fff;
                             font-weight: bold;
@@ -667,7 +679,12 @@
                         color="var(--pink-color)"
                         :loading="loading"
                         :disabled="loading"
-                        @click="photos.delete_Photo(photos.Id_Information)"
+                        @click="
+                            photos.delete_Photo(
+                                photos.Id_Information,
+                                photos.Photo_Information
+                            )
+                        "
                         style="
                             color: #fff;
                             font-weight: bold;
@@ -805,6 +822,7 @@ export default defineComponent({
     },
     data() {
         return {
+            loading2: true,
             showArrows: true,
         };
     },
@@ -813,6 +831,10 @@ export default defineComponent({
         window.addEventListener("resize", this.updateArrowVisibility);
     },
     methods: {
+        handleImageLoad() {
+            // This method is called when the image has fully loaded
+            this.loading2 = false;
+        },
         updateArrowVisibility() {
             this.showArrows = window.innerWidth >= 700;
         },

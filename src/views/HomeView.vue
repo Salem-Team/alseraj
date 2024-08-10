@@ -1,10 +1,7 @@
 <template>
-    <section class="parallax">
-        <h1 id="text">مدرسة السراج المنير</h1>
-        <img class="img_1" src="../assets/m_3.png" id="street" loading="lazy" />
-    </section>
-    <v-overlay
-        v-model="loading1"
+    <!-- Overlay -->
+    <div
+        v-if="loading1"
         style="
             z-index: 10000000000;
             background-color: white !important;
@@ -15,16 +12,24 @@
             text-align: center !important;
             width: 100% !important;
             height: 100% !important;
+            position: fixed;
+            top: 0;
+            left: 0;
         "
     >
+        <img class="loading" src="../assets/Loader.gif" alt="Loading..." />
+    </div>
+
+    <section class="parallax">
+        <h1 id="text">مدرسة السراج المنير</h1>
         <img
-            class="loading"
-            src="../assets/Loader.gif"
-            style="width: 100% !important; height: 100% !important"
-            alt=""
-            v-if="loading1"
+            class="img_1"
+            src="../assets/m_3.png"
+            id="street"
+            loading="lazy"
+            @load="handleImageLoad"
         />
-    </v-overlay>
+    </section>
     <div visible>
         <Photo_Gallery_data />
         <News_data />
@@ -92,15 +97,16 @@ export default defineComponent({
             ],
         };
     },
-    created() {
-        setTimeout(() => {
-            this.loading1 = false; // Hide the overlay when content is ready
-        }, 1000);
-    },
     mounted() {
         this.moveText();
     },
     methods: {
+        handleImageLoad() {
+            // This method is called when the image has fully loaded
+            setTimeout(() => {
+                this.loading1 = false;
+            }, 3000);
+        },
         moveText() {
             let text = document.getElementById("text");
             let street = document.getElementById("street");

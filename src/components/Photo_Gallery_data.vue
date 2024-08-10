@@ -30,22 +30,25 @@
                 @click.="photos.photo_Information(photo)"
                 @click="dialog_6 = true"
             >
-                <v-lazy
-                    :min-height="200"
-                    :options="{ threshold: 0.5 }"
-                    transition="fade-transition"
+                <v-skeleton-loader v-if="loading2" type="image">
+                </v-skeleton-loader>
+                <v-img
+                    v-if="photo.File_type == 'صورة'"
+                    :src="photo.image"
+                    height="200"
+                    @load="handleImageLoad"
+                    loading="lazy"
+                ></v-img>
+                <video
+                    v-if="photo.File_type == 'فيديو'"
+                    controls
+                    @load="handleImageLoad"
+                    loading="lazy"
                 >
-                    <v-img
-                        v-if="photo.File_type == 'صورة'"
-                        :src="photo.image"
-                        height="200"
-                    ></v-img>
-                    <video v-if="photo.File_type == 'فيديو'" controls>
-                        <source :src="photo.video" type="video/mp4" />
+                    <source :src="photo.video" type="video/mp4" />
 
-                        Your browser does not support the video tag.
-                    </video>
-                </v-lazy>
+                    Your browser does not support the video tag.
+                </video>
             </v-card>
         </div>
         <!-- Display each photo -->
@@ -185,6 +188,7 @@ export default defineComponent({
     },
     data() {
         return {
+            loading2: true,
             showArrows: true,
         };
     },
@@ -193,6 +197,10 @@ export default defineComponent({
         window.addEventListener("resize", this.updateArrowVisibility);
     },
     methods: {
+        handleImageLoad() {
+            // This method is called when the image has fully loaded
+            this.loading2 = false;
+        },
         updateArrowVisibility() {
             this.showArrows = window.innerWidth >= 700;
         },

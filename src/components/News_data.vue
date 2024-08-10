@@ -22,12 +22,15 @@
                 @click.="news.New_Information(New)"
                 @click="dialog_6 = true"
             >
+                <v-skeleton-loader v-if="loading2" type="image">
+                </v-skeleton-loader>
                 <!-- Image -->
                 <v-img
                     :src="New.image"
                     height="300"
                     cover
                     loading="lazy"
+                    @load="handleImageLoad"
                 ></v-img>
 
                 <!-- Title -->
@@ -171,6 +174,7 @@ export default defineComponent({
     data() {
         return {
             showArrows: true,
+            loading2: true,
         };
     },
     mounted() {
@@ -178,6 +182,10 @@ export default defineComponent({
         window.addEventListener("resize", this.updateArrowVisibility);
     },
     methods: {
+        handleImageLoad() {
+            // This method is called when the image has fully loaded
+            this.loading2 = false;
+        },
         updateArrowVisibility() {
             this.showArrows = window.innerWidth >= 700;
         },

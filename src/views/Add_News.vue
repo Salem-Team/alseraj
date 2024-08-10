@@ -267,6 +267,8 @@
                         @click.="news.New_Information(New)"
                         @click="news.dialog_3 = true"
                     />
+                    <v-skeleton-loader v-if="loading2" type="image">
+                    </v-skeleton-loader>
                     <v-img
                         :src="New.image"
                         width="100%"
@@ -274,6 +276,7 @@
                         @click.="news.New_Information(New)"
                         @click="dialog_6 = true"
                         loading="lazy"
+                        @load="handleImageLoad"
                         cover
                     ></v-img>
                 </div>
@@ -464,6 +467,7 @@ export default defineComponent({
     },
     data() {
         return {
+            loading2: true,
             showArrows: true,
             editor: ClassicEditor,
             charCount: 0,
@@ -477,6 +481,10 @@ export default defineComponent({
         };
     },
     methods: {
+        handleImageLoad() {
+            // This method is called when the image has fully loaded
+            this.loading2 = false;
+        },
         updateArrowVisibility() {
             this.showArrows = window.innerWidth >= 700;
         },
@@ -714,6 +722,8 @@ form {
     text-align: center;
 }
 .feat {
+    height: 100% !important;
+    min-height: 450px !important;
     width: 24% !important;
     box-shadow: 0 0 10px #ddd;
     border-radius: 5px;

@@ -24,20 +24,8 @@
             <div>
                 <router-link
                     class="a"
-                    to="/Parent_Dashboard"
-                    v-if="user.userType === 'parent'"
-                    >الأبناء</router-link
-                >
-            </div>
-            <div>
-                <router-link
-                    class="a"
-                    v-if="user.National_id !== '' || user.id !== ''"
-                    @click="logout"
+                    v-if="user.National_id === '' || user.id === ''"
                     to="/UserLogin"
-                    >تسجيل خروج</router-link
-                >
-                <router-link class="a" v-else to="/UserLogin"
                     >تسجيل دخول</router-link
                 >
             </div>

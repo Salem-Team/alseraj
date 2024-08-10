@@ -5,13 +5,23 @@
     </section>
     <v-overlay
         v-model="loading1"
-        style="z-index: 10000000000; background-color: white"
+        style="
+            z-index: 10000000000;
+            background-color: white !important;
+            display: flex;
+            justify-content: center !important;
+            align-items: center !important;
+            margin: 0 auto !important;
+            text-align: center !important;
+            width: 100% !important;
+            height: 100% !important;
+        "
     >
         <img
             class="loading"
             src="../assets/Loader.gif"
+            style="width: 100% !important; height: 100% !important"
             alt=""
-            style="position: fixed; top: 160px; right: 500px; width: 245px"
             v-if="loading1"
         />
     </v-overlay>
@@ -63,21 +73,7 @@ import News_data from "../components/News_data.vue";
 import Q_A from "../components/Q_A.vue";
 import Photo_Gallery_data from "../components/Photo_Gallery_data.vue";
 import { defineComponent } from "vue";
-import { storeToRefs } from "pinia";
-import { useJobs } from "@/store/job.js";
 export default defineComponent({
-    setup() {
-        const jobs = useJobs();
-
-        // Destructure reactive references and methods from Jobs store
-        const { loading1 } = storeToRefs(jobs);
-
-        // Return the necessary reactive properties and methods
-        return {
-            jobs,
-            loading1,
-        };
-    },
     components: {
         job_data,
         Q_A,
@@ -87,6 +83,7 @@ export default defineComponent({
 
     data() {
         return {
+            loading1: true, // Show the overlay initially
             icons: [
                 "mdi-facebook",
                 "mdi-twitter",
@@ -94,6 +91,11 @@ export default defineComponent({
                 "mdi-instagram",
             ],
         };
+    },
+    created() {
+        setTimeout(() => {
+            this.loading1 = false; // Hide the overlay when content is ready
+        }, 1000);
     },
     mounted() {
         this.moveText();
@@ -253,15 +255,11 @@ form {
 }
 @media (max-width: 700px) {
     .c_footer {
+        padding-top: 10px !important;
         flex-direction: column !important;
     }
     .icons {
         flex-direction: row !important;
-    }
-    .loading {
-        position: fixed;
-        top: 300px !important;
-        right: 100px !important;
     }
     .parallax {
         height: 40vh !important;
@@ -273,11 +271,6 @@ form {
 }
 
 @media (min-width: 700px) and (max-width: 950px) {
-    .loading {
-        position: fixed;
-        top: 300px !important;
-        right: 250px !important;
-    }
     .parallax {
         height: 70vh !important;
         #text {

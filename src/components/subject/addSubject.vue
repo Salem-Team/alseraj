@@ -38,7 +38,10 @@
                                 <div
                                     class="d-flex justify-space-between align-center"
                                 >
-                                    <span>{{ sub.title }}</span>
+                                    <span>
+                                        الماده:
+                                        {{ sub.title }}</span
+                                    >
                                     <div>
                                         <v-icon
                                             small
@@ -64,10 +67,15 @@
                                     </div>
                                 </div>
                                 <div
-                                    class="flex justify-space-between align-space-between"
+                                    class="d-flex justify-space-between align-space-between"
                                 >
-                                    <span>{{ sub.maxNumber }}</span>
-                                    <span>{{ sub.minNumber }}</span>
+                                    <span>
+                                        الدرجه العظمه :
+                                        {{ sub.maxNumber }}</span
+                                    >
+                                    <span
+                                        >الدرجه الصغره:{{ sub.minNumber }}</span
+                                    >
                                 </div>
                             </v-alert>
                         </v-col>
@@ -255,6 +263,10 @@ export default {
         },
     },
     methods: {
+        closeSubjectDialog() {
+            this.subjectDialogVisible = false;
+            this.$emit("closeDialog", false);
+        },
         openAddSubjectDialog() {
             this.addSubjectDialogVisible = true;
         },

@@ -93,7 +93,9 @@ export default {
                                 National_id: doc.data().National_id,
                                 name: doc.data().name,
                                 userType: "parent",
+                                email: doc.data().parent_email,
                                 password: doc.data().parent_pass,
+                                phone: doc.data().parent_phone,
                             };
                         }
                     });
@@ -127,6 +129,7 @@ export default {
                                 National_id: decryptedNational_id,
                                 roles: doc.data().roles,
                                 password: doc.data().password,
+                                phone: "",
                             };
                         }
                     });
@@ -144,10 +147,12 @@ export default {
                         ) {
                             authenticatedUser = {
                                 id: doc.id,
-                                National_id: doc.data().National_id,
+                                National_id: doc.id,
                                 name: doc.data().student_name,
                                 userType: "student",
+                                email: doc.data().student_email,
                                 password: doc.data().student_pass,
+                                phone: doc.data().student_phone,
                             };
                         }
                     });
@@ -170,19 +175,17 @@ export default {
                         authenticatedUser.userType,
                         authenticatedUser.roles || [],
                         authenticatedUser.name,
-                        authenticatedUser.password
+                        authenticatedUser.password,
+                        authenticatedUser.phone || ""
                     );
 
                     // Redirect based on user type
                     if (authenticatedUser.userType === "parent") {
-                        this.$router.push({ name: "Parent_Dashboard" });
+                        this.$router.push({ name: "profile_view" });
                     } else if (authenticatedUser.userType === "admin") {
                         this.$router.push({ name: "profile_view" });
                     } else {
-                        this.$router.push({
-                            name: "Student_Dashboard",
-                            params: { id: authenticatedUser.id },
-                        });
+                        this.$router.push({ name: "profile_view" });
                     }
                 } else {
                     this.error = "Invalid National ID or Password.";

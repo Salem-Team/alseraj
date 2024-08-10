@@ -1,34 +1,138 @@
 <template>
-    <div class="children pa-5">
-        <div class="hello_text">
-            مرحبًا {{ user.name }}، نشكرك على ثقتك في معهد السراج المنير
-            الأزهري، نتطلع سويًا لتحقيق مستقبل مشرق لأبنائنا.
+    <div class="visible">
+        <svg
+            style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 245px;
+            "
+            v-if="loading1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 200 200"
+        >
+            <radialGradient
+                id="a12"
+                cx=".66"
+                fx=".66"
+                cy=".3125"
+                fy=".3125"
+                gradientTransform="scale(1.5)"
+            >
+                <stop offset="0" stop-color="#336699"></stop>
+                <stop offset=".3" stop-color="#336699" stop-opacity=".9"></stop>
+                <stop offset=".6" stop-color="#336699" stop-opacity=".6"></stop>
+                <stop offset=".8" stop-color="#336699" stop-opacity=".3"></stop>
+                <stop offset="1" stop-color="#336699" stop-opacity="0"></stop>
+            </radialGradient>
+            <circle
+                transform-origin="center"
+                fill="none"
+                stroke="url(#a12)"
+                stroke-width="15"
+                stroke-linecap="round"
+                stroke-dasharray="200 1000"
+                stroke-dashoffset="0"
+                cx="100"
+                cy="100"
+                r="70"
+            >
+                <animateTransform
+                    type="rotate"
+                    attributeName="transform"
+                    calcMode="spline"
+                    dur="2"
+                    values="360;0"
+                    keyTimes="0;1"
+                    keySplines="0 0 1 1"
+                    repeatCount="indefinite"
+                ></animateTransform>
+            </circle>
+            <circle
+                transform-origin="center"
+                fill="none"
+                opacity=".2"
+                stroke="#336699"
+                stroke-width="15"
+                stroke-linecap="round"
+                cx="100"
+                cy="100"
+                r="70"
+            ></circle>
+        </svg>
+        <div class="right">
+            <div>
+                <v-breadcrumbs>
+                    <v-breadcrumbs-item>
+                        <img
+                            src="../assets/profile/user.svg"
+                            alt=""
+                            class="pluse"
+                        />
+                        <div>الملف الشخصي</div>
+                    </v-breadcrumbs-item>
+                </v-breadcrumbs>
+            </div>
+            <div class="left">
+                <img
+                    src="../assets/profile/edit-info.svg"
+                    alt=""
+                    class="pluse pluse_1"
+                    @click="dialog = true"
+                />
+                <img
+                    src="../assets/profile/logout.svg"
+                    alt=""
+                    class="pluse pluse_1 ml-5"
+                    @click="My_Logout()"
+                />
+            </div>
         </div>
-        <div class="body">
-            <div class="box">
-                <div class="head">
-                    <div class="name">{{ user.name }}</div>
-                </div>
-                <div class="grad" v-if="user.email !== ''">
-                    {{ user.email }}
-                </div>
-                <div class="grad">{{ user.National_id }}</div>
-                <div class="class" v-if="user.userType === 'admin'">
-                    <div>
-                        الصلاحيات
-                        <div v-for="role in user.roles" :key="role">
-                            {{ role }}
+        <div class="children">
+            <div class="hello_text">
+                مرحبًا {{ user.name }}، نشكرك على ثقتك في معهد السراج المنير
+                الأزهري، نتطلع سويًا لتحقيق مستقبل مشرق لأبنائنا.
+            </div>
+            <div class="body" v-if="this.user.userType != 'student'">
+                <div class="box">
+                    <div class="head">
+                        <div class="name">
+                            {{ user.name }}
                         </div>
                     </div>
-                </div>
-                <div class="footer">
-                    <div class="show_password" @click="dialog = true">
-                        تعديل البيانات
+                    <div class="class" style="color: var(--therd-color)">
+                        <div>الرقم القومى</div>
+                        <div>
+                            {{ user.National_id }}
+                        </div>
+                    </div>
+                    <div class="bg-white pa-0">
+                        <div class="class" v-if="user.phone != ''">
+                            <div>رقم الهاتف</div>
+                            <div>{{ user.phone }}</div>
+                        </div>
+                        <div class="class">
+                            <div>الايميل</div>
+                            <div>
+                                {{ user.email }}
+                            </div>
+                        </div>
+                        <div class="class" v-if="user.userType === 'admin'">
+                            <div>
+                                الصلاحيات
+                                <div v-for="role in user.roles" :key="role">
+                                    {{ role }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <Student_Dashboard v-if="this.user.userType === 'student'" />
+    <Parent_Dashboard v-if="this.user.userType === 'parent'" />
     <v-dialog v-model="dialog" width="90%">
         <v-card width="100%" class="popup">
             <div class="d-flex justify-space-between align-center title">
@@ -49,6 +153,7 @@
                     required
                 ></v-text-field>
                 <v-text-field
+                    v-if="this.user.userType != 'student'"
                     v-model="user.National_id"
                     :rules="[
                         (v) => !!v || 'الرقم القومي مطلوب',
@@ -76,6 +181,19 @@
                             /.+@.+\..+/.test(v) || 'البريد الإلكتروني غير صالح',
                     ]"
                     required
+                ></v-text-field>
+                <!-- Phone Input -->
+                <v-text-field
+                    v-model="user.phone"
+                    type="text"
+                    label="التليفون"
+                    variant="outlined"
+                    required
+                    :rules="[
+                        (v) => !!v || 'يجب إدخال رقم الهاتف',
+                        (v) => /^\d{11}$/.test(v) || 'الرقم غير صحيح',
+                    ]"
+                    :minlength="11"
                 ></v-text-field>
                 <p
                     @click="dispaly = !dispaly"
@@ -193,11 +311,17 @@
 <script>
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../Firebase.js";
-import { mapState } from "pinia";
+import { mapState, mapActions } from "pinia";
 import { useAuthStore } from "../store/userStore";
 import { useSecureDataStore } from "@/store/secureData.js";
+import Student_Dashboard from "../components/Student_Dashboard.vue";
+import Parent_Dashboard from "../components/Parent_Dashboard.vue";
 import Cookies from "js-cookie";
 export default {
+    components: {
+        Student_Dashboard,
+        Parent_Dashboard,
+    },
     data: () => ({
         password: "",
         check: true,
@@ -215,6 +339,15 @@ export default {
         ...mapState(useAuthStore, ["user"]),
     },
     methods: {
+        ...mapActions(useAuthStore, ["logout"]),
+        async My_Logout() {
+            try {
+                this.logout();
+                this.$router.push({ name: "home" });
+            } catch (error) {
+                console.error("حدث خطأ أثناء تسجيل الخروج:", error.message);
+            }
+        },
         // Toggle password visibility
         toggle_Show_Password() {
             this.show_Password = !this.show_Password;
@@ -252,6 +385,8 @@ export default {
                             National_id: this.user.National_id,
                             name: this.user.name,
                             parent_pass: this.user.password,
+                            parent_email: this.user.email,
+                            parent_phone: this.user.phone,
                         });
                         Cookies.set("user", JSON.stringify(this.user), {
                             expires: 7,
@@ -286,9 +421,10 @@ export default {
                         const docRef = doc(db, "students", this.user.id);
                         // Update document in Firestore
                         await updateDoc(docRef, {
-                            National_id: this.user.National_id,
                             name: this.user.name,
                             student_pass: this.user.password,
+                            student_email: this.user.email,
+                            student_phone: this.user.phone,
                         });
                         Cookies.set("user", JSON.stringify(this.user), {
                             expires: 7,
@@ -332,6 +468,21 @@ form {
     padding: 20px;
     width: 100%;
 }
+
+img.pluse {
+    width: 40px;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.7;
+    }
+}
+img.pluse.pluse_1 {
+    width: 30px;
+    cursor: pointer;
+    &:hover {
+        opacity: 0.7;
+    }
+}
 .v-btn--icon.v-btn--density-default {
     color: var(--main-color);
     width: auto;
@@ -347,7 +498,9 @@ form {
     font-weight: bold;
 }
 .children {
-    width: 100%;
+    width: 90% !important;
+    margin: 0 auto;
+    padding-top: 20px;
     .title {
         width: 100%;
         background: var(--secound-color);
@@ -389,7 +542,7 @@ form {
                 width: 100%;
                 margin-top: 10px;
                 img {
-                    width: 35px;
+                    width: 35px !important;
                 }
                 .name {
                     font-size: 18px;
@@ -486,6 +639,33 @@ form {
             background-color: var(--therd-color);
         }
     }
+}
+.right {
+    width: 90% !important;
+    margin: auto;
+    font-weight: bold;
+    font-size: 20px;
+    border-bottom: 5px solid var(--secound-color);
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .v-breadcrumbs-item:first-child {
+        color: var(--main-color);
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .v-breadcrumbs {
+        padding: 16px 0;
+    }
+}
+.left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 @media (max-width: 599px) {
 }

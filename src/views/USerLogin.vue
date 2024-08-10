@@ -148,6 +148,8 @@ export default {
                             authenticatedUser = {
                                 id: doc.id,
                                 National_id: doc.data().National_id,
+                                Parent_national_id:
+                                    doc.data().Parent_national_id,
                                 name: doc.data().student_name,
                                 userType: "student",
                                 email: doc.data().student_email,
@@ -171,6 +173,7 @@ export default {
                     await this.login(
                         authenticatedUser.id,
                         authenticatedUser.email || "",
+                        authenticatedUser.Parent_national_id || "",
                         authenticatedUser.National_id || "",
                         authenticatedUser.userType,
                         authenticatedUser.roles || [],

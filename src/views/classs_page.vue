@@ -1013,244 +1013,461 @@
                         </v-dialog>
 
                         <!-- <v-card>
-        <div
-            style="
-                background-color: #2196f3;
-                width: 100%;
-                height: 60px;
-                font-size: 22px;
-                font-weight: bold;
-                color: #fff;
-                border-radius: 5px;
-            "
-        >
-            <p class="ma-5">ألاختبارات</p>
-        </div>
-        <v-card-text>
-            <v-row>
-                <v-col>
-                    <div>
-                        <h2>
-                            <strong
-                                >عدد الاختبارات:
-                                {{
-                                    existingQuestions
-                                        ? existingQuestions.length
-                                        : 0
-                                }}</strong
+                            <div
+                                style="
+                                    background-color: #2196f3;
+                                    width: 100%;
+                                    height: 60px;
+                                    font-size: 22px;
+                                    font-weight: bold;
+                                    color: #fff;
+                                    border-radius: 5px;
+                                "
                             >
-                        </h2>
-                    </div>
-                </v-col>
-                <v-col class="ma-2 d-flex flex-row-reverse">
-                    <v-btn
-                        @click="dialog_bubble = true"
-                        style="
-                            background: var(--main-color);
-                            color: white;
-                        "
-                        size="large"
-                    >
-                        اضافه أختبار
-                    </v-btn>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col>
-                    <v-row v-if="existingQuestions.length">
-                        <v-col
-                            cols="12"
-                            class="d-flex justify-end mb-4"
-                        >
-                            <v-icon
-                                @click="sortQuestionsByDate"
-                                >mdi-sort</v-icon
-                            >
-                        </v-col>
-                        <v-col
-                            sm="6"
-                            v-for="question in existingQuestions"
-                            :key="question.id"
-                            cols="12"
-                            md="6"
-                            lg="6"
-                            class="mb-4"
-                        >
-                            <v-card
-                                class="mx-auto"
-                                width="100%"
-                                tile
-                                elevation="2"
-                            >
-                                <v-col
-                                    class="d-flex flex-row-reverse justify-space-between"
-                                >
-                                    <v-card-actions>
-                                        <v-btn
-                                            outlined
-                                            size="large"
-                                            color="primary"
-                                            class="my-custom-btn"
-                                            @click="
-                                                openQuestionsDialog(
-                                                    question.id
-                                                )
-                                            "
-                                        >
-                                            عرض الأسئلة
-                                        </v-btn>
-                                        <v-icon
-                                            size="30"
-                                            @click="
-                                                showDeleteConfirmation(
-                                                    question.id
-                                                )
-                                            "
-                                            class="mr-3 delete-icon"
-                                        >
-                                            mdi-delete
-                                        </v-icon>
-                                    </v-card-actions>
-
-                                    <v-card-title
-                                        style="
-                                            color: var(
-                                                --main-color
-                                            );
-                                            font-weight: bold;
-                                            font-size: 24px;
-                                            padding: 16px;
-                                        "
-                                    >
-                                        {{
-                                            question
-                                                .questions[0]
-                                                .title
-                                        }}
-                                    </v-card-title>
-                                </v-col>
-                                <v-card-text>
-                                    <strong
-                                        style="
-                                            font-size: 24px;
-                                            display: block;
-                                            margin-bottom: 12px;
-                                        "
-                                    >
-                                        ميعاد بدء الاختبار
-                                    </strong>
-                                </v-card-text>
-                                <v-card-text
-                                    class="d-flex flex-column pt-0"
-                                >
-                                    <p
-                                        style="
-                                            background: #eee;
-                                            margin: 5px;
-                                            margin-top: 0;
-                                            font-size: 18px;
-                                            color: #333;
-                                            line-height: 50px;
-                                            display: flex;
-                                            align-items: center;
-                                            border-radius: 5px;
-                                        "
-                                    >
-                                        <v-icon
-                                            style="
-                                                font-size: 28px;
-                                                color: #555;
-                                                margin-right: 10px;
-                                            "
-                                        >
-                                            mdi-calendar
-                                        </v-icon>
-                                        <strong
-                                            style="
-                                                font-size: 18px;
-                                                margin-right: 6px;
-                                            "
-                                        >
-                                            {{
-                                                question.Date_Testing
-                                                    ? new Date(
-                                                          question.Date_Testing
-                                                      ).toLocaleDateString()
-                                                    : "غير محدد"
-                                            }}
-                                        </strong>
-                                    </p>
-                                    <p
-                                        style="
-                                            background: #eee;
-                                            margin: 10px 5px;
-                                            font-size: 18px;
-                                            color: #333;
-                                            line-height: 50px;
-                                            display: flex;
-                                            align-items: center;
-                                            border-radius: 5px;
-                                        "
-                                    >
-                                        <v-icon
-                                            style="
-                                                font-size: 28px;
-                                                color: #555;
-                                                margin-right: 10px;
-                                            "
-                                        >
-                                            mdi-clock
-                                        </v-icon>
-                                        <strong
-                                            style="
-                                                margin-right: 3px;
-                                                font-size: 18px;
-                                            "
-                                        >
-                                            {{
-                                                question.Time_Testing
-                                                    ? new Date(
-                                                          `1970-01-01T${question.Time_Testing}:00`
-                                                      ).toLocaleTimeString()
-                                                    : "غير محدد"
-                                            }}
-                                        </strong>
-                                    </p>
-                                </v-card-text>
-                            </v-card>
-
-                            <v-dialog
-                                v-model="questionsDialog"
-                                max-width="90%"
-                            >
-                                <v-card>
-                                    <v-card-title>
-                                        <span
-                                            class="headline"
-                                            >أسئلة
-                                            الاختبار</span
-                                        >
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <v-form
-                                            ref="questionsForm"
-                                        >
-                                            <v-list>
-                                                <v-list-item-group
-                                                    v-if="
-                                                        selectedTestQuestions.length
-                                                    "
+                                <p class="ma-5">ألاختبارات</p>
+                            </div>
+                            <v-card-text>
+                                <v-row>
+                                    <v-col>
+                                        <div>
+                                            <h2>
+                                                <strong
+                                                    >عدد الاختبارات:
+                                                    {{
+                                                        existingQuestions
+                                                            ? existingQuestions.length
+                                                            : 0
+                                                    }}</strong
                                                 >
-                                                    <v-list-item
-                                                        v-for="(
-                                                            question,
-                                                            index
-                                                        ) in selectedTestQuestions"
-                                                        :key="
-                                                            index
-                                                        "
+                                            </h2>
+                                        </div>
+                                    </v-col>
+                                    <v-col class="ma-2 d-flex flex-row-reverse">
+                                        <v-btn
+                                            @click="dialog_bubble = true"
+                                            style="
+                                                background: var(--main-color);
+                                                color: white;
+                                            "
+                                            size="large"
+                                        >
+                                            اضافه أختبار
+                                        </v-btn>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col>
+                                        <v-row v-if="existingQuestions.length">
+                                            <v-col
+                                                cols="12"
+                                                class="d-flex justify-end mb-4"
+                                            >
+                                                <v-icon
+                                                    @click="sortQuestionsByDate"
+                                                    >mdi-sort</v-icon
+                                                >
+                                            </v-col>
+                                            <v-col
+                                                sm="6"
+                                                v-for="question in existingQuestions"
+                                                :key="question.id"
+                                                cols="12"
+                                                md="6"
+                                                lg="6"
+                                                class="mb-4"
+                                            >
+                                                <v-card
+                                                    class="mx-auto"
+                                                    width="100%"
+                                                    tile
+                                                    elevation="2"
+                                                >
+                                                    <v-col
+                                                        class="d-flex flex-row-reverse justify-space-between"
                                                     >
-                                                        <div>
+                                                        <v-card-actions>
+                                                            <v-btn
+                                                                outlined
+                                                                size="large"
+                                                                color="primary"
+                                                                class="my-custom-btn"
+                                                                @click="
+                                                                    openQuestionsDialog(
+                                                                        question.id
+                                                                    )
+                                                                "
+                                                            >
+                                                                عرض الأسئلة
+                                                            </v-btn>
+                                                            <v-icon
+                                                                size="30"
+                                                                @click="
+                                                                    showDeleteConfirmation(
+                                                                        question.id
+                                                                    )
+                                                                "
+                                                                class="mr-3 delete-icon"
+                                                            >
+                                                                mdi-delete
+                                                            </v-icon>
+                                                        </v-card-actions>
+
+                                                        <v-card-title
+                                                            style="
+                                                                color: var(
+                                                                    --main-color
+                                                                );
+                                                                font-weight: bold;
+                                                                font-size: 24px;
+                                                                padding: 16px;
+                                                            "
+                                                        >
+                                                            {{
+                                                                question
+                                                                    .questions[0]
+                                                                    .title
+                                                            }}
+                                                        </v-card-title>
+                                                    </v-col>
+                                                    <v-card-text>
+                                                        <strong
+                                                            style="
+                                                                font-size: 24px;
+                                                                display: block;
+                                                                margin-bottom: 12px;
+                                                            "
+                                                        >
+                                                            ميعاد بدء الاختبار
+                                                        </strong>
+                                                    </v-card-text>
+                                                    <v-card-text
+                                                        class="d-flex flex-column pt-0"
+                                                    >
+                                                        <p
+                                                            style="
+                                                                background: #eee;
+                                                                margin: 5px;
+                                                                margin-top: 0;
+                                                                font-size: 18px;
+                                                                color: #333;
+                                                                line-height: 50px;
+                                                                display: flex;
+                                                                align-items: center;
+                                                                border-radius: 5px;
+                                                            "
+                                                        >
+                                                            <v-icon
+                                                                style="
+                                                                    font-size: 28px;
+                                                                    color: #555;
+                                                                    margin-right: 10px;
+                                                                "
+                                                            >
+                                                                mdi-calendar
+                                                            </v-icon>
+                                                            <strong
+                                                                style="
+                                                                    font-size: 18px;
+                                                                    margin-right: 6px;
+                                                                "
+                                                            >
+                                                                {{
+                                                                    question.Date_Testing
+                                                                        ? new Date(
+                                                                              question.Date_Testing
+                                                                          ).toLocaleDateString()
+                                                                        : "غير محدد"
+                                                                }}
+                                                            </strong>
+                                                        </p>
+                                                        <p
+                                                            style="
+                                                                background: #eee;
+                                                                margin: 10px 5px;
+                                                                font-size: 18px;
+                                                                color: #333;
+                                                                line-height: 50px;
+                                                                display: flex;
+                                                                align-items: center;
+                                                                border-radius: 5px;
+                                                            "
+                                                        >
+                                                            <v-icon
+                                                                style="
+                                                                    font-size: 28px;
+                                                                    color: #555;
+                                                                    margin-right: 10px;
+                                                                "
+                                                            >
+                                                                mdi-clock
+                                                            </v-icon>
+                                                            <strong
+                                                                style="
+                                                                    margin-right: 3px;
+                                                                    font-size: 18px;
+                                                                "
+                                                            >
+                                                                {{
+                                                                    question.Time_Testing
+                                                                        ? new Date(
+                                                                              `1970-01-01T${question.Time_Testing}:00`
+                                                                          ).toLocaleTimeString()
+                                                                        : "غير محدد"
+                                                                }}
+                                                            </strong>
+                                                        </p>
+                                                    </v-card-text>
+                                                </v-card>
+
+                                                <v-dialog
+                                                    v-model="questionsDialog"
+                                                    max-width="90%"
+                                                >
+                                                    <v-card>
+                                                        <v-card-title>
+                                                            <span
+                                                                class="headline"
+                                                                >أسئلة
+                                                                الاختبار</span
+                                                            >
+                                                        </v-card-title>
+                                                        <v-card-text>
+                                                            <v-form
+                                                                ref="questionsForm"
+                                                            >
+                                                                <v-list>
+                                                                    <v-list-item-group
+                                                                        v-if="
+                                                                            selectedTestQuestions.length
+                                                                        "
+                                                                    >
+                                                                        <v-list-item
+                                                                            v-for="(
+                                                                                question,
+                                                                                index
+                                                                            ) in selectedTestQuestions"
+                                                                            :key="
+                                                                                index
+                                                                            "
+                                                                        >
+                                                                            <div>
+                                                                                <v-text-field
+                                                                                    v-model="
+                                                                                        question.question
+                                                                                    "
+                                                                                    label="السؤال"
+                                                                                    required
+                                                                                ></v-text-field>
+                                                                                <v-text-field
+                                                                                    v-model="
+                                                                                        question.correctAnswer
+                                                                                    "
+                                                                                    label="الإجابة الصحيحة"
+                                                                                    required
+                                                                                ></v-text-field>
+                                                                                <v-text-field
+                                                                                    v-model="
+                                                                                        question.wrongAnswer1
+                                                                                    "
+                                                                                    label="الإجابة الخاطئة 1"
+                                                                                    required
+                                                                                ></v-text-field>
+                                                                                <v-text-field
+                                                                                    v-model="
+                                                                                        question.wrongAnswer2
+                                                                                    "
+                                                                                    label="الإجابة الخاطئة 2"
+                                                                                    required
+                                                                                ></v-text-field>
+                                                                                <v-divider></v-divider>
+                                                                            </div>
+                                                                        </v-list-item>
+                                                                    </v-list-item-group>
+                                                                    <v-list-item
+                                                                        v-else
+                                                                    >
+                                                                        <div>
+                                                                            <v-list-item-title
+                                                                                >لا
+                                                                                توجد
+                                                                                أسئلة
+                                                                                لهذا
+                                                                                الاختبار.</v-list-item-title
+                                                                            >
+                                                                        </div>
+                                                                    </v-list-item>
+                                                                </v-list>
+                                                                <v-btn
+                                                                    @click="
+                                                                        addQuestionToDialog
+                                                                    "
+                                                                    color="primary"
+                                                                    >إضافة
+                                                                    سؤال</v-btn
+                                                                >
+                                                            </v-form>
+                                                        </v-card-text>
+                                                        <v-card-actions>
+                                                            <v-btn
+                                                                @click="
+                                                                    saveChanges
+                                                                "
+                                                                color="primary"
+                                                            >
+                                                                حفظ التغييرات
+                                                            </v-btn>
+                                                            <v-btn
+                                                                @click="
+                                                                    questionsDialog = false
+                                                                "
+                                                            >
+                                                                إغلاق
+                                                            </v-btn>
+                                                        </v-card-actions>
+                                                    </v-card>
+                                                </v-dialog>
+                                            </v-col>
+                                        </v-row>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                            <v-dialog
+                                v-model="dialog_bubble"
+                                max-width="90%"
+                                height="50%"
+                            >
+                                <v-card style="padding: 0; height: auto">
+                                    <div>
+                                        <div
+                                            style="
+                                                background-color: var(
+                                                    --main-color
+                                                );
+                                                color: #fff;
+                                                font-size: 18px;
+                                                padding: 10px;
+                                            "
+                                        >
+                                            إنشاء إختبار
+                                        </div>
+                                        <v-form ref="createTestForm">
+                                            <v-row
+                                                class="d-flex justify-center"
+                                            >
+                                                <v-col>
+                                                    <v-row>
+                                                        <v-col>
+                                                            <v-text-field
+                                                                :value="year"
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                    </v-row>
+                                                    <v-row>
+                                                        <v-col>
+                                                            <v-select
+                                                                v-model="
+                                                                    newTest.section
+                                                                "
+                                                                :items="section"
+                                                                label="القسم"
+                                                                required
+                                                            ></v-select>
+                                                        </v-col>
+                                                        <v-col>
+                                                            <v-select
+                                                                v-model="
+                                                                    newTest.className
+                                                                "
+                                                                :items="
+                                                                    all_classes
+                                                                "
+                                                                label="اسم الفصل"
+                                                                required
+                                                            ></v-select>
+                                                        </v-col>
+                                                    </v-row>
+                                                    <v-row>
+                                                        <v-col>
+                                                            <v-text-field
+                                                                v-model="
+                                                                    newTest
+                                                                        .questions[0]
+                                                                        .title
+                                                                "
+                                                                label="عنوان السؤال"
+                                                                required
+                                                            >
+                                                            </v-text-field>
+                                                            <v-text-field
+                                                                v-model="
+                                                                    newTest
+                                                                        .questions[0]
+                                                                        .Date_Testing
+                                                                "
+                                                                label="تاريخ بدأ الاختبار"
+                                                                required
+                                                                type="date"
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col>
+                                                            <v-text-field
+                                                                v-model="
+                                                                    newTest
+                                                                        .questions[0]
+                                                                        .Time_Testing
+                                                                "
+                                                                label="توقيت بدأ الاختبار"
+                                                                type="time"
+                                                                required
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                    </v-row>
+                                                    <v-text-field
+                                                        v-model="
+                                                            newTest.questions[0]
+                                                                .question
+                                                        "
+                                                        label="السؤال الأول"
+                                                        required
+                                                    ></v-text-field>
+                                                    <v-text-field
+                                                        v-model="
+                                                            newTest.questions[0]
+                                                                .correctAnswer
+                                                        "
+                                                        label="الإجابة الصحيحة"
+                                                        required
+                                                    ></v-text-field>
+                                                    <v-text-field
+                                                        v-model="
+                                                            newTest.questions[0]
+                                                                .wrongAnswer1
+                                                        "
+                                                        label="الإجابة الخاطئة 1"
+                                                        required
+                                                    ></v-text-field>
+                                                    <v-text-field
+                                                        v-model="
+                                                            newTest.questions[0]
+                                                                .wrongAnswer2
+                                                        "
+                                                        label="الإجابة الخاطئة 2"
+                                                        required
+                                                    ></v-text-field>
+                                                </v-col>
+                                            </v-row>
+                                            <v-divider></v-divider>
+                                            <v-row>
+                                                <v-col cols="12">
+                                                    <v-row
+                                                        v-for="(
+                                                            question, index
+                                                        ) in newTest.questions.slice(
+                                                            1
+                                                        )"
+                                                        :key="index"
+                                                    >
+                                                        <v-col cols="12">
                                                             <v-text-field
                                                                 v-model="
                                                                     question.question
@@ -1280,247 +1497,30 @@
                                                                 required
                                                             ></v-text-field>
                                                             <v-divider></v-divider>
-                                                        </div>
-                                                    </v-list-item>
-                                                </v-list-item-group>
-                                                <v-list-item
-                                                    v-else
-                                                >
-                                                    <div>
-                                                        <v-list-item-title
-                                                            >لا
-                                                            توجد
-                                                            أسئلة
-                                                            لهذا
-                                                            الاختبار.</v-list-item-title
+                                                        </v-col>
+                                                    </v-row>
+                                                    <v-row
+                                                        class="ma-9 d-flex justify-space-between"
+                                                    >
+                                                        <v-btn
+                                                            @click="addQuestion"
+                                                            color="primary"
+                                                            >+ إضافة سؤال</v-btn
                                                         >
-                                                    </div>
-                                                </v-list-item>
-                                            </v-list>
-                                            <v-btn
-                                                @click="
-                                                    addQuestionToDialog
-                                                "
-                                                color="primary"
-                                                >إضافة
-                                                سؤال</v-btn
-                                            >
+                                                        <v-btn
+                                                            @click="addTest"
+                                                            color="success"
+                                                            >إضافة
+                                                            الاختبار</v-btn
+                                                        >
+                                                    </v-row>
+                                                </v-col>
+                                            </v-row>
                                         </v-form>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-btn
-                                            @click="
-                                                saveChanges
-                                            "
-                                            color="primary"
-                                        >
-                                            حفظ التغييرات
-                                        </v-btn>
-                                        <v-btn
-                                            @click="
-                                                questionsDialog = false
-                                            "
-                                        >
-                                            إغلاق
-                                        </v-btn>
-                                    </v-card-actions>
+                                    </div>
                                 </v-card>
                             </v-dialog>
-                        </v-col>
-                    </v-row>
-                </v-col>
-            </v-row>
-        </v-card-text>
-        <v-dialog
-            v-model="dialog_bubble"
-            max-width="90%"
-            height="50%"
-        >
-            <v-card style="padding: 0; height: auto">
-                <div>
-                    <div
-                        style="
-                            background-color: var(
-                                --main-color
-                            );
-                            color: #fff;
-                            font-size: 18px;
-                            padding: 10px;
-                        "
-                    >
-                        إنشاء إختبار
-                    </div>
-                    <v-form ref="createTestForm">
-                        <v-row
-                            class="d-flex justify-center"
-                        >
-                            <v-col>
-                                <v-row>
-                                    <v-col>
-                                        <v-text-field
-                                            :value="year"
-                                        ></v-text-field>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        <v-select
-                                            v-model="
-                                                newTest.section
-                                            "
-                                            :items="section"
-                                            label="القسم"
-                                            required
-                                        ></v-select>
-                                    </v-col>
-                                    <v-col>
-                                        <v-select
-                                            v-model="
-                                                newTest.className
-                                            "
-                                            :items="
-                                                all_classes
-                                            "
-                                            label="اسم الفصل"
-                                            required
-                                        ></v-select>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                    <v-col>
-                                        <v-text-field
-                                            v-model="
-                                                newTest
-                                                    .questions[0]
-                                                    .title
-                                            "
-                                            label="عنوان السؤال"
-                                            required
-                                        >
-                                        </v-text-field>
-                                        <v-text-field
-                                            v-model="
-                                                newTest
-                                                    .questions[0]
-                                                    .Date_Testing
-                                            "
-                                            label="تاريخ بدأ الاختبار"
-                                            required
-                                            type="date"
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col>
-                                        <v-text-field
-                                            v-model="
-                                                newTest
-                                                    .questions[0]
-                                                    .Time_Testing
-                                            "
-                                            label="توقيت بدأ الاختبار"
-                                            type="time"
-                                            required
-                                        ></v-text-field>
-                                    </v-col>
-                                </v-row>
-                                <v-text-field
-                                    v-model="
-                                        newTest.questions[0]
-                                            .question
-                                    "
-                                    label="السؤال الأول"
-                                    required
-                                ></v-text-field>
-                                <v-text-field
-                                    v-model="
-                                        newTest.questions[0]
-                                            .correctAnswer
-                                    "
-                                    label="الإجابة الصحيحة"
-                                    required
-                                ></v-text-field>
-                                <v-text-field
-                                    v-model="
-                                        newTest.questions[0]
-                                            .wrongAnswer1
-                                    "
-                                    label="الإجابة الخاطئة 1"
-                                    required
-                                ></v-text-field>
-                                <v-text-field
-                                    v-model="
-                                        newTest.questions[0]
-                                            .wrongAnswer2
-                                    "
-                                    label="الإجابة الخاطئة 2"
-                                    required
-                                ></v-text-field>
-                            </v-col>
-                        </v-row>
-                        <v-divider></v-divider>
-                        <v-row>
-                            <v-col cols="12">
-                                <v-row
-                                    v-for="(
-                                        question, index
-                                    ) in newTest.questions.slice(
-                                        1
-                                    )"
-                                    :key="index"
-                                >
-                                    <v-col cols="12">
-                                        <v-text-field
-                                            v-model="
-                                                question.question
-                                            "
-                                            label="السؤال"
-                                            required
-                                        ></v-text-field>
-                                        <v-text-field
-                                            v-model="
-                                                question.correctAnswer
-                                            "
-                                            label="الإجابة الصحيحة"
-                                            required
-                                        ></v-text-field>
-                                        <v-text-field
-                                            v-model="
-                                                question.wrongAnswer1
-                                            "
-                                            label="الإجابة الخاطئة 1"
-                                            required
-                                        ></v-text-field>
-                                        <v-text-field
-                                            v-model="
-                                                question.wrongAnswer2
-                                            "
-                                            label="الإجابة الخاطئة 2"
-                                            required
-                                        ></v-text-field>
-                                        <v-divider></v-divider>
-                                    </v-col>
-                                </v-row>
-                                <v-row
-                                    class="ma-9 d-flex justify-space-between"
-                                >
-                                    <v-btn
-                                        @click="addQuestion"
-                                        color="primary"
-                                        >+ إضافة سؤال</v-btn
-                                    >
-                                    <v-btn
-                                        @click="addTest"
-                                        color="success"
-                                        >إضافة
-                                        الاختبار</v-btn
-                                    >
-                                </v-row>
-                            </v-col>
-                        </v-row>
-                    </v-form>
-                </div>
-            </v-card>
-        </v-dialog>
-    </v-card> -->
+                        </v-card> -->
                     </v-dialog>
                 </v-col>
             </v-row>
@@ -1736,6 +1736,8 @@ export default {
             existingQuestions: [],
             questions: [],
             main_bubble: false,
+            main_bubble_1: false,
+            main_bubble_2: false,
             paymentSortActive: false,
             selectedClassj: null,
             activeButton: "الكل",
@@ -1862,6 +1864,41 @@ export default {
         },
     },
     methods: {
+        removeQuestion(index) {
+            this.questions.splice(index, 1);
+        },
+        updateOption(questionIndex, optionIndex) {
+            this.questions[questionIndex].options[optionIndex] =
+                event.target.value;
+            // تعيين الإجابة الصحيحة كأول خيار دائمًا
+            if (optionIndex === 0) {
+                this.questions[questionIndex].correctAnswer =
+                    this.questions[questionIndex].options[0];
+            }
+        },
+        setAnswer(index, answer) {
+            this.questions[index].correctAnswer = answer;
+            console.log("this.questions=>", this.questions);
+        },
+        AddQu_1() {
+            const trueFalseQuestion = {
+                type: "true_false",
+                question: "سؤال صواب أو خطأ؟",
+                correctAnswer: true, // يمكن تعديلها بناءً على المتطلبات
+            };
+            this.questions.push(trueFalseQuestion);
+            console.log("this.questions=>", this.questions);
+        },
+        AddQu_2() {
+            const multipleChoiceQuestion = {
+                type: "multiple_choice",
+                question: "سؤال اختياري",
+                options: ["الإجابة الصحيحة", "إجابة خاطئة", "إجابة خاطئة"], // الخيارات المتاحة
+                correctAnswer: "الإجابة الصحيحة", // الإجابة الصحيحة
+            };
+            this.questions.push(multipleChoiceQuestion);
+            console.log("this.questions=>", this.questions);
+        },
         openDialogq() {
             this.dialogq = true;
         },
@@ -2491,6 +2528,7 @@ export default {
             this.selectedClassj = null;
             // Optionally, reset the filtered student list
             this.sortStudentsByYearAndAlphabetically();
+            this.dialogFilter = false;
         },
         updateFilteredCount(count) {
             this.filteredStudentsCount = count;

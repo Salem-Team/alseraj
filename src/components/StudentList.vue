@@ -1393,12 +1393,12 @@
                                                                     v-for="(
                                                                         degree,
                                                                         index
-                                                                    ) in selectedMonthlyDegrees"
+                                                                    ) in subjects"
                                                                     :key="index"
                                                                 >
                                                                     <td>
                                                                         {{
-                                                                            degree.Subject_Name
+                                                                            degree.title
                                                                         }}
                                                                     </td>
                                                                     <td>
@@ -1431,12 +1431,12 @@
                                                                     </td>
                                                                     <td>
                                                                         {{
-                                                                            degree.Minor_degree
+                                                                            degree.minNumber
                                                                         }}
                                                                     </td>
                                                                     <td>
                                                                         {{
-                                                                            degree.Major_degree
+                                                                            degree.maxNumber
                                                                         }}
                                                                     </td>
                                                                     <td>
@@ -2754,6 +2754,7 @@ export default {
     },
     data() {
         return {
+            subjects: [],
             state: true,
             dialog_stu: false,
             CreateChart: false,
@@ -3205,7 +3206,36 @@ export default {
         await this.fetchStudents();
         this.years = new Date().getFullYear();
     },
+    whatch: {
+        e1(newls) {
+            console.log(newls);
+            this.fetchGradeData();
+        },
+    },
     methods: {
+        //get from firabase data start
+        async fetchGradeData() {
+            try {
+                const classRoomsRef = collection(db, "class_rooms");
+                const q = query(
+                    classRoomsRef,
+                    where("grade", "==", this.gradeId)
+                );
+                const querySnapshot = await getDocs(q);
+                const data = [];
+
+                querySnapshot.forEach((doc) => {
+                    const subjects = doc.data().subjects || [];
+                    subjects.forEach((subject) => data.push(subject));
+                });
+
+                this.subjects = data;
+                console.log("data=>", this.subjects);
+            } catch (error) {
+                console.error("Error fetching grade data: ", error);
+            }
+        },
+        //get from firabase data end
         getResidual(studentId) {
             const student = this.students.find((s) => s.id === studentId);
             return student.payments.Expenses - student.payments.paid_Up;
@@ -3932,6 +3962,7 @@ export default {
             this.form = {
                 educational_level: this.year,
                 student_name: "",
+                gradeId: this.$route.params.year,
                 class: "",
                 gender: "",
                 section: "",
@@ -4322,6 +4353,7 @@ export default {
             this.selectedStudent = student;
             this.loadParentDetails(student.National_id);
             this.dialogStudentDetails = true;
+            this.fetchGradeData();
         },
         // l;
         initializeTempDate() {
@@ -4991,6 +5023,10 @@ export default {
         },
     },
     watch: {
+        steps() {
+            console.log("stepsjk");
+            this.fetchGradeData();
+        },
         "form.birthday"(newVal) {
             this.formattedDate = this.formatDate(newVal);
         },
@@ -5076,6 +5112,8 @@ export default {
         },
     },
     mounted() {
+        this.gradeId = this.$route.params.year;
+        this.fetchGradeData();
         this.loadStudents();
         // Fetch all students initially
         this.generateRandomPassword();

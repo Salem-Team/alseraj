@@ -523,7 +523,13 @@ export default {
                 await updateDoc(docRef, {
                     id: docRef.id,
                 });
-                console.log("Document written with ID: ", docRef.id);
+                await addDoc(collection(db, "users"), {
+                    email: user.value.email,
+                    password: user.value.password,
+                    roles: selectedSubject.value,
+                    userType: "teacher",
+                    id: docRef.id,
+                });
                 teacher.dialog = false;
                 Get_data();
                 emptyData();

@@ -103,7 +103,9 @@ export default defineComponent({
     methods: {
         handleImageLoad() {
             // This method is called when the image has fully loaded
-            this.loading1 = false;
+            setTimeout(() => {
+                this.loading1 = false;
+            }, 3000);
         },
         moveText() {
             let text = document.getElementById("text");

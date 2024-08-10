@@ -199,14 +199,14 @@ export default {
     watch: {
         userType(newValue) {
             if (newValue === "parent") {
-                this.National_id = "111";
-                this.password = "111";
+                this.National_id = "000";
+                this.password = "123";
             } else if (newValue === "admin") {
                 this.National_id = "12109876543211";
                 this.password = "123456";
             } else if (newValue === "student") {
-                this.National_id = "333";
-                this.password = "123456";
+                this.National_id = "111";
+                this.password = "";
             }
         },
     },

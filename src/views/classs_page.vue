@@ -1728,13 +1728,24 @@ export default {
     },
     data() {
         return {
+            userName_0: "",
+            questions: [],
+            items: [
+                { title: "Click Me" },
+                { title: "Click Me" },
+                { title: "Click Me" },
+                { title: "Click Me 2" },
+            ],
+            loading: false,
+            rules: [(value) => this.checkApi(value)],
+            timeout: null,
+            userName: "",
             showDeleteDialog: false,
             selectedQuestionId: null,
             questionsDialog: false,
             selectedTestQuestions: [],
             isAscending: true,
             existingQuestions: [],
-            questions: [],
             main_bubble: false,
             main_bubble_1: false,
             main_bubble_2: false,
@@ -1898,6 +1909,29 @@ export default {
             };
             this.questions.push(multipleChoiceQuestion);
             console.log("this.questions=>", this.questions);
+        },
+        async submit(event) {
+            this.loading = true;
+
+            const results = await event;
+
+            this.loading = false;
+
+            alert(JSON.stringify(results, null, 2));
+        },
+        async checkApi(userName) {
+            return new Promise((resolve) => {
+                clearTimeout(this.timeout);
+
+                this.timeout = setTimeout(() => {
+                    if (!userName) return resolve("أدخل اسم المادة.");
+                    if (userName === "johnleider")
+                        return resolve(
+                            "User name already taken. Please try another one."
+                        );
+                    return resolve(true);
+                }, 1000);
+            });
         },
         openDialogq() {
             this.dialogq = true;

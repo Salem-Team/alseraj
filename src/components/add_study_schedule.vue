@@ -249,7 +249,7 @@
                     </div>
 
                     <div style="width: 90%; margin: 0 auto">
-                        <!-- <v-select
+                        <v-select
                             v-model="selectedClass"
                             :items="classes"
                             label="اختر الفصل"
@@ -262,7 +262,7 @@
                             label="اختر القسم"
                             @blur="fetchScheduleId"
                             required
-                        ></v-select> -->
+                        ></v-select>
                     </div>
                     <div
                         style="
@@ -284,6 +284,11 @@
                         <font-awesome-icon :icon="['fas', 'floppy-disk']" />
                         <div @click="updateSchedule">حفظ التغييرات</div>
                     </div>
+                    <confirm_message2
+                        v-model="showSnackbar"
+                        :text="confirmationText"
+                        @close-snackbar="showSnackbar = false"
+                    />
                     <div class="contain">
                         <table class="schedule_table">
                             <thead>
@@ -323,18 +328,12 @@
                         </table>
                     </div>
                 </div>
-            </v-dialog>
-
-            <confirm_message2
-                v-model="showSnackbar"
-                :text="confirmationText"
-                :snackbar="showSnackbar"
-                @close-snackbar="showSnackbar = false"
-            /></div
+            </v-dialog></div
     ></v-dialog>
 </template>
 
 <script>
+import confirm_message2 from "@/components/confirm_message2.vue";
 import { v4 as uuidv4 } from "uuid";
 import {
     getFirestore,
@@ -342,7 +341,7 @@ import {
     setDoc,
     getDocs,
     collection,
-    // deleteDoc,
+    deleteDoc,
 } from "firebase/firestore";
 import { initializeApp } from "@firebase/app";
 
@@ -359,6 +358,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export default {
+    components: {
+        confirm_message2,
+    },
     props: {
         year: {
             type: Number,
@@ -466,30 +468,35 @@ export default {
             this.main_bubble_1 = true;
         },
         async updateSchedule() {
-            if (!this.scheduleId || !this.selectedClass) {
+            if (
+                !this.scheduleId ||
+                !this.selectedClass ||
+                !this.selectedSection
+            ) {
                 console.error("Please provide all required fields.");
                 return;
             }
             try {
                 this.loading1 = true;
                 const scheduleRef = doc(db, "studySchedule", this.scheduleId);
-                await setDoc(
-                    scheduleRef,
-                    {
-                        class: this.selectedClass,
-                        section: this.selectedSection,
-                        schedule: this.schedule,
-                        lastModified: new Date(),
-                    },
-                    { merge: true }
-                );
-                console.log("Schedule updated successfully");
-                this.loading1 = false;
+                await setDoc(scheduleRef, {
+                    class: this.selectedClass,
+                    section: this.selectedSection,
+                    schedule: this.schedule,
+                    lastModified: new Date(), // Record the time of the update
+                });
+
+                this.showSnackbar = true;
+                this.confirmationText = "تم تعديل الجدول بنجاح.";
+
+                await this.fetchSchedules();
             } catch (error) {
-                console.error("Error updating schedule: ", error);
+                console.error("Error updating schedule:", error);
+            } finally {
                 this.loading1 = false;
             }
         },
+
         closeDialog() {
             this.showDialog = false;
             this.resetDialog();
@@ -502,6 +509,7 @@ export default {
         },
 
         async fetchSchedules() {
+            this.loading1 = true;
             try {
                 const querySnapshot = await getDocs(
                     collection(db, "studySchedule")
@@ -511,7 +519,9 @@ export default {
                     ...doc.data(),
                 }));
             } catch (error) {
-                console.error("Error fetching schedules: ", error.message);
+                console.error("Error fetching schedules:", error);
+            } finally {
+                this.loading1 = false;
             }
         },
         async deleteSchedule(scheduleId) {
@@ -520,14 +530,10 @@ export default {
                 return;
             }
             try {
-                this.showDialog = false;
+                await deleteDoc(doc(db, "studySchedule", scheduleId));
 
-                // await deleteDoc(doc(db, "studySchedule", scheduleId));
-                // Immediately remove the deleted schedule from the local schedules array
-                this.schedules = this.schedules.filter(
-                    (schedule) => schedule.id !== scheduleId
-                );
                 await this.fetchSchedules();
+                console.log(this.schedules);
                 console.log("Schedule deleted successfully.");
             } catch (error) {
                 console.error("Error deleting schedule:", error);

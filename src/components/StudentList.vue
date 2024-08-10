@@ -100,7 +100,7 @@
 
                             <font-awesome-icon
                                 :icon="['fas', 'trash']"
-                                @click="confirmDeleteStudent(student.id)"
+                                @click.stop="confirmDeleteStudent(student.id)"
                             />
                         </div>
                     </div>
@@ -1646,7 +1646,6 @@
                                                                 </div>
                                                             </div>
                                                         </v-row>
-
                                                         <div
                                                             class="Title kheslam"
                                                             v-if="
@@ -1680,7 +1679,7 @@
                                                                 class="myChart"
                                                             >
                                                                 <canvas
-                                                                    :id="'myChart_'"
+                                                                    id="myChart"
                                                                 ></canvas>
                                                             </div>
                                                             <ul>
@@ -1727,10 +1726,7 @@
                                                                         <span>{{
                                                                             selectedStudent
                                                                                 .payments
-                                                                                .Expenses -
-                                                                            selectedStudent
-                                                                                .payments
-                                                                                .paid_Up
+                                                                                .Residual
                                                                         }}</span>
                                                                         جنية
                                                                     </div>
@@ -2501,7 +2497,7 @@ import confirm_message2 from "@/components/confirm_message2.vue";
 export { db, storage };
 import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
-import { Chart, registerables } from "chart.js/auto";
+import Chart from "chart.js/auto";
 import { mapActions } from "pinia";
 import { usenotification } from "../store/notification.js";
 import { useDialogStore } from "@/store/useDialogStore";
@@ -2545,13 +2541,12 @@ export default {
     },
     data() {
         return {
-            chartInstance: null,
             subjects: [],
             state: true,
             dialog_stu: false,
             CreateChart: false,
             myChart: null,
-            searchId: "", // متغير لتخزين معرف الطالب الذي تريد البحث عنه
+            searchId: "",
             menuz: false,
             steps: [
                 "معلومات الطالب",
@@ -2563,9 +2558,9 @@ export default {
                 "الصور",
             ],
             selectedParent: {
-                National_id: "",
+                Parent_national_id: "",
                 name: "",
-                Child: [], // مصفوفة تحتوي على أسماء الأبناء
+                Child: [],
             },
             tempDatez: null,
             editNotificationsDialog: false,
@@ -2610,7 +2605,7 @@ export default {
                 section: "",
                 birthday: null,
                 parent_name: "",
-                national_id: "",
+                Parent_national_id: "",
                 student_pass: "", // حقل كلمة مرور الطالب
                 parent_pass: "", // حقل كلمة مرور ولي الأمر
                 Guardian: [
@@ -3006,71 +3001,6 @@ export default {
     },
     methods: {
         //get from firabase data start
-        renderChart() {
-            Chart.register(...registerables);
-
-            const ctx = document.getElementById("myChart_").getContext("2d");
-
-            if (this.chartInstance) {
-                this.chartInstance.destroy();
-            }
-
-            this.chartInstance = new Chart(ctx, {
-                type: "bar", // يمكنك تغيير نوع الرسم البياني هنا
-                data: {
-                    labels: [
-                        "مصروفات مستحقة",
-                        "مصروفات مدفوعة",
-                        "مصروفات متبقية",
-                    ],
-                    datasets: [
-                        {
-                            label: "مصروفات",
-                            data: [60, 70, 10],
-                            backgroundColor: [
-                                "rgba(255, 99, 132, 0.2)",
-                                "rgba(54, 162, 235, 0.2)",
-                                "rgba(75, 192, 192, 0.2)",
-                            ],
-                            borderColor: [
-                                "rgba(255, 99, 132, 1)",
-                                "rgba(54, 162, 235, 1)",
-                                "rgba(75, 192, 192, 1)",
-                            ],
-                            borderWidth: 1,
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: "top",
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    return (
-                                        context.label +
-                                        ": " +
-                                        context.raw +
-                                        " جنية"
-                                    );
-                                },
-                            },
-                        },
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                        },
-                        y: {
-                            beginAtZero: true,
-                        },
-                    },
-                },
-            });
-        },
         async fetchGradeData() {
             try {
                 const classRoomsRef = collection(db, "class_rooms");
@@ -3513,7 +3443,7 @@ export default {
                         year:
                             this.form.year ||
                             new Date().getFullYear().toString(),
-                        National_id: this.form.parent_national_id || "",
+                        Parent_national_id: this.form.parent_national_id || "",
                         state: true,
                         student_pass: this.form.student_pass || "",
                         student_phone: this.form.student_phone || "",
@@ -3561,7 +3491,7 @@ export default {
                     } else {
                         await setDoc(parentDocRef, {
                             name: this.form.parent_name,
-                            National_id: this.form.parent_national_id,
+                            Parent_national_id: this.form.parent_national_id,
                             Child: [
                                 {
                                     student_name: this.form.student_name,
@@ -3826,6 +3756,7 @@ export default {
                 student_phone: "",
                 parent_phone: "",
                 parent_name: "",
+                Parent_national_id: "",
                 national_id: "",
                 parent_email: "",
                 student_email: "",
@@ -4153,17 +4084,20 @@ export default {
             }
         },
         // 44444444444444444444444444444444444444444
-        async loadParentDetails(National_id) {
-            if (!National_id) {
-                // console.error("No National_id provided");
+        async loadParentDetails(Parent_national_id) {
+            if (!Parent_national_id) {
+                // console.error("No Parent_national_id provided");
                 return;
             }
 
-            console.log("Loading parent details for National_id:", National_id);
+            console.log(
+                "Loading parent details for Parent_national_id:",
+                Parent_national_id
+            );
 
             try {
                 // جلب بيانات الأب من كوليكشن Parents
-                const parentDoc = doc(db, "parents", National_id);
+                const parentDoc = doc(db, "parents", Parent_national_id);
                 const parentSnapshot = await getDoc(parentDoc);
 
                 if (parentSnapshot.exists()) {
@@ -4176,7 +4110,7 @@ export default {
                     // جلب الأطفال من كوليكشن students
                     const studentsQuery = query(
                         collection(db, "students"),
-                        where("National_id", "==", National_id)
+                        where("Parent_national_id", "==", Parent_national_id)
                     );
                     const studentsSnapshot = await getDocs(studentsQuery);
 
@@ -4207,7 +4141,7 @@ export default {
         },
         openStudentDetails(student) {
             this.selectedStudent = student;
-            this.loadParentDetails(student.National_id);
+            this.loadParentDetails(student.Parent_national_id);
             this.dialogStudentDetails = true;
             this.fetchGradeData();
         },
@@ -4787,9 +4721,7 @@ export default {
                         "payments.Installment_System":
                             student.payments.Installment_System ?? "",
                         "payments.paid_Up": student.payments.paid_Up ?? 0,
-                        "payments.Residual":
-                            student.payments.Expenses -
-                                student.payments.paid_Up ?? 0,
+                        "payments.Residual": student.payments.Residual ?? 0,
                     };
 
                     updateDoc(studentRef, updateData)
@@ -4839,84 +4771,45 @@ export default {
                 console.error("Error updating class room fees: ", error);
             }
         },
+        updateResidual() {
+            const expenses = this.form.payments.Expenses || 0;
+            const paidUp = this.form.payments.paid_Up || 0;
+            this.form.payments.Residual = expenses - paidUp;
+            this.createChart([paidUp, this.form.payments.Residual]);
+        },
+        createChart(data) {
+            const ctx = document.getElementById("myChart");
+            if (ctx) {
+                // تحقق مما إذا كان هناك مخطط موجود وقم بتدميره
+                if (this.myChart) {
+                    this.myChart.destroy();
+                }
 
+                console.log("start createChart");
+                this.CreateChart = true;
+                this.myChart = new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        datasets: [
+                            {
+                                label: "المصروفات",
+                                data: data,
+                                backgroundColor: ["#336699", "#d8588c"],
+                                hoverOffset: 4,
+                            },
+                        ],
+                    },
+                });
+            } else {
+                console.log("error");
+            }
+        },
         validatePaidUp() {
-            const expenses = this.selectedStudent?.payments?.Expenses || 0;
+            const expenses = this.selectedStudent.payments.Expenses || 0;
             this.maxExpenses = expenses;
-            if (this.selectedStudent?.payments?.paid_Up > expenses) {
+            if (this.selectedStudent.payments.paid_Up > expenses) {
                 this.selectedStudent.payments.paid_Up = expenses;
             }
-        },
-
-        updateResidual() {
-            const expenses = this.selectedStudent?.payments?.Expenses || 0;
-            const paidUp = this.selectedStudent?.payments?.paid_Up || 0;
-            this.selectedStudent.payments.Residual = expenses - paidUp;
-
-            // Ensure the chart is updated for the correct student
-            this.createChart("myChart_" + this.selectedStudent.id);
-        },
-
-        createChart(chartId) {
-            if (typeof Chart === "undefined") {
-                console.error("Chart.js library is not available");
-                return;
-            }
-
-            const canvas = document.getElementById(chartId);
-            if (!canvas) {
-                console.error("Canvas element not found for ID:", chartId);
-                return;
-            }
-
-            const ctx = canvas.getContext("2d");
-            if (!ctx) {
-                console.error("Chart context not available");
-                return;
-            }
-
-            if (this.myChart) {
-                this.myChart.destroy();
-            }
-
-            const residual = this.selectedStudent?.payments?.Residual || 0;
-            const paidUp = this.selectedStudent?.payments?.paid_Up || 0;
-
-            console.log("Creating chart with ID:", chartId);
-            this.myChart = new Chart(ctx, {
-                type: "doughnut",
-                data: {
-                    datasets: [
-                        {
-                            label: "المصروفات",
-                            data: [residual, paidUp],
-                            backgroundColor: ["#336699", "#d8588c"],
-                            hoverOffset: 4,
-                        },
-                    ],
-                    labels: ["المتبقي", "مدفوع"],
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: "top",
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (tooltipItem) {
-                                    return (
-                                        tooltipItem.label +
-                                        ": " +
-                                        tooltipItem.raw +
-                                        " جنية"
-                                    );
-                                },
-                            },
-                        },
-                    },
-                },
-            });
         },
     },
     watch: {

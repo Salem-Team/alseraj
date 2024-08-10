@@ -59,9 +59,9 @@
                     <v-btn icon="mdi-close" @click="dialog_6 = false"></v-btn>
                 </div>
                 <v-carousel
-                    :show-arrows="false"
-                    hide-delimiter-background
-                    color="var(--main-color)"
+                    :show-arrows="showArrows"
+                    hide-delimiters
+                    height="100%"
                     :cycle="false"
                 >
                     <!-- Make carousel content scrollable -->
@@ -107,6 +107,22 @@
                             >
                         </div>
                     </div>
+                    <template v-slot:next="{ props }">
+                        <v-icon
+                            style="text-align: center; color: var(--main-color)"
+                            @click="props.onClick"
+                            class="pa-10 carousel-arrow next-arrow"
+                            >mdi-menu-right</v-icon
+                        >
+                    </template>
+                    <template v-slot:prev="{ props }">
+                        <v-icon
+                            style="text-align: center; color: var(--main-color)"
+                            @click="props.onClick"
+                            class="pa-10 carousel-arrow prev-arrow"
+                            >mdi-menu-left</v-icon
+                        >
+                    </template>
                 </v-carousel>
             </v-card></v-dialog
         >

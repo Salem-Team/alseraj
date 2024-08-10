@@ -308,9 +308,9 @@
                                 ></v-btn>
                             </div>
                             <v-carousel
-                                :show-arrows="false"
-                                hide-delimiter-background
-                                color="var(--main-color)"
+                                :show-arrows="showArrows"
+                                hide-delimiters
+                                height="100%"
                                 :cycle="false"
                             >
                                 <!-- Make carousel content scrollable -->

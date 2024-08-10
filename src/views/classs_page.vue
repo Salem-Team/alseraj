@@ -1835,7 +1835,7 @@ export default {
             selectedTestQuestions: [],
             isAscending: true,
             existingQuestions: [],
-            main_bubble: true,
+            main_bubble: false,
             main_bubble_1: false,
             main_bubble_2: false,
             paymentSortActive: false,

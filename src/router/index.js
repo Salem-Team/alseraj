@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Cookies from "js-cookie";
 import Classes from "../views/The_Classes.vue";
 import ClassPage from "../views/classs_page.vue";
 import TheAdministrator from "../views/TheAdministrator.vue";
@@ -117,27 +116,32 @@ router.beforeEach(async (to, from, next) => {
     const requiredAuthority = to.meta.requiredAuthority;
 
     // Check if route requires authentication
+    // Check if route requires authentication
     if (requiresAuth) {
         try {
-            // Fetch user info from cookies
-            const userCookie = Cookies.get("user");
+            // Fetch user info from local storage
+            const userData = localStorage.getItem("user");
 
-            // If cookie does not exist or is not in JSON format
-            if (!userCookie) {
-                console.log("User data not found in cookies");
+            // If local storage item does not exist or is not in JSON format
+            if (!userData) {
+                console.log("User data not found in local storage");
                 next("/"); // Redirect to home or login page
                 return;
             }
 
-            // Parse user data from cookie
+            // Parse user data from local storage
             let user;
             try {
-                user = JSON.parse(userCookie); // Parse JSON string
+                user = JSON.parse(userData); // Parse JSON string
             } catch (error) {
-                console.error("Error parsing user cookie:", error);
+                console.error(
+                    "Error parsing user data from local storage:",
+                    error
+                );
                 next("/"); // Redirect to home or login page
                 return;
             }
+
             // Check if user has required authority
             if (requiredAuthority && user.userType !== requiredAuthority) {
                 console.log("User does not have required authority");

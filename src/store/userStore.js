@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import Cookies from "js-cookie";
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
@@ -18,8 +17,8 @@ export const useAuthStore = defineStore("auth", {
     }),
     actions: {
         get_Cookies() {
-            // Retrieve the cookie value
-            const user_data = Cookies.get("user");
+            // Retrieve the user data from local storage
+            const user_data = localStorage.getItem("user");
 
             // Check if user_data is not null or undefined
             if (user_data) {
@@ -28,13 +27,14 @@ export const useAuthStore = defineStore("auth", {
                     this.user = JSON.parse(user_data);
                 } catch (error) {
                     console.error(
-                        "Failed to parse user data from cookies:",
+                        "Failed to parse user data from local storage:",
                         error
                     );
                     // Handle the error as needed, for example, set `this.user` to a default value or an empty object
                     this.user = {
                         id: "",
                         email: "",
+                        Parent_national_id: "",
                         National_id: "",
                         password: "",
                         userType: "",
@@ -44,7 +44,7 @@ export const useAuthStore = defineStore("auth", {
                     };
                 }
             } else {
-                // Handle cases where the cookie does not exist or is empty
+                // Handle cases where the local storage item does not exist or is empty
                 this.user = {
                     id: "",
                     email: "",
@@ -58,6 +58,7 @@ export const useAuthStore = defineStore("auth", {
                 };
             }
         },
+
         async login(
             id,
             email,
@@ -71,24 +72,36 @@ export const useAuthStore = defineStore("auth", {
         ) {
             this.loading = true;
             try {
-                // تحقق من البريد الإلكتروني وكلمة المرور
+                // Verify email and password (implementation not shown here)
+                if (userType === "student") {
+                    this.user = {
+                        id,
+                        email,
+                        Parent_national_id,
+                        National_id,
+                        userType,
+                        roles,
+                        name,
+                        password,
+                        phone,
+                    };
+                    this.error = null;
+                } else {
+                    this.user = {
+                        id,
+                        email,
+                        National_id,
+                        userType,
+                        roles,
+                        name,
+                        password,
+                        phone,
+                    };
+                    this.error = null;
+                }
 
-                this.user = {
-                    id,
-                    email,
-                    National_id,
-                    Parent_national_id,
-                    userType,
-                    roles,
-                    name,
-                    password,
-                    phone,
-                };
-                this.error = null;
-                // تخزين بيانات المستخدم في الكوكيز
-                Cookies.set("user", JSON.stringify(this.user), {
-                    expires: 7,
-                });
+                // Store user data in localStorage
+                localStorage.setItem("user", JSON.stringify(this.user));
             } catch (error) {
                 this.error = error.message;
             } finally {
@@ -107,8 +120,9 @@ export const useAuthStore = defineStore("auth", {
                 name: "",
                 phone: "",
             };
-            // إزالة بيانات المستخدم من الكوكيز
-            Cookies.remove("user");
+
+            // Remove user data from local storage
+            localStorage.removeItem("user");
         },
         // لإخفاء الخطأ بعد 5 ثوانٍ
         clearError() {

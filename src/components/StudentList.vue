@@ -1646,7 +1646,6 @@
                                                                 </div>
                                                             </div>
                                                         </v-row>
-
                                                         <div
                                                             class="Title kheslam"
                                                             v-if="
@@ -1680,7 +1679,7 @@
                                                                 class="myChart"
                                                             >
                                                                 <canvas
-                                                                    :id="'myChart_'"
+                                                                    id="myChart"
                                                                 ></canvas>
                                                             </div>
                                                             <ul>
@@ -1727,10 +1726,7 @@
                                                                         <span>{{
                                                                             selectedStudent
                                                                                 .payments
-                                                                                .Expenses -
-                                                                            selectedStudent
-                                                                                .payments
-                                                                                .paid_Up
+                                                                                .Residual
                                                                         }}</span>
                                                                         جنية
                                                                     </div>
@@ -3529,7 +3525,9 @@ export default {
                         id: this.form.student_id,
                         ...studentData,
                     };
-                    this.students.push(newStudent);
+
+                    // أعد جلب قائمة الطلاب لتحديث الواجهة
+                    await this.fetchStudents();
 
                     // تحقق من وجود مستند "Parents" بالرقم القومي
                     const parentDocRef = doc(
@@ -3635,7 +3633,7 @@ export default {
                             },
                             { merge: true }
                         );
-
+                        this.$emit("close-dialog");
                         console.log(
                             "Class room updated with total students:",
                             totalStudents
@@ -3649,10 +3647,8 @@ export default {
 
                     this.dialog_addstudent = false;
                     this.formattedDate = "";
-                    await this.fetchStudents();
                     this.handleReset();
                     this.dialogStore.hideAddStudentDialog();
-                    this.$emit("close-dialog");
                     console.log("Added new student:", newStudent);
                     this.confirmationText = "تم إضافة الطالب بنجاح";
                     this.showSnackbar = true;
@@ -3661,17 +3657,18 @@ export default {
                 }
             }
         },
+
         async deleteStudent(id) {
             try {
                 const studentDoc = await getDoc(doc(db, "students", id));
                 const studentData = studentDoc.data();
                 const educationalLevel = studentData.educational_level;
-                const section = studentData.section; // احصل على القسم
+                const section = studentData.section;
 
                 await deleteDoc(doc(db, "students", id));
-                this.students = this.students.filter(
-                    (student) => student.id !== id
-                );
+
+                // أعد جلب قائمة الطلاب لتحديث الواجهة
+                await this.fetchStudents();
 
                 // الحصول على مستند `class_rooms` بناءً على قيمة `grade`
                 const classRoomsRef = collection(db, "class_rooms");
@@ -3702,7 +3699,7 @@ export default {
                     };
                     if (studentData.gender === "ذكر") {
                         studentsGender.male = (studentsGender.male || 0) - 1;
-                    } else if (studentData.gender === "انثى") {
+                    } else if (studentData.gender === "أنثى") {
                         studentsGender.female =
                             (studentsGender.female || 0) - 1;
                     }
@@ -4787,9 +4784,7 @@ export default {
                         "payments.Installment_System":
                             student.payments.Installment_System ?? "",
                         "payments.paid_Up": student.payments.paid_Up ?? 0,
-                        "payments.Residual":
-                            student.payments.Expenses -
-                                student.payments.paid_Up ?? 0,
+                        "payments.Residual": student.payments.Residual ?? 0,
                     };
 
                     updateDoc(studentRef, updateData)
@@ -4841,20 +4836,18 @@ export default {
         },
 
         validatePaidUp() {
-            const expenses = this.selectedStudent?.payments?.Expenses || 0;
+            const expenses = this.selectedStudent.payments.Expenses || 0;
             this.maxExpenses = expenses;
-            if (this.selectedStudent?.payments?.paid_Up > expenses) {
+            if (this.selectedStudent.payments.paid_Up > expenses) {
                 this.selectedStudent.payments.paid_Up = expenses;
             }
         },
 
         updateResidual() {
-            const expenses = this.selectedStudent?.payments?.Expenses || 0;
-            const paidUp = this.selectedStudent?.payments?.paid_Up || 0;
-            this.selectedStudent.payments.Residual = expenses - paidUp;
-
-            // Ensure the chart is updated for the correct student
-            this.createChart("myChart_" + this.selectedStudent.id);
+            const expenses = this.form.payments.Expenses || 0;
+            const paidUp = this.form.payments.paid_Up || 0;
+            this.form.payments.Residual = expenses - paidUp;
+            this.createChart([paidUp, this.form.payments.Residual]);
         },
 
         createChart(chartId) {
@@ -5014,6 +5007,7 @@ export default {
         this.loadStudents();
         // Fetch all students initially
         this.generateRandomPassword();
+
         this.fetchStudents();
         this.interval = setInterval(() => {
             if (this.value === 100) {

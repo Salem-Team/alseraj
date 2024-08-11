@@ -1125,6 +1125,7 @@
             :gradeOptions="gradeOptions"
             :filteredStudentList="students"
             @updateFilteredCount="updateFilteredCount"
+            @close-dialog="dialog = false"
         />
         <v-dialog
             v-model="showDeleteDialog"

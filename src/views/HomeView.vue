@@ -1,7 +1,10 @@
 <template>
-    <!-- Overlay -->
-    <div
-        v-if="loading1"
+    <section class="parallax">
+        <h1 id="text">مدرسة السراج المنير</h1>
+        <img class="img_1" src="../assets/m_3.png" id="street" loading="lazy" />
+    </section>
+    <v-overlay
+        v-model="loading1"
         style="
             z-index: 10000000000;
             background-color: white !important;
@@ -12,84 +15,16 @@
             text-align: center !important;
             width: 100% !important;
             height: 100% !important;
-            position: fixed;
-            top: 0;
-            left: 0;
         "
     >
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 200 200"
-            class="loading"
-            style="width: 20% !important"
-        >
-            <circle
-                fill="#336699"
-                stroke="#336699"
-                stroke-width="2"
-                r="15"
-                cx="40"
-                cy="65"
-            >
-                <animate
-                    attributeName="cy"
-                    calcMode="spline"
-                    dur="2"
-                    values="65;135;65;"
-                    keySplines=".5 0 .5 1;.5 0 .5 1"
-                    repeatCount="indefinite"
-                    begin="-.4"
-                ></animate>
-            </circle>
-            <circle
-                fill="#336699"
-                stroke="#336699"
-                stroke-width="2"
-                r="15"
-                cx="100"
-                cy="65"
-            >
-                <animate
-                    attributeName="cy"
-                    calcMode="spline"
-                    dur="2"
-                    values="65;135;65;"
-                    keySplines=".5 0 .5 1;.5 0 .5 1"
-                    repeatCount="indefinite"
-                    begin="-.2"
-                ></animate>
-            </circle>
-            <circle
-                fill="#336699"
-                stroke="#336699"
-                stroke-width="2"
-                r="15"
-                cx="160"
-                cy="65"
-            >
-                <animate
-                    attributeName="cy"
-                    calcMode="spline"
-                    dur="2"
-                    values="65;135;65;"
-                    keySplines=".5 0 .5 1;.5 0 .5 1"
-                    repeatCount="indefinite"
-                    begin="0"
-                ></animate>
-            </circle>
-        </svg>
-    </div>
-
-    <section class="parallax">
-        <h1 id="text">مدرسة السراج المنير</h1>
         <img
-            class="img_1"
-            src="../assets/m_3.png"
-            id="street"
-            loading="lazy"
-            @load="handleImageLoad"
+            class="loading"
+            src="../assets/Loader.gif"
+            style="width: 100% !important; height: 100% !important"
+            alt=""
+            v-if="loading1"
         />
-    </section>
+    </v-overlay>
     <div visible>
         <Photo_Gallery_data />
         <News_data />
@@ -157,16 +92,15 @@ export default defineComponent({
             ],
         };
     },
+    created() {
+        setTimeout(() => {
+            this.loading1 = false; // Hide the overlay when content is ready
+        }, 1000);
+    },
     mounted() {
         this.moveText();
     },
     methods: {
-        handleImageLoad() {
-            // This method is called when the image has fully loaded
-            setTimeout(() => {
-                this.loading1 = false;
-            }, 3000);
-        },
         moveText() {
             let text = document.getElementById("text");
             let street = document.getElementById("street");

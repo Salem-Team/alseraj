@@ -78,7 +78,7 @@
                     r="70"
                 ></circle>
             </svg>
-            <v-container v-if="!loading1 && sortedStudents.length === 0">
+            <v-container v-if="!loading1 && students.length === 0">
                 <Empty_error text="لا يوجد طلاب مسجلين." />
             </v-container>
             <div class="boxes" v-else>
@@ -100,7 +100,7 @@
 
                             <font-awesome-icon
                                 :icon="['fas', 'trash']"
-                                @click.stop="confirmDeleteStudent(student.id)"
+                                @click="confirmDeleteStudent(student.id)"
                             />
                         </div>
                     </div>
@@ -195,223 +195,6 @@
                         v-for="(student, index) in sortedStudents"
                         :key="student.id"
                     >
-                        <!-- <v-list-item-content class="student-item">
-                            <v-row>
-                                <v-col>
-                                    <div
-                                        style="
-                                            padding: 10px;
-                                            display: flex;
-                                            justify-content: space-between;
-                                            align-items: center;
-                                        "
-                                    >
-                                        <h2>
-                                            <v-avatar
-                                                color="info"
-                                                style="margin-left: 20px"
-                                            >
-                                                {{ index + 1 }}
-                                            </v-avatar>
-                                            {{ student.student_name }}
-                                        </h2>
-                                        <div
-                                            class="d-flex align-center justify-center"
-                                        >
-                                            <v-avatar color="info">
-                                                <v-icon
-                                                    @click.stop="
-                                                        confirmDeleteStudent(
-                                                            student.id
-                                                        )
-                                                    "
-                                                    icon="mdi-delete"
-                                                ></v-icon>
-                                            </v-avatar>
-
-                                            <v-avatar
-                                                class="mr-2"
-                                                :style="{
-                                                    color: student.state
-                                                        ? '#ccc'
-                                                        : '#2196f3',
-                                                }"
-                                            >
-                                                <v-icon
-                                                    size="36px"
-                                                    @click="toggleIcon(student)"
-                                                    class="custom-icon animated-icon"
-                                                >
-                                                </v-icon>
-                                            </v-avatar>
-                                        </div>
-                                    </div>
-                                </v-col>
-                            </v-row>
-                            <v-row style="margin-right: 70px; margin-top: 0px">
-                                <v-col cols="12">
-                                    <div
-                                        style="
-                                            display: flex;
-                                            justify-content: space-between;
-                                            align-items: center;
-                                        "
-                                    >
-                                        <h3 style="color: #2196f3">
-                                            فصل
-                                            {{ student.class }}
-                                        </h3>
-                                        <h3 style="color: #2196f3">
-                                            قسم
-                                            {{ student.section }}
-                                        </h3>
-                                    </div>
-                                </v-col>
-                            </v-row>
-                            <v-row style="gap: 0px">
-                                <v-col
-                                    cols="2"
-                                    v-for="(grade, index) in gradeOptions"
-                                    :key="index"
-                                >
-                                    <v-card
-                                        :class="{
-                                            'active-card':
-                                                gradeSortActive === grade,
-                                        }"
-                                        style="
-                                            display: flex;
-                                            justify-content: center;
-                                            flex-direction: column;
-                                            align-items: center;
-                                            padding: 10px;
-                                            background: rgb(33, 150, 243);
-                                            color: #fff;
-                                        "
-                                    >
-                                        <h3>
-                                            {{
-                                                parseFloat(
-                                                    percentageTotalDegrees(
-                                                        student,
-                                                        index
-                                                    ).toFixed(1)
-                                                )
-                                            }}%
-                                        </h3>
-                                        <p>{{ grade }}</p>
-                                    </v-card>
-                                </v-col>
-                            </v-row>
-                            <v-row
-                                style="
-                                    margin-right: 70px;
-                                    margin-top: 20px;
-                                    margin-bottom: 20px;
-                                "
-                            >
-                                <v-col>
-                                    <div
-                                        style="
-                                            display: flex;
-                                            justify-content: space-between;
-                                            align-items: center;
-                                        "
-                                    >
-                                        <h3
-                                            style="
-                                                color: #2196f3;
-                                                margin-bottom: 20px;
-                                            "
-                                        >
-                                            المصروفات
-                                        </h3>
-                                        <h3
-                                            style="
-                                                color: #2196f3;
-                                                margin-bottom: 20px;
-                                            "
-                                        >
-                                            {{ student.payments.Expenses }} /
-                                            {{ student.payments.paid_Up }}
-                                        </h3>
-                                    </div>
-                                    <div>
-                                        <div class="progress-container">
-                                            <progress
-                                                :value="
-                                                    calculatePaymentProgress(
-                                                        student.payments
-                                                            .paid_Up,
-                                                        student.payments
-                                                            .Expenses
-                                                    )
-                                                "
-                                                max="100"
-                                                class="progress-bar"
-                                            ></progress>
-                                            <div
-                                                class="progress-label2"
-                                                :style="{
-                                                    right: calculateLabelPosition(
-                                                        student.payments
-                                                            .paid_Up,
-                                                        student.payments
-                                                            .Expenses
-                                                    ),
-                                                }"
-                                            >
-                                                <div class="label-box">
-                                                    {{
-                                                        Math.ceil(
-                                                            calculatePaymentProgress(
-                                                                student.payments
-                                                                    .paid_Up,
-                                                                student.payments
-                                                                    .Expenses
-                                                            )
-                                                        )
-                                                    }}%
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            style="
-                                                display: flex;
-                                                justify-content: space-between;
-                                                margin-top: 10px;
-                                            "
-                                        >
-                                            <span>بداية الدراسة</span>
-                                            <span>شهر 11</span>
-                                            <span>شهر 12</span>
-                                        </div>
-                                    </div>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col>
-                                    <v-card
-                                        @click.stop="
-                                            openStudentDetails(student)
-                                        "
-                                        style="
-                                            padding: 10px;
-                                            display: flex;
-                                            justify-content: center;
-                                            align-items: center;
-                                            background: #e3f1fd;
-                                        "
-                                    >
-                                        <v-icon
-                                            style="margin-left: 6px"
-                                            icon="mdi-information-outline"
-                                        ></v-icon
-                                        >التفاصيل</v-card
-                                    >
-                                </v-col>
-                            </v-row>
-                        </v-list-item-content> -->
                         <v-dialog v-model="dialogStudentDetails">
                             <v-stepper
                                 v-model="e1"
@@ -637,7 +420,7 @@
                                                 </v-menu>
                                             </div>
                                         </div>
-                                        <!-- 22222222222222222222222222222222222222222222222222222222222 -->
+
                                         <div v-if="e1 === 2" ref="slide2">
                                             <div style="padding: 20px">
                                                 <div
@@ -1178,6 +961,7 @@
                                                 </v-dialog>
                                             </div>
                                         </div>
+
                                         <div v-if="e1 === 4" ref="slide4">
                                             <div style="padding: 20px">
                                                 <div
@@ -1393,12 +1177,12 @@
                                                                     v-for="(
                                                                         degree,
                                                                         index
-                                                                    ) in selectedMonthlyDegrees"
+                                                                    ) in subjects"
                                                                     :key="index"
                                                                 >
                                                                     <td>
                                                                         {{
-                                                                            degree.Subject_Name
+                                                                            degree.title
                                                                         }}
                                                                     </td>
                                                                     <td>
@@ -1431,12 +1215,12 @@
                                                                     </td>
                                                                     <td>
                                                                         {{
-                                                                            degree.Minor_degree
+                                                                            degree.minNumber
                                                                         }}
                                                                     </td>
                                                                     <td>
                                                                         {{
-                                                                            degree.Major_degree
+                                                                            degree.maxNumber
                                                                         }}
                                                                     </td>
                                                                     <td>
@@ -1460,6 +1244,7 @@
                                                 </v-card>
                                             </div>
                                         </div>
+
                                         <div v-if="e1 === 5" ref="slide5">
                                             <div
                                                 v-if="
@@ -1952,6 +1737,7 @@
                                                 </v-container>
                                             </v-card>
                                         </div>
+
                                         <div v-if="e1 === 6" ref="slide6">
                                             <div
                                                 style="
@@ -2197,6 +1983,7 @@
                                                 </v-card>
                                             </v-dialog>
                                         </div>
+
                                         <div v-if="e1 === 7" ref="slide7">
                                             <div
                                                 style="
@@ -2375,9 +2162,13 @@
                     <template v-slot:default>
                         <v-card
                             class="mx-auto text-white"
-                            style="width: 100% !important; background: #2196f3"
+                            style="
+                                background: #3875a5 !important;
+                                color: white !important;
+                                width: 100% !important;
+                            "
                         >
-                            <v-toolbar title="إضافه طالب ">
+                            <v-toolbar title=" معلومات الطالب وولى امره">
                                 <v-btn
                                     icon
                                     @click="
@@ -2388,11 +2179,11 @@
                                 </v-btn>
                             </v-toolbar>
 
+                            <v-tabs v-model="tab" bg-color="primary">
+                                <v-tab value="student">بيانات الطالب</v-tab>
+                                <v-tab value="parent">ولي الأمر</v-tab>
+                            </v-tabs>
                             <v-card-text>
-                                <v-tabs class="ma-0" v-model="tab">
-                                    <v-tab value="student">بيانات الطالب</v-tab>
-                                    <v-tab value="parent">ولي الأمر</v-tab>
-                                </v-tabs>
                                 <v-tabs-window v-model="tab">
                                     <v-tabs-window-item value="student">
                                         <form @submit.prevent="submit">
@@ -2562,7 +2353,6 @@
                                                     <v-btn
                                                         append-icon="mdi-account-circle"
                                                         type="submit"
-                                                        size="x-large"
                                                         style="
                                                             background: rgb(
                                                                 70,
@@ -2570,9 +2360,9 @@
                                                                 164
                                                             );
                                                             color: white;
-                                                            font-size: 18px;
-                                                            padding: 10px;
-                                                            width: 100;
+                                                            font-size: 24px;
+                                                            padding: 3px;
+                                                            width: 42%;
                                                         "
                                                         >إضافة طالب</v-btn
                                                     >
@@ -2707,7 +2497,7 @@ import confirm_message2 from "@/components/confirm_message2.vue";
 export { db, storage };
 import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
-import Chart from "chart.js/auto";
+import { Chart, registerables } from "chart.js/auto";
 import { mapActions } from "pinia";
 import { usenotification } from "../store/notification.js";
 import { useDialogStore } from "@/store/useDialogStore";
@@ -2751,6 +2541,8 @@ export default {
     },
     data() {
         return {
+            chartInstance: null,
+            subjects: [],
             state: true,
             dialog_stu: false,
             CreateChart: false,
@@ -3202,7 +2994,101 @@ export default {
         await this.fetchStudents();
         this.years = new Date().getFullYear();
     },
+    whatch: {
+        e1(newls) {
+            console.log(newls);
+            this.fetchGradeData();
+        },
+    },
     methods: {
+        //get from firabase data start
+        renderChart() {
+            Chart.register(...registerables);
+
+            const ctx = document.getElementById("myChart_").getContext("2d");
+
+            if (this.chartInstance) {
+                this.chartInstance.destroy();
+            }
+
+            this.chartInstance = new Chart(ctx, {
+                type: "bar", // يمكنك تغيير نوع الرسم البياني هنا
+                data: {
+                    labels: [
+                        "مصروفات مستحقة",
+                        "مصروفات مدفوعة",
+                        "مصروفات متبقية",
+                    ],
+                    datasets: [
+                        {
+                            label: "مصروفات",
+                            data: [60, 70, 10],
+                            backgroundColor: [
+                                "rgba(255, 99, 132, 0.2)",
+                                "rgba(54, 162, 235, 0.2)",
+                                "rgba(75, 192, 192, 0.2)",
+                            ],
+                            borderColor: [
+                                "rgba(255, 99, 132, 1)",
+                                "rgba(54, 162, 235, 1)",
+                                "rgba(75, 192, 192, 1)",
+                            ],
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: "top",
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return (
+                                        context.label +
+                                        ": " +
+                                        context.raw +
+                                        " جنية"
+                                    );
+                                },
+                            },
+                        },
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                        },
+                        y: {
+                            beginAtZero: true,
+                        },
+                    },
+                },
+            });
+        },
+        async fetchGradeData() {
+            try {
+                const classRoomsRef = collection(db, "class_rooms");
+                const q = query(
+                    classRoomsRef,
+                    where("grade", "==", this.gradeId)
+                );
+                const querySnapshot = await getDocs(q);
+                const data = [];
+
+                querySnapshot.forEach((doc) => {
+                    const subjects = doc.data().subjects || [];
+                    subjects.forEach((subject) => data.push(subject));
+                });
+
+                this.subjects = data;
+                console.log("data=>", this.subjects);
+            } catch (error) {
+                console.error("Error fetching grade data: ", error);
+            }
+        },
+        //get from firabase data end
         getResidual(studentId) {
             const student = this.students.find((s) => s.id === studentId);
             return student.payments.Expenses - student.payments.paid_Up;
@@ -3639,7 +3525,9 @@ export default {
                         id: this.form.student_id,
                         ...studentData,
                     };
-                    this.students.push(newStudent);
+
+                    // أعد جلب قائمة الطلاب لتحديث الواجهة
+                    await this.fetchStudents();
 
                     // تحقق من وجود مستند "Parents" بالرقم القومي
                     const parentDocRef = doc(
@@ -3745,7 +3633,7 @@ export default {
                             },
                             { merge: true }
                         );
-
+                        this.$emit("close-dialog");
                         console.log(
                             "Class room updated with total students:",
                             totalStudents
@@ -3761,28 +3649,26 @@ export default {
                     this.formattedDate = "";
                     this.handleReset();
                     this.dialogStore.hideAddStudentDialog();
-                    this.$emit("close-dialog");
                     console.log("Added new student:", newStudent);
-
                     this.confirmationText = "تم إضافة الطالب بنجاح";
                     this.showSnackbar = true;
-                    await this.fetchStudents();
                 } catch (error) {
                     console.error("Error adding document:", error);
                 }
             }
         },
+
         async deleteStudent(id) {
             try {
                 const studentDoc = await getDoc(doc(db, "students", id));
                 const studentData = studentDoc.data();
                 const educationalLevel = studentData.educational_level;
-                const section = studentData.section; // احصل على القسم
+                const section = studentData.section;
 
                 await deleteDoc(doc(db, "students", id));
-                this.students = this.students.filter(
-                    (student) => student.id !== id
-                );
+
+                // أعد جلب قائمة الطلاب لتحديث الواجهة
+                await this.fetchStudents();
 
                 // الحصول على مستند `class_rooms` بناءً على قيمة `grade`
                 const classRoomsRef = collection(db, "class_rooms");
@@ -3813,7 +3699,7 @@ export default {
                     };
                     if (studentData.gender === "ذكر") {
                         studentsGender.male = (studentsGender.male || 0) - 1;
-                    } else if (studentData.gender === "انثى") {
+                    } else if (studentData.gender === "أنثى") {
                         studentsGender.female =
                             (studentsGender.female || 0) - 1;
                     }
@@ -3884,7 +3770,7 @@ export default {
                     }
                 });
 
-                this.confirmationText = "تم حذف الطالب بنجاح";
+                this.confirmationText = "تم مسح الطالب بنجاح";
                 this.showSnackbar = true;
                 console.log("Deleted student with id:", id);
             } catch (error) {
@@ -3929,6 +3815,7 @@ export default {
             this.form = {
                 educational_level: this.year,
                 student_name: "",
+                gradeId: this.$route.params.year,
                 class: "",
                 gender: "",
                 section: "",
@@ -4319,6 +4206,7 @@ export default {
             this.selectedStudent = student;
             this.loadParentDetails(student.National_id);
             this.dialogStudentDetails = true;
+            this.fetchGradeData();
         },
         // l;
         initializeTempDate() {
@@ -4946,39 +4834,7 @@ export default {
                 console.error("Error updating class room fees: ", error);
             }
         },
-        updateResidual() {
-            const expenses = this.form.payments.Expenses || 0;
-            const paidUp = this.form.payments.paid_Up || 0;
-            this.form.payments.Residual = expenses - paidUp;
-            this.createChart([paidUp, this.form.payments.Residual]);
-        },
-        createChart(data) {
-            const ctx = document.getElementById("myChart");
-            if (ctx) {
-                // تحقق مما إذا كان هناك مخطط موجود وقم بتدميره
-                if (this.myChart) {
-                    this.myChart.destroy();
-                }
 
-                console.log("start createChart");
-                this.CreateChart = true;
-                this.myChart = new Chart(ctx, {
-                    type: "doughnut",
-                    data: {
-                        datasets: [
-                            {
-                                label: "المصروفات",
-                                data: data,
-                                backgroundColor: ["#336699", "#d8588c"],
-                                hoverOffset: 4,
-                            },
-                        ],
-                    },
-                });
-            } else {
-                console.log("error");
-            }
-        },
         validatePaidUp() {
             const expenses = this.selectedStudent.payments.Expenses || 0;
             this.maxExpenses = expenses;
@@ -4986,8 +4842,81 @@ export default {
                 this.selectedStudent.payments.paid_Up = expenses;
             }
         },
+
+        updateResidual() {
+            const expenses = this.form.payments.Expenses || 0;
+            const paidUp = this.form.payments.paid_Up || 0;
+            this.form.payments.Residual = expenses - paidUp;
+            this.createChart([paidUp, this.form.payments.Residual]);
+        },
+
+        createChart(chartId) {
+            if (typeof Chart === "undefined") {
+                console.error("Chart.js library is not available");
+                return;
+            }
+
+            const canvas = document.getElementById(chartId);
+            if (!canvas) {
+                console.error("Canvas element not found for ID:", chartId);
+                return;
+            }
+
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+                console.error("Chart context not available");
+                return;
+            }
+
+            if (this.myChart) {
+                this.myChart.destroy();
+            }
+
+            const residual = this.selectedStudent?.payments?.Residual || 0;
+            const paidUp = this.selectedStudent?.payments?.paid_Up || 0;
+
+            console.log("Creating chart with ID:", chartId);
+            this.myChart = new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    datasets: [
+                        {
+                            label: "المصروفات",
+                            data: [residual, paidUp],
+                            backgroundColor: ["#336699", "#d8588c"],
+                            hoverOffset: 4,
+                        },
+                    ],
+                    labels: ["المتبقي", "مدفوع"],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: "top",
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return (
+                                        tooltipItem.label +
+                                        ": " +
+                                        tooltipItem.raw +
+                                        " جنية"
+                                    );
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+        },
     },
     watch: {
+        steps() {
+            console.log("stepsjk");
+            this.fetchGradeData();
+        },
         "form.birthday"(newVal) {
             this.formattedDate = this.formatDate(newVal);
         },
@@ -5006,26 +4935,33 @@ export default {
         // },
         filteredStudents() {
             const trimmedQuery = this.searchQuery.trim().toLowerCase();
-
-            return this.filteredStudentList.filter((student) => {
+            const students = this.filteredStudentList.filter((student) => {
                 const matchesYear = student.educational_level === this.year;
                 const matchesSection =
                     this.selectedSection === "الكل" ||
                     student.section === this.selectedSection;
+                const matchesClass =
+                    !this.selectedClassj ||
+                    student.class === this.selectedClassj;
                 const matchesSearchQuery = student.student_name
                     .toLowerCase()
                     .includes(trimmedQuery);
 
-                return matchesYear && matchesSection && matchesSearchQuery;
+                return (
+                    matchesYear &&
+                    matchesSection &&
+                    matchesClass &&
+                    matchesSearchQuery
+                );
             });
-        },
 
+            this.$emit("updateFilteredCount", students.length);
+            return students;
+        },
         sortedStudents() {
             const studentsToSort = this.filteredStudents;
 
             if (this.gradeSortActive) {
-                // الترتيب حسب الدرجات لشهر
-
                 return [...studentsToSort].sort((a, b) => {
                     const gradeA = this.getMonthlyDegrees(
                         a,
@@ -5035,17 +4971,15 @@ export default {
                         b,
                         this.gradeSortActive
                     );
-                    return gradeB - gradeA; // ترتيب تنازلي
+                    return gradeB - gradeA;
                 });
             } else if (this.paymentSortActive) {
-                // الترتيب حسب المدفوعات
                 return [...studentsToSort].sort((a, b) => {
                     const residualA = a.payments.Expenses - a.payments.paid_Up;
                     const residualB = b.payments.Expenses - b.payments.paid_Up;
                     return residualA - residualB;
                 });
             } else {
-                // الترتيب أبجدي
                 return studentsToSort.sort((a, b) => {
                     const nameA = a.student_name.toUpperCase();
                     const nameB = b.student_name.toUpperCase();
@@ -5068,9 +5002,12 @@ export default {
         },
     },
     mounted() {
+        this.gradeId = this.$route.params.year;
+        this.fetchGradeData();
         this.loadStudents();
         // Fetch all students initially
         this.generateRandomPassword();
+
         this.fetchStudents();
         this.interval = setInterval(() => {
             if (this.value === 100) {
@@ -5112,9 +5049,9 @@ export default {
 }
 
 /* .v-progress-linear {
-    position: static;
-    overflow: visible;
-} */
+      position: static;
+      overflow: visible;
+  } */
 .progress-label .label-container {
     background-color: #3875a5;
     padding: 5px 10px;

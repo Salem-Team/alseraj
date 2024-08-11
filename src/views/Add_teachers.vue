@@ -527,7 +527,7 @@ export default {
                     email: user.value.email,
                     password: user.value.password,
                     roles: selectedSubject.value,
-                    userType: "teacher",
+                    userType: "admin",
                     id: docRef.id,
                 });
                 teacher.dialog = false;

@@ -48,6 +48,7 @@ export const useAuthStore = defineStore("auth", {
                 this.user = {
                     id: "",
                     email: "",
+                    Parent_national_id: "",
                     National_id: "",
                     password: "",
                     userType: "",
@@ -60,6 +61,7 @@ export const useAuthStore = defineStore("auth", {
         async login(
             id,
             email,
+            Parent_national_id,
             National_id,
             userType,
             roles,
@@ -75,6 +77,7 @@ export const useAuthStore = defineStore("auth", {
                     id,
                     email,
                     National_id,
+                    Parent_national_id,
                     userType,
                     roles,
                     name,
@@ -96,6 +99,7 @@ export const useAuthStore = defineStore("auth", {
             this.user = {
                 id: "",
                 email: "",
+                Parent_national_id: "",
                 National_id: "",
                 password: "",
                 userType: "",

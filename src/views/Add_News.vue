@@ -312,19 +312,22 @@
                         :show-arrows="showArrows"
                         hide-delimiters
                         height="100%"
+                        :cycle="false"
                     >
                         <v-carousel-item
                             class="pa-5 text-center"
                             :src="news.Image_Information"
                             height="400"
                         ></v-carousel-item>
-                        <v-carousel-item
-                            class="pa-5 text-center"
-                            v-for="New in News"
-                            :key="New.id"
-                            :src="New.image"
-                            height="400"
-                        ></v-carousel-item>
+                        <div v-for="New in News" :key="New.id">
+                            <div v-if="New.id != news.Id_Information">
+                                <v-carousel-item
+                                    class="pa-5 text-center"
+                                    :src="New.image"
+                                    height="400"
+                                ></v-carousel-item>
+                            </div>
+                        </div>
                         <template v-slot:next="{ props }">
                             <v-icon
                                 style="

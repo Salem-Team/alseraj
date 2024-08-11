@@ -2833,13 +2833,13 @@ export default {
                                 Subject_Name: "دين",
                                 Major_degree: 100,
                                 Student_degree: 96,
-                                Date_Test: "15/5",
+                                Date_Test: "2024/08/11",
                             },
                             {
                                 Subject_Name: "دراسات",
                                 Major_degree: 50,
                                 Student_degree: 42,
-                                Date_Test: "11/5",
+                                Date_Test: "2024/08/11",
                             },
                         ],
                     },
@@ -2849,7 +2849,7 @@ export default {
                                 Certificate_title: "شهر أكتوبر",
                                 Degrees: [
                                     {
-                                        Subject_Name: "عربي",
+                                        Subject_Name: "انجليزى",
                                         Teacher_Name: "عماد عمر",
                                         Behavior_assessment: "ممتاز",
                                         Minor_degree: 50,
@@ -2894,7 +2894,7 @@ export default {
                                         Student_degree: 98,
                                     },
                                     {
-                                        Subject_Name: " جغرافيا",
+                                        Subject_Name: "قرآن كريم",
                                         Teacher_Name: "كمال محمود",
                                         Behavior_assessment: "جيد جدا",
                                         Minor_degree: 50,
@@ -2931,7 +2931,7 @@ export default {
                                         Student_degree: 98,
                                     },
                                     {
-                                        Subject_Name: " جغرافيا",
+                                        Subject_Name: "قرآن كريم",
                                         Teacher_Name: "كمال محمود",
                                         Behavior_assessment: "جيد جدا",
                                         Minor_degree: 50,
@@ -2968,7 +2968,7 @@ export default {
                                         Student_degree: 98,
                                     },
                                     {
-                                        Subject_Name: " جغرافيا",
+                                        Subject_Name: "قرآن كريم",
                                         Teacher_Name: "كمال محمود",
                                         Behavior_assessment: "جيد جدا",
                                         Minor_degree: 50,
@@ -3005,7 +3005,7 @@ export default {
                                         Student_degree: 98,
                                     },
                                     {
-                                        Subject_Name: " جغرافيا",
+                                        Subject_Name: "قرآن كريم",
                                         Teacher_Name: "كمال محمود",
                                         Behavior_assessment: "جيد جدا",
                                         Minor_degree: 50,
@@ -3042,7 +3042,7 @@ export default {
                                         Student_degree: 98,
                                     },
                                     {
-                                        Subject_Name: " جغرافيا",
+                                        Subject_Name: "قرآن كريم",
                                         Teacher_Name: "كمال محمود",
                                         Behavior_assessment: "جيد جدا",
                                         Minor_degree: 50,
@@ -3072,10 +3072,10 @@ export default {
                 ],
                 payments: {
                     Expenses: 1000,
-                    payment_System: "",
-                    Installment_System: "",
+                    payment_System: "نظام التقسيط",
+                    Installment_System: "3 شهور",
                     paid_Up: 100,
-                    Residual: 0,
+                    Residual: 900,
                 },
                 Notifications: [],
                 photos: [],

@@ -1125,6 +1125,7 @@
             :gradeOptions="gradeOptions"
             :filteredStudentList="students"
             @updateFilteredCount="updateFilteredCount"
+            @close-dialog="dialog = false"
         />
         <v-dialog
             v-model="showDeleteDialog"
@@ -2081,7 +2082,6 @@ export default {
             this.selectedClassj = null;
             // Optionally, reset the filtered student list
             this.sortStudentsByYearAndAlphabetically();
-            this.dialogFilter = false;
         },
         updateFilteredCount(count) {
             this.filteredStudentsCount = count;

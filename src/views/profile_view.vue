@@ -112,7 +112,7 @@
                             <div>رقم الهاتف</div>
                             <div>{{ user.phone }}</div>
                         </div>
-                        <div class="class">
+                        <div class="class" v-if="user.email != ''">
                             <div>الايميل</div>
                             <div>
                                 {{ user.email }}
@@ -316,7 +316,6 @@ import { useAuthStore } from "../store/userStore";
 import { useSecureDataStore } from "@/store/secureData.js";
 import Student_Dashboard from "../components/Student_Dashboard.vue";
 import Parent_Dashboard from "../components/Parent_Dashboard.vue";
-import Cookies from "js-cookie";
 export default {
     components: {
         Student_Dashboard,
@@ -388,9 +387,7 @@ export default {
                             parent_email: this.user.email,
                             parent_phone: this.user.phone,
                         });
-                        Cookies.set("user", JSON.stringify(this.user), {
-                            expires: 7,
-                        });
+                        localStorage.setItem("user", JSON.stringify(this.user));
                     }
 
                     if (this.user.userType === "admin") {
@@ -412,9 +409,7 @@ export default {
                             password: this.user.password,
                             roles: this.user.roles,
                         });
-                        Cookies.set("user", JSON.stringify(this.user), {
-                            expires: 7,
-                        });
+                        localStorage.setItem("user", JSON.stringify(this.user));
                     }
 
                     if (this.user.userType === "student") {
@@ -426,9 +421,7 @@ export default {
                             student_email: this.user.email,
                             student_phone: this.user.phone,
                         });
-                        Cookies.set("user", JSON.stringify(this.user), {
-                            expires: 7,
-                        });
+                        localStorage.setItem("user", JSON.stringify(this.user));
                     }
 
                     console.log("done");

@@ -78,7 +78,7 @@
                     r="70"
                 ></circle>
             </svg>
-            <v-container v-if="!loading1 && students.length === 0">
+            <v-container v-if="!loading1 && sortedStudents.length === 0">
                 <Empty_error text="لا يوجد طلاب مسجلين." />
             </v-container>
             <div class="boxes" v-else>
@@ -2736,7 +2736,9 @@ export default {
         isSortedAscending: Boolean,
         paymentSortActive: Boolean,
         gradeSortActive: String,
+        selectedClassj: String,
         gradeOptions: Array,
+        filteredStudentList: Array,
     },
     setup() {
         const toast = useToast();
@@ -5003,22 +5005,27 @@ export default {
         //     return this.isPressed ? "mdi-eye-off" : "mdi-eye";
         // },
         filteredStudents() {
-            if (this.selectedSection === "الكل") {
-                return this.students.filter(
-                    (student) => student.educational_level === this.year
-                );
-            }
-            return this.students.filter(
-                (student) =>
-                    student.educational_level === this.year &&
-                    student.section === this.selectedSection
-            );
+            const trimmedQuery = this.searchQuery.trim().toLowerCase();
+
+            return this.filteredStudentList.filter((student) => {
+                const matchesYear = student.educational_level === this.year;
+                const matchesSection =
+                    this.selectedSection === "الكل" ||
+                    student.section === this.selectedSection;
+                const matchesSearchQuery = student.student_name
+                    .toLowerCase()
+                    .includes(trimmedQuery);
+
+                return matchesYear && matchesSection && matchesSearchQuery;
+            });
         },
+
         sortedStudents() {
             const studentsToSort = this.filteredStudents;
 
             if (this.gradeSortActive) {
-                // الترتيب حسب الدرجات لشهر معين
+                // الترتيب حسب الدرجات لشهر
+
                 return [...studentsToSort].sort((a, b) => {
                     const gradeA = this.getMonthlyDegrees(
                         a,

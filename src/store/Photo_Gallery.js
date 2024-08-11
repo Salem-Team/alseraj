@@ -109,11 +109,8 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                         },
                     }
                 );
-                console.log(
-                    "File uploaded successfully:",
-                    response.data.message
-                );
-                return response.data.message;
+                console.log("File uploaded successfully:", response.data);
+                return response.data.data;
             } catch (error) {
                 console.error(
                     "Error uploading file:",
@@ -286,12 +283,12 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
             // Delete the file
             deleteObject(desertRef);
         },*/
-        async deletePhoto(photoId) {
+        async deletePhoto(photoId, photo) {
             try {
                 console.log("Deleting photo with ID:", photoId);
 
                 // Make a DELETE request to delete the photo
-                await axios.delete(`/uploads/${photoId}`);
+                await axios.delete(`/upload?url=${photo}`);
 
                 console.log("Photo deleted successfully:", photoId);
             } catch (error) {
@@ -301,14 +298,14 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
         },
 
         // Action method to delete a photo from Firestore
-        async delete_Photo(PhotoId) {
+        async delete_Photo(PhotoId, photo) {
             try {
                 // Log before attempting to delete
                 console.log("Deleting Photo from Firestore:", PhotoId);
 
                 // Step 1: Delete the document from Firestore
                 await deleteDoc(doc(db, "Photos", PhotoId));
-                await this.deletePhoto(PhotoId);
+                await this.deletePhoto(PhotoId, photo);
                 // Log after successful deletion
                 console.log(
                     "Photo deleted from Firestore successfully:",
@@ -373,6 +370,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
             this.trip = [];
             this.party = [];
             this.news = [];
+            this.all = [];
             this.Photos.forEach((Photo) => {
                 this.all.push(Photo);
                 if (Photo.type === "رحلات") {

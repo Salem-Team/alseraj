@@ -17,13 +17,13 @@
             height: 100% !important;
         "
     >
-        <img
+        <!-- <img
             class="loading"
-            src="../assets/Loader.gif"
+            src="/assets/Loader.gif"
             style="width: 100% !important; height: 100% !important"
             alt=""
             v-if="loading1"
-        />
+        /> -->
     </v-overlay>
     <div visible>
         <Photo_Gallery_data />

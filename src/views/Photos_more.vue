@@ -266,7 +266,6 @@
                                 alt=""
                                 loading="lazy"
                                 @click.prevent="photos.photo_Information(photo)"
-                                @click.="moveText()"
                                 @load="handleImageLoad"
                             />
                             <video
@@ -312,6 +311,7 @@
                                 :show-arrows="showArrows"
                                 hide-delimiters
                                 height="100%"
+                                :cycle="false"
                             >
                                 <!-- Make carousel content scrollable -->
                                 <v-carousel-item
@@ -335,26 +335,30 @@
                                     </video></v-carousel-item
                                 >
                                 <div v-for="photo in Photos" :key="photo.id">
-                                    <v-carousel-item
-                                        v-if="photo.File_type == 'صورة'"
-                                        class="pa-5 text-center"
-                                        :src="photo.image"
-                                        height="400"
-                                    ></v-carousel-item>
-                                    <v-carousel-item
-                                        v-if="photo.File_type == 'فيديو'"
-                                        class="pa-5 text-center"
+                                    <div
+                                        v-if="photo.id != photos.Id_Information"
                                     >
-                                        <video controls height="400">
-                                            <source
-                                                :src="photo.video"
-                                                type="video/mp4"
-                                            />
+                                        <v-carousel-item
+                                            v-if="photo.File_type == 'صورة'"
+                                            class="pa-5 text-center"
+                                            :src="photo.image"
+                                            height="400"
+                                        ></v-carousel-item>
+                                        <v-carousel-item
+                                            v-if="photo.File_type == 'فيديو'"
+                                            class="pa-5 text-center"
+                                        >
+                                            <video controls height="400">
+                                                <source
+                                                    :src="photo.video"
+                                                    type="video/mp4"
+                                                />
 
-                                            Your browser does not support the
-                                            video tag.
-                                        </video></v-carousel-item
-                                    >
+                                                Your browser does not support
+                                                the video tag.
+                                            </video></v-carousel-item
+                                        >
+                                    </div>
                                 </div>
                                 <template v-slot:next="{ props }">
                                     <v-icon

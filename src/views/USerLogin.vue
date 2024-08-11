@@ -147,7 +147,9 @@ export default {
                         ) {
                             authenticatedUser = {
                                 id: doc.id,
-                                National_id: doc.id,
+                                National_id: doc.data().National_id,
+                                Parent_national_id:
+                                    doc.data().Parent_national_id,
                                 name: doc.data().student_name,
                                 userType: "student",
                                 email: doc.data().student_email,
@@ -171,6 +173,7 @@ export default {
                     await this.login(
                         authenticatedUser.id,
                         authenticatedUser.email || "",
+                        authenticatedUser.Parent_national_id || "",
                         authenticatedUser.National_id || "",
                         authenticatedUser.userType,
                         authenticatedUser.roles || [],
@@ -199,14 +202,14 @@ export default {
     watch: {
         userType(newValue) {
             if (newValue === "parent") {
-                this.National_id = "111";
-                this.password = "111";
+                this.National_id = "000";
+                this.password = "123";
             } else if (newValue === "admin") {
                 this.National_id = "12109876543211";
                 this.password = "123456";
             } else if (newValue === "student") {
-                this.National_id = "333";
-                this.password = "123456";
+                this.National_id = "111";
+                this.password = "";
             }
         },
     },

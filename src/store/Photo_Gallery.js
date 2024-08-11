@@ -109,11 +109,8 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                         },
                     }
                 );
-                console.log(
-                    "File uploaded successfully:",
-                    response.data.message
-                );
-                return response.data.message;
+                console.log("File uploaded successfully:", response.data);
+                return response.data.data;
             } catch (error) {
                 console.error(
                     "Error uploading file:",
@@ -291,7 +288,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
                 console.log("Deleting photo with ID:", photoId);
 
                 // Make a DELETE request to delete the photo
-                await axios.delete(`/upload/${photo}`);
+                await axios.delete(`/upload?url=${photo}`);
 
                 console.log("Photo deleted successfully:", photoId);
             } catch (error) {
@@ -373,6 +370,7 @@ export const usePhoto_Gallery = defineStore("Photo_Gallery", {
             this.trip = [];
             this.party = [];
             this.news = [];
+            this.all = [];
             this.Photos.forEach((Photo) => {
                 this.all.push(Photo);
                 if (Photo.type === "رحلات") {

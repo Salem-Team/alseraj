@@ -1,5 +1,6 @@
 <template>
     <div class="visible">
+        <!-- <button @click="Add_Data">Add_Data</button> -->
         <div class="right">
             <div>
                 <v-breadcrumbs>
@@ -244,7 +245,7 @@
 import { ref, watch, onMounted, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Chart } from "chart.js/auto";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { collection, getDocs, getFirestore, addDoc } from "firebase/firestore";
 
 import { initializeApp } from "firebase/app";
 
@@ -274,6 +275,444 @@ export default {
     },
 
     methods: {
+        async Add_Data() {
+            let data = [
+                {
+                    Notifications: [],
+                    Ranking: 1,
+                    fees: {
+                        due_fees: 4500,
+                        paid_fees: 4200,
+                        remaining_fees: 300,
+                    },
+                    grade: "مرحلة رياض الأطفال الأولى",
+                    photos: [],
+                    stage: 1,
+                    students_gender: {
+                        female: 7,
+                        male: 13,
+                    },
+                    total_students: 20,
+                    subjects: [],
+                    sections: {
+                        arabic: 12,
+                        english: 8,
+                    },
+                    results: {
+                        "شهر أكتوبر": 72,
+                        "شهر نوفمبر": 88,
+                        "الترم الأول": 85,
+                        "شهر فبراير": 77,
+                        "شهر مارس": 82,
+                        "الترم الثاني": 90,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 2,
+                    fees: {
+                        due_fees: 6000,
+                        paid_fees: 5500,
+                        remaining_fees: 500,
+                    },
+                    grade: "مرحلة رياض الأطفال الثانية",
+                    photos: [],
+                    stage: 1,
+                    students_gender: {
+                        female: 9,
+                        male: 11,
+                    },
+                    total_students: 20,
+                    subjects: [],
+                    sections: {
+                        arabic: 10,
+                        english: 12,
+                    },
+                    results: {
+                        "شهر أكتوبر": 95,
+                        "شهر نوفمبر": 105,
+                        "الترم الأول": 100,
+                        "شهر فبراير": 110,
+                        "شهر مارس": 115,
+                        "الترم الثاني": 120,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 3,
+                    fees: {
+                        due_fees: 10500,
+                        paid_fees: 8000,
+                        remaining_fees: 2500,
+                    },
+                    grade: "الصف الأول الابتدائي",
+                    photos: [],
+                    stage: 1,
+                    students_gender: {
+                        female: 25,
+                        male: 25,
+                    },
+                    total_students: 50,
+                    subjects: [],
+                    sections: {
+                        arabic: 22,
+                        english: 18,
+                    },
+                    results: {
+                        "شهر أكتوبر": 130,
+                        "شهر نوفمبر": 145,
+                        "الترم الأول": 140,
+                        "شهر فبراير": 155,
+                        "شهر مارس": 160,
+                        "الترم الثاني": 150,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 4,
+                    fees: {
+                        due_fees: 12000,
+                        paid_fees: 7000,
+                        remaining_fees: 5000,
+                    },
+                    grade: "الصف الثاني الابتدائي",
+                    photos: [],
+                    stage: 1,
+                    students_gender: {
+                        female: 18,
+                        male: 22,
+                    },
+                    total_students: 40,
+                    subjects: [],
+                    sections: {
+                        arabic: 20,
+                        english: 20,
+                    },
+                    results: {
+                        "شهر أكتوبر": 170,
+                        "شهر نوفمبر": 185,
+                        "الترم الأول": 180,
+                        "شهر فبراير": 200,
+                        "شهر مارس": 190,
+                        "الترم الثاني": 210,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 5,
+                    fees: {
+                        due_fees: 15000,
+                        paid_fees: 12000,
+                        remaining_fees: 3000,
+                    },
+                    grade: "الصف الثالث الابتدائي",
+                    photos: [],
+                    stage: 1,
+                    students_gender: {
+                        female: 30,
+                        male: 40,
+                    },
+                    total_students: 70,
+                    subjects: [],
+                    sections: {
+                        arabic: 25,
+                        english: 25,
+                    },
+                    results: {
+                        "شهر أكتوبر": 200,
+                        "شهر نوفمبر": 220,
+                        "الترم الأول": 210,
+                        "شهر فبراير": 230,
+                        "شهر مارس": 240,
+                        "الترم الثاني": 250,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 6,
+                    fees: {
+                        due_fees: 18000,
+                        paid_fees: 15000,
+                        remaining_fees: 3000,
+                    },
+                    grade: "الصف الرابع الابتدائي",
+                    photos: [],
+                    stage: 1,
+                    students_gender: {
+                        female: 35,
+                        male: 35,
+                    },
+                    total_students: 70,
+                    subjects: [],
+                    sections: {
+                        arabic: 30,
+                        english: 30,
+                    },
+                    results: {
+                        "شهر أكتوبر": 250,
+                        "شهر نوفمبر": 260,
+                        "الترم الأول": 255,
+                        "شهر فبراير": 270,
+                        "شهر مارس": 280,
+                        "الترم الثاني": 290,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 7,
+                    fees: {
+                        due_fees: 22000,
+                        paid_fees: 18000,
+                        remaining_fees: 4000,
+                    },
+                    grade: "الصف الخامس الابتدائي",
+                    photos: [],
+                    stage: 1,
+                    students_gender: {
+                        female: 40,
+                        male: 40,
+                    },
+                    total_students: 80,
+                    subjects: [],
+                    sections: {
+                        arabic: 35,
+                        english: 35,
+                    },
+                    results: {
+                        "شهر أكتوبر": 280,
+                        "شهر نوفمبر": 290,
+                        "الترم الأول": 285,
+                        "شهر فبراير": 300,
+                        "شهر مارس": 310,
+                        "الترم الثاني": 320,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 8,
+                    fees: {
+                        due_fees: 25000,
+                        paid_fees: 20000,
+                        remaining_fees: 5000,
+                    },
+                    grade: "الصف السادس الابتدائي",
+                    photos: [],
+                    stage: 1,
+                    students_gender: {
+                        female: 45,
+                        male: 50,
+                    },
+                    total_students: 95,
+                    subjects: [],
+                    sections: {
+                        arabic: 40,
+                        english: 35,
+                    },
+                    results: {
+                        "شهر أكتوبر": 300,
+                        "شهر نوفمبر": 310,
+                        "الترم الأول": 305,
+                        "شهر فبراير": 320,
+                        "شهر مارس": 330,
+                        "الترم الثاني": 340,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 9,
+                    fees: {
+                        due_fees: 28000,
+                        paid_fees: 23000,
+                        remaining_fees: 5000,
+                    },
+                    grade: "الصف الأول الإعدادي",
+                    photos: [],
+                    stage: 2,
+                    students_gender: {
+                        female: 50,
+                        male: 50,
+                    },
+                    total_students: 100,
+                    subjects: [],
+                    sections: {
+                        arabic: 45,
+                        english: 45,
+                    },
+                    results: {
+                        "شهر أكتوبر": 320,
+                        "شهر نوفمبر": 330,
+                        "الترم الأول": 325,
+                        "شهر فبراير": 340,
+                        "شهر مارس": 350,
+                        "الترم الثاني": 360,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 10,
+                    fees: {
+                        due_fees: 32000,
+                        paid_fees: 25000,
+                        remaining_fees: 7000,
+                    },
+                    grade: "الصف الثاني الإعدادي",
+                    photos: [],
+                    stage: 2,
+                    students_gender: {
+                        female: 55,
+                        male: 50,
+                    },
+                    total_students: 105,
+                    subjects: [],
+                    sections: {
+                        arabic: 50,
+                        english: 55,
+                    },
+                    results: {
+                        "شهر أكتوبر": 350,
+                        "شهر نوفمبر": 360,
+                        "الترم الأول": 355,
+                        "شهر فبراير": 370,
+                        "شهر مارس": 380,
+                        "الترم الثاني": 390,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 11,
+                    fees: {
+                        due_fees: 35000,
+                        paid_fees: 27000,
+                        remaining_fees: 8000,
+                    },
+                    grade: "الصف الثالث الإعدادي",
+                    photos: [],
+                    stage: 2,
+                    students_gender: {
+                        female: 60,
+                        male: 60,
+                    },
+                    total_students: 120,
+                    subjects: [],
+                    sections: {
+                        arabic: 55,
+                        english: 65,
+                    },
+                    results: {
+                        "شهر أكتوبر": 380,
+                        "شهر نوفمبر": 390,
+                        "الترم الأول": 385,
+                        "شهر فبراير": 400,
+                        "شهر مارس": 410,
+                        "الترم الثاني": 420,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 12,
+                    fees: {
+                        due_fees: 40000,
+                        paid_fees: 30000,
+                        remaining_fees: 10000,
+                    },
+                    grade: "الصف الأول الثانوي",
+                    photos: [],
+                    stage: 3,
+                    students_gender: {
+                        female: 65,
+                        male: 55,
+                    },
+                    total_students: 120,
+                    subjects: [],
+                    sections: {
+                        arabic: 60,
+                        english: 60,
+                    },
+                    results: {
+                        "شهر أكتوبر": 400,
+                        "شهر نوفمبر": 410,
+                        "الترم الأول": 405,
+                        "شهر فبراير": 420,
+                        "شهر مارس": 430,
+                        "الترم الثاني": 440,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 13,
+                    fees: {
+                        due_fees: 42000,
+                        paid_fees: 31000,
+                        remaining_fees: 11000,
+                    },
+                    grade: "الصف الثاني الثانوي",
+                    photos: [],
+                    stage: 3,
+                    students_gender: {
+                        female: 70,
+                        male: 50,
+                    },
+                    total_students: 120,
+                    subjects: [],
+                    sections: {
+                        arabic: 65,
+                        english: 55,
+                    },
+                    results: {
+                        "شهر أكتوبر": 420,
+                        "شهر نوفمبر": 430,
+                        "الترم الأول": 425,
+                        "شهر فبراير": 440,
+                        "شهر مارس": 450,
+                        "الترم الثاني": 460,
+                    },
+                },
+                {
+                    Notifications: [],
+                    Ranking: 14,
+                    fees: {
+                        due_fees: 45000,
+                        paid_fees: 32000,
+                        remaining_fees: 13000,
+                    },
+                    grade: "الصف الثالث الثانوي",
+                    photos: [],
+                    stage: 3,
+                    students_gender: {
+                        female: 75,
+                        male: 65,
+                    },
+                    total_students: 140,
+                    subjects: [],
+                    sections: {
+                        arabic: 70,
+                        english: 70,
+                    },
+                    results: {
+                        "شهر أكتوبر": 440,
+                        "شهر نوفمبر": 450,
+                        "الترم الأول": 445,
+                        "شهر فبراير": 460,
+                        "شهر مارس": 470,
+                        "الترم الثاني": 480,
+                    },
+                },
+            ];
+
+            // // Add a new document with a generated sid.
+            // const docRef = await addDoc(collection(db, "cities"), data);
+            // console.log("Document written with ID: ", docRef.id);
+
+            const collectionRef = collection(db, "class_rooms");
+            for (const item of data) {
+                try {
+                    const docRef = await addDoc(collectionRef, item);
+                    console.log("Document written with ID: ", docRef.id);
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                }
+            }
+        },
         spliceRoles() {
             // Remove "مشرف" from each role
             let splicedRoles = this.user.roles.map((role) =>

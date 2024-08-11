@@ -81,7 +81,7 @@
     </div>
 
     <section class="parallax">
-        <h1 id="text">مدرسة السراج المنير</h1>
+        <h1 id="text">معهد السراج المنير</h1>
         <img
             class="img_1"
             src="../assets/m_3.png"

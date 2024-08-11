@@ -70,11 +70,11 @@
                                     class="d-flex justify-space-between align-space-between"
                                 >
                                     <span>
-                                        الدرجه العظمه :
+                                        الدرجه العظمي :
                                         {{ sub.maxNumber }}</span
                                     >
                                     <span
-                                        >الدرجه الصغره:{{ sub.minNumber }}</span
+                                        >الدرجه الصغري:{{ sub.minNumber }}</span
                                     >
                                 </div>
                             </v-alert>
@@ -104,14 +104,14 @@
                                 ></v-text-field>
                                 <v-text-field
                                     v-model="newSubject.maxNumber"
-                                    label="الدرجه العظمه"
+                                    label="الدرجه العظمي"
                                     type="number"
                                     min="0"
                                     required
                                 ></v-text-field>
                                 <v-text-field
                                     v-model="newSubject.minNumber"
-                                    label="الدرجه الصغره"
+                                    label="الدرجه الصغري"
                                     type="number"
                                     min="0"
                                     required
@@ -157,14 +157,14 @@
                                     type="number"
                                     min="0"
                                     v-model="editedSubject.maxNumber"
-                                    label="القيمه العظمه"
+                                    label="القيمه العظمي"
                                     required
                                 ></v-text-field>
                                 <v-text-field
                                     type="number"
                                     min="0"
                                     v-model="editedSubject.minNumber"
-                                    label="القيمه الصغره"
+                                    label="القيمه الصغري"
                                     required
                                 ></v-text-field>
                             </v-form>

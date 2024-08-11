@@ -163,6 +163,83 @@
                 </v-dialog>
             </template>
         </Offline_error>
+        <div class="right">
+            <div>
+                <v-breadcrumbs>
+                    <v-breadcrumbs-item @click="$router.push('/admin')" link>
+                        الإشراف
+                    </v-breadcrumbs-item>
+                    <v-breadcrumbs-divider />
+                    <v-breadcrumbs-item>لوحة الشرف</v-breadcrumbs-item>
+                </v-breadcrumbs>
+            </div>
+            <div class="left">
+                <img
+                    src="../assets/top_board/filter.svg"
+                    alt=""
+                    @click="dialog = true"
+                />
+            </div>
+        </div>
+
+        <v-dialog v-model="dialog" width="90%">
+            <v-card width="100%" class="popup">
+                <div class="d-flex justify-space-between align-center title">
+                    <div
+                        style="
+                            color: var(--main-color);
+                            display: flex;
+                            align-items: center;
+                            gap: 5px;
+                            font-size: 23px;
+                            font-weight: bold;
+                        "
+                    >
+                        <font-awesome-icon :icon="['fas', 'filter']" />
+                        <div>الفلتر</div>
+                    </div>
+                    <font-awesome-icon
+                        :icon="['fas', 'xmark']"
+                        @click="dialog = false"
+                    />
+                </div>
+                <div class="Body">
+                    <v-select
+                        :items="educational_level"
+                        label="اختر المرحلة الدراسية"
+                        v-model="selectedEducationalLevel"
+                        class="custom-select"
+                    ></v-select>
+                    <v-select
+                        :items="month"
+                        label="اختر الشهر"
+                        v-model="selectedMonth"
+                        class="custom-select"
+                    ></v-select>
+                    <v-select
+                        :items="classes"
+                        label="اختر الفصل"
+                        v-model="selectedClass"
+                        class="custom-select"
+                    ></v-select>
+                    <v-select
+                        :items="sections"
+                        label="اختر القسم"
+                        v-model="selectedSection"
+                        class="custom-select"
+                    ></v-select>
+                    <v-select
+                        :items="genders"
+                        label="اختر الجنس"
+                        v-model="selectedGender"
+                        class="custom-select"
+                    ></v-select>
+                    <div class="Btn">
+                        <div @click="Filter">تطبيق الفلتر</div>
+                    </div>
+                </div>
+            </v-card>
+        </v-dialog>
         <v-container>
             <!-- <ul class="show_details">
                 <li v-show="selectedEducationalLevel">
@@ -256,7 +333,7 @@
                                     color="var(--main-color)"
                                 >
                                     <template v-slot:default>
-                                        {{ student.percentage }}
+                                        {{ +student.percentage }}
                                         %
                                     </template>
                                 </v-progress-circular>
@@ -346,7 +423,7 @@ export default {
             empty: null,
             dialog: null,
             students: [],
-            selectedEducationalLevel: "الصف الأول الابتدائي",
+            selectedEducationalLevel: "مرحلة رياض الأطفال الأولى",
             selectedClass: "",
             selectedGender: "",
             selectedSection: "",
@@ -525,13 +602,14 @@ export default {
                             if (monthData && monthData.Degrees) {
                                 const totalDegree = monthData.Degrees.reduce(
                                     (sum, degree) =>
-                                        sum + degree.Student_degree,
+                                        sum + Number(degree.Student_degree), // تحويل إلى رقم
                                     0
                                 );
                                 const maxDegree = monthData.Degrees.reduce(
-                                    (sum, degree) => sum + degree.Major_degree,
+                                    (sum, degree) =>
+                                        sum + Number(degree.Major_degree), // تحويل إلى رقم
                                     0
-                                ); // حساب الدرجة القصوى
+                                );
 
                                 studentData.totalDegree = totalDegree;
                                 studentData.percentage = (

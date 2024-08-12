@@ -1,7 +1,7 @@
 import { query, collection, getDocs, limit, where } from "firebase/firestore";
 import { defineStore } from "pinia";
 import { db } from "../Firebase.js"; // Ensure the path is correct
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 export const useStudentStore = defineStore("student", {
     state: () => ({
@@ -14,7 +14,9 @@ export const useStudentStore = defineStore("student", {
         // Fetch student data by National ID
         async getStudent() {
             try {
-                const nationalId = JSON.parse(Cookies.get("user")).National_id;
+                const nationalId = JSON.parse(
+                    localStorage.getItem("user")
+                ).National_id;
                 console.log("Student National_id:=>", nationalId);
                 const studentCollection = collection(db, "students");
                 const q = query(

@@ -2817,7 +2817,7 @@ export default {
                 birthday: null,
                 parent_name: "",
                 student_phone: "",
-                national_id: "",
+                National_id: "",
                 student_pass: "", // حقل كلمة مرور الطالب
                 parent_pass: "", // حقل كلمة مرور ولي الأمر
                 Guardian: [
@@ -3634,7 +3634,7 @@ export default {
                         student_pass: this.form.student_pass || "",
                         student_phone: this.form.student_phone || "",
                         student_email: this.form.student_email || "", // إضافة البريد الإلكتروني للطالب
-                        national_id: this.form.student_id || "",
+                        National_id: this.form.student_id || "",
                     };
 
                     await setDoc(
@@ -3943,7 +3943,7 @@ export default {
                 student_phone: "",
                 parent_phone: "",
                 parent_name: "",
-                national_id: "",
+                National_id: "",
                 parent_email: "",
                 student_email: "",
 

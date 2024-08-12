@@ -78,9 +78,9 @@
                     r="70"
                 ></circle>
             </svg>
-            <v-container v-if="!loading1 && sortedStudents.length === 0">
+            <div v-if="!loading1 && sortedStudents.length === 0">
                 <Empty_error text="لا يوجد طلاب مسجلين." />
-            </v-container>
+            </div>
             <div class="boxes" v-else>
                 <div
                     class="box"
@@ -1862,6 +1862,7 @@
                                                             </div>
                                                         </v-row>
                                                         <div
+                                                            v-show="dijcidchjio"
                                                             class="Title kheslam"
                                                             v-if="
                                                                 selectedStudent
@@ -1882,6 +1883,7 @@
                                                             <div>إحصائيات</div>
                                                         </div>
                                                         <div
+                                                            v-show="dijcidchjio"
                                                             class="details"
                                                             v-if="
                                                                 selectedStudent
@@ -2707,7 +2709,7 @@ import confirm_message2 from "@/components/confirm_message2.vue";
 export { db, storage };
 import "jspdf-autotable";
 // import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
-import Chart from "chart.js/auto";
+import { Chart } from "chart.js/auto";
 import { mapActions } from "pinia";
 import { usenotification } from "../store/notification.js";
 import { useDialogStore } from "@/store/useDialogStore";
@@ -2814,6 +2816,7 @@ export default {
                 section: "",
                 birthday: null,
                 parent_name: "",
+                student_phone: "",
                 national_id: "",
                 student_pass: "", // حقل كلمة مرور الطالب
                 parent_pass: "", // حقل كلمة مرور ولي الأمر
@@ -3217,6 +3220,9 @@ export default {
                     ...doc.data(),
                     state: doc.data().state || false, // استخدم حالة 'state' الحالية إذا كانت موجودة
                 }));
+                setTimeout(() => {
+                    this.updateResidual();
+                }, 1000);
             } catch (error) {
                 console.error("Error loading students:", error);
             }
@@ -3623,11 +3629,12 @@ export default {
                         year:
                             this.form.year ||
                             new Date().getFullYear().toString(),
-                        National_id: this.form.parent_national_id || "",
+                        parent_national_id: this.form.parent_national_id || "",
                         state: true,
                         student_pass: this.form.student_pass || "",
                         student_phone: this.form.student_phone || "",
                         student_email: this.form.student_email || "", // إضافة البريد الإلكتروني للطالب
+                        national_id: this.form.student_id || "",
                     };
 
                     await setDoc(
@@ -4017,7 +4024,7 @@ export default {
                                         Student_degree: 98,
                                     },
                                     {
-                                        Subject_Name: " جغرافيا",
+                                        Subject_Name: "قرآن كريم",
                                         Teacher_Name: "كمال محمود",
                                         Behavior_assessment: "جيد جدا",
                                         Minor_degree: 50,
@@ -4054,7 +4061,7 @@ export default {
                                         Student_degree: 98,
                                     },
                                     {
-                                        Subject_Name: " جغرافيا",
+                                        Subject_Name: "قرآن كريم",
                                         Teacher_Name: "كمال محمود",
                                         Behavior_assessment: "جيد جدا",
                                         Minor_degree: 50,
@@ -4091,7 +4098,7 @@ export default {
                                         Student_degree: 98,
                                     },
                                     {
-                                        Subject_Name: " جغرافيا",
+                                        Subject_Name: "قرآن كريم",
                                         Teacher_Name: "كمال محمود",
                                         Behavior_assessment: "جيد جدا",
                                         Minor_degree: 50,
@@ -4128,7 +4135,7 @@ export default {
                                         Student_degree: 98,
                                     },
                                     {
-                                        Subject_Name: " جغرافيا",
+                                        Subject_Name: "قرآن كريم",
                                         Teacher_Name: "كمال محمود",
                                         Behavior_assessment: "جيد جدا",
                                         Minor_degree: 50,
@@ -4165,7 +4172,7 @@ export default {
                                         Student_degree: 98,
                                     },
                                     {
-                                        Subject_Name: " جغرافيا",
+                                        Subject_Name: "قرآن كريم",
                                         Teacher_Name: "كمال محمود",
                                         Behavior_assessment: "جيد جدا",
                                         Minor_degree: 50,
@@ -4194,9 +4201,11 @@ export default {
                     },
                 ],
                 payments: {
-                    Requird: 0,
-                    paid_up: 0,
-                    installment_system: "",
+                    Expenses: 1000,
+                    payment_System: "نظام التقسيط",
+                    Installment_System: "3 شهور",
+                    paid_Up: 100,
+                    Residual: 900,
                 },
                 Notifications: [],
 
@@ -4947,23 +4956,20 @@ export default {
             }
         },
         updateResidual() {
-            const expenses = this.form.payments.Expenses || 0;
-            const paidUp = this.form.payments.paid_Up || 0;
-            this.form.payments.Residual = expenses - paidUp;
-            this.createChart([paidUp, this.form.payments.Residual]);
+            // const expenses = this.form.payments.Expenses || 0;
+            // const paidUp = this.form.payments.paid_Up || 0;
+            // this.createChart([
+            //     this.form.payments.paid_Up || 0,
+            //     this.form.payments.Expenses - this.form.payments.paid_Up || 0,
+            // ]);
+            this.createChart([20, 80]);
         },
         createChart(data) {
+            console.log("data=>", data);
             const ctx = document.getElementById("myChart");
             if (ctx) {
-                // تحقق مما إذا كان هناك مخطط موجود وقم بتدميره
-                if (this.myChart) {
-                    this.myChart.destroy();
-                }
-
-                console.log("start createChart");
-                this.CreateChart = true;
-                this.myChart = new Chart(ctx, {
-                    type: "doughnut",
+                new Chart(ctx, {
+                    type: "pie",
                     data: {
                         datasets: [
                             {
@@ -4975,8 +4981,6 @@ export default {
                         ],
                     },
                 });
-            } else {
-                console.log("error");
             }
         },
         validatePaidUp() {

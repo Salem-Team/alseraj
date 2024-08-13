@@ -3195,8 +3195,8 @@ export default {
             paymentMethod: null,
             paymentMethods: ["الدفع المباشر", "نظام التقسيط"],
             dialogSuccess: false,
-            transitionTimeline: false, // متغير للتحكم في الانتقال للـ timeline-item-content
-            transitionProgress: false, // متغير للتحكم في الانتقال للبروجريس بار
+            transitionTimeline: false,
+            transitionProgress: false,
             alertMessage: false,
             reachedProgress: false,
             currentActive: 0,
@@ -3206,7 +3206,7 @@ export default {
             tab_5: null,
             tab_4: null,
             tab_2: null,
-            tab: "option-1", // تحديد التاب الافتراضي
+            tab: "option-1",
             selectedGrade: null,
             gradeLevels: ["الصف الأول", "الصف الثاني", "الصف الثالث"],
             selectedPlan: null,
@@ -3238,7 +3238,7 @@ export default {
                 this.students = studentsSnapshot.docs.map((doc) => ({
                     id: doc.id,
                     ...doc.data(),
-                    state: doc.data().state || false, // استخدم حالة 'state' الحالية إذا كانت موجودة
+                    state: doc.data().state || false,
                 }));
                 setTimeout(() => {
                     this.updateResidual();

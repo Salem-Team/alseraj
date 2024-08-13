@@ -87,12 +87,26 @@
                     v-for="(student, index) in sortedStudents"
                     :key="student.id"
                 >
+                    <!-- <ChatComponent v-if="showChatView" :recipientId="'111'" /> -->
                     <div class="head">
                         <div>
                             <div class="number">{{ index + 1 }}</div>
                             <div class="name">{{ student.student_name }}</div>
                         </div>
+
                         <div>
+                            <router-link
+                                :to="{
+                                    path: '/chat',
+                                    query: { recipientId: student.id },
+                                }"
+                                @click="setRecipientId(student.id)"
+                            >
+                                <font-awesome-icon
+                                    :icon="['fas', 'comment-dots']"
+                                />
+                            </router-link>
+
                             <font-awesome-icon
                                 :icon="['fas', icon(student)]"
                                 @click="toggleIcon(student)"
@@ -2715,11 +2729,13 @@ import { usenotification } from "../store/notification.js";
 import { useDialogStore } from "@/store/useDialogStore";
 import { mapState } from "pinia";
 import { useAuthStore } from "../store/userStore";
+// import ChatComponent from "@/views/chat_view.vue";
 export default {
     name: "StudentList",
     components: {
         confirm_message2,
         Empty_error,
+        // ChatComponent,
     },
     props: {
         year: {
@@ -2753,6 +2769,7 @@ export default {
     },
     data() {
         return {
+            showChatView: false,
             state: true,
             dialog_stu: false,
             CreateChart: false,
@@ -2853,7 +2870,7 @@ export default {
                                 Degrees: [
                                     {
                                         Subject_Name: "انجليزى",
-                                        Teacher_Name: "عماد عمر",
+                                        Teacher_Name: "كريم عمر",
                                         Behavior_assessment: "ممتاز",
                                         Minor_degree: 50,
                                         Major_degree: 100,
@@ -2861,7 +2878,7 @@ export default {
                                     },
                                     {
                                         Subject_Name: "قرآن كريم",
-                                        Teacher_Name: "نور محمود",
+                                        Teacher_Name: "كمال محمود",
                                         Behavior_assessment: "ممتاز",
                                         Minor_degree: 50,
                                         Major_degree: 100,
@@ -3206,6 +3223,9 @@ export default {
         this.years = new Date().getFullYear();
     },
     methods: {
+        setRecipientId(id) {
+            this.$router.push({ path: "/chat", query: { recipientId: id } });
+        },
         getResidual(studentId) {
             const student = this.students.find((s) => s.id === studentId);
             return student.payments.Expenses - student.payments.paid_Up;

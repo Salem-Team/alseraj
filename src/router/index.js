@@ -3,7 +3,7 @@ import Classes from "../views/The_Classes.vue";
 import ClassPage from "../views/classs_page.vue";
 import TheAdministrator from "../views/TheAdministrator.vue";
 import HomeView from "../views/HomeView.vue";
-import UserLogin from "../views/USerLogin.vue";
+import UserLogin from "../views/UserLogin.vue";
 import profile_view from "../views/profile_view.vue";
 import Top_Board from "../views/Top_Board.vue";
 import Add_News from "../views/Add_News.vue";
@@ -15,6 +15,7 @@ import Photo_Gallery from "../views/Photo_Gallery.vue";
 import Add_admin from "../views/Add_admin.vue";
 import Add_teacher from "../views/Add_teachers.vue";
 import ChildDetails from "../views/ChildDetails.vue";
+import chat from "../views/chat_view.vue";
 
 const routes = [
     { path: "/", name: "home", component: HomeView },
@@ -25,6 +26,11 @@ const routes = [
         name: "ChildDetails",
         component: ChildDetails,
         meta: { requiresAuth: true, requiredAuthority: "parent" },
+    },
+    {
+        path: "/chat",
+        name: "chat",
+        component: chat,
     },
 
     {

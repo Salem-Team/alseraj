@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Classes from "../views/The_Classes.vue";
 import ClassPage from "../views/classs_page.vue";
-import TheAdministrator from "../views/TheAdministrator.vue";
+import TheAdministrator from "../views/TheAdministrator.vue"; 
 import HomeView from "../views/HomeView.vue";
 import UserLogin from "../views/UserLogin.vue";
 import profile_view from "../views/profile_view.vue";

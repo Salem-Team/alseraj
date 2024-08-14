@@ -1397,7 +1397,7 @@ export default {
 
         resetSearch() {
             this.searchQuery = "";
-            this.searchStudent(); // Reset the student list
+            this.searchStudent();
         },
         removeQuestion(index) {
             this.questions.splice(index, 1);
@@ -1405,7 +1405,6 @@ export default {
         updateOption(questionIndex, optionIndex) {
             this.questions[questionIndex].options[optionIndex] =
                 event.target.value;
-            // تعيين الإجابة الصحيحة كأول خيار دائمًا
             if (optionIndex === 0) {
                 this.questions[questionIndex].correctAnswer =
                     this.questions[questionIndex].options[0];
@@ -1419,7 +1418,7 @@ export default {
             const trueFalseQuestion = {
                 type: "true_false",
                 question: "سؤال صواب أو خطأ؟",
-                correctAnswer: true, // يمكن تعديلها بناءً على المتطلبات
+                correctAnswer: true,
             };
             this.questions.push(trueFalseQuestion);
             console.log("this.questions=>", this.questions);

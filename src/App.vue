@@ -1,6 +1,7 @@
 <template>
     <div class="main_header">
-        <nav>
+        <nav style="width: 90%;
+    margin: 0 auto;">
             <div>
                 <router-link class="a" to="/">الرئيسية</router-link>
             </div>

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Classes from "../views/The_Classes.vue";
 import ClassPage from "../views/classs_page.vue";
-import TheAdministrator from "../views/TheAdministrator.vue"; 
+import TheAdministrator from "../views/TheAdministrator.vue";
 import HomeView from "../views/HomeView.vue";
 import UserLogin from "../views/UserLogin.vue";
 import profile_view from "../views/profile_view.vue";
@@ -15,7 +15,18 @@ import Photo_Gallery from "../views/Photo_Gallery.vue";
 import Add_admin from "../views/Add_admin.vue";
 import Add_teacher from "../views/Add_teachers.vue";
 import ChildDetails from "../views/ChildDetails.vue";
+import Weekly_results from "../views/Weekly_results.vue";
+import Monthly_results from "../views/Monthly_results.vue";
+import Student_Notifications from "../views/Student_Notifications.vue";
+import Student_statistics from "../views/Student_statistics.vue";
+import Student_expenses from "../views/Student_expenses.vue";
+import Student_tests from "../views/Student_tests.vue";
+import Student_photos from "../views/Student_photos.vue";
+import Educational_content from "../views/Educational_content.vue";
+import Weekly_plans from "../views/Weekly_plans.vue";
+import Academic_schedule from "../views/Academic_schedule.vue";
 import chat from "../views/chat_view.vue";
+import Personal_data from "../views/Personal_data.vue";
 
 const routes = [
     { path: "/", name: "home", component: HomeView },
@@ -25,12 +36,79 @@ const routes = [
         path: "/ChildDetails/:id",
         name: "ChildDetails",
         component: ChildDetails,
-        meta: { requiresAuth: true, requiredAuthority: "parent" },
+        meta: { requiresAuth: true},
     },
+    {
+        path: "/Monthly_results/:id",
+        name: "Monthly_results",
+        component: Monthly_results,
+        meta: { requiresAuth: true},
+    },
+    {
+        path: "/Academic_schedule/:id",
+        name: "Academic_schedule",
+        component: Academic_schedule,
+        meta: { requiresAuth: true},
+    },
+    {
+        path: "/Student_photos/:id",
+        name: "Student_photos",
+        component: Student_photos,
+        meta: { requiresAuth: true},
+    },
+    {
+        path: "/Weekly_plans/:id",
+        name: "Weekly_plans",
+        component: Weekly_plans,
+        meta: { requiresAuth: true},
+    },
+    {
+        path: "/Educational_content/:id",
+        name: "Educational_content",
+        component: Educational_content,
+        meta: { requiresAuth: true},
+    },
+    {
+        path: "/Student_tests/:id",
+        name: "Student_tests",
+        component: Student_tests,
+        meta: { requiresAuth: true},
+    },
+    {
+        path: "/Student_expenses/:id",
+        name: "Student_expenses",
+        component: Student_expenses,
+        meta: { requiresAuth: true},
+    },
+    {
+        path: "/Student_statistics/:id",
+        name: "Student_statistics",
+        component: Student_statistics,
+        meta: { requiresAuth: true},
+    },
+    {
+        path: "/Student_Notifications/:id",
+        name: "Student_Notifications",
+        component: Student_Notifications,
+        meta: { requiresAuth: true},
+    },
+    {
+        path: "/Weekly_results/:id",
+        name: "Weekly_results",
+        component: Weekly_results,
+        meta: { requiresAuth: true},
+    },
+    
     {
         path: "/chat",
         name: "chat",
         component: chat,
+    },
+    {
+        path: "/Personal_data/:id",
+        name: "Personal_data",
+        component: Personal_data,
+        meta: { requiresAuth: true},
     },
 
     {

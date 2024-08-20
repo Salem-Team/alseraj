@@ -68,6 +68,7 @@ export default {
     direction: rtl !important;
     letter-spacing: 0 !important;
     transition-timing-function: 0.3s;
+    font-family: system-ui; // add by mo salem
 }
 body {
     direction: rtl;
@@ -82,6 +83,19 @@ body {
     --secound-color: #eee;
     --therd-color: #7a7a7a;
     --pink-color: #d8588c;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input[type="number"] {
+    appearance: textfield;
 }
 .main_header {
     padding: 20px;

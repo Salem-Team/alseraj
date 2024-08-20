@@ -110,8 +110,7 @@
             </div>
 
             <div class="boxes">
-                <v-col
-                    cols="6"
+                <div
                     v-for="(schedule, index) in schedules"
                     :key="index"
                     class="box"
@@ -121,14 +120,25 @@
                     </div>
                     <div class="time">
                         <font-awesome-icon :icon="['fas', 'clock']" />
-                        <div>
-                            {{
-                                new Date(
-                                    schedule.lastModified.seconds * 1000
-                                ).toLocaleDateString()
-                            }}
-                        </div>
+                        <div>أحدث تعديل</div>
                     </div>
+                    <div class="time time_2">
+                        {{
+                            new Date(
+                                schedule.lastModified.seconds * 1000
+                            ).toLocaleString("ar-US", {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                                hour12: true,
+                            })
+                        }}
+                    </div>
+
                     <div class="Footer">
                         <div class="show" @click="showDetails(schedule)">
                             عرض
@@ -140,7 +150,7 @@
                             حذف
                         </div>
                     </div>
-                </v-col>
+                </div>
             </div>
 
             <v-dialog v-model="main_bubble" max-width="90%">
@@ -209,7 +219,7 @@
                 </div>
             </v-dialog>
             <v-dialog v-model="main_bubble_1" max-width="90%">
-                <div class="schedule">
+                <div class="schedule schedule_1">
                     <div class="right">
                         <div>
                             <v-breadcrumbs>
@@ -242,10 +252,23 @@
                         "
                     >
                         <font-awesome-icon :icon="['fas', 'clock']" />
-                        <div>
-                            أحدث تعديل
-                            {{ formattedLastModified }}
-                        </div>
+                        <div>أحدث تعديل</div>
+                    </div>
+                    <div class="time time_2">
+                        {{
+                            new Date(
+                                lastModified.seconds * 1000
+                            ).toLocaleString("ar-US", {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                                hour12: true,
+                            })
+                        }}
                     </div>
 
                     <div style="width: 90%; margin: 0 auto">
@@ -280,9 +303,10 @@
                             gap: 5px;
                             justify-content: center;
                         "
+                        @click="updateSchedule"
                     >
                         <font-awesome-icon :icon="['fas', 'floppy-disk']" />
-                        <div @click="updateSchedule">حفظ التغييرات</div>
+                        <div>حفظ التغييرات</div>
                     </div>
                     <confirm_message2
                         v-model="showSnackbar"
@@ -452,11 +476,23 @@ export default {
         };
     },
     computed: {
-        formattedLastModified() {
-            return this.lastModified === "لم يتم التعديل بعد"
-                ? "لم يتم التعديل بعد"
-                : new Date(this.lastModified).toLocaleString();
-        },
+        // formattedLastModified() {
+        //     return this.lastModified === "لم يتم التعديل بعد"
+        //         ? "لم يتم التعديل بعد"
+        //         : new Date(this.lastModified.seconds * 1000).toLocaleString(
+        //               "ar-US",
+        //               {
+        //                   weekday: "long",
+        //                   year: "numeric",
+        //                   month: "long",
+        //                   day: "numeric",
+        //                   hour: "2-digit",
+        //                   minute: "2-digit",
+        //                   second: "2-digit",
+        //                   hour12: true,
+        //               }
+        //           );
+        // },
     },
     methods: {
         showDetails(schedule) {
@@ -464,7 +500,7 @@ export default {
             this.selectedSection = schedule.section;
             this.schedule = schedule.schedule;
             this.scheduleId = schedule.id;
-            this.lastModified = schedule.lastModified.toDate(); // Ensure proper date conversion
+            this.lastModified = schedule.lastModified; // Ensure proper date conversion
             this.main_bubble_1 = true;
         },
         async updateSchedule() {
@@ -488,6 +524,7 @@ export default {
 
                 this.showSnackbar = true;
                 this.confirmationText = "تم تعديل الجدول بنجاح.";
+                this.main_bubble_1 = false;
 
                 await this.fetchSchedules();
             } catch (error) {
@@ -971,7 +1008,7 @@ svg {
 .boxes {
     display: flex;
     flex-wrap: wrap;
-    // gap: 13px;
+    gap: 10px;
     width: 90%;
     margin: 20px auto;
 
@@ -985,7 +1022,7 @@ svg {
         box-shadow: 0 0 10px #ddd;
         padding: 10px;
         border-radius: 5px;
-        cursor: pointer;
+
         transition: 0.3s;
         // &:hover {
         //     background: #33669929;
@@ -1005,6 +1042,10 @@ svg {
             gap: 10px;
             font-weight: bold;
             color: var(--main-color);
+        }
+        .time_2 {
+            color: var(--therd-color);
+            font-size: 13px;
         }
         .Footer {
             display: flex;
@@ -1193,29 +1234,6 @@ hr {
     margin: 5px 0;
 }
 
-@media (max-width: 700px) {
-    .v-breadcrumbs-item {
-        svg {
-            display: flex;
-        }
-        div {
-            display: none;
-        }
-    }
-
-    .feat {
-        width: 100% !important;
-    }
-    .boxes .box {
-        width: 100%;
-    }
-}
-
-@media (min-width: 700px) and (max-width: 950px) {
-    .feat {
-        width: 47% !important;
-    }
-}
 ul.show_details {
     color: var(--therd-color);
     font-weight: bold;
@@ -1233,6 +1251,44 @@ ul.show_details {
         background: var(--secound-color);
         padding: 10px;
         border-radius: 5px;
+    }
+}
+.schedule_1 {
+    .time_2 {
+        width: 90%;
+        background: #f5f5f5;
+        padding: 10px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: bold;
+        color: var(--therd-color);
+        font-size: 13px;
+        margin: 0 auto 10px;
+    }
+}
+@media (max-width: 700px) {
+    .v-breadcrumbs-item {
+        svg {
+            display: flex;
+        }
+        div {
+            display: none;
+        }
+    }
+
+    .feat {
+        width: 100% !important;
+    }
+    .boxes > div {
+        width: 100% !important;
+    }
+}
+
+@media (min-width: 700px) and (max-width: 950px) {
+    .feat {
+        width: 47% !important;
     }
 }
 </style>

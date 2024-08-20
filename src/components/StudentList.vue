@@ -78,10 +78,8 @@
                     r="70"
                 ></circle>
             </svg>
-            <div v-if="!loading1 && sortedStudents.length === 0">
-                <Empty_error text="لا يوجد طلاب مسجلين." />
-            </div>
-            <div class="boxes" v-else>
+           
+            <div class="boxes"  v-if="!loading1">
                 <div
                     class="box"
                     v-for="(student, index) in sortedStudents"
@@ -2381,6 +2379,9 @@
                         </v-dialog>
                     </v-list-item>
                 </v-list>
+            </div>
+ <div v-else>
+                <Empty_error text="لا يوجد طلاب مسجلين." />
             </div>
             <v-col cols="2">
                 <v-dialog

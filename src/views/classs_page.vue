@@ -180,7 +180,7 @@
                                     />
                                     <div>معرض الصور</div>
                                 </div>
-                                <div class="box" @click="main_bubble = true">
+                                <div class="box" @click="main_bubble = true" @click.prevent="fetchStudentTests">
                                     <img
                                         src="../assets/class/exam.png"
                                         alt=""
@@ -582,7 +582,7 @@
                                 </div>
                             </div>
                             <div class="add">
-                                <div>(2) إختبارات</div>
+                                <div>({{ studentTests.length }}) إختبارات</div>
                                 <div>
                                     <font-awesome-icon
                                         :icon="['fas', 'plus']"
@@ -590,7 +590,93 @@
                                     />
                                 </div>
                             </div>
+                            <div
+                                v-if="studentTests.length === 0"
+                                style="
+                                    background: var(--secound-color);
+                                    padding: 10px;
+                                    text-align: center;
+                                    font-weight: bold;
+                                    color: var(--main-color);
+                                    width: 90%;
+                                    margin: 0 auto;
+                                "
+                            >
+                                لا توجد إختبارات حالياً
+                            </div>
                             <div class="feats">
+                                <div
+                                    class="feat"
+                                    v-for="(test,index) in studentTests"
+                                    :key="test.id"
+                                >
+                                            <span class="header">
+            <div class="index">{{index + 1}}</div>
+<div>
+    {{ test.subjectName }}
+</div>
+        </span>
+                                    <div>{{ test.examTitle }}</div>
+                                    <div>
+                                        {{ test.className }} -
+                                        {{ test.section }}
+                                    </div>
+                                    <div>
+                                        <font-awesome-icon
+                                            :icon="['fas', 'calendar-days']"
+                                        />
+                                        <div>{{ test.examDate }}</div>
+                                    </div>
+                                           <div class="time">
+            <div>
+                <font-awesome-icon :icon="['fas', 'clock']" />
+                <div>
+                    {{
+                        new Date(`1970-01-01T${test.startTime}:00`).toLocaleString("ar-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                        })
+                    }}
+                </div>
+            </div>
+            <div>إلي</div>
+            <div>
+                <div>
+                    {{
+                        new Date(`1970-01-01T${test.endTime}:00`).toLocaleString("ar-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                        })
+                    }}
+                </div>
+            </div>
+        </div>
+                                    <div class="students">
+                                        <div>
+
+                                        ({{ test.studentsTested.length }}) طلاب
+                                        تم اختبارهم
+                                        </div>
+<button
+                                        v-if="test.studentsTested.length !== 0" @click="openDialog_2(test.id)"
+                                    >
+                                        الطلاب
+                                    </button>
+                                    </div>
+                                    
+                                    <div>
+                                        <button @click="openDialog_1(test.id)">
+                                            الإختبار
+                                        </button>
+                                        <button @click="deleteTest(test.id)">
+                                            حذف
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="feats">
                                 <div class="feat">
                                     <div>المادة: عربي</div>
                                     <div>أختبار علي الوحدة الأولي</div>
@@ -622,9 +708,466 @@
                                         <button>حذف</button>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                         <v-dialog v-model="main_bubble_2" max-width="90%">
+                            <div class="search">
+                                <div class="right right_1">
+                                    <v-breadcrumbs>
+                                        <v-breadcrumbs-item>
+                                            <input
+                                                style="width: 80%"
+                                                type="text"
+                                                v-model="
+                                                    currentTest.subjectName
+                                                "
+                                            />
+                                        </v-breadcrumbs-item>
+                                    </v-breadcrumbs>
+                                    <div class="left">
+                                        <font-awesome-icon
+                                            :icon="['fas', 'xmark']"
+                                            @click="main_bubble_2 = false"
+                                            style="font-size: 25px"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="top">
+                                    <v-text-field
+                                        v-model="currentTest.examTitle"
+                                        label="عنوان الإختبار"
+                                    />
+                                    <v-select
+                                        v-model="currentTest.section"
+                                        :items="section"
+                                        label="القسم"
+                                        required
+                                    />
+                                    <v-select
+                                        v-model="currentTest.className"
+                                        :items="all_classes"
+                                        label="الفصل"
+                                        required
+                                    />
+                                    <v-text-field
+                                        v-model="currentTest.examDate"
+                                        label="تاريخ بدأ الاختبار"
+                                        type="date"
+                                    />
+                                    <v-text-field
+                                        v-model="currentTest.startTime"
+                                        label="وقت بداية الإختبار"
+                                        type="time"
+                                    />
+                                    <v-text-field
+                                        v-model="currentTest.endTime"
+                                        label="وقت نهاية الإختبار"
+                                        type="time"
+                                    />
+                                    <div class="Btns">
+                                        <v-btn
+                                            @click="saveChanges"
+                                            :loading="loading_btn"
+                                            class="mt-2"
+                                            block
+                                        >
+                                            <font-awesome-icon
+                                                :icon="['fas', 'floppy-disk']"
+                                            />
+                                            حفظ التغييرات
+                                        </v-btn>
+                                        <!-- <v-menu>
+                                            <template
+                                                v-slot:activator="{ props }"
+                                            >
+                                                <v-btn
+                                                    color="var(--main-color)"
+                                                    v-bind="props"
+                                                >
+                                                    <font-awesome-icon
+                                                        :icon="['fas', 'plus']"
+                                                    />
+                                                    إضافة سؤال
+                                                </v-btn>
+                                            </template>
+                                            <v-list>
+                                                <v-list-item @click="AddQu_1">
+                                                    <v-list-item-title>
+                                                        <font-awesome-icon
+                                                            :icon="[
+                                                                'fas',
+                                                                'check',
+                                                            ]"
+                                                        />
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item @click="AddQu_2">
+                                                    <v-list-item-title>
+                                                        <font-awesome-icon
+                                                            :icon="[
+                                                                'fas',
+                                                                'list-check',
+                                                            ]"
+                                                        />
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                            </v-list>
+                                        </v-menu> -->
+                                        <v-menu>
+                                            <template
+                                                v-slot:activator="{ props }"
+                                            >
+                                                <v-btn
+                                                    color="var(--main-color)"
+                                                    v-bind="props"
+                                                    style="
+                                                        color: #fff;
+                                                        font-weight: bold;
+                                                        background: var(
+                                                            --main-color
+                                                        );
+                                                    "
+                                                >
+                                                    <font-awesome-icon
+                                                        :icon="['fas', 'plus']"
+                                                    />
+                                                    <div>إضافة سؤال</div>
+                                                </v-btn>
+                                            </template>
+                                            <v-list>
+                                                <v-list-item @click="AddQu_1">
+                                                    <v-list-item-title>
+                                                        <font-awesome-icon
+                                                            :icon="[
+                                                                'fas',
+                                                                'check',
+                                                            ]"
+                                                        />
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item @click="AddQu_2">
+                                                    <v-list-item-title>
+                                                        <font-awesome-icon
+                                                            :icon="[
+                                                                'fas',
+                                                                'list-check',
+                                                            ]"
+                                                        />
+                                                    </v-list-item-title>
+                                                </v-list-item>
+
+                                                <v-list-item @click="AddQu_3">
+                                                    <v-list-item-title>
+                                                        <font-awesome-icon
+                                                            :icon="[
+                                                                'fas',
+                                                                'paragraph',
+                                                            ]"
+                                                        />
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                            </v-list>
+                                        </v-menu>
+                                    </div>
+                                </div>
+                                <div class="Bottom">
+                                    <div
+                                        v-if="currentTest.questions.length > 0"
+                                    >
+                                        <h3
+                                            style="
+                                                color: var(--main-color);
+                                                margin-bottom: 20px;
+                                            "
+                                        >
+                                            عدد الأسئلة :
+                                            {{ currentTest.questions.length }}
+                                        </h3>
+                                        <div
+                                            class="Feat"
+                                            v-for="(
+                                                question, index
+                                            ) in currentTest.questions"
+                                            :key="index"
+                                        >
+                                            <div class="header">
+                                                <div class="number">
+                                                    {{ index + 1 }}
+                                                </div>
+                                                <font-awesome-icon
+                                                    @click="
+                                                        removeQuestion(index)
+                                                    "
+                                                    :icon="['fas', 'trash']"
+                                                    style="
+                                                        font-size: 20px;
+                                                        color: var(
+                                                            --pink-color
+                                                        );
+                                                    "
+                                                />
+                                            </div>
+                                            <div>
+                                                <!-- عرض سؤال صواب وخطأ -->
+                                                <div
+                                                    v-if="
+                                                        question.type ===
+                                                        'true_false'
+                                                    "
+                                                >
+                                                    <textarea
+                                                        v-model="
+                                                            currentTest
+                                                                .questions[
+                                                                index
+                                                            ].question
+                                                        "
+                                                        placeholder="أدخل نص السؤال"
+                                                        style="
+                                                            width: 100%;
+                                                            margin: 10px 0;
+                                                            padding: 8px 0;
+                                                            font-weight: bold;
+                                                        "
+                                                    ></textarea>
+                                                    <div class="btns">
+                                                        <div
+                                                            :class="{
+                                                                active:
+                                                                    question.correctAnswer ===
+                                                                    true,
+                                                            }"
+                                                            @click="
+                                                                setAnswer(
+                                                                    index,
+                                                                    true
+                                                                )
+                                                            "
+                                                            color="green"
+                                                            dark
+                                                        >
+                                                            صح
+                                                        </div>
+                                                        <div
+                                                            :class="{
+                                                                active:
+                                                                    question.correctAnswer ===
+                                                                    false,
+                                                            }"
+                                                            @click="
+                                                                setAnswer(
+                                                                    index,
+                                                                    false
+                                                                )
+                                                            "
+                                                            color="red"
+                                                            dark
+                                                        >
+                                                            خطأ
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- عرض سؤال اختياري -->
+                                                <div
+                                                    v-else-if="
+                                                        question.type ===
+                                                        'multiple_choice'
+                                                    "
+                                                >
+                                                    <textarea
+                                                        style="
+                                                            width: 100%;
+                                                            margin: 10px 0;
+                                                            padding: 8px 0;
+                                                            font-weight: bold;
+                                                        "
+                                                        type="text"
+                                                        v-model="
+                                                            question.question
+                                                        "
+                                                    ></textarea>
+                                                    <div class="inputs">
+                                                        <div
+                                                            v-for="(
+                                                                option, optIndex
+                                                            ) in question.options"
+                                                            :key="optIndex"
+                                                        >
+                                                            <input
+                                                                :style="{
+                                                                    borderColor:
+                                                                        optIndex ===
+                                                                        0
+                                                                            ? 'var(--main-color)'
+                                                                            : 'var(--pink-color)',
+                                                                    borderWidth:
+                                                                        '2px',
+                                                                    borderStyle:
+                                                                        'solid',
+                                                                }"
+                                                                v-model="
+                                                                    currentTest
+                                                                        .questions[
+                                                                        index
+                                                                    ].options[
+                                                                        optIndex
+                                                                    ]
+                                                                "
+                                                                @change="
+                                                                    updateOption(
+                                                                        index,
+                                                                        optIndex
+                                                                    )
+                                                                "
+                                                                type="text"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- عرض سؤال مقالي -->
+                                                <div
+                                                    v-else-if="
+                                                        question.type ===
+                                                        'essay'
+                                                    "
+                                                >
+                                                    <textarea
+                                                        style="
+                                                            width: 100%;
+                                                            margin: 10px 0;
+                                                            padding: 8px 0;
+                                                            font-weight: bold;
+                                                        "
+                                                        type="text"
+                                                        v-model="
+                                                            question.question
+                                                        "
+                                                        placeholder="أدخل نص السؤال المقالي"
+                                                    ></textarea>
+                                                    <div class="essay">
+                                                        <div>درجة السؤال</div>
+                                                        <input
+                                                            type="number"
+                                                            v-model="
+                                                                question.Question_degree
+                                                            "
+                                                        />
+                                                    </div>
+                                                    <textarea
+                                                        style="
+                                                            width: 100%;
+                                                            margin: 10px 0;
+                                                            padding: 8px 0;
+                                                        "
+                                                        v-model="
+                                                            question.correctAnswer
+                                                        "
+                                                        placeholder="أدخل الإجابة الصحيحة"
+                                                    ></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-else>
+                                        <p>لم تتم إضافة أي أسئلة بعد.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </v-dialog>
+<v-dialog v-model="main_bubble_3" max-width="90%">
+           <div class="search">
+                                <div class="right right_1">
+                                    <v-breadcrumbs>
+                                        <v-breadcrumbs-item>
+                                            <input
+                                                style="width: 80%"
+                                                type="text"
+                                                v-model="
+                                                    currentTest.subjectName
+                                                "
+                                            />
+                                        </v-breadcrumbs-item>
+                                    </v-breadcrumbs>
+                                    <div class="left">
+                                        <font-awesome-icon
+                                            :icon="['fas', 'xmark']"
+                                            @click="main_bubble_3 = false"
+                                            style="font-size: 25px"
+                                        />
+                                    </div>
+                                </div>
+                                <!-- <div class="students">
+              <v-btn
+    @click="printPDF"
+    class="mt-2"
+    block
+    style="background:var(--main-color);color:#fff;padding: 8px 0;"
+>
+    طباعة الجدول
+</v-btn>
+
+    <table id="resultsTable">
+      <thead>
+        <tr>
+          <th>الترتيب</th>
+          <th>اسم الطالب</th>
+          <th>الدرجة</th>
+          <th>الدرجة الكاملة</th>
+          <th>الوقت المستغرق (دقائق)</th>
+          <th>وقت الانتهاء</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(test, index) in currentTest.studentsTested" :key="test.nationalID">
+          <td>{{ index + 1 }}</td>
+          <td>{{ test.studentName }}</td>
+          <td>{{ test.score }}</td>
+          <td>{{ test.maxScore }}</td>
+          <td>{{ calculateMinutes(test.examDuration) }}</td>
+          <td>{{ test.finishTime }}</td>
+        </tr>
+      </tbody>
+    </table>
+                                </div> -->
+                                <div class="students">
+    <v-btn
+        @click="printPDF"
+        class="mt-2"
+        block
+        style="background:var(--main-color);color:#fff;padding: 8px 0;margin-bottom:10px;"
+    >
+        طباعة الجدول
+    </v-btn>
+
+    <table id="resultsTable">
+        <thead>
+            <tr>
+                <th>الترتيب</th>
+                <th>اسم الطالب</th>
+                <th>الدرجة</th>
+                <th>الدرجة الكاملة</th>
+                <th>الوقت المستغرق (دقائق)</th>
+                <th>وقت الانتهاء</th>
+                <th>النسبة المئوية (%)</th> <!-- إضافة عمود النسبة المئوية -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(test, index) in currentTest.studentsTested" :key="test.nationalID">
+                <td>{{ index + 1 }}</td>
+                <td>{{ test.studentName }}</td>
+                <td>{{ test.score }}</td>
+                <td>{{ test.maxScore }}</td>
+                <td>{{ calculateMinutes(test.examDuration) }}</td>
+                <td>{{ test.finishTime }}</td>
+                <td>{{ calculatePercentage(test.score, test.maxScore) }}</td> <!-- حساب النسبة المئوية -->
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+                                </div>
+</v-dialog>
+                        <!-- <v-dialog v-model="main_bubble_2" max-width="90%">
                             <div class="search">
                                 <div class="right right_1">
                                     <v-breadcrumbs>
@@ -915,7 +1458,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </v-dialog>
+                        </v-dialog> -->
                         <v-dialog v-model="main_bubble_1" max-width="90%">
                             <div class="search">
                                 <div class="right right_1">
@@ -932,86 +1475,75 @@
                                         />
                                     </div>
                                 </div>
+
                                 <v-form
-                                    validate-on="submit lazy"
-                                    @submit.prevent="submit"
-                                    style="margin-top: 20px"
+                                    ref="form"
+                                    @submit.prevent="handleSubmit"
+                                    lazy-validation
                                 >
                                     <v-text-field
-                                        v-model="userName"
+                                        v-model="Student_tests.subjectName"
+                                        :rules="nameRules"
                                         label="المادة"
-                                        style="
-                                            color: var(--therd-color);
-                                            font-weight: bold;
-                                        "
+                                        required
                                     ></v-text-field>
+
                                     <v-text-field
-                                        v-model="userName_0"
+                                        v-model="Student_tests.examTitle"
+                                        :rules="titleRules"
                                         label="عنوان الإختبار"
-                                        style="
-                                            color: var(--therd-color);
-                                            font-weight: bold;
-                                        "
+                                        required
                                     ></v-text-field>
+
                                     <v-select
-                                        v-model="newTest.section"
+                                        v-model="Student_tests.section"
+                                        :rules="sectionRules"
                                         :items="section"
                                         label="القسم"
                                         required
-                                        style="
-                                            color: var(--therd-color);
-                                            font-weight: bold;
-                                        "
                                     ></v-select>
 
                                     <v-select
-                                        v-model="newTest.className"
+                                        v-model="Student_tests.className"
+                                        :rules="classRules"
                                         :items="all_classes"
                                         label="الفصل"
                                         required
-                                        style="
-                                            color: var(--therd-color);
-                                            font-weight: bold;
-                                        "
                                     ></v-select>
 
                                     <v-text-field
-                                        v-model="
-                                            newTest.questions[0].Date_Testing
-                                        "
+                                        v-model="Student_tests.examDate"
+                                        :rules="dateRules"
                                         label="تاريخ بدأ الاختبار"
-                                        required
                                         type="date"
-                                        dir="ltr"
-                                        lang="ar"
+                                        required
                                     ></v-text-field>
+
                                     <v-text-field
-                                        v-model="
-                                            newTest.questions[0].Time_Testing
-                                        "
+                                        v-model="Student_tests.startTime"
+                                        :rules="timeRules"
                                         label="وقت بداية الإختبار"
                                         type="time"
                                         required
                                     ></v-text-field>
+
                                     <v-text-field
+                                        v-model="Student_tests.endTime"
+                                        :rules="timeRules"
                                         label="وقت نهاية الإختبار"
                                         type="time"
                                         required
                                     ></v-text-field>
 
                                     <v-btn
-                                        :loading="loading"
+                                        :loading="loading_btn"
                                         class="mt-2"
-                                        text="إضافة"
+                                        color="primary"
                                         type="submit"
                                         block
-                                        style="
-                                            color: #fff;
-                                            font-weight: bold;
-                                            background: var(--main-color);
-                                            padding: 20px;
-                                        "
-                                    ></v-btn>
+                                    >
+                                        إضافة
+                                    </v-btn>
                                 </v-form>
                             </div>
                         </v-dialog>
@@ -1194,6 +1726,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import Amiri_Regular from "@/assets/fonts/Amiri-Regular.js";
 export { db, storage };
 export default {
     name: "ClassPage",
@@ -1223,6 +1758,41 @@ export default {
     },
     data() {
         return {
+            currentTest_students : [],
+            loading_btn: null,
+            currentTest: {
+                subjectName: "",
+                examTitle: "",
+                className: "",
+                section: "",
+                examDate: "",
+                startTime: "",
+                endTime: "",
+                studentsTested: [],
+                questions: [],
+            },
+            testId: "",
+            studentTests: [],
+            loading_btn: false,
+            nameRules: [(v) => !!v || "المادة مطلوبة"],
+            titleRules: [(v) => !!v || "عنوان الاختبار مطلوب"],
+            sectionRules: [(v) => !!v || "القسم مطلوب"],
+            classRules: [(v) => !!v || "الفصل مطلوب"],
+            dateRules: [(v) => !!v || "تاريخ الاختبار مطلوب"],
+            timeRules: [(v) => !!v || "الوقت مطلوب"],
+            section: ["القسم 1", "القسم 2"], // مثال على الأقسام المتاحة
+            all_classes: ["الفصل 1", "الفصل 2"],
+            Student_tests: {
+                subjectName: "",
+                examTitle: "",
+                className: "",
+                section: "",
+                examDate: "",
+                startTime: "",
+                endTime: "",
+                studentsTested: [],
+                questions: [],
+            },
             userName_0: "",
             questions: [],
             items: [
@@ -1231,7 +1801,6 @@ export default {
                 { title: "Click Me" },
                 { title: "Click Me 2" },
             ],
-            loading: false,
             rules: [(value) => this.checkApi(value)],
             timeout: null,
             userName: "",
@@ -1244,6 +1813,7 @@ export default {
             main_bubble: false,
             main_bubble_1: false,
             main_bubble_2: false,
+            main_bubble_3: false,
             paymentSortActive: false,
             selectedClassj: null,
             activeButton: "الكل",
@@ -1370,6 +1940,323 @@ export default {
         },
     },
     methods: {
+    calculateMinutes(examDuration) {
+        return (examDuration / 60).toFixed(2); // تحويل الزمن من ثواني إلى دقائق
+    },
+    calculatePercentage(score, maxScore) {
+        if (maxScore === 0) return 0; // تجنب القسمة على صفر
+        return ((score / maxScore) * 100).toFixed(2); // حساب النسبة المئوية
+    },
+printPDF() {
+  const doc = new jsPDF("landscape");
+
+  // إضافة الخط الخاص بك
+  doc.addFileToVFS("Amiri-Regular.ttf", Amiri_Regular);
+  doc.addFont("Amiri-Regular.ttf", "Amiri-Regular", "normal");
+  doc.setFont("Amiri-Regular");
+
+  // إضافة العنوان الرئيسي
+  const subjectName = this.currentTest.subjectName || "اسم المادة";
+  const examTitle = this.currentTest.examTitle || "عنوان الاختبار";
+  doc.setFontSize(20);
+  doc.text(`بيان درجات طلاب - ${subjectName} - ${examTitle}`, 10, 20);
+
+  // إعداد بيانات الجدول
+  const tableColumn = [
+    "الترتيب",
+    "اسم الطالب",
+    "الدرجة",
+    "الدرجة الكاملة",
+    "الوقت المستغرق (دقائق)",
+    "وقت الانتهاء",
+    "النسبة المئوية" // إضافة عمود النسبة المئوية
+  ];
+  const tableRows = [];
+
+  // ملء بيانات الجدول
+  this.currentTest.studentsTested.forEach((test, index) => {
+    const percentage = ((test.score / test.maxScore) * 100).toFixed(2); // حساب النسبة المئوية
+    tableRows.push([
+      index + 1, // الترتيب
+      test.studentName, // اسم الطالب
+      test.score, // الدرجة
+      test.maxScore, // الدرجة الكاملة
+      this.calculateMinutes(test.examDuration), // الوقت المستغرق بالدقائق
+      test.finishTime, // وقت الانتهاء
+      `${percentage}%` // إضافة النسبة المئوية
+    ]);
+  });
+
+  // إضافة الجدول إلى PDF
+  doc.autoTable({
+    head: [tableColumn],
+    body: tableRows,
+    startY: 30,
+    styles: {
+      cellPadding: 8,
+      font: "Amiri-Regular",
+      fontSize: 12,
+      cellWidth: "wrap",
+      halign: "center",
+      valign: "middle",
+      lineColor: [0, 0, 0],
+      lineWidth: 0.5,
+      dir: "rtl",
+    },
+    headStyles: {
+      fillColor: [220, 220, 220],
+      textColor: [0, 0, 0],
+      fontStyle: "bold",
+      halign: "center",
+    },
+    columnStyles: {
+      0: { halign: 'center', cellWidth: 'auto' },
+      1: { halign: 'left', cellWidth: 'auto' },
+      2: { halign: 'center', cellWidth: 'auto' },
+      3: { halign: 'center', cellWidth: 'auto' },
+      4: { halign: 'center', cellWidth: 'auto' },
+      5: { halign: 'left', cellWidth: 'auto' },
+      6: { halign: 'center', cellWidth: 'auto' }, // محاذاة النسبة المئوية
+    },
+    margin: { top: 35 },
+  });
+
+  // حفظ ملف PDF
+  const fileName = `${subjectName}_${examTitle}.pdf`.replace(/[/\\?%*:|"<>]/g, '_');
+  doc.save(fileName);
+}
+,
+        async openDialog_2(testId) {
+            this.main_bubble_3 = false;
+            this.testId = testId;
+            console.log("this.testId=??", this.testId);
+            try {
+                const docRef = doc(db, "student_tests", testId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    this.currentTest = docSnap.data();
+                    this.main_bubble_3 = true;
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                console.error("Error fetching document: ", error);
+            }
+        },
+        async openDialog_1(testId) {
+            this.main_bubble_2 = false;
+            this.testId = testId;
+            console.log("this.testId=??", this.testId);
+            try {
+                const docRef = doc(db, "student_tests", testId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    this.currentTest = docSnap.data();
+                    this.main_bubble_2 = true;
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                console.error("Error fetching document: ", error);
+            }
+        },
+        async saveChanges() {
+            try {
+                this.loading_btn = true;
+                this.currentTest.questions = this.currentTest.questions || [];
+
+                const docRef = doc(db, "student_tests", this.testId);
+                await updateDoc(docRef, this.currentTest);
+                console.log("Document successfully updated");
+
+                this.fetchStudentTests();
+                this.main_bubble_2 = false;
+            } catch (error) {
+                console.error("Error updating document: ", error);
+            } finally {
+                this.loading_btn = false;
+            }
+        },
+
+        removeQuestion(index) {
+            this.currentTest.questions.splice(index, 1);
+        },
+        setAnswer(questionIndex, answer) {
+            this.currentTest.questions[questionIndex].correctAnswer = answer;
+        },
+        async deleteTest(id) {
+            try {
+                if (!id) {
+                    console.error("Document ID is undefined or null");
+                    return;
+                }
+
+                const docRef = doc(db, "student_tests", id);
+                await deleteDoc(docRef);
+
+                this.studentTests = this.studentTests.filter(
+                    (test) => test.id !== id
+                );
+                console.log("Document successfully deleted");
+            } catch (error) {
+                console.error("Error deleting document: ", error);
+            }
+        },
+        async fetchStudentTests() {
+            this.studentTests = [];
+            const querySnapshot = await getDocs(
+                collection(db, "student_tests")
+            );
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                console.log(doc.id, " => ", doc.data());
+                this.studentTests.push(doc.data());
+            });
+            console.log("this.studentTests", this.studentTests);
+        },
+        async handleSubmit() {
+            if (this.$refs.form.validate() && this.isFormValid()) {
+                this.loading_btn = true;
+                try {
+                    const startTimePeriod = this.getPeriod(
+                        this.Student_tests.startTime
+                    );
+                    const endTimePeriod = this.getPeriod(
+                        this.Student_tests.endTime
+                    );
+
+                    console.log(
+                        `وقت بداية الاختبار: ${this.Student_tests.startTime} ${startTimePeriod}`
+                    );
+                    console.log(
+                        `وقت نهاية الاختبار: ${this.Student_tests.endTime} ${endTimePeriod}`
+                    );
+
+                    const docRef = await this.Add_data();
+                    console.log(
+                        "Document successfully written with ID:",
+                        docRef
+                    );
+                    this.studentTests = [];
+                    // جلب البيانات بعد الإضافة بنجاح
+                    await this.fetchStudentTests();
+
+                    this.resetForm();
+                } catch (error) {
+                    console.error("Error adding document:", error);
+                } finally {
+                    this.loading_btn = false;
+                }
+            }
+        },
+        getPeriod(time) {
+            const [hours] = time.split(":").map(Number);
+            return hours >= 12 ? "م" : "ص";
+        },
+        async handleSubmit() {
+            if (this.$refs.form.validate() && this.isFormValid()) {
+                this.loading_btn = true;
+                try {
+                    const startTimePeriod = this.getPeriod(
+                        this.Student_tests.startTime
+                    );
+                    const endTimePeriod = this.getPeriod(
+                        this.Student_tests.endTime
+                    );
+
+                    console.log(
+                        `وقت بداية الاختبار: ${this.Student_tests.startTime} ${startTimePeriod}`
+                    );
+                    console.log(
+                        `وقت نهاية الاختبار: ${this.Student_tests.endTime} ${endTimePeriod}`
+                    );
+
+                    const docRef = await this.Add_data();
+                    console.log(
+                        "Document successfully written with ID:",
+                        docRef
+                    );
+                    this.resetForm();
+                    this.main_bubble_1 = false;
+                } catch (error) {
+                    console.error("Error adding document:", error);
+                } finally {
+                    this.loading_btn = false;
+                }
+            }
+        },
+        isFormValid() {
+            const {
+                subjectName,
+                examTitle,
+                className,
+                section,
+                examDate,
+                startTime,
+                endTime,
+            } = this.Student_tests;
+
+            return (
+                subjectName &&
+                examTitle &&
+                className &&
+                section &&
+                examDate &&
+                startTime &&
+                endTime
+            );
+        },
+        async Add_data() {
+            try {
+                const docRef = await addDoc(
+                    collection(db, "student_tests"),
+                    this.Student_tests
+                );
+
+                console.log(
+                    "Document successfully written with ID:",
+                    docRef.id
+                );
+
+                await updateDoc(docRef, {
+                    id: docRef.id,
+                });
+
+                await this.fetchStudentTests();
+            } catch (error) {
+                throw new Error("Failed to push data to Firestore");
+            }
+        },
+        resetForm() {
+            this.Student_tests = {
+                subjectName: "",
+                examTitle: "",
+                className: "",
+                section: "",
+                examDate: "",
+                startTime: "",
+                endTime: "",
+            };
+            this.$refs.form.resetValidation();
+        },
+        // async Add_data() {
+        //     try {
+        //         const docRef = await addDoc(
+        //             collection(db, "student_tests"),
+        //             this.Student_tests
+        //         );
+        //         console.log(
+        //             "Document successfully written with ID:",
+        //             docRef.id
+        //         );
+        //         return docRef.id; // ترجيع ID الخاص بالمستند الذي تم إضافته
+        //     } catch (e) {
+        //         console.error("Error adding document: ", e);
+        //         throw new Error("Failed to push data to Firestore");
+        //     }
+        // },
         closeDialog__() {
             this.showDialog = false;
         },
@@ -1400,19 +2287,22 @@ export default {
             this.searchStudent();
         },
         removeQuestion(index) {
-            this.questions.splice(index, 1);
+            this.currentTest.questions.splice(index, 1);
         },
         updateOption(questionIndex, optionIndex) {
-            this.questions[questionIndex].options[optionIndex] =
+            this.currentTest.questions[questionIndex].options[optionIndex] =
                 event.target.value;
             if (optionIndex === 0) {
-                this.questions[questionIndex].correctAnswer =
-                    this.questions[questionIndex].options[0];
+                this.currentTest.questions[questionIndex].correctAnswer =
+                    this.currentTest.questions[questionIndex].options[0];
             }
         },
         setAnswer(index, answer) {
-            this.questions[index].correctAnswer = answer;
-            console.log("this.questions=>", this.questions);
+            this.currentTest.questions[index].correctAnswer = answer;
+            console.log(
+                "this.currentTest.questions=>",
+                this.currentTest.questions
+            );
         },
         AddQu_1() {
             const trueFalseQuestion = {
@@ -1420,8 +2310,11 @@ export default {
                 question: "سؤال صواب أو خطأ؟",
                 correctAnswer: true,
             };
-            this.questions.push(trueFalseQuestion);
-            console.log("this.questions=>", this.questions);
+            this.currentTest.questions.push(trueFalseQuestion);
+            console.log(
+                "this.currentTest.questions=>",
+                this.currentTest.questions
+            );
         },
         AddQu_2() {
             const multipleChoiceQuestion = {
@@ -1430,8 +2323,24 @@ export default {
                 options: ["الإجابة الصحيحة", "إجابة خاطئة", "إجابة خاطئة"], // الخيارات المتاحة
                 correctAnswer: "الإجابة الصحيحة", // الإجابة الصحيحة
             };
-            this.questions.push(multipleChoiceQuestion);
-            console.log("this.questions=>", this.questions);
+            this.currentTest.questions.push(multipleChoiceQuestion);
+            console.log(
+                "this.currentTest.questions=>",
+                this.currentTest.questions
+            );
+        },
+        AddQu_3() {
+            const essayQuestion = {
+                type: "essay",
+                question: "سؤال مقالي",
+                correctAnswer: "الإجابة النموذجية",
+                Question_degree: 1,
+            };
+            this.currentTest.questions.push(essayQuestion);
+            console.log(
+                "this.currentTest.questions=>",
+                this.currentTest.questions
+            );
         },
         async submit(event) {
             this.loading = true;
@@ -1502,7 +2411,11 @@ export default {
                     return;
                 }
 
-                const docRef = doc(db, "exam", this.selectedQuestionId);
+                const docRef = doc(
+                    db,
+                    "student_tests",
+                    this.selectedQuestionId
+                );
                 await deleteDoc(docRef);
 
                 this.snackbar.message = "تم حذف الكارد بنجاح";
@@ -1519,57 +2432,57 @@ export default {
                 this.showDeleteDialog = false; // تأكد من إغلاق نافذة التأكيد
             }
         },
-        async saveChanges() {
-            try {
-                const testId = this.newTest.exam_id;
+        // async saveChanges() {
+        //     try {
+        //         const testId = this.newTest.exam_id;
 
-                if (!testId) {
-                    this.snackbar.message = "الاختبار غير موجود";
-                    this.snackbar.color = "error";
-                    this.snackbar.visible = true;
-                    console.error("exam_id is missing.");
-                    return;
-                }
+        //         if (!testId) {
+        //             this.snackbar.message = "الاختبار غير موجود";
+        //             this.snackbar.color = "error";
+        //             this.snackbar.visible = true;
+        //             console.error("exam_id is missing.");
+        //             return;
+        //         }
 
-                console.log("Exam ID: ", testId);
+        //         console.log("Exam ID: ", testId);
 
-                const examRef = doc(db, "exam", testId);
-                const examDoc = await getDoc(examRef);
+        //         const examRef = doc(db, "student_tests", testId);
+        //         const examDoc = await getDoc(examRef);
 
-                if (examDoc.exists()) {
-                    const existingExam = examDoc.data();
+        //         if (examDoc.exists()) {
+        //             const existingExam = examDoc.data();
 
-                    console.log("Existing exam data: ", existingExam);
+        //             console.log("Existing exam data: ", existingExam);
 
-                    existingExam.questions = this.selectedTestQuestions.map(
-                        (question) => ({
-                            // title: question.title,
-                            question: question.question,
-                            correctAnswer: question.correctAnswer,
-                            wrongAnswer1: question.wrongAnswer1,
-                            wrongAnswer2: question.wrongAnswer2,
-                        })
-                    );
+        //             existingExam.questions = this.selectedTestQuestions.map(
+        //                 (question) => ({
+        //                     // title: question.title,
+        //                     question: question.question,
+        //                     correctAnswer: question.correctAnswer,
+        //                     wrongAnswer1: question.wrongAnswer1,
+        //                     wrongAnswer2: question.wrongAnswer2,
+        //                 })
+        //             );
 
-                    await setDoc(examRef, existingExam);
+        //             await setDoc(examRef, existingExam);
 
-                    this.snackbar.message = "تم حفظ التغييرات بنجاح";
-                    this.snackbar.color = "success";
-                    this.snackbar.visible = true;
-                    this.questionsDialog = false;
-                } else {
-                    this.snackbar.message = "الاختبار غير موجود";
-                    this.snackbar.color = "error";
-                    this.snackbar.visible = true;
-                    console.error("Document does not exist.");
-                }
-            } catch (error) {
-                console.error("Error saving changes: ", error);
-                this.snackbar.message = "خطأ أثناء حفظ التغييرات";
-                this.snackbar.color = "error";
-                this.snackbar.visible = true;
-            }
-        },
+        //             this.snackbar.message = "تم حفظ التغييرات بنجاح";
+        //             this.snackbar.color = "success";
+        //             this.snackbar.visible = true;
+        //             this.questionsDialog = false;
+        //         } else {
+        //             this.snackbar.message = "الاختبار غير موجود";
+        //             this.snackbar.color = "error";
+        //             this.snackbar.visible = true;
+        //             console.error("Document does not exist.");
+        //         }
+        //     } catch (error) {
+        //         console.error("Error saving changes: ", error);
+        //         this.snackbar.message = "خطأ أثناء حفظ التغييرات";
+        //         this.snackbar.color = "error";
+        //         this.snackbar.visible = true;
+        //     }
+        // },
         async showQuestionsDialog(testId) {
             if (!testId) {
                 this.snackbar.message = "لا يمكن فتح الحوار بدون exam_id";
@@ -1582,7 +2495,7 @@ export default {
             this.newTest.exam_id = testId;
 
             try {
-                const examRef = doc(db, "exam", testId);
+                const examRef = doc(db, "student_tests", testId);
                 const examDoc = await getDoc(examRef);
 
                 if (examDoc.exists()) {
@@ -2129,6 +3042,7 @@ export default {
         await this.fetchClassRooms();
         this.fetchClassRooms();
         this.searchStudent();
+        this.fetchStudentTests();
     },
     created() {
         this.loadQuestions();
@@ -2546,6 +3460,7 @@ svg {
     display: flex;
     gap: 10px;
     align-items: center;
+    flex-wrap: wrap;
     .feat {
         width: 32%;
         box-shadow: 0 0 10px #ddd;
@@ -2554,7 +3469,29 @@ svg {
         display: flex;
         flex-direction: column;
         gap: 10px;
-
+        flex-grow: 1;
+span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .index {
+        background: var(--main-color);
+    color: #fff;
+    width: 30px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+    div:not(.index) {
+        color: var(--therd-color);
+    font-weight: bold;
+    font-size: 17px;
+    }
+}
         & > div:not(:last-of-type) {
             background: var(--secound-color);
             padding: 5px 10px;
@@ -2564,6 +3501,8 @@ svg {
             display: flex;
             align-items: center;
             gap: 10px;
+            width: 100%;
+    margin-top: 0;
             & > div {
                 display: flex;
                 gap: 10px;
@@ -2596,10 +3535,31 @@ svg {
                 }
             }
         }
+        .time > div {
+            // text-wrap: nowrap;
+        }
         .time > div:nth-child(2) {
             color: var(--pink-color);
         }
+        .students {
+            display:flex;
+            align-items : center;
+            justify-content : space-between;
+            button {
+                    background: var(--main-color);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: 0.3s;
+        font-size: 14px;
+    &:hover {
+                    background: #4f7aa5;
     }
+            }
+        }
+    }
+
 }
 .top,
 .Bottom {
@@ -2676,6 +3636,30 @@ svg {
             }
         }
     }
+    textarea {
+        border: 1px solid var(--therd-color);
+        padding: 10px !important;
+        border-radius: 5px;
+    }
+    .essay {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--secound-color);
+        padding: 10px;
+        border-radius: 5px;
+        color: var(--therd-color);
+        font-weight: bold;
+        input {
+            width: 40px;
+            border: 1px solid var(--therd-color);
+            border-radius: 5px;
+            text-align: center;
+            color: var(--therd-color);
+            font-weight: bold;
+            appearance: textfield;
+        }
+    }
 }
 
 .active {
@@ -2685,6 +3669,24 @@ svg {
 .active_1 {
     background-color: green !important;
     color: white !important;
+}
+.students{
+        width: calc(90%);
+    margin: 10px auto;
+    table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background-color: #f4f4f4;
+}
 }
 @media (max-width: 700px) {
     .v-breadcrumbs-item {

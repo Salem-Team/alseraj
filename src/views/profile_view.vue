@@ -1,66 +1,5 @@
 <template>
     <div class="visible">
-        <svg
-            style="
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 245px;
-            "
-            v-if="loading1"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 200 200"
-        >
-            <radialGradient
-                id="a12"
-                cx=".66"
-                fx=".66"
-                cy=".3125"
-                fy=".3125"
-                gradientTransform="scale(1.5)"
-            >
-                <stop offset="0" stop-color="#336699"></stop>
-                <stop offset=".3" stop-color="#336699" stop-opacity=".9"></stop>
-                <stop offset=".6" stop-color="#336699" stop-opacity=".6"></stop>
-                <stop offset=".8" stop-color="#336699" stop-opacity=".3"></stop>
-                <stop offset="1" stop-color="#336699" stop-opacity="0"></stop>
-            </radialGradient>
-            <circle
-                transform-origin="center"
-                fill="none"
-                stroke="url(#a12)"
-                stroke-width="15"
-                stroke-linecap="round"
-                stroke-dasharray="200 1000"
-                stroke-dashoffset="0"
-                cx="100"
-                cy="100"
-                r="70"
-            >
-                <animateTransform
-                    type="rotate"
-                    attributeName="transform"
-                    calcMode="spline"
-                    dur="2"
-                    values="360;0"
-                    keyTimes="0;1"
-                    keySplines="0 0 1 1"
-                    repeatCount="indefinite"
-                ></animateTransform>
-            </circle>
-            <circle
-                transform-origin="center"
-                fill="none"
-                opacity=".2"
-                stroke="#336699"
-                stroke-width="15"
-                stroke-linecap="round"
-                cx="100"
-                cy="100"
-                r="70"
-            ></circle>
-        </svg>
         <div class="right">
             <div>
                 <v-breadcrumbs>
@@ -94,6 +33,61 @@
                 مرحبًا {{ user.name }}، نشكرك على ثقتك في معهد السراج المنير
                 الأزهري، نتطلع سويًا لتحقيق مستقبل مشرق لأبنائنا.
             </div>
+         
+             <div class="feats" v-if="this.user.userType === 'student'">
+            <div class="feat" @click="personal_data_Link()">
+                <img
+                    src="../assets/student/graduated.svg"
+                    alt=""
+                    width="30px"
+                />
+                <div>البيانات الشخصية</div>
+            </div>
+            <div class="feat" @click="Weekly_results_Link()">
+                <img src="../assets/student/school.svg" alt="" width="30px" />
+                <div>النتائج الأسبوعية</div>
+            </div>
+            <div class="feat" @click="Monthly_results_Link()">
+                <img src="../assets/student/academic.svg" alt="" width="30px" />
+                <div>النتائج الشهرية</div>
+            </div>
+            <div class="feat" @click="Academic_schedule_Link()">
+                <img src="../assets/class/schedule.png" alt="" width="30px" />
+                <div>الجدول الدراسي</div>
+            </div>
+                     <div class="feat" @click="Weekly_plans_Link()">
+                <img src="../assets/class/plan.png" alt="" width="30px" />
+                <div>الخطط الأسبوعية</div>
+                     </div>
+                     <div class="feat" @click="Educational_content_Link()">
+               
+                <img src="../assets/class/learning.png" alt="" width="30px" />
+                <div>المحتوي التعليمي</div>
+                     </div>
+
+            <div class="feat" @click="Student_tests_Link()">
+                <img src="../assets/class/exam.png" alt="" width="30px" />
+                <div>الإختبارات الأونلاين (online)</div>
+            </div>
+            <div class="feat" @click="Student_Notifications_Link()">
+                <img
+                    src="../assets/class/notification.png"
+                    alt=""
+                    width="30px"
+                />
+                <div>الإشعارات</div>
+            </div>
+            <div class="feat" @click="Student_statistics_Link()">
+                <img src="../assets/student/analysis.svg" alt="" width="30px" />
+                <div>الإحصائيات</div>
+            </div>
+   
+            <div class="feat" @click="Student_photos_Link()">
+                <img src="../assets/class/picture.png" alt="" width="30px" />
+                <div>الصور</div>
+            </div>
+    
+        </div>
             <div class="body" v-if="this.user.userType != 'student'">
                 <div class="box">
                     <div class="head">
@@ -131,7 +125,7 @@
             </div>
         </div>
     </div>
-    <Student_Dashboard v-if="this.user.userType === 'student'" />
+    <!-- <Student_Dashboard v-if="this.user.userType === 'student'" /> -->
     <Parent_Dashboard v-if="this.user.userType === 'parent'" />
     <v-dialog v-model="dialog" width="90%">
         <v-card width="100%" class="popup">
@@ -314,11 +308,11 @@ import { db } from "../Firebase.js";
 import { mapState, mapActions } from "pinia";
 import { useAuthStore } from "../store/userStore";
 import { useSecureDataStore } from "@/store/secureData.js";
-import Student_Dashboard from "../components/Student_Dashboard.vue";
+// import Student_Dashboard from "../components/Student_Dashboard.vue";
 import Parent_Dashboard from "../components/Parent_Dashboard.vue";
 export default {
     components: {
-        Student_Dashboard,
+        // Student_Dashboard,
         Parent_Dashboard,
     },
     data: () => ({
@@ -338,6 +332,127 @@ export default {
         ...mapState(useAuthStore, ["user"]),
     },
     methods: {
+              Educational_content_Link() {
+            const id = this.user.id;
+            if (id) {
+                this.$router.push({
+                    name: "Educational_content",
+                    params: { id: id },
+                });
+            } else {
+                console.warn("Invalid or undefined ID");
+            }
+        },
+        Weekly_plans_Link() {
+            const id = this.user.id;
+            if (id) {
+                this.$router.push({
+                    name: "Weekly_plans",
+                    params: { id: id },
+                });
+            } else {
+                console.warn("Invalid or undefined ID");
+            }
+        },
+        Student_photos_Link() {
+            const id = this.user.id;
+            if (id) {
+                this.$router.push({
+                    name: "Student_photos",
+                    params: { id: id },
+                });
+            } else {
+                console.warn("Invalid or undefined ID");
+            }
+        },
+        Student_tests_Link() {
+            const id = this.user.id;
+            if (id) {
+                this.$router.push({
+                    name: "Student_tests",
+                    params: { id: id },
+                });
+            } else {
+                console.warn("Invalid or undefined ID");
+            }
+        },
+        Student_expenses_Link() {
+            const id = this.user.id;
+            if (id) {
+                this.$router.push({
+                    name: "Student_expenses",
+                    params: { id: id },
+                });
+            } else {
+                console.warn("Invalid or undefined ID");
+            }
+        },
+        Student_statistics_Link() {
+            const id = this.user.id;
+            if (id) {
+                this.$router.push({
+                    name: "Student_statistics",
+                    params: { id: id },
+                });
+            } else {
+                console.warn("Invalid or undefined ID");
+            }
+        },
+        Student_Notifications_Link() {
+            const id = this.user.id;
+            if (id) {
+                this.$router.push({
+                    name: "Student_Notifications",
+                    params: { id: id },
+                });
+            } else {
+                console.warn("Invalid or undefined ID");
+            }
+        },
+        Academic_schedule_Link() {
+            const id = this.user.id;
+            if (id) {
+                this.$router.push({
+                    name: "Academic_schedule",
+                    params: { id: id },
+                });
+            } else {
+                console.warn("Invalid or undefined ID");
+            }
+        },
+        Monthly_results_Link() {
+            const id = this.user.id;
+            if (id) {
+                this.$router.push({
+                    name: "Monthly_results",
+                    params: { id: id },
+                });
+            } else {
+                console.warn("Invalid or undefined ID");
+            }
+        },
+        Weekly_results_Link() {
+            const id = this.user.id;
+            if (id) {
+                this.$router.push({
+                    name: "Weekly_results",
+                    params: { id: id },
+                });
+            } else {
+                console.warn("Invalid or undefined ID");
+            }
+        },
+        personal_data_Link() {
+            const id = this.user.id;
+            if (id) {
+                this.$router.push({
+                    name: "Personal_data",
+                    params: { id: id },
+                });
+            } else {
+                console.warn("Invalid or undefined ID");
+            }
+        },
         ...mapActions(useAuthStore, ["logout"]),
         async My_Logout() {
             try {
@@ -660,7 +775,53 @@ img.pluse.pluse_1 {
     align-items: center;
     gap: 15px;
 }
+
+.feats {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: calc(100% - 20px);
+    margin: 30px auto 30px;
+    .feat {
+        cursor: pointer;
+        width: 32%;
+        box-shadow: 0 0 10px #ddd;
+        padding: 20px;
+        border-radius: 5px;
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+        text-decoration: auto;
+        transition: 0.3s;
+        &:hover {
+            background: #33669928;
+        }
+        img {
+            width: 60px !important;
+        }
+        div {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+    }
+}
 @media (max-width: 599px) {
+    .feats {
+        .feat {
+            width: 48%;
+            img {
+                width: 60px !important;
+            }
+            div {
+                font-size: 14px;
+            }
+        }
+    }
 }
 @media (min-width: 600px) and (max-width: 768px) {
 }

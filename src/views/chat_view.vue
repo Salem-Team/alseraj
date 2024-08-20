@@ -233,7 +233,7 @@ export default {
 
 .sent {
     align-self: flex-end;
-    background-color: #dcf8c6;
+    background-color: #b1ceec8f;
     border-top-left-radius: 0;
 }
 

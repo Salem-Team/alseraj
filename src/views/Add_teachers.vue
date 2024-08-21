@@ -457,11 +457,11 @@ import {
 } from "firebase/firestore";
 // import { useVuelidate } from "@vuelidate/core";
 // import { minLength, required } from "@vuelidate/validators";
-
+import { useSecureDataStore } from "@/store/secureData";
 export default {
     setup() {
         // const $v=useVuelidate();
-
+ const secureDataStore = useSecureDataStore();
         const teacher = useTeacher();
         const stepStudy = useStepStudy();
         const selectedStage = ref(null);
@@ -524,7 +524,11 @@ export default {
                     id: docRef.id,
                 });
                 await addDoc(collection(db, "users"), {
-                    email: user.value.email,
+
+                    email:secureDataStore.decryptData(
+                                 user.value.email,
+                                "12345a"
+                            ),
                     password: user.value.password,
                     roles: selectedSubject.value,
                     userType: "admin",

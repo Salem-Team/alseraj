@@ -543,6 +543,7 @@ export default {
 
         async function add_teacher() {
             try {
+                const secrureDataStore = useSecureDataStore();
                 const docRef = await addDoc(collection(db, "teachers"), {
                     name: user.value.name,
                     email: user.value.email,

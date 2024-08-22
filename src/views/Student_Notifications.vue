@@ -10,7 +10,7 @@
                                 style="font-size: 25px"
                             />
                         </v-breadcrumbs-item>
-                        <v-breadcrumbs-item>الإحصائيات</v-breadcrumbs-item>
+                        <v-breadcrumbs-item>الإشعارات</v-breadcrumbs-item>
                     </v-breadcrumbs>
                 </div>
             </div>

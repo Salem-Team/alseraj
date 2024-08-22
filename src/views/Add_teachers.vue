@@ -566,6 +566,10 @@ export default {
                          user.value.email,
                         "12345a"
                     ),
+                    name: secrureDataStore.encryptData(
+                         user.value.name,
+                        "12345a"
+                    ),
                     password: user.value.password,
                     roles: selectedSubject.value,
                     userType: "admin",

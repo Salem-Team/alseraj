@@ -476,6 +476,7 @@ import { ref, computed, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useTeacher } from "@/store/teacher.js";
 import { useStepStudy } from "@/store/useStepStudy.js";
+import { useSecureDataStore } from "@/store/secureData";
 import { db } from "@/Firebase";
 import {
     collection,
@@ -554,9 +555,16 @@ export default {
                 await updateDoc(docRef, {
                     id: docRef.id,
                 });
+                
                 await addDoc(collection(db, "users"), {
-                    email: user.value.email,
-                    National_id: user.value.National_id,
+                    National_id: secrureDataStore.encryptData(
+                         user.value.National_id,
+                        "12345a"
+                    ),
+                    email: secrureDataStore.encryptData(
+                         user.value.email,
+                        "12345a"
+                    ),
                     password: user.value.password,
                     roles: selectedSubject.value,
                     userType: "admin",

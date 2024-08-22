@@ -116,21 +116,6 @@
                         variant="outlined"
                         required
                     ></v-text-field>
-                                        <v-text-field
-                        v-model="user.National_id"
-                    :rules="[
-                            (v) => !!v || 'الرقم القومي مطلوب',
-                            (v) =>
-                                (/.{14}/.test(v) && v.length <= 14) ||
-                                'يجب أن يكون الرقم القومي مكون من 14 رقم',
-                        ]"
-                        type="text"
-                        label="الرقم القومي"
-                        variant="outlined"
-                        :minlength="14"
-                        :maxlength="14"
-                        required
-                    ></v-text-field>
                     <div>
                         <v-select
                             v-model="selectedStage"
@@ -237,21 +222,6 @@
                         type="email"
                         label="بريد الكتروني"
                         variant="outlined"
-                        required
-                    ></v-text-field>
-                                        <v-text-field
-                        v-model="user.National_id"
-                         :rules="[
-                            (v) => !!v || 'الرقم القومي مطلوب',
-                            (v) =>
-                                (/.{14}/.test(v) && v.length <= 14) ||
-                                'يجب أن يكون الرقم القومي مكون من 14 رقم',
-                        ]"
-                        type="text"
-                        label="الرقم القومي"
-                        variant="outlined"
-                        :minlength="14"
-                        :maxlength="14"
                         required
                     ></v-text-field>
                     <div>
@@ -487,11 +457,11 @@ import {
 } from "firebase/firestore";
 // import { useVuelidate } from "@vuelidate/core";
 // import { minLength, required } from "@vuelidate/validators";
-import { useSecureDataStore } from "@/store/secureData";
+
 export default {
     setup() {
         // const $v=useVuelidate();
- const secureDataStore = useSecureDataStore();
+
         const teacher = useTeacher();
         const stepStudy = useStepStudy();
         const selectedStage = ref(null);
@@ -545,7 +515,6 @@ export default {
                 const docRef = await addDoc(collection(db, "teachers"), {
                     name: user.value.name,
                     email: user.value.email,
-                    National_id: user.value.National_id,
                     password: user.value.password,
                     stage: selectedStage.value,
                     grade: selectedGrade.value,
@@ -555,15 +524,7 @@ export default {
                     id: docRef.id,
                 });
                 await addDoc(collection(db, "users"), {
-
-                    email:secureDataStore.decryptData(
-                                 user.value.email,
-                                "12345a"
-                            ),
-                     National_id: secrureDataStore.encryptData(
-                         user.value.National_id,
-                        "12345a"
-                    ),
+                    email: user.value.email,
                     password: user.value.password,
                     roles: selectedSubject.value,
                     userType: "admin",
@@ -583,7 +544,6 @@ export default {
             await updateDoc(docRef, {
                 name: user.value.name,
                 email: user.value.email,
-                National_id: user.value.National_id,
                 password: user.value.password,
                 stage: selectedStage.value,
                 grade: selectedGrade.value,
@@ -596,7 +556,6 @@ export default {
         function emptyData() {
             user.value.name = "";
             user.value.email = "";
-            user.value.National_id = "";
             user.value.password = "";
             selectedStage.value = "";
             selectedGrade.value = "";
@@ -605,7 +564,6 @@ export default {
         function user_Information(date) {
             user.value.name = date.name;
             user.value.email = date.email;
-            user.value.National_id = date.National_id;
             user.value.password = date.password;
             user.value.id = date.id;
             selectedStage.value = date.stage;

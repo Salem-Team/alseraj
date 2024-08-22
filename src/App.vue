@@ -42,21 +42,7 @@
 import { useAuthStore } from "./store/userStore";
 import { mapActions, mapState } from "pinia";
 import pwa_btn from "./components/pwa_btn.vue";
-import { onMessage } from "firebase/messaging";
-import { messaging } from "./Firebase";
 export default {
-    mounted() {
-        onMessage(messaging, (payload) => {
-            console.log("Message received. ", payload);
-            // عرض إشعار على الشاشة
-            if (Notification.permission === "granted") {
-                new Notification(payload.notification.title, {
-                    body: payload.notification.body,
-                    icon: payload.notification.icon,
-                });
-            }
-        });
-    },
     components: {
         pwa_btn,
     },

@@ -80,14 +80,12 @@
             </svg>
            
             <div class="boxes"  v-if="!loading1">
-
                 <div
                     class="box"
                     v-for="(student, index) in sortedStudents"
                     :key="student.id"
                 >
                     <!-- <ChatComponent v-if="showChatView" :recipientId="'111'" /> -->
-
                     <div class="head">
                         <div>
                             <div class="number">{{ index + 1 }}</div>
@@ -102,7 +100,6 @@
                                 }"
                                 @click="setRecipientId(student.id)"
                             >
-
                                 <font-awesome-icon
                                     :icon="['fas', 'comment-dots']"
                                 />
@@ -2689,7 +2686,6 @@
 </template>
 
 <script>
-// import ChatComponent from "@/views/chat_view.vue";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Empty_error from "@/components/Empty_error.vue";
 import {

@@ -15,7 +15,6 @@ import Photo_Gallery from "../views/Photo_Gallery.vue";
 import Add_admin from "../views/Add_admin.vue";
 import Add_teacher from "../views/Add_teachers.vue";
 import ChildDetails from "../views/ChildDetails.vue";
-<<<<<<< Updated upstream
 import Weekly_results from "../views/Weekly_results.vue";
 import Monthly_results from "../views/Monthly_results.vue";
 import Student_Notifications from "../views/Student_Notifications.vue";
@@ -28,9 +27,6 @@ import Weekly_plans from "../views/Weekly_plans.vue";
 import Academic_schedule from "../views/Academic_schedule.vue";
 import chat from "../views/chat_view.vue";
 import Personal_data from "../views/Personal_data.vue";
-=======
-import chat from "../views/chat_view.vue";
->>>>>>> Stashed changes
 
 const routes = [
     { path: "/", name: "home", component: HomeView },
@@ -113,11 +109,6 @@ const routes = [
         name: "Personal_data",
         component: Personal_data,
         meta: { requiresAuth: true},
-    },
-    {
-        path: "/chat",
-        name: "chat",
-        component: chat,
     },
 
     {

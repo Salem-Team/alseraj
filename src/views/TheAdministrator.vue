@@ -823,6 +823,13 @@ export default {
     width: 100%;
 }
 @media (max-width: 599px) {
+    .v-container {
+   gap:10px;
+   flex-direction: row;
+        .card {
+            width: 48%;
+    
+}}
 }
 @media (min-width: 600px) and (max-width: 768px) {
 }

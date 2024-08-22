@@ -2593,12 +2593,12 @@
                                                         "
                                                         >إضافة طالب</v-btn
                                                     >
-                                                </div>
+                                                 </div>
                                             </div>
                                         </form>
                                     </v-tabs-window-item>
 
-                                    <v-tabs-window-item value="parent">
+                                    <v-tabs-window-item value="parent" style="background: var(--main-color);">
                                         <form @submit.prevent="submit">
                                             <div style="padding: 20px">
                                                 <v-text-field

@@ -4,7 +4,7 @@
             <div>
                 <v-select
                     v-model="selectedSubject"
-                    :items="studentStore.subjectArray"
+                    :items="['جغرافيا', 'انجليزى', 'قرآن كريم', 'تاريخ']"
                     :rules="[(v) => !!v || 'أختر المرحلة الدراسية']"
                     label="أختر المرحلة الدراسية"
                     variant="outlined"

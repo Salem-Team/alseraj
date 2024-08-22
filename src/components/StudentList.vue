@@ -78,14 +78,25 @@
                     r="70"
                 ></circle>
             </svg>
+<<<<<<< Updated upstream
            
             <div class="boxes"  v-if="!loading1">
+=======
+            <div v-if="!loading1 && sortedStudents.length === 0">
+                <Empty_error text="لا يوجد طلاب مسجلين." />
+            </div>
+            <div class="boxes" v-else>
+>>>>>>> Stashed changes
                 <div
                     class="box"
                     v-for="(student, index) in sortedStudents"
                     :key="student.id"
                 >
+<<<<<<< Updated upstream
                     <!-- <ChatComponent v-if="showChatView" :recipientId="'111'" /> -->
+=======
+                    <!-- <ChatComponent :recipientId="student.id" /> -->
+>>>>>>> Stashed changes
                     <div class="head">
                         <div>
                             <div class="number">{{ index + 1 }}</div>
@@ -93,6 +104,7 @@
                         </div>
 
                         <div>
+<<<<<<< Updated upstream
                             <router-link
                                 :to="{
                                     path: '/chat',
@@ -100,6 +112,9 @@
                                 }"
                                 @click="setRecipientId(student.id)"
                             >
+=======
+                            <router-link :to="'/chat'">
+>>>>>>> Stashed changes
                                 <font-awesome-icon
                                     :icon="['fas', 'comment-dots']"
                                 />
@@ -2686,6 +2701,7 @@
 </template>
 
 <script>
+// import ChatComponent from "@/views/chat_view.vue";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Empty_error from "@/components/Empty_error.vue";
 import {

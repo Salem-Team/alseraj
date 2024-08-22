@@ -55,7 +55,7 @@
 
                                 <v-tab value="seven1">
                                     <img
-                                        src="../assets/student/analysis.svg"
+                                        src="../assets/student/planning2.svg"
                                         alt=""
                                         width="30px"
                                 /></v-tab>
@@ -1663,10 +1663,11 @@ export default {
                 birthday: "",
                 phone: "",
                 tests: [],
-                // Results: [], // بيانات النتائج ستكون هنا
-                state: true, // إضافة حالة للتحكم في عرض الاختبارات
+                // Results: [],
+                state: true,
                 name: "أحمد محمد",
                 age: 12,
+                student_phone: "",
                 BithOfDate: "2009-08-05",
                 gradeLevel: "الصف الخامس",
                 schoolYear: "2023-2024",
